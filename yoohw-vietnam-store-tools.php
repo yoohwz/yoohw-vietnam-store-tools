@@ -1,0 +1,131 @@
+<?php
+/**
+ * Plugin Name: Vietnam Store Toolkit for WooCommerce
+ * Description: WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice requests, VietQR bank transfer, and phone normalization.
+ * Version: 1.0.1
+ * Author: YoOhw Studio
+ * Author URI: https://yoohw.com
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 6.3
+ * Requires PHP: 7.4
+ * Text Domain: yoohw-vietnam-store-tools
+ * Domain Path: /languages
+ * Requires Plugins: woocommerce
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+final class Yoohw_Vietnam_Store_Tools {
+
+	private static $instance = null;
+
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	private function __construct() {
+		$plugin_data    = get_file_data( __FILE__, [ 'Version' => 'Version' ], false );
+		$plugin_version = isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '1.0.1';
+
+		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_VERSION' ) ) {
+			define( 'YOOHW_VIETNAM_STORE_TOOLS_VERSION', $plugin_version );
+		}
+
+		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_FILE' ) ) {
+			define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_FILE', __FILE__ );
+		}
+
+		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR' ) ) {
+			define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+		}
+
+		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL' ) ) {
+			define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+		}
+
+		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_BASENAME' ) ) {
+			define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+		}
+
+		load_plugin_textdomain( 'yoohw-vietnam-store-tools', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
+		add_action( 'before_woocommerce_init', [ $this, 'declare_woocommerce_compatibility' ] );
+
+		$this->includes();
+	}
+
+	public function declare_woocommerce_compatibility() {
+		if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	}
+
+	private function includes() {
+		$files = [
+			'includes/class-vietnam-commerce-kit-request-security.php',
+			'includes/class-vietnam-commerce-kit-vietnam-address-data.php',
+			'includes/class-vietnam-commerce-kit-legacy-plugin-guard.php',
+			'includes/class-vietnam-commerce-kit-address-fields.php',
+			'includes/class-vietnam-commerce-kit-phone-normalization.php',
+			'includes/class-vietnam-commerce-kit-shipping.php',
+			'includes/class-vietnam-commerce-kit-bacs-vietqr.php',
+			'includes/class-vietnam-commerce-kit-tax-invoice.php',
+			'includes/class-vietnam-commerce-kit-admin-address-fields.php',
+			'includes/class-vietnam-commerce-kit-admin-order-fields.php',
+			'includes/class-vietnam-commerce-kit-devvn-migration-tools.php',
+		];
+
+		foreach ( $files as $file ) {
+			$path = plugin_dir_path( __FILE__ ) . $file;
+
+			if ( file_exists( $path ) ) {
+				include_once $path;
+			}
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Legacy_Plugin_Guard' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Legacy_Plugin_Guard();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Address_Fields' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Address_Fields();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Phone_Normalization' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Phone_Normalization();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Shipping' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Shipping();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Address_Fields' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Admin_Address_Fields();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_BACS_VietQR' ) ) {
+			new Yoohw_Vietnam_Store_Tools_BACS_VietQR();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Tax_Invoice' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Tax_Invoice();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Order_Fields' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Admin_Order_Fields();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools' ) ) {
+			new Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools();
+		}
+	}
+}
+
+Yoohw_Vietnam_Store_Tools::instance();

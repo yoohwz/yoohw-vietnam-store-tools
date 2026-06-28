@@ -1,0 +1,37 @@
+.vck-devvn-migration-progress {
+	margin-top: 10px;
+	max-width: 520px;
+}
+
+.vck-devvn-migration-progress__bar {
+	background: #dcdcde;
+	border-radius: 3px;
+	height: 10px;
+	overflow: hidden;
+}
+
+.vck-devvn-migration-progress__bar span {
+	background: #2271b1;
+	display: block;
+	height: 100%;
+	transition: width 180ms ease;
+	width: 0;
+}
+
+.vck-devvn-migration-progress__status {
+	font-weight: 600;
+	margin: 8px 0 0;
+}
+
+.vck-devvn-migration-progress__detail {
+	color: #646970;
+	margin: 4px 0 0;
+}
+
+.vck-devvn-migration-progress.is-complete .vck-devvn-migration-progress__bar span {
+	background: #008a20;
+}
+
+.vck-devvn-migration-progress.is-error .vck-devvn-migration-progress__bar span {
+	background: #b32d2e;
+}

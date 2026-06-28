@@ -1,0 +1,199 @@
+.vck-vietqr-payment {
+	margin: 1.5em 0;
+}
+
+.vck-vietqr-payment__account {
+	margin: 0 0 1.5em;
+}
+
+.vck-vietqr-payment__qr {
+	margin: 0 0 1em;
+	text-align: center;
+}
+
+.vck-vietqr-payment__qr img {
+	background: #fff;
+	border: 1px solid #ddd;
+	height: auto;
+	max-width: 100%;
+	padding: 8px;
+	width: 280px;
+}
+
+.vck-vietqr-payment__details th {
+	text-align: left;
+	width: 38%;
+}
+
+.vck-vietqr-payment__copyable {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
+	max-width: 100%;
+}
+
+.vck-vietqr-payment__copyable strong {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy {
+	appearance: none !important;
+	align-items: center !important;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 4px !important;
+	box-shadow: none !important;
+	color: currentColor !important;
+	cursor: pointer;
+	display: inline-flex !important;
+	flex: 0 0 auto;
+	font-size: 0 !important;
+	height: 24px !important;
+	justify-content: center !important;
+	line-height: 1 !important;
+	margin: 0 !important;
+	min-height: 0 !important;
+	min-width: 0 !important;
+	padding: 0 !important;
+	position: relative;
+	transition: background-color .16s ease, color .16s ease, transform .16s ease;
+	vertical-align: middle;
+	width: 24px !important;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy::before {
+	border: 2px solid currentColor;
+	border-radius: 3px;
+	box-shadow: -4px -4px 0 -2px #fff, -4px -4px 0 0 currentColor;
+	content: "";
+	display: block;
+	height: 12px;
+	transform: translate(1px, 1px);
+	width: 10px;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy::after {
+	background: #1d2327;
+	border-radius: 4px;
+	bottom: calc(100% + 7px);
+	color: #fff;
+	content: attr(data-vck-copied-label);
+	font-size: 12px;
+	font-weight: 600;
+	left: 50%;
+	line-height: 1;
+	opacity: 0;
+	padding: 6px 8px;
+	pointer-events: none;
+	position: absolute;
+	transform: translate(-50%, 4px);
+	transition: opacity .16s ease, transform .16s ease;
+	white-space: nowrap;
+	z-index: 20;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy:hover,
+.vck-vietqr-payment .vck-vietqr-copy:focus {
+	background: #f0f0f1 !important;
+	color: #2271b1 !important;
+	outline: none;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy:focus {
+	box-shadow: 0 0 0 2px #2271b1 !important;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy.is-copied {
+	background: #edfaef !important;
+	color: #008a20 !important;
+	transform: scale(1.08);
+}
+
+.vck-vietqr-payment .vck-vietqr-copy.is-copied::before {
+	border-color: currentColor;
+	border-radius: 0;
+	border-style: solid;
+	border-width: 0 0 2px 2px;
+	box-shadow: none;
+	height: 6px;
+	transform: rotate(-45deg) translate(1px, -1px);
+	width: 12px;
+}
+
+.vck-vietqr-payment .vck-vietqr-copy.is-copied::after {
+	opacity: 1;
+	transform: translate(-50%, 0);
+}
+
+.vck-vietqr-payment:not(.vck-vietqr-payment--admin) .vck-vietqr-copy::after,
+.vck-vietqr-payment:not(.vck-vietqr-payment--admin) .vck-vietqr-copy.is-copied::after {
+	content: none;
+	display: none;
+}
+
+.vck-vietqr-payment--admin .shop_table {
+	font-size: 12px;
+}
+
+.vck-vietqr-payment--admin h2 {
+	font-size: 14px;
+	margin: 0 0 12px;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-payment__qr img {
+	width: 180px;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-copy {
+	color: #646970 !important;
+	height: 22px !important;
+	width: 22px !important;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-copy::before {
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	content: "\f481";
+	display: block;
+	font-family: dashicons;
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 400;
+	height: 20px;
+	line-height: 1;
+	text-align: center;
+	transform: none;
+	width: 20px;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-copy:hover,
+.vck-vietqr-payment--admin .vck-vietqr-copy:focus {
+	background: #f6f7f7 !important;
+	color: #2271b1 !important;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-copy.is-copied {
+	background: #f0f6fc !important;
+	color: #00a32a !important;
+	transform: none;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-copy.is-copied::before {
+	border: 0;
+	box-shadow: none;
+	content: "\f15e";
+	height: 20px;
+	transform: none;
+	width: 20px;
+}
+
+.vck-vietqr-payment--admin .vck-vietqr-copy::after {
+	background: #1d2327;
+	border-radius: 3px;
+	bottom: calc(100% + 6px);
+	font-size: 11px;
+	font-weight: 400;
+	padding: 5px 7px;
+}
