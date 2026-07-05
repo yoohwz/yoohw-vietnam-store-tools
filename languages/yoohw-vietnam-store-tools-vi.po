@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.0.1\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.0.2\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
 "POT-Creation-Date: 2026-06-21 00:00:00+0000\n"
 "PO-Revision-Date: 2026-06-21 00:00:00+0000\n"
@@ -13802,6 +13802,62 @@ msgstr "Tạo vận đơn"
 
 msgid "Shipping provider returned an invalid response."
 msgstr "Nhà cung cấp vận chuyển trả về phản hồi không hợp lệ."
+
+msgid "Manual shipment details saved."
+msgstr "Đã lưu thông tin vận đơn thủ công."
+
+msgid "Manual shipment details saved and tracking email sent to the customer."
+msgstr "Đã lưu thông tin vận đơn thủ công và gửi email mã vận đơn cho khách hàng."
+
+msgid "Manual shipment details saved, but the tracking email could not be sent."
+msgstr "Đã lưu thông tin vận đơn thủ công, nhưng không thể gửi email mã vận đơn."
+
+msgid "Email tracking details to the customer"
+msgstr "Gửi email thông tin vận chuyển tới khách hàng"
+
+msgid "The customer billing email is missing."
+msgstr "Đơn hàng chưa có email thanh toán của khách hàng."
+
+msgid "Vietnam shipping tracking"
+msgstr "Theo dõi vận chuyển Việt Nam"
+
+msgid "Manually send customers their Vietnam shipping provider and tracking code from the order shipping metabox."
+msgstr "Gửi thủ công nhà vận chuyển và mã vận đơn cho khách hàng từ metabox vận chuyển của đơn hàng."
+
+msgid "Shipping update for order #{order_number} on {site_title}"
+msgstr "Cập nhật vận chuyển cho đơn hàng #{order_number} tại {site_title}"
+
+msgid "Your order is on its way"
+msgstr "Đơn hàng của bạn đang được vận chuyển"
+
+msgid "If you need any help with your shipment, please contact us at {store_email}."
+msgstr "Nếu cần hỗ trợ về vận chuyển, vui lòng liên hệ với chúng tôi tại {store_email}."
+
+#, php-format
+msgid "Hi %s,"
+msgstr "Xin chào %s,"
+
+msgid "Hi,"
+msgstr "Xin chào,"
+
+#, php-format
+msgid "The shipping details for order #%s have been updated."
+msgstr "Thông tin vận chuyển cho đơn hàng #%s đã được cập nhật."
+
+msgid "Shipping details"
+msgstr "Thông tin vận chuyển"
+
+msgid "Shipping provider"
+msgstr "Nhà vận chuyển"
+
+msgid "Tracking link"
+msgstr "Liên kết theo dõi"
+
+msgid "Track shipment"
+msgstr "Theo dõi vận đơn"
+
+msgid "You can use this information to follow the delivery status with the carrier."
+msgstr "Bạn có thể dùng thông tin này để theo dõi trạng thái giao hàng với đơn vị vận chuyển."
 
 #: Codex frontend translation review
 msgid "Yes"

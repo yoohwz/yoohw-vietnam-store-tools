@@ -5,7 +5,7 @@ Requires at least: 6.3
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -292,6 +292,13 @@ Address data and bank list data are bundled. The only runtime external service i
 Yes. The plugin includes Vietnamese translation files for labels, validation messages, admin UI text, and administrative unit names.
 
 == Changelog ==
+
+= 1.0.2 =
+
+* Added a WooCommerce customer email template for Vietnam shipping tracking updates.
+* Added a checkbox in the admin order Vietnam shipping metabox to send the tracking email when saving a manual tracking code.
+* Updated the shipping tracking email details table to better match WooCommerce's new email template layout.
+* Added Vietnamese translations for the new shipping tracking email and manual-send controls.
 
 = 1.0.1 =
 
