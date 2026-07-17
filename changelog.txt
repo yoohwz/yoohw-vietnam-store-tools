@@ -1,0 +1,38 @@
+=== Vietnam Store Toolkit for WooCommerce - Changelog ===
+
+= 1.0.2 (5/7/2026) =
+
+* Đã thêm mẫu email WooCommerce gửi khách hàng để cập nhật thông tin theo dõi vận chuyển tại Việt Nam.
+* Đã thêm hộp kiểm trong hộp thông tin vận chuyển Việt Nam của đơn hàng ở trang quản trị để gửi email theo dõi khi lưu mã vận đơn thủ công.
+* Đã cập nhật bảng chi tiết trong email theo dõi vận chuyển để phù hợp hơn với bố cục mẫu email mới của WooCommerce.
+* Đã thêm bản dịch tiếng Việt cho email theo dõi vận chuyển mới và các điều khiển gửi thủ công.
+
+= 1.0.1 (28/6/2026) =
+
+* Đã thêm biểu mẫu vận chuyển thủ công trong hộp thông tin vận chuyển Việt Nam của đơn hàng ở trang quản trị khi chưa đăng ký trình kết nối của đơn vị vận chuyển.
+* Đã thêm tính năng chọn hãng vận chuyển và nhập mã vận đơn thủ công bằng siêu dữ liệu đơn hàng `_vck_shipping_*` tiêu chuẩn của plugin.
+* Đã mở rộng công cụ di chuyển dữ liệu từ Le Van Toan để quét và đồng bộ địa chỉ thanh toán và giao hàng trong hồ sơ khách hàng, bên cạnh địa chỉ đơn hàng và dữ liệu vận chuyển.
+* Đã cải thiện việc di chuyển địa chỉ cũ cho bí danh phường/xã trước năm 2025 và địa chỉ khách hàng Việt Nam bị thiếu giá trị quốc gia.
+* Đã cập nhật thông báo tiến trình di chuyển để hiển thị riêng các dòng địa chỉ đơn hàng, dòng địa chỉ khách hàng và đơn hàng vận chuyển.
+* Đã sắp xếp lại các trường địa chỉ Việt Nam trong hồ sơ khách hàng trên màn hình quản trị người dùng theo thứ tự: quốc gia, tỉnh/thành phố, phường/xã, dòng địa chỉ 1, dòng địa chỉ 2 và mã bưu chính.
+
+= 1.0.0 (27/6/2026) =
+
+* Bản phát hành công khai đầu tiên với tên Vietnam Store Toolkit for WooCommerce.
+* Đã thêm danh sách chọn tỉnh/thành phố và phường/xã Việt Nam cho WooCommerce.
+* Đã thêm dữ liệu đơn vị hành chính hai cấp của Việt Nam cho 34 tỉnh/thành phố và 3.321 phường/xã/đặc khu.
+* Đã điều chỉnh các trường thanh toán tại Việt Nam cho họ và tên, thông tin liên hệ, khả năng hiển thị quốc gia, trường công ty và mã bưu chính.
+* Đã thêm các trường yêu cầu hóa đơn GTGT Việt Nam và thông tin hóa đơn trong đơn hàng ở trang quản trị.
+* Đã thêm thông tin hóa đơn GTGT vào email New Order gửi cho quản trị viên cửa hàng.
+* Đã thêm hỗ trợ VietQR vào WooCommerce Direct bank transfer.
+* Đã thêm bộ chọn ngân hàng Việt Nam và mẫu nội dung chuyển khoản cho tài khoản chuyển khoản ngân hàng.
+* Đã thêm hiển thị mã QR VietQR trên đơn hàng ở giao diện người dùng, email khách hàng và đơn hàng trong trang quản trị.
+* Đã thêm thao tác sao chép số tài khoản ngân hàng và nội dung chuyển khoản.
+* Đã thêm tính năng chuẩn hóa số điện thoại Việt Nam và lưu trữ siêu dữ liệu.
+* Đã thêm khung tích hợp đơn vị vận chuyển với siêu dữ liệu vận chuyển đơn hàng được chuẩn hóa và các thao tác quản trị đơn hàng.
+* Đã làm gọn phần hiển thị dòng vận chuyển của đơn hàng trong trang quản trị WooCommerce bằng cách ẩn siêu dữ liệu kỹ thuật của mức phí vận chuyển.
+* Đã thêm tính năng chọn trước đơn vị vận chuyển khi tạo vận đơn dựa trên phương thức vận chuyển mà khách hàng đã chọn tại trang thanh toán, nếu có siêu dữ liệu của đơn vị vận chuyển.
+* Đã thêm WooCommerce Status Tools với quy trình xử lý tiến độ bằng một lần nhấp cho địa chỉ đơn hàng và dữ liệu vận chuyển từ plugin của Le Van Toan.
+* Đã thêm cảnh báo bảo vệ quá trình di chuyển cho các cửa hàng chuyển từ plugin của Le Van Toan.
+* Đã bổ sung text domain sẵn sàng cho WordPress.org, tiền tố công khai duy nhất, thao tác AJAX, biến JavaScript toàn cục và kiểm tra quyền yêu cầu.
+* Đã thêm bản dịch tiếng Việt.
