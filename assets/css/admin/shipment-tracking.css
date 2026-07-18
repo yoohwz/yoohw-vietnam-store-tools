@@ -1,0 +1,75 @@
+.vck-admin-tracking-timeline {
+	border-top: 1px solid #dcdcde;
+	margin-top: 16px;
+	padding-top: 14px;
+}
+
+.vck-admin-tracking-timeline h4 {
+	font-size: 13px;
+	margin: 0 0 12px;
+}
+
+.vck-admin-tracking-timeline__events {
+	list-style: none;
+	margin: 0 0 14px;
+	padding: 0;
+}
+
+.vck-admin-tracking-timeline__event {
+	border-left: 3px solid #a7aaad;
+	margin: 0 0 10px;
+	padding: 1px 0 1px 10px;
+}
+
+.vck-admin-tracking-timeline__event--info {
+	border-color: var( --wp-admin-theme-color, #2271b1 );
+}
+
+.vck-admin-tracking-timeline__event--warning {
+	border-color: #dba617;
+}
+
+.vck-admin-tracking-timeline__event--success {
+	border-color: #00a32a;
+}
+
+.vck-admin-tracking-timeline__event--danger {
+	border-color: #d63638;
+}
+
+.vck-admin-tracking-timeline__event-heading {
+	align-items: baseline;
+	display: flex;
+	gap: 8px;
+	justify-content: space-between;
+}
+
+.vck-admin-tracking-timeline__event time,
+.vck-admin-tracking-timeline__event span {
+	color: #646970;
+	display: block;
+	font-size: 11px;
+	margin-top: 2px;
+}
+
+.vck-admin-tracking-timeline__event p {
+	font-size: 12px;
+	margin: 5px 0 0;
+}
+
+.vck-admin-tracking-timeline__fields {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+.vck-admin-tracking-timeline__fields p:first-child {
+	margin-top: 0;
+}
+
+.vck-admin-tracking-timeline__fields label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 3px;
+}

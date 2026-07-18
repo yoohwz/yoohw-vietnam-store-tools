@@ -35,6 +35,9 @@ final class Yoohw_Vietnam_Store_Tools_Phone_Normalization {
 		add_action( 'woocommerce_after_save_address_validation', [ $this, 'validate_account_phone_fields' ], 30, 4 );
 		add_action( 'woocommerce_checkout_create_order', [ $this, 'normalize_order_phone_fields' ], 30, 2 );
 		add_action( 'woocommerce_checkout_update_customer', [ $this, 'normalize_checkout_customer_phone_fields' ], 30, 2 );
+		add_action( 'woocommerce_store_api_cart_update_customer_from_request', [ $this, 'normalize_store_api_customer_phone_fields' ], 30, 2 );
+		add_action( 'woocommerce_store_api_checkout_update_customer_from_request', [ $this, 'normalize_store_api_customer_phone_fields' ], 30, 2 );
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', [ $this, 'validate_and_normalize_store_api_order_phone_fields' ], 40, 2 );
 		add_action( 'woocommerce_customer_save_address', [ $this, 'normalize_saved_customer_address_phone_fields' ], 30, 4 );
 		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'prepare_admin_billing_phone_field' ], 30, 3 );
 		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'prepare_admin_shipping_phone_field' ], 30, 3 );
@@ -127,6 +130,28 @@ final class Yoohw_Vietnam_Store_Tools_Phone_Normalization {
 
 		$this->normalize_customer_object_phone_field( $customer, 'billing' );
 		$this->normalize_customer_object_phone_field( $customer, 'shipping' );
+	}
+
+	public function normalize_store_api_customer_phone_fields( $customer, $request = null ) {
+		unset( $request );
+
+		if ( ! $customer instanceof WC_Customer ) {
+			return;
+		}
+
+		$this->normalize_customer_object_phone_field( $customer, 'billing' );
+		$this->normalize_customer_object_phone_field( $customer, 'shipping' );
+	}
+
+	public function validate_and_normalize_store_api_order_phone_fields( $order, $request = null ) {
+		unset( $request );
+
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
+		$this->validate_and_normalize_store_api_order_phone_field( $order, 'billing' );
+		$this->validate_and_normalize_store_api_order_phone_field( $order, 'shipping' );
 	}
 
 	public function normalize_saved_customer_address_phone_fields( $user_id, $address_type, $address = null, $customer = null ) {
@@ -320,6 +345,52 @@ final class Yoohw_Vietnam_Store_Tools_Phone_Normalization {
 		}
 
 		$this->save_order_phone_meta_from_result( $order, $address_type, $normalized );
+	}
+
+	private function validate_and_normalize_store_api_order_phone_field( $order, $address_type ) {
+		$phone_getter   = 'get_' . $address_type . '_phone';
+		$phone_setter   = 'set_' . $address_type . '_phone';
+		$country_getter = 'get_' . $address_type . '_country';
+
+		if ( ! is_callable( [ $order, $phone_getter ] ) || ! is_callable( [ $order, $country_getter ] ) ) {
+			return;
+		}
+
+		$phone   = $order->{$phone_getter}( 'edit' );
+		$country = $this->get_effective_country( $order->{$country_getter}( 'edit' ) );
+
+		if ( '' === (string) $phone || ! $this->should_process_phone( $country, $phone ) ) {
+			$this->delete_order_phone_meta( $order, $address_type );
+			return;
+		}
+
+		$normalized = self::normalize_phone_number( $phone, $country );
+
+		if ( ! $normalized['valid'] ) {
+			$this->throw_store_api_phone_validation_error( $address_type );
+		}
+
+		if ( is_callable( [ $order, $phone_setter ] ) ) {
+			$order->{$phone_setter}( $normalized['national'] );
+		}
+
+		$this->save_order_phone_meta_from_result( $order, $address_type, $normalized );
+	}
+
+	private function throw_store_api_phone_validation_error( $address_type ) {
+		$exception_class = '\\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException';
+		$message         = __( 'Please enter a valid Vietnamese phone number.', 'yoohw-vietnam-store-tools' );
+
+		if ( class_exists( $exception_class ) ) {
+			throw new $exception_class(
+				'yoohw_vietnam_store_tools_invalid_' . $address_type . '_phone',
+				$message,
+				400,
+				[ 'field' => $address_type . '_phone' ]
+			);
+		}
+
+		throw new Exception( esc_html( $message ) );
 	}
 
 	private function normalize_customer_object_phone_field( $customer, $address_type ) {

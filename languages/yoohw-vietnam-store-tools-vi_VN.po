@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.0.2\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.0\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
-"POT-Creation-Date: 2026-06-21 00:00:00+0000\n"
-"PO-Revision-Date: 2026-06-21 00:00:00+0000\n"
+"POT-Creation-Date: 2026-07-17 00:00:00+0000\n"
+"PO-Revision-Date: 2026-07-17 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
 "Language: vi\n"
@@ -179,7 +179,7 @@ msgid "Tax invoice request"
 msgstr "Yêu cầu xuất hóa đơn"
 
 msgid "Vietnam tax invoice requests"
-msgstr "Yêu cầu hóa đơn thuế Việt Nam"
+msgstr "Yêu cầu hóa đơn thuế"
 
 msgctxt "province:01"
 msgid "Ha Noi City"
@@ -13713,7 +13713,7 @@ msgid "Detected: %s."
 msgstr "Đã phát hiện: %s."
 
 msgid "These plugins can also modify WooCommerce Vietnam address and checkout fields. Run the scan and sync tools before disabling the old plugin to avoid city/province, ward/commune, city, state, and address line 2 data conflicts."
-msgstr "Các plugin này cũng có thể thay đổi trường địa chỉ và checkout Việt Nam của WooCommerce. Hãy chạy công cụ quét và đồng bộ trước khi tắt plugin cũ để tránh xung đột dữ liệu Thành phố/Tỉnh, Phường/Xã, city, state và địa chỉ dòng 2."
+msgstr "Các plugin này cũng có thể thay đổi các trường địa chỉ và checkout dành cho Việt Nam trong WooCommerce. Hãy chạy công cụ quét và đồng bộ trước khi tắt plugin cũ để tránh xung đột dữ liệu Thành phố/Tỉnh, Phường/Xã, city, state và địa chỉ dòng 2."
 
 msgid "Open sync tools"
 msgstr "Mở công cụ đồng bộ"
@@ -13731,7 +13731,7 @@ msgid "Shipping provider is not available."
 msgstr "Nhà cung cấp vận chuyển không khả dụng."
 
 msgid "Vietnam shipping"
-msgstr "Vận chuyển Việt Nam"
+msgstr "Vận chuyển"
 
 msgid "Shipment created."
 msgstr "Đã tạo vận đơn."
@@ -13819,7 +13819,7 @@ msgid "The customer billing email is missing."
 msgstr "Đơn hàng chưa có email thanh toán của khách hàng."
 
 msgid "Vietnam shipping tracking"
-msgstr "Theo dõi vận chuyển Việt Nam"
+msgstr "Theo dõi vận chuyển"
 
 msgid "Manually send customers their Vietnam shipping provider and tracking code from the order shipping metabox."
 msgstr "Gửi thủ công nhà vận chuyển và mã vận đơn cho khách hàng từ metabox vận chuyển của đơn hàng."
@@ -13858,3 +13858,708 @@ msgstr "Theo dõi vận đơn"
 
 msgid "You can use this information to follow the delivery status with the carrier."
 msgstr "Bạn có thể dùng thông tin này để theo dõi trạng thái giao hàng với đơn vị vận chuyển."
+
+msgid "Yes"
+msgstr "Có"
+
+msgid "Loading ward / commune list..."
+msgstr "Đang tải danh sách phường / xã..."
+
+msgid "optional"
+msgstr "không bắt buộc"
+
+msgid "Bank"
+msgstr "Ngân hàng"
+
+msgid "Account number"
+msgstr "Số tài khoản"
+
+msgid "Account name"
+msgstr "Tên tài khoản"
+
+msgid "Vietnam"
+msgstr "Việt Nam"
+
+msgid "Account Name"
+msgstr "Tên tài khoản"
+
+msgid "Account Number"
+msgstr "Số tài khoản"
+
+msgid "Add rule"
+msgstr "Thêm quy tắc"
+
+msgid "Allow COD"
+msgstr "Cho phép COD"
+
+msgid "Any city / province"
+msgstr "Mọi tỉnh / thành phố"
+
+msgid "Any shipping class"
+msgstr "Mọi mức phân loại vận chuyển"
+
+msgid "Any ward / commune"
+msgstr "Mọi phường / xã"
+
+msgid "Applies to the default fee when no rule matches. Leave blank to disable."
+msgstr "Áp dụng cho phí mặc định khi không có quy tắc nào khớp. Để trống để tắt."
+
+msgid "BIC / SWIFT"
+msgstr "Mã BIC / SWIFT"
+
+msgid "Bank Name"
+msgstr "Tên ngân hàng"
+
+msgid "CSV rules were exported."
+msgstr "Đã xuất các quy tắc ra CSV."
+
+msgid "CSV rules were imported. Save changes to apply them."
+msgstr "Đã nhập các quy tắc từ CSV. Hãy lưu thay đổi để áp dụng."
+
+msgid "Calculate shipping by Vietnamese city/province, ward/commune, cart total, weight, and shipping class."
+msgstr "Tính phí vận chuyển theo tỉnh/thành phố, phường/xã, tổng giỏ hàng, khối lượng và mức phân loại vận chuyển."
+
+msgid "Cash on delivery"
+msgstr "Thanh toán khi nhận hàng"
+
+msgid "City"
+msgstr "Thành phố"
+
+msgid "Could not import the CSV file. Check the header row and data format."
+msgstr "Không thể nhập tệp CSV. Hãy kiểm tra hàng tiêu đề và định dạng dữ liệu."
+
+msgid "Could not load the ward / commune list. Please try again."
+msgstr "Không thể tải danh sách phường / xã. Vui lòng thử lại."
+
+msgid "Country"
+msgstr "Quốc gia"
+
+msgid "Customer address review samples: %s."
+msgstr "Mẫu địa chỉ khách hàng cần xem xét: %s."
+
+msgid "Customer address rows: %1$d total (%4$d billing, %5$d shipping). Safe customer sync: %2$d address rows across %6$d users (%7$d old three-level rows, %8$d new two-level rows, %9$d already-normalized rows with missing country). Customer address rows needing official mapping/manual review: %3$d."
+msgstr "Dòng địa chỉ khách hàng: tổng cộng %1$d (%4$d thanh toán, %5$d giao hàng). Có thể đồng bộ an toàn: %2$d dòng địa chỉ trong %6$d người dùng (%7$d dòng địa chỉ ba cấp cũ, %8$d dòng địa chỉ hai cấp mới, %9$d dòng đã chuẩn hóa nhưng thiếu quốc gia). Dòng địa chỉ khách hàng cần ánh xạ chính thức/xem xét thủ công: %3$d."
+
+msgid "Default cash on delivery"
+msgstr "Thiết lập COD mặc định"
+
+msgid "Default free shipping threshold"
+msgstr "Ngưỡng miễn phí vận chuyển mặc định"
+
+msgid "Default shipping fee"
+msgstr "Phí vận chuyển mặc định"
+
+msgid "Disallow COD"
+msgstr "Không cho phép COD"
+
+msgid "Email settings"
+msgstr "Cài đặt email"
+
+msgid "Enabled"
+msgstr "Bật"
+
+msgid "Enter 10 digits, optionally followed by a hyphen and 3 digits."
+msgstr "Nhập 10 chữ số, có thể theo sau bằng dấu gạch nối và 3 chữ số."
+
+msgid "Export CSV"
+msgstr "Xuất CSV"
+
+msgid "Free shipping threshold"
+msgstr "Ngưỡng miễn phí vận chuyển"
+
+msgid "IBAN"
+msgstr "Mã IBAN"
+
+msgid "Import CSV"
+msgstr "Nhập CSV"
+
+msgid "Importing will replace the current rules in this editor. Continue?"
+msgstr "Việc nhập sẽ thay thế các quy tắc hiện có trong trình chỉnh sửa này. Tiếp tục?"
+
+msgid "Le Van Toan plugin data scan complete. Order address rows: %1$d total (%4$d billing, %5$d shipping). Safe order sync: %2$d address rows across %6$d orders (%7$d old three-level rows, %8$d new two-level rows). Order address rows needing official mapping/manual review: %3$d."
+msgstr "Đã hoàn tất quét dữ liệu plugin Lê Văn Toàn. Dòng địa chỉ đơn hàng: tổng cộng %1$d (%4$d thanh toán, %5$d giao hàng). Có thể đồng bộ an toàn: %2$d dòng địa chỉ trong %6$d đơn hàng (%7$d dòng địa chỉ ba cấp cũ, %8$d dòng địa chỉ hai cấp mới). Dòng địa chỉ đơn hàng cần ánh xạ chính thức/xem xét thủ công: %3$d."
+
+msgid "Le Van Toan plugin data sync batch complete. Updated %1$d orders and synced %2$d order address rows. Updated %3$d users and synced %4$d customer address rows. Synced %5$d shipment orders. Remaining safe order address rows: %6$d. Remaining safe customer address rows: %7$d. Remaining address rows needing mapping/manual review: %8$d order rows and %9$d customer rows."
+msgstr "Đã hoàn tất một đợt đồng bộ dữ liệu plugin Lê Văn Toàn. Đã cập nhật %1$d đơn hàng và đồng bộ %2$d dòng địa chỉ đơn hàng. Đã cập nhật %3$d người dùng và đồng bộ %4$d dòng địa chỉ khách hàng. Đã đồng bộ %5$d đơn hàng có vận đơn. Còn %6$d dòng địa chỉ đơn hàng an toàn. Còn %7$d dòng địa chỉ khách hàng an toàn. Số dòng địa chỉ cần ánh xạ/xem xét thủ công còn lại: %8$d dòng đơn hàng và %9$d dòng khách hàng."
+
+msgid "Manually entered"
+msgstr "Nhập thủ công"
+
+msgid "Maximum cart total"
+msgstr "Tổng giỏ hàng tối đa"
+
+msgid "Maximum weight"
+msgstr "Khối lượng tối đa"
+
+msgid "Method title"
+msgstr "Tiêu đề phương thức"
+
+msgid "Minimum cart total"
+msgstr "Tổng giỏ hàng tối thiểu"
+
+msgid "Minimum weight"
+msgstr "Khối lượng tối thiểu"
+
+msgid "Move down"
+msgstr "Di chuyển xuống"
+
+msgid "Move up"
+msgstr "Di chuyển lên"
+
+msgid "New shipping rule"
+msgstr "Quy tắc vận chuyển mới"
+
+msgid "No shipping rules have been added yet."
+msgstr "Chưa có quy tắc vận chuyển nào."
+
+msgid "Order #%1$d %2$s: %3$s / %4$s / %5$s"
+msgstr "Đơn hàng #%1$d %2$s: %3$s / %4$s / %5$s"
+
+msgid "Order address review samples: %s."
+msgstr "Mẫu địa chỉ đơn hàng cần xem xét: %s."
+
+msgid "Other carrier"
+msgstr "Nhà vận chuyển khác"
+
+msgid "Products without a shipping class"
+msgstr "Sản phẩm không có mức phân loại vận chuyển"
+
+msgid "Remaining: %1$d safe order address rows, %2$d safe customer address rows, %3$d shipment orders. Manual review still needed for %4$d order address rows and %5$d customer address rows."
+msgstr "Còn lại: %1$d dòng địa chỉ đơn hàng an toàn, %2$d dòng địa chỉ khách hàng an toàn, %3$d đơn hàng có vận đơn. Vẫn cần xem xét thủ công %4$d dòng địa chỉ đơn hàng và %5$d dòng địa chỉ khách hàng."
+
+msgid "Remove rule"
+msgstr "Xóa quy tắc"
+
+msgid "Rule name"
+msgstr "Tên quy tắc"
+
+msgid "Edit rule"
+msgstr "Chỉnh sửa quy tắc"
+
+msgid "Rules are checked from top to bottom; the first match is used. Cart totals are after discounts and exclude tax. Fees use %1$s and weights use %2$s."
+msgstr "Các quy tắc được kiểm tra từ trên xuống dưới; quy tắc khớp đầu tiên sẽ được dùng. Tổng giỏ hàng được tính sau giảm giá và không gồm thuế. Phí dùng %1$s và khối lượng dùng %2$s."
+
+msgid "Save tracking code"
+msgstr "Lưu mã vận đơn"
+
+msgid "Scan order addresses, customer profile addresses, and shipment data created by Le Van Toan plugins without changing data. Use this before running the sync."
+msgstr "Quét địa chỉ đơn hàng, địa chỉ hồ sơ khách hàng và dữ liệu vận chuyển do các plugin của Lê Văn Toàn tạo mà không thay đổi dữ liệu. Hãy dùng công cụ này trước khi chạy đồng bộ."
+
+msgid "Shipment orders: %1$d total; %2$d still need normalized VCK shipment data."
+msgstr "Đơn hàng có vận đơn: tổng cộng %1$d; còn %2$d đơn hàng cần chuẩn hóa dữ liệu vận chuyển VCK."
+
+msgid "Shipping class"
+msgstr "Mức phân loại vận chuyển"
+
+msgid "Shipping information"
+msgstr "Thông tin vận chuyển"
+
+msgid "Shipping rule %d"
+msgstr "Quy tắc vận chuyển %d"
+
+msgid "Shipping rules"
+msgstr "Quy tắc vận chuyển"
+
+msgid "Shown to customers during checkout."
+msgstr "Hiển thị cho khách hàng trong quá trình thanh toán."
+
+msgid "Sync all safe order addresses, customer profile addresses, and shipment data created by Le Van Toan plugins into Vietnam Store Toolkit for WooCommerce data. The browser will process the sync in chunks of up to %d address rows per data type. Address values are backed up before changes are saved."
+msgstr "Đồng bộ toàn bộ địa chỉ đơn hàng, địa chỉ hồ sơ khách hàng và dữ liệu vận chuyển an toàn do các plugin của Lê Văn Toàn tạo vào dữ liệu của Vietnam Store Toolkit for WooCommerce. Trình duyệt sẽ xử lý theo từng đợt, tối đa %d dòng địa chỉ cho mỗi loại dữ liệu. Các giá trị địa chỉ được sao lưu trước khi lưu thay đổi."
+
+msgid "Tax status"
+msgstr "Trạng thái thuế"
+
+msgctxt "Tax status"
+msgid "None"
+msgstr "Không"
+
+msgid "Taxable"
+msgstr "Chịu thuế"
+
+msgid "The saved shipment provider is not available."
+msgstr "Nhà vận chuyển đã lưu hiện không khả dụng."
+
+msgid "Tracking code is required."
+msgstr "Mã vận đơn là bắt buộc."
+
+msgid "Update tracking code"
+msgstr "Cập nhật mã vận đơn"
+
+msgid "Use method default"
+msgstr "Dùng mặc định của phương thức"
+
+msgid "Used by the default fee and by rules set to use the method default."
+msgstr "Dùng cho phí mặc định và các quy tắc được đặt theo mặc định của phương thức."
+
+msgid "Used when no rule matches. Leave blank to hide this method when no rule matches. Amount in %s."
+msgstr "Dùng khi không có quy tắc nào khớp. Để trống để ẩn phương thức này khi không có quy tắc nào khớp. Số tiền tính bằng %s."
+
+msgid "User #%1$d %2$s: %3$s / %4$s / %5$s"
+msgstr "Người dùng #%1$d %2$s: %3$s / %4$s / %5$s"
+
+msgid "User #%d could not be loaded."
+msgstr "Không thể tải người dùng #%d."
+
+msgid "Vietnam Store Toolkit for WooCommerce"
+msgstr "Vietnam Store Toolkit for WooCommerce"
+
+msgid "Vietnam shipping rules"
+msgstr "Quy tắc phí vận chuyển"
+
+msgid "WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice requests, VietQR bank transfer, shipping, and phone normalization."
+msgstr "Bộ công cụ WooCommerce dành cho cửa hàng tại Việt Nam, gồm trường địa chỉ, trải nghiệm thanh toán, yêu cầu hóa đơn VAT, chuyển khoản VietQR, vận chuyển và chuẩn hóa số điện thoại."
+
+msgid "YoOhw Studio"
+msgstr "YoOhw Studio"
+
+msgid "You do not have permission to manage WooCommerce settings."
+msgstr "Bạn không có quyền quản lý cài đặt WooCommerce."
+
+msgid "customer address rows"
+msgstr "dòng địa chỉ khách hàng"
+
+msgid "https://yoohw.com"
+msgstr "https://yoohw.com"
+
+msgid "order address rows"
+msgstr "dòng địa chỉ đơn hàng"
+
+msgid "vietnam-shipping-rules.csv"
+msgstr "quy-tac-van-chuyen-viet-nam.csv"
+
+msgid "Conditions"
+msgstr "Điều kiện"
+
+msgid "Shipping outcome"
+msgstr "Kết quả vận chuyển"
+
+msgid "Tracking email resent from the orders list."
+msgstr "Đã gửi lại email theo dõi từ danh sách đơn hàng."
+
+msgid "Select a carrier"
+msgstr "Chọn đơn vị vận chuyển"
+
+msgid "All wards / communes"
+msgstr "Tất cả Phường / Xã"
+
+msgid "Select a carrier before applying the bulk action."
+msgstr "Hãy chọn đơn vị vận chuyển trước khi áp dụng thao tác hàng loạt."
+
+msgid "%1$s: %2$d orders updated, %3$d skipped."
+msgstr "%1$s: đã cập nhật %2$d đơn hàng, bỏ qua %3$d đơn hàng."
+
+msgid "VAT invoice"
+msgstr "Hóa đơn GTGT"
+
+msgid "Tracking email"
+msgstr "Email theo dõi"
+
+msgid "Information"
+msgstr "Thông tin"
+
+msgid "Normalized phone"
+msgstr "Số điện thoại chuẩn hóa"
+
+msgid "City / Ward"
+msgstr "Tỉnh/Thành / Phường/Xã"
+
+msgid "No request"
+msgstr "Không yêu cầu"
+
+msgid "Missing"
+msgstr "Chưa có"
+
+msgid "Sent"
+msgstr "Đã gửi"
+
+msgid "Failed"
+msgstr "Thất bại"
+
+msgid "Not sent"
+msgstr "Chưa gửi"
+
+msgid "All carriers"
+msgstr "Tất cả đơn vị vận chuyển"
+
+msgid "No carrier"
+msgstr "Chưa có đơn vị vận chuyển"
+
+msgid "All cities / provinces"
+msgstr "Tất cả Tỉnh / Thành phố"
+
+msgid "Vietnam order filters"
+msgstr "Bộ lọc đơn hàng"
+
+msgid "All invoice requests"
+msgstr "Tất cả yêu cầu hóa đơn"
+
+msgid "Carrier"
+msgstr "Đơn vị vận chuyển"
+
+msgid "All tracking statuses"
+msgstr "Tất cả trạng thái mã vận đơn"
+
+msgid "Has tracking code"
+msgstr "Có mã vận đơn"
+
+msgid "Missing tracking code"
+msgstr "Chưa có mã vận đơn"
+
+msgid "All email statuses"
+msgstr "Tất cả trạng thái email"
+
+msgid "Handover status"
+msgstr "Trạng thái bàn giao"
+
+msgid "All handover statuses"
+msgstr "Tất cả trạng thái bàn giao"
+
+msgid "Not marked"
+msgstr "Chưa đánh dấu"
+
+msgid "All phone statuses"
+msgstr "Tất cả trạng thái số điện thoại"
+
+msgid "Normalized"
+msgstr "Đã chuẩn hóa"
+
+msgid "Not normalized"
+msgstr "Chưa chuẩn hóa"
+
+msgid "Filter orders"
+msgstr "Lọc đơn hàng"
+
+msgid "Clear filters"
+msgstr "Xóa bộ lọc"
+
+msgid "Resend tracking email"
+msgstr "Gửi lại email theo dõi"
+
+msgid "Update carrier"
+msgstr "Cập nhật đơn vị vận chuyển"
+
+msgid "Export shipping CSV"
+msgstr "Xuất CSV giao hàng"
+
+msgid "Export VAT invoice CSV"
+msgstr "Xuất CSV hóa đơn GTGT"
+
+msgid "Mark as prepared"
+msgstr "Đánh dấu đã chuẩn bị"
+
+msgid "Mark as awaiting handover"
+msgstr "Đánh dấu chờ bàn giao"
+
+msgid "Mark as handed over"
+msgstr "Đánh dấu đã bàn giao"
+
+msgid "Prepared"
+msgstr "Đã chuẩn bị"
+
+msgid "Awaiting handover"
+msgstr "Chờ bàn giao"
+
+msgid "Handed over"
+msgstr "Đã bàn giao"
+
+msgid "Carrier updated in bulk to %s."
+msgstr "Đã cập nhật hàng loạt đơn vị vận chuyển thành %s."
+
+msgid "Handover status updated in bulk to %s."
+msgstr "Đã cập nhật hàng loạt trạng thái bàn giao thành %s."
+
+msgid "Order number"
+msgstr "Mã đơn hàng"
+
+msgid "Order date"
+msgstr "Ngày đặt hàng"
+
+msgid "Customer"
+msgstr "Khách hàng"
+
+msgid "Shipping address"
+msgstr "Địa chỉ giao hàng"
+
+msgid "Shipping status"
+msgstr "Trạng thái vận chuyển"
+
+msgid "Order total"
+msgstr "Tổng đơn hàng"
+
+msgid "Billing phone"
+msgstr "Số điện thoại thanh toán"
+
+msgid "Order status"
+msgstr "Trạng thái đơn hàng"
+
+msgid "Could not create the CSV export."
+msgstr "Không thể tạo tệp CSV xuất dữ liệu."
+
+msgid "Information verified"
+msgstr "Đã kiểm tra thông tin"
+
+msgid "Ready to issue"
+msgstr "Sẵn sàng xuất"
+
+msgid "Issued"
+msgstr "Đã phát hành"
+
+msgid "Sent to customer"
+msgstr "Đã gửi khách hàng"
+
+msgid "Adjusted"
+msgstr "Đã điều chỉnh"
+
+msgid "Replaced"
+msgstr "Đã thay thế"
+
+msgid "This order does not contain a VAT invoice request."
+msgstr "Đơn hàng này không có yêu cầu xuất hóa đơn GTGT."
+
+msgid "Created from the customer VAT invoice request."
+msgstr "Được tạo từ yêu cầu xuất hóa đơn GTGT của khách hàng."
+
+msgid "Electronic invoice workflow"
+msgstr "Quy trình hóa đơn điện tử"
+
+msgid "Saving..."
+msgstr "Đang lưu..."
+
+msgid "Current status"
+msgstr "Trạng thái hiện tại"
+
+msgid "This workflow records invoice progress and files only. It does not issue invoices or call a provider API."
+msgstr "Quy trình này chỉ ghi nhận tiến độ và tệp hóa đơn. Plugin không phát hành hóa đơn hoặc gọi API của nhà cung cấp."
+
+msgid "Workflow status"
+msgstr "Trạng thái quy trình"
+
+msgid "Invoice provider"
+msgstr "Nhà cung cấp hóa đơn"
+
+msgid "For example: MISA, VNPT, Viettel, or another provider"
+msgstr "Ví dụ: MISA, VNPT, Viettel hoặc nhà cung cấp khác"
+
+msgid "Invoice number"
+msgstr "Số hóa đơn"
+
+msgid "Invoice symbol"
+msgstr "Ký hiệu hóa đơn"
+
+msgid "Issue date"
+msgstr "Ngày phát hành"
+
+msgid "Lookup URL"
+msgstr "URL tra cứu"
+
+msgid "PDF invoice"
+msgstr "Tệp hóa đơn PDF"
+
+msgid "XML invoice data"
+msgstr "Dữ liệu hóa đơn XML"
+
+msgid "Internal update note"
+msgstr "Ghi chú cập nhật nội bộ"
+
+msgid "Optional context for the change history"
+msgstr "Ngữ cảnh không bắt buộc cho nhật ký thay đổi"
+
+msgid "Save invoice workflow"
+msgstr "Lưu quy trình hóa đơn"
+
+msgid "You do not have permission to edit this order."
+msgstr "Bạn không có quyền chỉnh sửa đơn hàng này."
+
+msgid "Electronic invoice workflow saved."
+msgstr "Đã lưu quy trình hóa đơn điện tử."
+
+msgid "Unlink current file"
+msgstr "Gỡ liên kết tệp hiện tại"
+
+msgid "No file attached"
+msgstr "Chưa đính kèm tệp"
+
+msgid "Replace file"
+msgstr "Thay tệp"
+
+msgid "Choose file"
+msgstr "Chọn tệp"
+
+msgid "Change history"
+msgstr "Nhật ký thay đổi"
+
+msgid "No workflow changes have been recorded yet."
+msgstr "Chưa có thay đổi nào trong quy trình được ghi lại."
+
+msgid "System"
+msgstr "Hệ thống"
+
+msgid "Only PDF and XML invoice files are accepted in their matching fields."
+msgstr "Chỉ chấp nhận tệp hóa đơn PDF và XML trong đúng trường tương ứng."
+
+msgid "Select a valid electronic invoice workflow status."
+msgstr "Hãy chọn trạng thái quy trình hóa đơn điện tử hợp lệ."
+
+msgid "Enter a valid HTTP or HTTPS invoice lookup URL."
+msgstr "Hãy nhập URL tra cứu hóa đơn HTTP hoặc HTTPS hợp lệ."
+
+msgid "The selected invoice attachment could not be found."
+msgstr "Không tìm thấy tệp hóa đơn đã chọn."
+
+msgid "Enter a valid invoice issue date."
+msgstr "Hãy nhập ngày phát hành hóa đơn hợp lệ."
+
+msgid "Electronic invoice workflow status changed from %1$s to %2$s."
+msgstr "Trạng thái quy trình hóa đơn điện tử đã đổi từ %1$s thành %2$s."
+
+msgid "Electronic invoice workflow details updated."
+msgstr "Đã cập nhật thông tin quy trình hóa đơn điện tử."
+
+msgid "%1$s: %2$s → %3$s"
+msgstr "%1$s: %2$s → %3$s"
+
+msgid "All electronic invoice statuses"
+msgstr "Tất cả trạng thái hóa đơn điện tử"
+
+msgid "Electronic invoice status"
+msgstr "Trạng thái hóa đơn điện tử"
+
+msgid "The XML invoice file is not well-formed."
+msgstr "Tệp hóa đơn XML không đúng định dạng."
+
+msgid "Vietnam shipment tracking"
+msgstr "Theo dõi vận chuyển"
+
+msgid "Create tracking links and a customer-facing tracking timeline without connecting to a carrier API."
+msgstr "Tạo liên kết theo dõi và hành trình vận chuyển hiển thị cho khách hàng mà không cần kết nối API hãng vận chuyển."
+
+msgid "Public order lookup"
+msgstr "Tra cứu đơn hàng công khai"
+
+msgid "Allow the order tracking block and shortcode to look up an order using its order number and the billing email or phone number."
+msgstr "Cho phép block và shortcode tra cứu đơn hàng bằng mã đơn cùng email hoặc số điện thoại thanh toán."
+
+msgid "Tracking URL overrides"
+msgstr "Ghi đè URL theo dõi"
+
+msgid "Optional. Enter one carrier per line using carrier_id|URL. Use {tracking_code} where the tracking code should appear."
+msgstr "Không bắt buộc. Nhập mỗi hãng trên một dòng theo định dạng carrier_id|URL. Dùng {tracking_code} tại vị trí mã vận đơn."
+
+msgid "Custom carriers"
+msgstr "Hãng vận chuyển tùy chỉnh"
+
+msgid "Enter one carrier per line using carrier_id|Carrier name|Tracking URL template. The URL must be HTTP or HTTPS and include {tracking_code}."
+msgstr "Nhập mỗi hãng trên một dòng theo định dạng carrier_id|Tên hãng|Mẫu URL theo dõi. URL phải dùng HTTP hoặc HTTPS và chứa {tracking_code}."
+
+msgid "Shipment prepared"
+msgstr "Đã chuẩn bị hàng"
+
+msgid "Picked up by carrier"
+msgstr "Đơn vị vận chuyển đã lấy hàng"
+
+msgid "In transit"
+msgstr "Đang vận chuyển"
+
+msgid "Out for delivery"
+msgstr "Đang giao hàng"
+
+msgid "Delivered"
+msgstr "Đã giao hàng"
+
+msgid "Delivery failed"
+msgstr "Giao hàng thất bại"
+
+msgid "Returned to sender"
+msgstr "Đã hoàn về người gửi"
+
+msgid "Select a valid shipment status."
+msgstr "Hãy chọn trạng thái vận chuyển hợp lệ."
+
+msgid "Enter a valid shipment event date."
+msgstr "Hãy nhập ngày sự kiện vận chuyển hợp lệ."
+
+msgid "Manual tracking timeline"
+msgstr "Hành trình vận chuyển thủ công"
+
+msgid "Delete timeline event"
+msgstr "Xóa sự kiện hành trình"
+
+msgid "Delete"
+msgstr "Xóa"
+
+msgid "No manual tracking events have been added."
+msgstr "Chưa có sự kiện vận chuyển thủ công nào."
+
+msgid "Shipment status"
+msgstr "Trạng thái vận chuyển"
+
+msgid "Event date and time"
+msgstr "Ngày và giờ sự kiện"
+
+msgid "Location"
+msgstr "Địa điểm"
+
+msgid "Customer-facing note"
+msgstr "Ghi chú hiển thị cho khách hàng"
+
+msgid "Add timeline event"
+msgstr "Thêm sự kiện vận chuyển"
+
+msgid "The timeline event could not be deleted."
+msgstr "Không thể xóa sự kiện hành trình."
+
+msgid "Tracking timeline event added."
+msgstr "Đã thêm sự kiện hành trình vận chuyển."
+
+msgid "Tracking timeline event deleted."
+msgstr "Đã xóa sự kiện hành trình vận chuyển."
+
+msgid "Delete this tracking timeline event?"
+msgstr "Xóa sự kiện hành trình vận chuyển này?"
+
+msgid "Shipment journey"
+msgstr "Hành trình vận chuyển"
+
+msgid "Public order lookup is currently disabled."
+msgstr "Chức năng tra cứu đơn hàng công khai hiện đang tắt."
+
+msgid "The order could not be verified. Please try again."
+msgstr "Không thể xác minh đơn hàng. Vui lòng thử lại."
+
+msgid "No matching order was found. Check the order number and email or phone number."
+msgstr "Không tìm thấy đơn hàng phù hợp. Hãy kiểm tra mã đơn và email hoặc số điện thoại."
+
+msgid "Track your order"
+msgstr "Tra cứu đơn hàng"
+
+msgid "Enter the order number and the billing email or phone number used for the order."
+msgstr "Nhập mã đơn cùng email hoặc số điện thoại thanh toán đã dùng cho đơn hàng."
+
+msgid "Email or phone number"
+msgstr "Email hoặc số điện thoại"
+
+msgid "Website"
+msgstr "Trang web"
+
+msgid "Look up order"
+msgstr "Tra cứu đơn hàng"
+
+msgid "Order tracking information"
+msgstr "Thông tin theo dõi đơn hàng"
+
+msgid "Track on carrier website"
+msgstr "Tra cứu trên website đơn vị vận chuyển"
+
+msgid "Leave blank to create the link from the carrier tracking URL template."
+msgstr "Để trống để tự tạo liên kết từ mẫu URL theo dõi của hãng vận chuyển."
+
+msgid "Tracking settings"
+msgstr "Cài đặt theo dõi"
+
+#: blocks/order-tracking/index.js:12
+msgid "Vietnam order tracking"
+msgstr "Tra cứu đơn hàng"
+
+#: blocks/order-tracking/index.js:13
+msgid "Customers enter an order number and their billing email or phone number to view shipment tracking."
+msgstr "Khách hàng nhập mã đơn cùng email hoặc số điện thoại thanh toán để xem thông tin vận chuyển."

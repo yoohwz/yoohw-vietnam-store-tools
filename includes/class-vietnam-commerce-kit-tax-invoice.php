@@ -26,18 +26,202 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 	const META_COMPANY_ADDRESS = '_yoohw_vietnam_store_tools_tax_invoice_company_address';
 	const META_EMAIL           = '_yoohw_vietnam_store_tools_tax_invoice_email';
 
+	const BLOCK_FIELD_REQUESTED       = 'yoohw-vietnam-store-tools/tax-invoice-requested';
+	const BLOCK_FIELD_COMPANY_NAME    = 'yoohw-vietnam-store-tools/tax-invoice-company-name';
+	const BLOCK_FIELD_TAX_CODE        = 'yoohw-vietnam-store-tools/tax-invoice-tax-code';
+	const BLOCK_FIELD_COMPANY_ADDRESS = 'yoohw-vietnam-store-tools/tax-invoice-company-address';
+	const BLOCK_FIELD_EMAIL           = 'yoohw-vietnam-store-tools/tax-invoice-email';
+
 	private $rendered_checkout_fields = false;
 
 	public function __construct() {
 		add_action( 'init', [ $this, 'maybe_migrate_tax_invoice_option' ] );
-		add_filter( 'woocommerce_tax_settings', [ $this, 'add_tax_settings' ] );
+		add_action( 'woocommerce_init', [ $this, 'register_block_checkout_fields' ] );
+		add_filter( 'woocommerce_tax_settings', [ $this, 'add_invoice_setting' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'woocommerce_after_checkout_registration_form', [ $this, 'render_checkout_fields' ], 20 );
 		add_action( 'woocommerce_after_checkout_billing_form', [ $this, 'render_checkout_fields_fallback' ], 50 );
 		add_action( 'woocommerce_after_checkout_validation', [ $this, 'validate_checkout_fields' ], 20, 2 );
 		add_action( 'woocommerce_checkout_create_order', [ $this, 'save_order_fields' ], 20, 2 );
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', [ $this, 'save_block_order_fields' ], 30, 2 );
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
 		add_action( 'woocommerce_email_order_meta', [ $this, 'render_new_order_email_invoice_fields' ], 20, 4 );
+	}
+
+	/**
+	 * Whether VAT invoice requests are enabled and WooCommerce taxes are active.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled() {
+		$taxes_enabled = function_exists( 'wc_tax_enabled' )
+			? wc_tax_enabled()
+			: 'yes' === get_option( 'woocommerce_calc_taxes', 'no' );
+
+		return $taxes_enabled && 'yes' === get_option( self::OPTION_ID, 'no' );
+	}
+
+	public function register_block_checkout_fields() {
+		if ( ! $this->should_enable_checkout_fields() || ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+			return;
+		}
+
+		$requested_condition = $this->get_block_requested_condition();
+		$hidden_condition    = [ 'not' => $requested_condition ];
+
+		woocommerce_register_additional_checkout_field(
+			[
+				'id'                         => self::BLOCK_FIELD_REQUESTED,
+				'label'                      => __( 'Request a VAT invoice', 'yoohw-vietnam-store-tools' ),
+				'optionalLabel'              => __( 'Request a VAT invoice', 'yoohw-vietnam-store-tools' ),
+				'location'                   => 'order',
+				'type'                       => 'checkbox',
+				'show_in_order_confirmation' => false,
+			]
+		);
+
+		woocommerce_register_additional_checkout_field(
+			[
+				'id'                         => self::BLOCK_FIELD_COMPANY_NAME,
+				'label'                      => __( 'Company legal name', 'yoohw-vietnam-store-tools' ),
+				'optionalLabel'              => __( 'Company legal name', 'yoohw-vietnam-store-tools' ),
+				'location'                   => 'order',
+				'type'                       => 'text',
+				'required'                   => $requested_condition,
+				'hidden'                     => $hidden_condition,
+				'attributes'                 => [
+					'autocomplete' => 'organization',
+					'maxLength'    => 200,
+				],
+				'sanitize_callback'          => [ $this, 'sanitize_block_text_field' ],
+				'show_in_order_confirmation' => true,
+			]
+		);
+
+		woocommerce_register_additional_checkout_field(
+			[
+				'id'                         => self::BLOCK_FIELD_TAX_CODE,
+				'label'                      => __( 'Tax code', 'yoohw-vietnam-store-tools' ),
+				'optionalLabel'              => __( 'Tax code', 'yoohw-vietnam-store-tools' ),
+				'location'                   => 'order',
+				'type'                       => 'text',
+				'required'                   => $requested_condition,
+				'hidden'                     => $hidden_condition,
+				'attributes'                 => [
+					'pattern'   => '[0-9]{10}(-[0-9]{3})?',
+					'maxLength' => 14,
+					'title'     => __( 'Enter 10 digits, optionally followed by a hyphen and 3 digits.', 'yoohw-vietnam-store-tools' ),
+				],
+				'sanitize_callback'          => [ $this, 'sanitize_block_tax_code' ],
+				'validate_callback'          => [ $this, 'validate_block_tax_code' ],
+				'show_in_order_confirmation' => true,
+			]
+		);
+
+		woocommerce_register_additional_checkout_field(
+			[
+				'id'                         => self::BLOCK_FIELD_EMAIL,
+				'label'                      => __( 'Invoice recipient email', 'yoohw-vietnam-store-tools' ),
+				'optionalLabel'              => __( 'Invoice recipient email', 'yoohw-vietnam-store-tools' ),
+				'location'                   => 'order',
+				'type'                       => 'text',
+				'required'                   => $requested_condition,
+				'hidden'                     => $hidden_condition,
+				'attributes'                 => [
+					'autocomplete'   => 'email',
+					'autocapitalize' => 'none',
+					'maxLength'      => 254,
+				],
+				'sanitize_callback'          => [ $this, 'sanitize_block_email' ],
+				'validate_callback'          => [ $this, 'validate_block_email' ],
+				'show_in_order_confirmation' => true,
+			]
+		);
+
+		woocommerce_register_additional_checkout_field(
+			[
+				'id'                         => self::BLOCK_FIELD_COMPANY_ADDRESS,
+				'label'                      => __( 'Company address', 'yoohw-vietnam-store-tools' ),
+				'optionalLabel'              => __( 'Company address', 'yoohw-vietnam-store-tools' ),
+				'location'                   => 'order',
+				'type'                       => 'text',
+				'required'                   => $requested_condition,
+				'hidden'                     => $hidden_condition,
+				'attributes'                 => [
+					'autocomplete' => 'street-address',
+					'maxLength'    => 500,
+				],
+				'sanitize_callback'          => [ $this, 'sanitize_block_text_field' ],
+				'show_in_order_confirmation' => true,
+			]
+		);
+	}
+
+	public function sanitize_block_text_field( $value, $field = [] ) {
+		unset( $field );
+
+		return trim( sanitize_text_field( wc_clean( $value ) ) );
+	}
+
+	public function sanitize_block_tax_code( $value, $field = [] ) {
+		unset( $field );
+
+		return preg_replace( '/\s+/', '', $this->sanitize_block_text_field( $value ) );
+	}
+
+	public function sanitize_block_email( $value, $field = [] ) {
+		unset( $field );
+
+		return sanitize_email( wc_clean( $value ) );
+	}
+
+	public function validate_block_tax_code( $value, $field = [] ) {
+		if ( ! empty( $field['required'] ) && '' === (string) $value ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_tax_code_required', __( 'Please enter the tax code for the tax invoice.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		if ( '' !== (string) $value && ! $this->is_valid_vietnam_tax_code( $value ) ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_invalid_tax_code', __( 'Please enter a valid Vietnamese tax code.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		return true;
+	}
+
+	public function validate_block_email( $value, $field = [] ) {
+		if ( ! empty( $field['required'] ) && '' === (string) $value ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_invoice_email_required', __( 'Please enter the invoice recipient email.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		if ( '' !== (string) $value && ! is_email( $value ) ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_invalid_invoice_email', __( 'Please enter a valid invoice recipient email.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		return true;
+	}
+
+	public function save_block_order_fields( $order, $request = null ) {
+		unset( $request );
+
+		if ( ! $order instanceof WC_Order || ! $this->should_enable_checkout_fields() ) {
+			return;
+		}
+
+		$requested = true === $this->get_block_order_field_value( $order, self::BLOCK_FIELD_REQUESTED );
+
+		if ( ! $requested ) {
+			$order->update_meta_data( self::META_REQUESTED, 'no' );
+			$this->delete_order_invoice_meta( $order, self::META_COMPANY_NAME );
+			$this->delete_order_invoice_meta( $order, self::META_TAX_CODE );
+			$this->delete_order_invoice_meta( $order, self::META_COMPANY_ADDRESS );
+			$this->delete_order_invoice_meta( $order, self::META_EMAIL );
+			return;
+		}
+
+		$order->update_meta_data( self::META_REQUESTED, 'yes' );
+		$order->update_meta_data( self::META_COMPANY_NAME, $this->sanitize_block_text_field( $this->get_block_order_field_value( $order, self::BLOCK_FIELD_COMPANY_NAME ) ) );
+		$order->update_meta_data( self::META_TAX_CODE, $this->sanitize_block_tax_code( $this->get_block_order_field_value( $order, self::BLOCK_FIELD_TAX_CODE ) ) );
+		$order->update_meta_data( self::META_COMPANY_ADDRESS, $this->sanitize_block_text_field( $this->get_block_order_field_value( $order, self::BLOCK_FIELD_COMPANY_ADDRESS ) ) );
+		$order->update_meta_data( self::META_EMAIL, $this->sanitize_block_email( $this->get_block_order_field_value( $order, self::BLOCK_FIELD_EMAIL ) ) );
 	}
 
 	public function maybe_migrate_tax_invoice_option() {
@@ -52,7 +236,13 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 		}
 	}
 
-	public function add_tax_settings( $settings ) {
+	public function add_invoice_setting( $settings ) {
+		$settings = is_array( $settings ) ? $settings : [];
+
+		if ( ! function_exists( 'wc_tax_enabled' ) || ! wc_tax_enabled() ) {
+			return $settings;
+		}
+
 		if ( $this->settings_contain_option( $settings ) ) {
 			return $settings;
 		}
@@ -80,6 +270,10 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 
 	public function enqueue_scripts() {
 		if ( ! $this->should_enable_checkout_fields() || ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+			return;
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Blocks_Integration' ) && Yoohw_Vietnam_Store_Tools_Blocks_Integration::is_current_block_page() ) {
 			return;
 		}
 
@@ -111,12 +305,12 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 		$this->rendered_checkout_fields = true;
 		$checkout                       = $this->get_checkout( $checkout );
 		$requested                      = $this->is_invoice_requested();
-			$hidden_attribute               = $requested ? '' : 'hidden';
+		$hidden_attribute               = $requested ? '' : 'hidden';
 
 		echo '<div class="vck-tax-invoice-request">';
 		$this->render_request_checkbox( $requested );
 
-			echo '<div class="vck-tax-invoice-fields' . ( $requested ? ' is-visible' : '' ) . '" data-vck-tax-invoice-fields' . ( '' !== $hidden_attribute ? ' ' . esc_attr( $hidden_attribute ) : '' ) . '>';
+		echo '<div class="vck-tax-invoice-fields' . ( $requested ? ' is-visible' : '' ) . '" data-vck-tax-invoice-fields' . ( '' !== $hidden_attribute ? ' ' . esc_attr( $hidden_attribute ) : '' ) . '>';
 		echo '<h3>' . esc_html__( 'Tax invoice information', 'yoohw-vietnam-store-tools' ) . '</h3>';
 
 		foreach ( $this->get_checkout_invoice_fields() as $key => $field ) {
@@ -343,7 +537,56 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 	}
 
 	private function should_enable_checkout_fields() {
-		return function_exists( 'wc_tax_enabled' ) && wc_tax_enabled() && 'yes' === get_option( self::OPTION_ID, 'no' );
+		return self::is_enabled();
+	}
+
+	private function get_block_requested_condition() {
+		return [
+			'type'       => 'object',
+			'properties' => [
+				'checkout' => [
+					'type'       => 'object',
+					'properties' => [
+						'additional_fields' => [
+							'type'       => 'object',
+							'properties' => [
+								self::BLOCK_FIELD_REQUESTED => [
+									'const' => true,
+								],
+							],
+							'required'   => [ self::BLOCK_FIELD_REQUESTED ],
+						],
+					],
+					'required'   => [ 'additional_fields' ],
+				],
+			],
+			'required'   => [ 'checkout' ],
+		];
+	}
+
+	private function get_block_order_field_value( $order, $field_id ) {
+		$package_class         = '\\Automattic\\WooCommerce\\Blocks\\Package';
+		$checkout_fields_class = '\\Automattic\\WooCommerce\\Blocks\\Domain\\Services\\CheckoutFields';
+
+		if ( class_exists( $package_class ) && class_exists( $checkout_fields_class ) ) {
+			try {
+				$checkout_fields = $package_class::container()->get( $checkout_fields_class );
+
+				if ( is_object( $checkout_fields ) && is_callable( [ $checkout_fields, 'get_field_from_object' ] ) ) {
+					return $checkout_fields->get_field_from_object( $field_id, $order, 'other' );
+				}
+			} catch ( Throwable $exception ) {
+				unset( $exception );
+			}
+		}
+
+		$value = $order->get_meta( '_wc_other/' . $field_id, true );
+
+		if ( self::BLOCK_FIELD_REQUESTED === $field_id ) {
+			return in_array( $value, [ true, 1, '1', 'yes' ], true );
+		}
+
+		return $value;
 	}
 
 	private function settings_contain_option( $settings ) {
@@ -458,7 +701,7 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 	}
 
 	private function order_has_tax_invoice_request( $order ) {
-		return $order instanceof WC_Order && 'yes' === $this->get_order_invoice_meta( $order, self::META_REQUESTED );
+		return self::is_enabled() && $order instanceof WC_Order && 'yes' === $this->get_order_invoice_meta( $order, self::META_REQUESTED );
 	}
 
 	private function is_new_order_email( $email ) {

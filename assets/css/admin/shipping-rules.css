@@ -1,0 +1,427 @@
+.vck-shipping-rules-editor {
+	--vck-rule-accent: #2271b1;
+	--vck-rule-accent-ring: rgba(34, 113, 177, 0.18);
+	--vck-rule-accent-soft: rgba(34, 113, 177, 0.1);
+	--vck-rule-border: #dcdcde;
+	--vck-rule-muted: #646970;
+	max-width: none;
+}
+
+.vck-shipping-rules-editor *,
+.vck-shipping-rules-editor *::before,
+.vck-shipping-rules-editor *::after {
+	box-sizing: border-box;
+}
+
+.vck-shipping-rules-editor__toolbar {
+	align-items: center;
+	background: #f6f7f7;
+	border: 1px solid var(--vck-rule-border);
+	border-radius: 6px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 16px;
+	padding: 10px;
+}
+
+.vck-shipping-rules-editor .button {
+	align-items: center;
+	display: inline-flex;
+	gap: 5px;
+	height: auto;
+	justify-content: center;
+	line-height: 1.4;
+	min-height: 34px;
+	padding: 6px 11px;
+}
+
+.vck-shipping-rules-editor .button .dashicons {
+	font-size: 17px;
+	height: 17px;
+	line-height: 17px;
+	width: 17px;
+}
+
+.vck-shipping-rules-editor__status {
+	background: #edfaef;
+	border-left: 4px solid #00a32a;
+	color: #1d2327;
+	margin: 0 0 14px;
+	padding: 9px 12px;
+}
+
+.vck-shipping-rules-editor__status:empty {
+	display: none;
+}
+
+.vck-shipping-rules-editor__status.is-error {
+	background: #fcf0f1;
+	border-left-color: #d63638;
+}
+
+.vck-shipping-rules-editor__empty {
+	background: #f6f7f7;
+	border: 1px dashed #a7aaad;
+	border-radius: 6px;
+	color: var(--vck-rule-muted);
+	margin: 0;
+	padding: 28px 18px;
+	text-align: center;
+}
+
+.vck-shipping-rules-editor__rule {
+	background: #fff;
+	border: 1px solid var(--vck-rule-border);
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	margin-bottom: 10px;
+	overflow: hidden;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vck-shipping-rules-editor__rule:hover,
+.vck-shipping-rules-editor__rule:focus-within {
+	border-color: #8c8f94;
+	box-shadow: 0 0 0 1px var(--vck-rule-accent-ring), 0 2px 5px rgba(0, 0, 0, 0.07);
+}
+
+.vck-shipping-rules-editor__rule-header {
+	align-items: center;
+	background: #fff;
+	display: grid;
+	gap: 10px;
+	grid-template-columns: auto minmax(220px, 1fr) auto;
+	min-height: 62px;
+	padding: 9px 12px;
+}
+
+.vck-shipping-rules-editor__rule.is-open .vck-shipping-rules-editor__rule-header {
+	background: #f6f7f7;
+	border-bottom: 1px solid var(--vck-rule-border);
+	grid-template-columns: auto minmax(160px, 1fr) auto auto;
+}
+
+.vck-shipping-rules-editor__position {
+	align-items: center;
+	background: var(--vck-rule-accent-soft);
+	border-radius: 999px;
+	color: var(--vck-rule-accent);
+	display: inline-flex;
+	font-size: 12px;
+	font-weight: 700;
+	height: 30px;
+	justify-content: center;
+	min-width: 30px;
+	padding: 0 7px;
+}
+
+.vck-shipping-rules-editor__name {
+	background: #fff;
+	font-weight: 600;
+	margin: 0;
+	max-width: none;
+	min-height: 36px;
+	width: 100%;
+}
+
+.vck-shipping-rules-editor__toggle {
+	align-items: center;
+	appearance: none;
+	background: transparent;
+	border: 0;
+	color: #1d2327;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	gap: 8px;
+	justify-content: space-between;
+	min-width: 0;
+	padding: 3px 0;
+	text-align: left;
+	width: 100%;
+}
+
+.vck-shipping-rules-editor__toggle:focus-visible {
+	border-radius: 3px;
+	box-shadow: 0 0 0 2px var(--vck-rule-accent);
+	outline: 0;
+}
+
+.vck-shipping-rules-editor__heading {
+	display: block;
+	min-width: 0;
+}
+
+.vck-shipping-rules-editor__title,
+.vck-shipping-rules-editor__summary {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.vck-shipping-rules-editor__title {
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.vck-shipping-rules-editor__summary {
+	color: var(--vck-rule-muted);
+	font-size: 11px;
+	font-weight: 400;
+	line-height: 1.5;
+	margin-top: 2px;
+}
+
+.vck-shipping-rules-editor__chevron {
+	color: var(--vck-rule-muted);
+	flex: 0 0 auto;
+	font-size: 17px;
+	height: 17px;
+	line-height: 17px;
+	width: 17px;
+}
+
+.vck-shipping-rules-editor__enabled {
+	align-items: center;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 13px;
+	font-weight: 600;
+	gap: 7px;
+	margin: 0;
+	position: relative;
+	white-space: nowrap;
+}
+
+.vck-shipping-rules-editor__enabled input {
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	width: 1px;
+}
+
+.vck-shipping-rules-editor__switch {
+	background: #8c8f94;
+	border-radius: 999px;
+	display: inline-block;
+	height: 20px;
+	position: relative;
+	transition: background-color 0.15s ease;
+	width: 36px;
+}
+
+.vck-shipping-rules-editor__switch::after {
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	content: "";
+	height: 16px;
+	left: 2px;
+	position: absolute;
+	top: 2px;
+	transition: transform 0.15s ease;
+	width: 16px;
+}
+
+.vck-shipping-rules-editor__enabled input:checked + .vck-shipping-rules-editor__switch {
+	background: var(--vck-rule-accent);
+}
+
+.vck-shipping-rules-editor__enabled input:checked + .vck-shipping-rules-editor__switch::after {
+	transform: translateX(16px);
+}
+
+.vck-shipping-rules-editor__enabled input:focus-visible + .vck-shipping-rules-editor__switch {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--vck-rule-accent);
+}
+
+.vck-shipping-rules-editor__actions {
+	display: none;
+	gap: 5px;
+}
+
+.vck-shipping-rules-editor__rule.is-open .vck-shipping-rules-editor__actions {
+	display: flex;
+}
+
+.vck-shipping-rules-editor .vck-shipping-rules-editor__action {
+	min-height: 32px;
+	min-width: 32px;
+	padding: 5px;
+}
+
+.vck-shipping-rules-editor .vck-shipping-rules-editor__action.is-destructive {
+	color: #b32d2e;
+}
+
+.vck-shipping-rules-editor .vck-shipping-rules-editor__action.is-destructive:hover,
+.vck-shipping-rules-editor .vck-shipping-rules-editor__action.is-destructive:focus {
+	border-color: #b32d2e;
+	color: #b32d2e;
+}
+
+.vck-shipping-rules-editor__rule-body {
+	transition: opacity 0.15s ease;
+}
+
+.vck-shipping-rules-editor__rule-body[hidden] {
+	display: none;
+}
+
+.vck-shipping-rules-editor__rule.is-disabled .vck-shipping-rules-editor__rule-body {
+	opacity: 0.68;
+}
+
+.vck-shipping-rules-editor__rule.is-disabled:focus-within .vck-shipping-rules-editor__rule-body,
+.vck-shipping-rules-editor__rule.is-disabled:hover .vck-shipping-rules-editor__rule-body {
+	opacity: 1;
+}
+
+.vck-shipping-rules-editor__group {
+	padding: 14px;
+}
+
+.vck-shipping-rules-editor__field--rule-name {
+	background: #fff;
+	border-bottom: 1px solid #e2e4e7;
+	display: block;
+	padding: 14px;
+}
+
+.vck-shipping-rules-editor__group--outcome {
+	background: #fbfbfc;
+	border-top: 1px solid #e2e4e7;
+}
+
+.vck-shipping-rules-editor__group-title {
+	color: var(--vck-rule-muted);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.07em;
+	line-height: 1.4;
+	margin: 0 0 10px;
+	text-transform: uppercase;
+}
+
+.vck-shipping-rules-editor__grid {
+	display: grid;
+	gap: 13px 14px;
+}
+
+.vck-shipping-rules-editor__grid--conditions {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vck-shipping-rules-editor__grid--outcome {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vck-shipping-rules-editor__field {
+	display: block;
+	margin: 0;
+	min-width: 0;
+}
+
+.vck-shipping-rules-editor__field--half {
+	grid-column: span 1;
+}
+
+.vck-shipping-rules-editor__field--shipping-class,
+.vck-shipping-rules-editor__field--cod {
+	grid-column: 1 / -1;
+}
+
+.vck-shipping-rules-editor__label {
+	display: block;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+	margin-bottom: 5px;
+}
+
+.vck-shipping-rules-editor__field input,
+.vck-shipping-rules-editor__field select {
+	font-size: 14px;
+	line-height: 1.4;
+	margin: 0;
+	max-width: none;
+	min-height: 36px;
+	width: 100%;
+}
+
+.vck-shipping-rules-editor__number {
+	display: block;
+	position: relative;
+}
+
+.vck-shipping-rules-editor__number input {
+	padding-right: 48px;
+}
+
+.vck-shipping-rules-editor__number > span {
+	align-items: center;
+	background: #f6f7f7;
+	border-left: 1px solid #dcdcde;
+	bottom: 1px;
+	color: var(--vck-rule-muted);
+	display: flex;
+	font-size: 12px;
+	justify-content: center;
+	min-width: 38px;
+	pointer-events: none;
+	position: absolute;
+	right: 1px;
+	top: 1px;
+}
+
+@media screen and (max-width: 782px) {
+	.vck-shipping-rules-editor__rule-header,
+	.vck-shipping-rules-editor__rule.is-open .vck-shipping-rules-editor__rule-header {
+		grid-template-columns: auto minmax(0, 1fr) auto;
+	}
+
+	.vck-shipping-rules-editor__enabled {
+		grid-column: 3;
+		grid-row: 1;
+		justify-self: end;
+	}
+
+	.vck-shipping-rules-editor__rule.is-open .vck-shipping-rules-editor__enabled {
+		grid-column: 2;
+		grid-row: 2;
+		justify-self: start;
+	}
+
+	.vck-shipping-rules-editor__actions {
+		grid-column: 3;
+		grid-row: 1;
+	}
+
+	.vck-shipping-rules-editor__grid--conditions,
+	.vck-shipping-rules-editor__grid--outcome {
+		grid-template-columns: 1fr;
+	}
+
+	.vck-shipping-rules-editor__field--half,
+	.vck-shipping-rules-editor__field--shipping-class,
+	.vck-shipping-rules-editor__field--cod {
+		grid-column: span 1;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.vck-shipping-rules-editor__toolbar .button {
+		flex: 1 1 auto;
+	}
+
+	.vck-shipping-rules-editor__group,
+	.vck-shipping-rules-editor__field--rule-name,
+	.vck-shipping-rules-editor__rule-header {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}

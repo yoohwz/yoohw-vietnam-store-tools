@@ -1,0 +1,218 @@
+.vck-einvoice {
+	--vck-accent: var( --wp-admin-theme-color, #2271b1 );
+	--vck-accent-dark: var( --wp-admin-theme-color-darker-10, #135e96 );
+	display: grid;
+	gap: 20px;
+}
+
+.vck-einvoice__header {
+	align-items: center;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-left: 4px solid var( --vck-accent );
+	border-radius: 4px;
+	display: flex;
+	gap: 20px;
+	justify-content: space-between;
+	padding: 14px 16px;
+}
+
+.vck-einvoice__header p {
+	color: #646970;
+	margin: 0;
+	max-width: 620px;
+}
+
+.vck-einvoice__eyebrow {
+	color: #646970;
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+}
+
+.vck-einvoice__status {
+	background: #f0f0f1;
+	border-radius: 999px;
+	display: inline-flex;
+	font-weight: 600;
+	line-height: 24px;
+	padding: 0 10px;
+	white-space: nowrap;
+}
+
+.vck-einvoice__status--info {
+	background: #e6f0fa;
+	background: color-mix( in srgb, var( --vck-accent ) 12%, #fff );
+	color: var( --vck-accent-dark );
+}
+
+.vck-einvoice__status--success {
+	background: #edfaef;
+	color: #116329;
+}
+
+.vck-einvoice__status--warning {
+	background: #fcf0d5;
+	color: #6e4b09;
+}
+
+.vck-einvoice__grid,
+.vck-einvoice__files {
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+}
+
+.vck-einvoice__field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 0;
+}
+
+.vck-einvoice__field > span,
+.vck-einvoice-file__label {
+	font-weight: 600;
+}
+
+.vck-einvoice__field input,
+.vck-einvoice__field select,
+.vck-einvoice__field textarea {
+	box-sizing: border-box;
+	margin: 0;
+	max-width: none;
+	width: 100%;
+}
+
+.vck-einvoice__field--wide {
+	grid-column: 1 / -1;
+}
+
+.vck-einvoice-file {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	display: grid;
+	gap: 9px;
+	padding: 14px;
+}
+
+.vck-einvoice-file__current {
+	align-items: center;
+	display: flex;
+	gap: 6px;
+	min-width: 0;
+}
+
+.vck-einvoice-file__current a {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.vck-einvoice-file__empty,
+.vck-einvoice-file__remove {
+	color: #646970;
+}
+
+.vck-einvoice-file__upload {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.vck-einvoice-file__upload > span {
+	color: var( --vck-accent );
+	font-weight: 600;
+}
+
+.vck-einvoice__actions {
+	border-top: 1px solid #dcdcde;
+	padding-top: 14px;
+}
+
+.vck-einvoice-history {
+	border-top: 1px solid #dcdcde;
+	padding-top: 14px;
+}
+
+.vck-einvoice-history > summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.vck-einvoice-history > summary span {
+	color: #646970;
+	font-weight: 400;
+}
+
+.vck-einvoice-history > ol {
+	display: grid;
+	gap: 0;
+	list-style: none;
+	margin: 14px 0 0;
+	padding: 0;
+}
+
+.vck-einvoice-history > ol > li {
+	border-left: 2px solid #dcdcde;
+	margin-left: 6px;
+	padding: 0 0 18px 18px;
+	position: relative;
+}
+
+.vck-einvoice-history > ol > li::before {
+	background: var( --vck-accent );
+	border: 3px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 0 0 1px var( --vck-accent );
+	content: "";
+	height: 7px;
+	left: -6px;
+	position: absolute;
+	top: 3px;
+	width: 7px;
+}
+
+.vck-einvoice-history__meta {
+	display: flex;
+	gap: 10px;
+	justify-content: space-between;
+}
+
+.vck-einvoice-history__meta time,
+.vck-einvoice-history__empty {
+	color: #646970;
+}
+
+.vck-einvoice-history li ul {
+	list-style: disc;
+	margin: 6px 0 0 18px;
+}
+
+.vck-einvoice-history li p {
+	background: #f6f7f7;
+	border-radius: 4px;
+	margin: 8px 0 0;
+	padding: 8px 10px;
+}
+
+@media screen and ( max-width: 782px ) {
+	.vck-einvoice__header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.vck-einvoice__grid,
+	.vck-einvoice__files {
+		grid-template-columns: 1fr;
+	}
+
+	.vck-einvoice-history__meta {
+		flex-direction: column;
+		gap: 2px;
+	}
+}

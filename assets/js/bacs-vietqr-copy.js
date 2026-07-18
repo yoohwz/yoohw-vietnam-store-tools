@@ -30,7 +30,7 @@
 	function showCopiedState( button ) {
 		var originalLabel = button.getAttribute( 'data-vck-copy-label' ) || button.getAttribute( 'aria-label' ) || '';
 		var originalTitle = button.getAttribute( 'data-vck-copy-title' );
-		var copiedLabel = button.getAttribute( 'data-vck-copied-label' ) || 'Đã sao chép';
+		var copiedLabel = button.getAttribute( 'data-vck-copied-label' ) || originalLabel;
 
 		if ( originalTitle === null ) {
 			originalTitle = button.getAttribute( 'title' ) || '';

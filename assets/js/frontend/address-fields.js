@@ -31,6 +31,18 @@ jQuery( function( $ ) {
 		return $( '#' + type + '_' + field + '_field' );
 	}
 
+	function syncShippingContactRow() {
+		var $nameRow = getFieldRow( 'shipping', 'first_name' );
+		var $phoneRow = getFieldRow( 'shipping', 'phone' );
+
+		if ( ! $nameRow.length || ! $phoneRow.length ) {
+			return;
+		}
+
+		$nameRow.removeClass( 'form-row-first form-row-last form-row-wide' ).addClass( 'form-row-first' );
+		$phoneRow.removeClass( 'form-row-first form-row-last form-row-wide' ).addClass( 'form-row-last' );
+	}
+
 	function shouldHideCountryField() {
 		return !! ( params.hideCountry && params.singleCountry );
 	}
@@ -629,6 +641,8 @@ jQuery( function( $ ) {
 		$.each( addressTypes, function( index, type ) {
 			fillWardOptions( type );
 		} );
+
+		syncShippingContactRow();
 	}
 
 	$( document.body ).on( 'country_to_state_changed updated_checkout updated_wc_div updated_cart_totals wc_address_i18n_ready', syncFields );

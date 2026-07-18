@@ -1,0 +1,27 @@
+.vck-block-native-city-field {
+	display: none !important;
+}
+
+.vck-block-ward-field {
+	box-sizing: border-box;
+	margin-top: 12px;
+}
+
+.vck-block-ward-field .wc-blocks-components-select {
+	margin-top: 0;
+}
+
+.vck-block-ward-field .wc-blocks-components-select__select:disabled {
+	cursor: not-allowed;
+	opacity: 0.65;
+}
+
+.wc-block-components-address-form .vck-block-ward-field {
+	flex: 1 0 calc(50% - 12px);
+}
+
+@container (max-width: 399px) {
+	.wc-block-components-address-form .vck-block-ward-field {
+		flex-basis: 100%;
+	}
+}

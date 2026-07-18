@@ -1,0 +1,145 @@
+.vck-order-lookup {
+	margin: 2rem 0;
+}
+
+.vck-order-lookup__form,
+.vck-order-lookup__result {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-color: color-mix( in srgb, currentColor 16%, transparent );
+	border-radius: 8px;
+	padding: clamp( 1rem, 3vw, 1.5rem );
+}
+
+.vck-order-lookup__result {
+	margin-top: 1.25rem;
+}
+
+.vck-order-lookup h2 {
+	margin-top: 0;
+}
+
+.vck-order-lookup__fields {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+}
+
+.vck-order-lookup__fields label,
+.vck-order-lookup__fields input {
+	display: block;
+	width: 100%;
+}
+
+.vck-order-lookup__fields label {
+	font-weight: 600;
+	margin-bottom: 0.35rem;
+}
+
+.vck-order-lookup__honeypot {
+	left: -10000px;
+	position: absolute;
+	top: auto;
+}
+
+.vck-order-lookup__result dl {
+	display: grid;
+	gap: 0;
+	margin: 0 0 1rem;
+}
+
+.vck-order-lookup__result dl > div {
+	border-bottom: 1px solid #dcdcde;
+	border-bottom-color: color-mix( in srgb, currentColor 12%, transparent );
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: minmax( 120px, 0.7fr ) 1fr;
+	padding: 0.65rem 0;
+}
+
+.vck-order-lookup__result dt {
+	font-weight: 600;
+}
+
+.vck-order-lookup__result dd {
+	margin: 0;
+}
+
+.vck-tracking-timeline {
+	margin-top: 1.5rem;
+}
+
+.vck-tracking-timeline ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.vck-tracking-timeline__event {
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: 16px minmax( 0, 1fr );
+	padding: 0 0 1.25rem;
+	position: relative;
+}
+
+.vck-tracking-timeline__event:not( :last-child )::before {
+	background: #dcdcde;
+	background: color-mix( in srgb, currentColor 18%, transparent );
+	content: "";
+	height: 100%;
+	left: 7px;
+	position: absolute;
+	top: 10px;
+	width: 2px;
+}
+
+.vck-tracking-timeline__marker {
+	background: #a7aaad;
+	border: 3px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 0 0 1px #a7aaad;
+	height: 12px;
+	margin-top: 5px;
+	position: relative;
+	width: 12px;
+	z-index: 1;
+}
+
+.vck-tracking-timeline__event--info .vck-tracking-timeline__marker {
+	background: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.vck-tracking-timeline__event--warning .vck-tracking-timeline__marker {
+	background: #dba617;
+	box-shadow: 0 0 0 1px #dba617;
+}
+
+.vck-tracking-timeline__event--success .vck-tracking-timeline__marker {
+	background: #00a32a;
+	box-shadow: 0 0 0 1px #00a32a;
+}
+
+.vck-tracking-timeline__event--danger .vck-tracking-timeline__marker {
+	background: #d63638;
+	box-shadow: 0 0 0 1px #d63638;
+}
+
+.vck-tracking-timeline__content time,
+.vck-tracking-timeline__content span {
+	display: block;
+	font-size: 0.875em;
+	opacity: 0.72;
+}
+
+.vck-tracking-timeline__content p {
+	margin: 0.4rem 0 0;
+}
+
+@media ( max-width: 600px ) {
+	.vck-order-lookup__fields,
+	.vck-order-lookup__result dl > div {
+		grid-template-columns: 1fr;
+	}
+}

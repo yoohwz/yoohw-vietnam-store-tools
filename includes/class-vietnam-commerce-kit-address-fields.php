@@ -68,6 +68,27 @@ final class Yoohw_Vietnam_Store_Tools_Address_Fields {
 
 		$locale[ self::COUNTRY_CODE ] = isset( $locale[ self::COUNTRY_CODE ] ) ? $locale[ self::COUNTRY_CODE ] : [];
 
+		$locale[ self::COUNTRY_CODE ]['first_name'] = [
+			'label'    => __( 'Full name', 'yoohw-vietnam-store-tools' ),
+			'required' => true,
+			'hidden'   => false,
+			'priority' => 10,
+		];
+
+		$locale[ self::COUNTRY_CODE ]['last_name'] = [
+			'label'    => '',
+			'required' => false,
+			'hidden'   => true,
+			'priority' => 15,
+		];
+
+		$locale[ self::COUNTRY_CODE ]['company'] = [
+			'label'    => '',
+			'required' => false,
+			'hidden'   => true,
+			'priority' => 30,
+		];
+
 		$locale[ self::COUNTRY_CODE ]['state'] = [
 			'label'       => __( 'City / Province', 'yoohw-vietnam-store-tools' ),
 			'placeholder' => __( 'Select a city / province', 'yoohw-vietnam-store-tools' ),
@@ -87,7 +108,7 @@ final class Yoohw_Vietnam_Store_Tools_Address_Fields {
 		];
 
 		$locale[ self::COUNTRY_CODE ]['phone'] = [
-			'priority' => 35,
+			'priority' => 20,
 			'class'    => [ 'form-row-first' ],
 		];
 
@@ -137,6 +158,10 @@ final class Yoohw_Vietnam_Store_Tools_Address_Fields {
 
 	public function enqueue_scripts() {
 		if ( $this->should_defer_checkout_address_fields() ) {
+			return;
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Blocks_Integration' ) && Yoohw_Vietnam_Store_Tools_Blocks_Integration::is_current_block_page() ) {
 			return;
 		}
 
@@ -639,7 +664,7 @@ final class Yoohw_Vietnam_Store_Tools_Address_Fields {
 			$fields[ $phone_key ]['priority'] = 35;
 			$fields[ $phone_key ]['class']    = $this->set_field_row_class(
 				isset( $fields[ $phone_key ]['class'] ) ? $fields[ $phone_key ]['class'] : [],
-				'form-row-first'
+				'shipping' === $address_type ? 'form-row-last' : 'form-row-first'
 			);
 		}
 
