@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.0\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.1\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
 "POT-Creation-Date: 2026-07-17 00:00:00+0000\n"
 "PO-Revision-Date: 2026-07-17 00:00:00+0000\n"
@@ -10,6 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Codex\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
 
@@ -14570,3 +14571,255 @@ msgstr "Tra cứu đơn hàng"
 #: blocks/order-tracking/index.js:13
 msgid "Customers enter an order number and their billing email or phone number to view shipment tracking."
 msgstr "Khách hàng nhập mã đơn cùng email hoặc số điện thoại thanh toán để xem thông tin vận chuyển."
+msgid "Vietnam store"
+msgstr "Vietnam store"
+
+msgid "Settings"
+msgstr "Cài đặt"
+
+msgid "Manage the Vietnam-specific checkout, payments, invoices, shipping, and order tools used by your WooCommerce store."
+msgstr "Quản lý các công cụ thanh toán, hóa đơn, vận chuyển và đơn hàng dành riêng cho cửa hàng WooCommerce tại Việt Nam."
+
+msgid "Version %s"
+msgstr "Phiên bản %s"
+
+msgid "%d service enabled"
+msgid_plural "%d services enabled"
+msgstr[0] "Đã bật %d dịch vụ"
+
+msgid "Shipping and delivery"
+msgstr "Vận chuyển và giao hàng"
+
+msgid "Connect carriers, define shipping rules, and control the tracking experience."
+msgstr "Kết nối đơn vị vận chuyển, thiết lập quy tắc giao hàng và quản lý trải nghiệm theo dõi vận chuyển."
+
+msgid "Shipping services"
+msgstr "Dịch vụ vận chuyển"
+
+msgid "Configure carrier accounts, pickup addresses, automatic synchronization, and shipment status mappings."
+msgstr "Cấu hình tài khoản vận chuyển, địa chỉ lấy hàng, đồng bộ tự động và ánh xạ trạng thái vận đơn."
+
+msgid "No shipping service connector is installed. Manual shipment management remains available on orders."
+msgstr "Chưa cài đặt kết nối dịch vụ vận chuyển. Bạn vẫn có thể quản lý vận chuyển thủ công trên đơn hàng."
+
+msgid "Manual only"
+msgstr "Chỉ thủ công"
+
+msgid "Configure services"
+msgstr "Cấu hình dịch vụ"
+
+msgid "Shipping zones and rules"
+msgstr "Khu vực và quy tắc vận chuyển"
+
+msgid "Assign rates and the Vietnam shipping rules method to WooCommerce shipping zones."
+msgstr "Gán mức phí và phương thức quy tắc vận chuyển Việt Nam cho các khu vực giao hàng WooCommerce."
+
+msgid "WooCommerce settings"
+msgstr "Cài đặt WooCommerce"
+
+msgid "Manage shipping zones"
+msgstr "Quản lý khu vực vận chuyển"
+
+msgid "Shipment tracking"
+msgstr "Theo dõi vận chuyển"
+
+msgid "Configure public order lookup, carrier tracking URL templates, and custom carriers."
+msgstr "Cấu hình tra cứu đơn hàng công khai, mẫu URL theo dõi và đơn vị vận chuyển tùy chỉnh."
+
+msgid "Public lookup enabled"
+msgstr "Đã bật tra cứu công khai"
+
+msgid "Public lookup disabled"
+msgstr "Đã tắt tra cứu công khai"
+
+msgid "Configure tracking"
+msgstr "Cấu hình theo dõi"
+
+msgid "Shipping tracking email"
+msgstr "Email theo dõi vận chuyển"
+
+msgid "Control the subject, heading, content, and email format for customer shipment updates."
+msgstr "Thiết lập tiêu đề, nội dung và định dạng email cập nhật vận chuyển gửi cho khách hàng."
+
+msgid "Configure email"
+msgstr "Cấu hình email"
+
+msgid "Checkout, payments, and invoices"
+msgstr "Thanh toán và hóa đơn"
+
+msgid "Manage Vietnam checkout behavior and payment or invoice features."
+msgstr "Quản lý quy trình thanh toán và các tính năng thanh toán hoặc hóa đơn dành cho Việt Nam."
+
+msgid "Vietnam address and phone fields"
+msgstr "Địa chỉ và số điện thoại Việt Nam"
+
+msgid "Province, ward, address formatting, checkout compatibility, and Vietnamese phone normalization are applied automatically."
+msgstr "Tỉnh thành, phường xã, định dạng địa chỉ, tương thích thanh toán và chuẩn hóa số điện thoại Việt Nam được áp dụng tự động."
+
+msgid "Active automatically"
+msgstr "Tự động hoạt động"
+
+msgid "Open store address settings"
+msgstr "Mở cài đặt địa chỉ cửa hàng"
+
+msgid "Configure bank accounts, transfer content, QR layout, order amount, and customer email display."
+msgstr "Cấu hình tài khoản ngân hàng, nội dung chuyển khoản, giao diện QR, số tiền đơn hàng và hiển thị trong email khách hàng."
+
+msgid "Configure VietQR"
+msgstr "Cấu hình VietQR"
+
+msgid "VAT invoice requests"
+msgstr "Yêu cầu hóa đơn VAT"
+
+msgid "Allow customers to provide company and tax details during checkout when WooCommerce taxes are enabled."
+msgstr "Cho phép khách hàng cung cấp thông tin công ty và mã số thuế khi thanh toán nếu thuế WooCommerce đang bật."
+
+msgid "Configure tax settings"
+msgstr "Cấu hình thuế"
+
+msgid "Manage invoice issue status, provider references, notes, and invoice documents directly on each order."
+msgstr "Quản lý trạng thái phát hành, mã tham chiếu nhà cung cấp, ghi chú và chứng từ hóa đơn ngay trên từng đơn hàng."
+
+msgid "Available on orders"
+msgstr "Có sẵn trên đơn hàng"
+
+msgid "Open orders"
+msgstr "Mở đơn hàng"
+
+msgid "Maintenance tools"
+msgstr "Công cụ bảo trì"
+
+msgid "Review operational data and migrate compatible settings from legacy Vietnam checkout plugins."
+msgstr "Kiểm tra dữ liệu vận hành và di chuyển các cài đặt tương thích từ plugin thanh toán Việt Nam cũ."
+
+msgid "Order management"
+msgstr "Quản lý đơn hàng"
+
+msgid "Use Vietnam-specific order columns, filters, shipment actions, and invoice information from the order list."
+msgstr "Sử dụng cột đơn hàng, bộ lọc, thao tác vận chuyển và thông tin hóa đơn dành cho Việt Nam trong danh sách đơn hàng."
+
+msgid "Manage orders"
+msgstr "Quản lý đơn hàng"
+
+msgid "DevVN migration"
+msgstr "Di chuyển dữ liệu DevVN"
+
+msgid "Inspect and migrate compatible address and order data using WooCommerce status tools."
+msgstr "Kiểm tra và di chuyển dữ liệu địa chỉ, đơn hàng tương thích bằng công cụ trạng thái WooCommerce."
+
+msgid "Manual tool"
+msgstr "Công cụ thủ công"
+
+msgid "Open migration tools"
+msgstr "Mở công cụ di chuyển"
+
+msgid "Disabled"
+msgstr "Đã tắt"
+
+msgid "Taxes disabled"
+msgstr "Thuế đang tắt"
+
+msgid "Enable WooCommerce taxes"
+msgstr "Bật thuế WooCommerce"
+
+msgid "Vietnam store feature settings saved."
+msgstr "Đã lưu cài đặt tính năng Vietnam store."
+
+msgid "Core features"
+msgstr "Tính năng cốt lõi"
+
+msgid "Enable only the Vietnam store enhancements that fit your workflow. Disabling a feature does not delete its existing data."
+msgstr "Chỉ bật các cải tiến phù hợp với quy trình của cửa hàng. Việc tắt tính năng không xóa dữ liệu đã có."
+
+msgid "Save feature settings"
+msgstr "Lưu cài đặt tính năng"
+
+msgid "Vietnam address fields"
+msgstr "Trường địa chỉ Việt Nam"
+
+msgid "Use Vietnam provinces and wards, compact name fields, address normalization, and compatible Classic or Block checkout behavior."
+msgstr "Sử dụng tỉnh thành, phường xã Việt Nam, trường họ tên gọn, chuẩn hóa địa chỉ và tương thích thanh toán Classic hoặc Block."
+
+msgid "Vietnam phone validation and normalization"
+msgstr "Xác thực và chuẩn hóa số điện thoại Việt Nam"
+
+msgid "Validate Vietnamese phone numbers and store them consistently across checkout, customer profiles, and orders."
+msgstr "Xác thực số điện thoại Việt Nam và lưu nhất quán trong thanh toán, hồ sơ khách hàng và đơn hàng."
+
+msgid "Customer shipment information"
+msgstr "Thông tin vận chuyển cho khách hàng"
+
+msgid "Show the carrier, tracking code, shipment status, and tracking timeline on order confirmation and My Account pages."
+msgstr "Hiển thị đơn vị vận chuyển, mã vận đơn, trạng thái và hành trình vận chuyển trên trang xác nhận đơn và Tài khoản."
+
+msgid "Vietnam order management tools"
+msgstr "Công cụ quản lý đơn hàng Việt Nam"
+
+msgid "Add Vietnam-specific order information, filters, bulk actions, and CSV exports to the WooCommerce order list."
+msgstr "Thêm thông tin đơn hàng, bộ lọc, thao tác hàng loạt và xuất CSV dành cho Việt Nam vào danh sách đơn WooCommerce."
+
+msgid "Add provider-neutral electronic invoice status, references, history, PDF, and XML controls to orders."
+msgstr "Thêm trạng thái hóa đơn điện tử độc lập nhà cung cấp, mã tham chiếu, lịch sử và quản lý tệp PDF, XML vào đơn hàng."
+
+msgid "Control Vietnam address formatting, checkout compatibility, phone validation, and normalization in Core features."
+msgstr "Quản lý định dạng địa chỉ Việt Nam, tương thích thanh toán, xác thực và chuẩn hóa số điện thoại trong phần Tính năng cốt lõi."
+
+msgid "Partially enabled"
+msgstr "Đã bật một phần"
+
+msgid "Business invoice settings saved."
+msgstr "Đã lưu cài đặt hóa đơn doanh nghiệp."
+
+msgid "Business invoices"
+msgstr "Hóa đơn doanh nghiệp"
+
+msgid "Accept invoice requests at checkout"
+msgstr "Nhận yêu cầu hóa đơn tại trang thanh toán"
+
+msgid "Allow customers to submit company and tax details for new orders. This is independent of WooCommerce tax calculation."
+msgstr "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng mới. Tùy chọn này độc lập với việc tính thuế của WooCommerce."
+
+msgid "Manage electronic invoice workflow"
+msgstr "Quản lý quy trình hóa đơn điện tử"
+
+msgid "Allow staff to update invoice status, references, notes, PDF, and XML files. When disabled, existing invoice data remains read-only."
+msgstr "Cho phép nhân viên cập nhật trạng thái, mã tham chiếu, ghi chú và tệp PDF, XML của hóa đơn. Khi tắt, dữ liệu hóa đơn hiện có vẫn được hiển thị ở chế độ chỉ đọc."
+
+msgid "Control new checkout requests separately from the electronic invoice workflow. Historical invoice data remains available for review, filtering, and export."
+msgstr "Quản lý riêng yêu cầu mới tại trang thanh toán và quy trình hóa đơn điện tử. Dữ liệu hóa đơn lịch sử vẫn có thể xem, lọc và xuất."
+
+msgid "WooCommerce tax calculation: <strong>%1$s</strong>. This setting is informational and does not control invoice requests. <a href=\"%2$s\">Open WooCommerce tax settings</a>."
+msgstr "Tính thuế WooCommerce: <strong>%1$s</strong>. Trạng thái này chỉ để tham khảo và không kiểm soát yêu cầu hóa đơn. <a href=\"%2$s\">Mở cài đặt thuế WooCommerce</a>."
+
+msgid "Save invoice settings"
+msgstr "Lưu cài đặt hóa đơn"
+
+msgid "Collect invoice requests at checkout and manage electronic invoice data on orders as two independent capabilities."
+msgstr "Tiếp nhận yêu cầu hóa đơn tại trang thanh toán và quản lý dữ liệu hóa đơn điện tử trên đơn hàng như hai tính năng độc lập."
+
+msgid "Requests and workflow enabled"
+msgstr "Đã bật yêu cầu và quy trình"
+
+msgid "Checkout requests enabled"
+msgstr "Đã bật yêu cầu tại thanh toán"
+
+msgid "Workflow enabled"
+msgstr "Đã bật quy trình"
+
+msgid "Configure invoices"
+msgstr "Cấu hình hóa đơn"
+
+msgid "Vietnam business invoices"
+msgstr "Hóa đơn doanh nghiệp Việt Nam"
+
+msgid "Invoice requests and electronic invoice workflow are configured separately in <a href=\"%s\">Vietnam store</a>."
+msgstr "Yêu cầu hóa đơn và quy trình hóa đơn điện tử được cấu hình riêng trong <a href=\"%s\">Vietnam store</a>."
+
+msgid "Electronic invoice workflow management is disabled."
+msgstr "Quản lý quy trình hóa đơn điện tử đang bị tắt."
+
+msgid "Electronic invoice workflow management is disabled. Existing invoice data is shown in read-only mode."
+msgstr "Quản lý quy trình hóa đơn điện tử đang bị tắt. Dữ liệu hóa đơn hiện có được hiển thị ở chế độ chỉ đọc."
+
+msgid "Allow customers to submit company and tax details for new orders."
+msgstr "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng mới."

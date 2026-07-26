@@ -294,11 +294,12 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 			return;
 		}
 
-		$invoice_enabled = $this->is_invoice_feature_enabled();
-		$shipping        = Yoohw_Vietnam_Store_Tools_Shipping::get_order_shipping_data( $order );
-		$carrier         = trim( (string) $shipping['provider_name'] );
-		$tracking_code   = trim( (string) $shipping['tracking_code'] );
-		$tracking_url    = trim( (string) $shipping['tracking_url'] );
+		$invoice_enabled       = $this->is_invoice_feature_enabled();
+		$shipping              = Yoohw_Vietnam_Store_Tools_Shipping::get_order_shipping_data( $order );
+		$carrier               = trim( (string) $shipping['provider_name'] );
+		$tracking_code         = trim( (string) $shipping['tracking_code'] );
+		$display_tracking_code = Yoohw_Vietnam_Store_Tools_Shipping::get_display_tracking_code( $shipping['provider'], $tracking_code );
+		$tracking_url          = trim( (string) $shipping['tracking_url'] );
 
 		if ( '' === $carrier && '' !== trim( (string) $shipping['provider'] ) ) {
 			$provider_id = sanitize_key( $shipping['provider'] );
@@ -356,9 +357,9 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 
 			if ( '' !== $tracking_code ) {
 				if ( '' !== $tracking_url ) {
-					echo '<a class="vck-info-column__tracking" href="' . esc_url( $tracking_url ) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr( $tracking_code ) . '">' . esc_html( $tracking_code ) . '</a>';
+					echo '<a class="vck-info-column__tracking" href="' . esc_url( $tracking_url ) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr( $display_tracking_code ) . '">' . esc_html( $display_tracking_code ) . '</a>';
 				} else {
-					echo '<span class="vck-info-column__tracking" title="' . esc_attr( $tracking_code ) . '">' . esc_html( $tracking_code ) . '</span>';
+					echo '<span class="vck-info-column__tracking" title="' . esc_attr( $display_tracking_code ) . '">' . esc_html( $display_tracking_code ) . '</span>';
 				}
 			}
 
@@ -370,7 +371,9 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 	}
 
 	private function is_invoice_feature_enabled() {
-		return Yoohw_Vietnam_Store_Tools_Tax_Invoice::is_enabled();
+		// Historical invoice data must remain searchable and exportable even when
+		// the store is no longer accepting new requests.
+		return true;
 	}
 
 	private function render_filter_panel() {

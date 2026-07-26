@@ -1,0 +1,343 @@
+.yoohw-vietnam-store {
+	--yoohw-border: #dcdcde;
+	--yoohw-muted: #646970;
+	--yoohw-green: #008a20;
+	--yoohw-green-bg: #edfaef;
+	--yoohw-gray-bg: #f0f0f1;
+	max-width: 1280px;
+}
+
+.yoohw-vietnam-store__hero {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 40px;
+	overflow: hidden;
+	margin: 24px 0 32px;
+	padding: 30px 34px;
+	border: 1px solid var(--yoohw-border);
+	border-radius: 12px;
+	background:
+		radial-gradient(circle at 7% 12%, rgba(227, 35, 25, 0.08), transparent 34%),
+		linear-gradient(135deg, #fff 0%, #fff 58%, #f8f9fa 100%);
+	box-shadow: 0 8px 28px rgba(29, 35, 39, 0.07);
+}
+
+.yoohw-vietnam-store__hero::after {
+	position: absolute;
+	right: -58px;
+	bottom: -88px;
+	width: 220px;
+	height: 220px;
+	border: 36px solid rgba(227, 35, 25, 0.035);
+	border-radius: 50%;
+	content: "";
+	pointer-events: none;
+}
+
+.yoohw-vietnam-store__hero-main {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	min-width: 0;
+}
+
+.yoohw-vietnam-store__hero-icon {
+	flex: 0 0 auto;
+	width: 96px;
+	height: 96px;
+	padding: 5px;
+	border: 1px solid rgba(227, 35, 25, 0.15);
+	border-radius: 25px;
+	background: rgba(255, 255, 255, 0.88);
+	box-shadow: 0 10px 24px rgba(152, 21, 14, 0.16);
+}
+
+.yoohw-vietnam-store__hero-icon img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 20px;
+}
+
+.yoohw-vietnam-store__hero-content {
+	min-width: 0;
+}
+
+.yoohw-vietnam-store__eyebrow {
+	display: block;
+	margin-bottom: 7px;
+	color: #b42318;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	line-height: 1.4;
+	text-transform: uppercase;
+}
+
+.yoohw-vietnam-store__hero h1 {
+	margin: 0 0 7px;
+	font-size: 30px;
+	line-height: 1.15;
+}
+
+.yoohw-vietnam-store__hero p {
+	max-width: 760px;
+	margin: 0;
+	color: var(--yoohw-muted);
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.yoohw-vietnam-store__version {
+	position: relative;
+	z-index: 1;
+	flex: 0 0 auto;
+	padding: 6px 11px;
+	border: 1px solid #dcdcde;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.88);
+	color: #3c434a;
+	font-size: 12px;
+	font-weight: 600;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.yoohw-vietnam-store__section {
+	margin: 0 0 36px;
+}
+
+.yoohw-vietnam-store__section-heading {
+	margin: 0 0 16px;
+}
+
+.yoohw-vietnam-store__section-heading h2 {
+	margin: 0 0 4px;
+	font-size: 20px;
+}
+
+.yoohw-vietnam-store__section-heading p {
+	margin: 0;
+	color: var(--yoohw-muted);
+}
+
+.yoohw-vietnam-store__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+}
+
+.yoohw-vietnam-store__feature-form {
+	padding: 0;
+}
+
+.yoohw-vietnam-store__feature-list {
+	overflow: hidden;
+	border: 1px solid var(--yoohw-border);
+	border-radius: 6px;
+	background: #fff;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.yoohw-vietnam-store__feature {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 32px;
+	padding: 18px 22px;
+	border-bottom: 1px solid var(--yoohw-border);
+	cursor: pointer;
+}
+
+.yoohw-vietnam-store__feature:last-child {
+	border-bottom: 0;
+}
+
+.yoohw-vietnam-store__feature:hover {
+	background: #f8f9fa;
+}
+
+.yoohw-vietnam-store__feature-content {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.yoohw-vietnam-store__feature-content strong {
+	color: #1d2327;
+	font-size: 14px;
+}
+
+.yoohw-vietnam-store__feature-content > span {
+	color: var(--yoohw-muted);
+	line-height: 1.45;
+}
+
+.yoohw-vietnam-store__switch {
+	position: relative;
+	display: inline-flex;
+	width: 40px;
+	height: 22px;
+	flex: 0 0 40px;
+}
+
+.yoohw-vietnam-store__switch input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	opacity: 0;
+}
+
+.yoohw-vietnam-store__switch > span {
+	position: absolute;
+	inset: 0;
+	border-radius: 999px;
+	background: #8c8f94;
+	transition: background 0.15s ease;
+}
+
+.yoohw-vietnam-store__switch > span::after {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	content: "";
+	transition: transform 0.15s ease;
+}
+
+.yoohw-vietnam-store__switch input:checked + span {
+	background: var(--wp-admin-theme-color, #2271b1);
+}
+
+.yoohw-vietnam-store__switch input:checked + span::after {
+	transform: translateX(18px);
+}
+
+.yoohw-vietnam-store__switch input:focus-visible + span {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--wp-admin-theme-color, #2271b1);
+}
+
+.yoohw-vietnam-store__feature-form .submit {
+	margin: 16px 0 0;
+	padding: 0;
+}
+
+.yoohw-vietnam-store__card {
+	display: flex;
+	min-height: 190px;
+	flex-direction: column;
+	padding: 22px;
+	border: 1px solid var(--yoohw-border);
+	border-radius: 6px;
+	background: #fff;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.yoohw-vietnam-store__card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.yoohw-vietnam-store__card-header > .dashicons {
+	width: 30px;
+	height: 30px;
+	color: #3858e9;
+	font-size: 30px;
+}
+
+.yoohw-vietnam-store__status {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 9px;
+	border-radius: 999px;
+	background: var(--yoohw-gray-bg);
+	color: #50575e;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.yoohw-vietnam-store__status.is-active {
+	background: var(--yoohw-green-bg);
+	color: var(--yoohw-green);
+}
+
+.yoohw-vietnam-store__card h3 {
+	margin: 18px 0 7px;
+	font-size: 16px;
+}
+
+.yoohw-vietnam-store__card p {
+	flex: 1;
+	margin: 0 0 20px;
+	color: var(--yoohw-muted);
+	line-height: 1.55;
+}
+
+.yoohw-vietnam-store__card .button {
+	align-self: flex-start;
+}
+
+.yoohw-vietnam-store__card .button .dashicons {
+	width: 16px;
+	height: 16px;
+	margin: 5px 0 0 2px;
+	font-size: 16px;
+}
+
+@media screen and (max-width: 782px) {
+	.yoohw-vietnam-store__hero {
+		align-items: flex-start;
+		padding: 22px;
+	}
+
+	.yoohw-vietnam-store__hero-main {
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	.yoohw-vietnam-store__hero-icon {
+		width: 72px;
+		height: 72px;
+		border-radius: 20px;
+	}
+
+	.yoohw-vietnam-store__hero-icon img {
+		border-radius: 16px;
+	}
+
+	.yoohw-vietnam-store__version {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+	}
+
+	.yoohw-vietnam-store__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.yoohw-vietnam-store__feature {
+		align-items: flex-start;
+		gap: 20px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.yoohw-vietnam-store__hero {
+		padding-top: 54px;
+	}
+
+	.yoohw-vietnam-store__hero h1 {
+		font-size: 25px;
+	}
+}

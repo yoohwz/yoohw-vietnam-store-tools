@@ -58,6 +58,15 @@ if ( ! class_exists( 'Yoohw_Vietnam_Store_Tools_Customer_Shipping_Tracking_Email
 
 		public function trigger( $order_id, $shipping_data = [], $provider = [] ) {
 			$this->setup_locale();
+			$this->object        = null;
+			$this->recipient     = '';
+			$this->provider_name = '';
+			$this->tracking_code = '';
+			$this->tracking_url  = '';
+
+			foreach ( array_keys( $this->placeholders ) as $placeholder ) {
+				$this->placeholders[ $placeholder ] = '';
+			}
 
 			$order = $order_id && function_exists( 'wc_get_order' ) ? wc_get_order( $order_id ) : false;
 
@@ -67,7 +76,10 @@ if ( ! class_exists( 'Yoohw_Vietnam_Store_Tools_Customer_Shipping_Tracking_Email
 				$this->object        = $order;
 				$this->recipient     = $order->get_billing_email();
 				$this->provider_name = $this->get_provider_name( $shipping_data, $provider );
-				$this->tracking_code = isset( $shipping_data['tracking_code'] ) ? sanitize_text_field( (string) $shipping_data['tracking_code'] ) : '';
+				$this->tracking_code = Yoohw_Vietnam_Store_Tools_Shipping::get_display_tracking_code(
+					isset( $shipping_data['provider'] ) ? $shipping_data['provider'] : '',
+					isset( $shipping_data['tracking_code'] ) ? sanitize_text_field( (string) $shipping_data['tracking_code'] ) : ''
+				);
 				$this->tracking_url  = isset( $shipping_data['tracking_url'] ) ? esc_url_raw( (string) $shipping_data['tracking_url'] ) : '';
 
 				$this->placeholders['{order_date}']        = wc_format_datetime( $order->get_date_created() );

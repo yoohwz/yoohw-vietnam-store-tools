@@ -134,6 +134,34 @@
 	padding-top: 14px;
 }
 
+.vck-einvoice__readonly-notice {
+	margin: 0;
+}
+
+.vck-einvoice__readonly {
+	display: grid;
+	gap: 0;
+	grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+	margin: 0;
+}
+
+.vck-einvoice__readonly > div {
+	border-bottom: 1px solid #dcdcde;
+	display: grid;
+	gap: 6px;
+	grid-template-columns: minmax( 120px, 35% ) 1fr;
+	padding: 10px 0;
+}
+
+.vck-einvoice__readonly dt {
+	font-weight: 600;
+}
+
+.vck-einvoice__readonly dd {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
 .vck-einvoice-history {
 	border-top: 1px solid #dcdcde;
 	padding-top: 14px;
@@ -207,7 +235,8 @@
 	}
 
 	.vck-einvoice__grid,
-	.vck-einvoice__files {
+	.vck-einvoice__files,
+	.vck-einvoice__readonly {
 		grid-template-columns: 1fr;
 	}
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Vietnam Store Toolkit for WooCommerce
  * Description: WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice requests, VietQR bank transfer, shipping, and phone normalization.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: YoOhw Studio
  * Author URI: https://yoohw.com
  * License: GPL v2 or later
@@ -34,7 +34,7 @@ final class Yoohw_Vietnam_Store_Tools {
 
 	private function __construct() {
 		$plugin_data    = get_file_data( __FILE__, [ 'Version' => 'Version' ], false );
-		$plugin_version = isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '1.1.0';
+		$plugin_version = isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '1.1.1';
 
 		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_VERSION' ) ) {
 			define( 'YOOHW_VIETNAM_STORE_TOOLS_VERSION', $plugin_version );
@@ -73,6 +73,7 @@ final class Yoohw_Vietnam_Store_Tools {
 	private function includes() {
 		$files = [
 			'includes/class-vietnam-commerce-kit-request-security.php',
+			'includes/class-vietnam-commerce-kit-admin-menu.php',
 			'includes/class-vietnam-commerce-kit-vietnam-address-data.php',
 			'includes/class-vietnam-commerce-kit-legacy-plugin-guard.php',
 			'includes/class-vietnam-commerce-kit-blocks-integration.php',
@@ -102,15 +103,28 @@ final class Yoohw_Vietnam_Store_Tools {
 			new Yoohw_Vietnam_Store_Tools_Legacy_Plugin_Guard();
 		}
 
-		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Blocks_Integration' ) ) {
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Menu' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Admin_Menu();
+		}
+
+		if (
+			class_exists( 'Yoohw_Vietnam_Store_Tools_Blocks_Integration' )
+			&& Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS )
+		) {
 			new Yoohw_Vietnam_Store_Tools_Blocks_Integration();
 		}
 
-		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Address_Fields' ) ) {
+		if (
+			class_exists( 'Yoohw_Vietnam_Store_Tools_Address_Fields' )
+			&& Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS )
+		) {
 			new Yoohw_Vietnam_Store_Tools_Address_Fields();
 		}
 
-		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Phone_Normalization' ) ) {
+		if (
+			class_exists( 'Yoohw_Vietnam_Store_Tools_Phone_Normalization' )
+			&& Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PHONE_NORMALIZATION )
+		) {
 			new Yoohw_Vietnam_Store_Tools_Phone_Normalization();
 		}
 
@@ -126,7 +140,10 @@ final class Yoohw_Vietnam_Store_Tools {
 			new Yoohw_Vietnam_Store_Tools_Shipping_Rules();
 		}
 
-		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Address_Fields' ) ) {
+		if (
+			class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Address_Fields' )
+			&& Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS )
+		) {
 			new Yoohw_Vietnam_Store_Tools_Admin_Address_Fields();
 		}
 
@@ -142,11 +159,17 @@ final class Yoohw_Vietnam_Store_Tools {
 			new Yoohw_Vietnam_Store_Tools_Electronic_Invoice();
 		}
 
-		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Order_Management' ) ) {
+		if (
+			class_exists( 'Yoohw_Vietnam_Store_Tools_Order_Management' )
+			&& Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ORDER_MANAGEMENT )
+		) {
 			new Yoohw_Vietnam_Store_Tools_Order_Management();
 		}
 
-		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Order_Fields' ) ) {
+		if (
+			class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Order_Fields' )
+			&& Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS )
+		) {
 			new Yoohw_Vietnam_Store_Tools_Admin_Order_Fields();
 		}
 

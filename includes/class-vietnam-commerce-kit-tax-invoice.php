@@ -49,16 +49,21 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 	}
 
 	/**
-	 * Whether VAT invoice requests are enabled and WooCommerce taxes are active.
+	 * Whether new VAT invoice requests are accepted at checkout.
+	 *
+	 * @return bool
+	 */
+	public static function accepts_new_requests() {
+		return 'yes' === get_option( self::OPTION_ID, 'no' );
+	}
+
+	/**
+	 * Backward-compatible alias for integrations checking this feature.
 	 *
 	 * @return bool
 	 */
 	public static function is_enabled() {
-		$taxes_enabled = function_exists( 'wc_tax_enabled' )
-			? wc_tax_enabled()
-			: 'yes' === get_option( 'woocommerce_calc_taxes', 'no' );
-
-		return $taxes_enabled && 'yes' === get_option( self::OPTION_ID, 'no' );
+		return self::accepts_new_requests();
 	}
 
 	public function register_block_checkout_fields() {
@@ -239,31 +244,20 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 	public function add_invoice_setting( $settings ) {
 		$settings = is_array( $settings ) ? $settings : [];
 
-		if ( ! function_exists( 'wc_tax_enabled' ) || ! wc_tax_enabled() ) {
-			return $settings;
-		}
-
-		if ( $this->settings_contain_option( $settings ) ) {
-			return $settings;
-		}
-
-		$invoice_setting = [
-			'title'    => __( 'Vietnam tax invoice requests', 'yoohw-vietnam-store-tools' ),
-			'desc'     => __( 'Allow customers to request a VAT invoice during checkout.', 'yoohw-vietnam-store-tools' ),
-			'id'       => self::OPTION_ID,
-			'default'  => 'no',
-			'type'     => 'checkbox',
-			'autoload' => false,
+		$settings[] = [
+			'title' => __( 'Vietnam business invoices', 'yoohw-vietnam-store-tools' ),
+			'desc'  => sprintf(
+				/* translators: %s: URL to Vietnam store invoice settings. */
+				wp_kses_post( __( 'Invoice requests and electronic invoice workflow are configured separately in <a href="%s">Vietnam store</a>.', 'yoohw-vietnam-store-tools' ) ),
+				esc_url( admin_url( 'admin.php?page=' . Yoohw_Vietnam_Store_Tools_Admin_Menu::MENU_SLUG . '#yoohw-vietnam-store-features' ) )
+			),
+			'id'    => 'yoohw_vietnam_store_tools_invoice_settings_link',
+			'type'  => 'title',
 		];
-
-		foreach ( $settings as $index => $setting ) {
-			if ( isset( $setting['type'], $setting['id'] ) && 'sectionend' === $setting['type'] && 'tax_options' === $setting['id'] ) {
-				array_splice( $settings, $index, 0, [ $invoice_setting ] );
-				return $settings;
-			}
-		}
-
-		$settings[] = $invoice_setting;
+		$settings[] = [
+			'id'   => 'yoohw_vietnam_store_tools_invoice_settings_link',
+			'type' => 'sectionend',
+		];
 
 		return $settings;
 	}
@@ -589,16 +583,6 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 		return $value;
 	}
 
-	private function settings_contain_option( $settings ) {
-		foreach ( $settings as $setting ) {
-			if ( isset( $setting['id'] ) && self::OPTION_ID === $setting['id'] ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	private function get_checkout( $checkout ) {
 		if ( $checkout ) {
 			return $checkout;
@@ -701,7 +685,7 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 	}
 
 	private function order_has_tax_invoice_request( $order ) {
-		return self::is_enabled() && $order instanceof WC_Order && 'yes' === $this->get_order_invoice_meta( $order, self::META_REQUESTED );
+		return $order instanceof WC_Order && 'yes' === $this->get_order_invoice_meta( $order, self::META_REQUESTED );
 	}
 
 	private function is_new_order_email( $email ) {

@@ -26,20 +26,27 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	private $handling_invoice_upload = '';
 
 	public function __construct() {
-		add_action( 'woocommerce_checkout_create_order', [ $this, 'initialize_requested_workflow' ], 50 );
-		add_action( 'woocommerce_store_api_checkout_update_order_from_request', [ $this, 'initialize_requested_workflow' ], 50 );
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
 		add_action( 'admin_notices', [ $this, 'render_admin_notices' ] );
-		add_action( 'admin_post_' . self::ACTION_SAVE, [ $this, 'handle_save_action' ] );
-		add_filter( 'upload_mimes', [ $this, 'allow_invoice_upload_mimes' ], 20, 2 );
-		add_filter( 'wp_check_filetype_and_ext', [ $this, 'normalize_invoice_xml_filetype' ], 20, 5 );
+
+		if ( self::is_workflow_enabled() ) {
+			add_action( 'woocommerce_checkout_create_order', [ $this, 'initialize_requested_workflow' ], 50 );
+			add_action( 'woocommerce_store_api_checkout_update_order_from_request', [ $this, 'initialize_requested_workflow' ], 50 );
+			add_action( 'admin_post_' . self::ACTION_SAVE, [ $this, 'handle_save_action' ] );
+			add_filter( 'upload_mimes', [ $this, 'allow_invoice_upload_mimes' ], 20, 2 );
+			add_filter( 'wp_check_filetype_and_ext', [ $this, 'normalize_invoice_xml_filetype' ], 20, 5 );
+		}
+	}
+
+	public static function is_workflow_enabled() {
+		return Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE );
 	}
 
 	public function allow_invoice_upload_mimes( $mimes, $user = null ) {
 		unset( $user );
 
-		if ( ! Yoohw_Vietnam_Store_Tools_Tax_Invoice::is_enabled() ) {
+		if ( ! self::is_workflow_enabled() ) {
 			return $mimes;
 		}
 
@@ -56,7 +63,7 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	public function normalize_invoice_xml_filetype( $data, $file, $filename, $mimes, $real_mime ) {
 		unset( $mimes );
 
-		if ( ! Yoohw_Vietnam_Store_Tools_Tax_Invoice::is_enabled() || 'xml' !== $this->handling_invoice_upload || 'xml' !== strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) ) ) {
+		if ( ! self::is_workflow_enabled() || 'xml' !== $this->handling_invoice_upload || 'xml' !== strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) ) ) {
 			return $data;
 		}
 
@@ -158,6 +165,10 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 
 		if ( ! $order ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_einvoice_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		if ( ! self::is_workflow_enabled() ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_einvoice_disabled', __( 'Electronic invoice workflow management is disabled.', 'yoohw-vietnam-store-tools' ) );
 		}
 
 		if ( ! self::order_has_invoice_request( $order ) ) {
@@ -318,6 +329,11 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			[],
 			YOOHW_VIETNAM_STORE_TOOLS_VERSION
 		);
+
+		if ( ! self::is_workflow_enabled() ) {
+			return;
+		}
+
 		wp_enqueue_script(
 			$handle,
 			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/electronic-invoice.js',
@@ -356,6 +372,18 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 				</div>
 				<p><?php esc_html_e( 'This workflow records invoice progress and files only. It does not issue invoices or call a provider API.', 'yoohw-vietnam-store-tools' ); ?></p>
 			</div>
+
+			<?php if ( ! self::is_workflow_enabled() ) : ?>
+				<div class="notice notice-info inline vck-einvoice__readonly-notice">
+					<p><?php esc_html_e( 'Electronic invoice workflow management is disabled. Existing invoice data is shown in read-only mode.', 'yoohw-vietnam-store-tools' ); ?></p>
+				</div>
+				<?php $this->render_read_only_summary( $data ); ?>
+				<?php $this->render_history( $order ); ?>
+			</div>
+				<?php
+				return;
+			endif;
+			?>
 
 			<div class="vck-einvoice__grid">
 				<?php $this->render_select_field( 'vck_einvoice_status', __( 'Workflow status', 'yoohw-vietnam-store-tools' ), $statuses, $data['status'] ); ?>
@@ -397,6 +425,10 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		}
 
 		$order = self::get_order( $order_id );
+
+		if ( ! self::is_workflow_enabled() ) {
+			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'Electronic invoice workflow management is disabled.', 'yoohw-vietnam-store-tools' ) ] );
+		}
 
 		if ( ! self::order_has_invoice_request( $order ) ) {
 			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'This order does not contain a VAT invoice request.', 'yoohw-vietnam-store-tools' ) ] );
@@ -514,6 +546,40 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 				<input type="file" id="<?php echo esc_attr( $field_id ); ?>" name="vck_einvoice_<?php echo esc_attr( $type ); ?>" accept="<?php echo esc_attr( $accept ); ?>">
 			</label>
 		</div>
+		<?php
+	}
+
+	private function render_read_only_summary( $data ) {
+		$fields = [
+			__( 'Invoice provider', 'yoohw-vietnam-store-tools' ) => $data['provider'],
+			__( 'Invoice number', 'yoohw-vietnam-store-tools' )   => $data['number'],
+			__( 'Invoice symbol', 'yoohw-vietnam-store-tools' )   => $data['symbol'],
+			__( 'Issue date', 'yoohw-vietnam-store-tools' )       => $data['issued_at'] ? self::format_datetime_display_value( $data['issued_at'] ) : '',
+			__( 'Lookup URL', 'yoohw-vietnam-store-tools' )       => $data['lookup_url'],
+		];
+		?>
+		<dl class="vck-einvoice__readonly">
+			<?php foreach ( $fields as $label => $value ) : ?>
+				<div><dt><?php echo esc_html( $label ); ?></dt><dd>
+					<?php if ( __( 'Lookup URL', 'yoohw-vietnam-store-tools' ) === $label && $value ) : ?>
+						<a href="<?php echo esc_url( $value ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $value ); ?></a>
+					<?php else : ?>
+						<?php echo '' !== (string) $value ? esc_html( $value ) : '<span aria-hidden="true">—</span>'; ?>
+					<?php endif; ?>
+				</dd></div>
+			<?php endforeach; ?>
+			<?php foreach ( [ 'pdf' => __( 'PDF invoice', 'yoohw-vietnam-store-tools' ), 'xml' => __( 'XML invoice data', 'yoohw-vietnam-store-tools' ) ] as $type => $label ) : ?>
+				<?php $attachment_id = $data[ $type . '_attachment_id' ]; ?>
+				<?php $url = $attachment_id ? wp_get_attachment_url( $attachment_id ) : ''; ?>
+				<div><dt><?php echo esc_html( $label ); ?></dt><dd>
+					<?php if ( $url ) : ?>
+						<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( self::get_attachment_display_value( $attachment_id ) ); ?></a>
+					<?php else : ?>
+						<span aria-hidden="true">—</span>
+					<?php endif; ?>
+				</dd></div>
+			<?php endforeach; ?>
+		</dl>
 		<?php
 	}
 
@@ -690,6 +756,17 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		return $date->setTimezone( wp_timezone() )->format( 'Y-m-d\TH:i' );
 	}
 
+	private static function format_datetime_display_value( $value ) {
+		try {
+			$date = new DateTimeImmutable( $value );
+		} catch ( Exception $exception ) {
+			unset( $exception );
+			return (string) $value;
+		}
+
+		return wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $date->getTimestamp() );
+	}
+
 	private static function get_data_field_map() {
 		return [
 			'status'            => self::META_STATUS,
@@ -824,7 +901,7 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	}
 
 	private static function order_has_invoice_request( $order ) {
-		if ( ! Yoohw_Vietnam_Store_Tools_Tax_Invoice::is_enabled() || ! $order instanceof WC_Order ) {
+		if ( ! $order instanceof WC_Order ) {
 			return false;
 		}
 

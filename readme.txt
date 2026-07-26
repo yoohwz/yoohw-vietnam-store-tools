@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 10.9
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,9 +29,9 @@ Vietnam Store Toolkit for WooCommerce bổ sung các công cụ cần thiết ch
 * Bộ lọc, thao tác hàng loạt và xuất CSV đơn hàng, tương thích HPOS.
 * Công cụ di chuyển địa chỉ và dữ liệu GHTK từ plugin của Le Van Toan.
 
-= Có gì mới trong phiên bản 1.1.0 =
+= Có gì mới trong phiên bản 1.1.1 =
 
-Phiên bản 1.1.0 bổ sung Checkout Blocks, Store API, quy tắc phí đến cấp phường/xã, hóa đơn điện tử, tracking không cần API và quản lý đơn hàng HPOS.
+Phiên bản 1.1.1 bổ sung trang quản trị Vietnam store, tùy chọn bật/tắt tính năng, cải thiện quy trình hóa đơn và đảm bảo email theo dõi luôn dùng vận đơn hiện hành mới nhất.
 
 = Địa chỉ Việt Nam và Checkout Blocks =
 
@@ -41,7 +41,7 @@ Các trường được áp dụng cho checkout, My Account, giỏ hàng, địa
 
 = Hóa đơn GTGT và VietQR =
 
-Tính năng yêu cầu hóa đơn chỉ hoạt động khi “Kích hoạt thuế” và “Yêu cầu hóa đơn thuế” tại WooCommerce > Cài đặt > Thuế > Tùy chọn thuế cùng được bật. Classic Checkout và Checkout Block có thể thu thập tên công ty, mã số thuế, email nhận hóa đơn và địa chỉ công ty.
+Tính năng nhận yêu cầu hóa đơn được bật độc lập trong Vietnam store > Tính năng cốt lõi và không phụ thuộc vào việc tính thuế của WooCommerce. Classic Checkout và Checkout Block có thể thu thập tên công ty, mã số thuế, email nhận hóa đơn và địa chỉ công ty.
 
 Quy trình hóa đơn điện tử lưu trạng thái, số/ký hiệu, ngày phát hành, URL tra cứu, nhà cung cấp, tệp PDF/XML và nhật ký thay đổi. Plugin không tự phát hành hóa đơn hoặc gọi API nhà cung cấp.
 
@@ -82,7 +82,7 @@ Dữ liệu địa chỉ, điện thoại, hóa đơn và vận chuyển đượ
 2. Cài và kích hoạt Vietnam Store Toolkit for WooCommerce.
 3. Kiểm tra khu vực bán hàng và địa chỉ cửa hàng trong cài đặt WooCommerce.
 4. Cấu hình Direct bank transfer nếu cần VietQR.
-5. Nếu cần hóa đơn, bật thuế rồi bật “Yêu cầu hóa đơn thuế” trong Tùy chọn thuế.
+5. Nếu cần hóa đơn, bật “Nhận yêu cầu hóa đơn tại trang thanh toán” trong Vietnam store > Tính năng cốt lõi.
 6. Nếu cần phí theo địa chỉ, thêm “Quy tắc phí vận chuyển” vào Shipping Zone.
 7. Nếu chuyển từ plugin của Le Van Toan, chạy công cụ quét trước khi đồng bộ.
 
@@ -98,7 +98,7 @@ Mã tỉnh/thành phố được lưu vào `state`; mã phường/xã/đặc khu
 
 = Khách hàng có thể yêu cầu hóa đơn GTGT không? =
 
-Có, khi “Kích hoạt thuế” và “Yêu cầu hóa đơn thuế” cùng được bật.
+Có, khi “Nhận yêu cầu hóa đơn tại trang thanh toán” được bật trong Vietnam store > Tính năng cốt lõi.
 
 = VietQR có tự xác nhận thanh toán không? =
 
@@ -122,17 +122,15 @@ Có. Plugin tương thích HPOS và bao gồm bản dịch tiếng Việt cho gi
 
 == Changelog ==
 
-= 1.1.0 (17/7/2026) =
+= 1.1.1 (26/7/2026) =
 
-* Đã thêm Cart/Checkout Blocks cho địa chỉ Việt Nam, Store API, trang block tùy chỉnh và danh sách Phường/Xã phụ thuộc Tỉnh/Thành.
-* Đã thêm yêu cầu hóa đơn GTGT trong Checkout Block; chuyển tùy chọn vào phần Thuế và chỉ kích hoạt tính năng khi WooCommerce bật thuế.
-* Đã thêm quy trình hóa đơn điện tử trung lập nhà cung cấp với trạng thái, hồ sơ PDF/XML, bộ lọc, CSV và nhật ký.
-* Đã thêm chuẩn hóa và xác thực số điện thoại Việt Nam cho Store API.
-* Đã thêm Quy tắc phí vận chuyển theo Shipping Zones với điều kiện đến cấp phường/xã, giỏ hàng, khối lượng, shipping class, miễn phí vận chuyển, COD và CSV.
-* Đã thêm tracking không cần API với mẫu URL, hãng tùy chỉnh, timeline, email, block và shortcode tra cứu.
-* Đã thêm công cụ quản lý đơn hàng tương thích HPOS gồm cột Thông tin, bộ lọc, thao tác hàng loạt và xuất CSV.
-* Đã hoàn thiện hiển thị VietQR và vận chuyển trên trang xác nhận đơn hàng, My Account và luồng Classic/Blocks.
-* Đã rút gọn các nhãn giao diện; Việt hóa nút lưu/cập nhật mã vận đơn và đơn giản hóa hộp Vận chuyển khi chưa có trình kết nối.
-* Đã thêm liên kết Cài đặt email cạnh tùy chọn gửi thông tin vận chuyển và xếp Tên/Số điện thoại trên cùng một hàng trong địa chỉ giao hàng.
+* Bổ sung menu và trang quản trị Vietnam store ngay dưới WooCommerce, quy tụ liên kết cấu hình cùng các switch theo color scheme của từng người dùng.
+* Thiết kế hero với icon plugin và icon SVG riêng cho menu quản trị, đồng thời loại bỏ hiện tượng nhấp nháy khi chuyển trang.
+* Cung cấp tùy chọn bật/tắt trường địa chỉ, chuẩn hóa điện thoại, thông tin vận chuyển cho khách hàng, quản lý đơn hàng, nhận yêu cầu hóa đơn tại checkout và quy trình hóa đơn điện tử.
+* Tách yêu cầu hóa đơn khỏi WooCommerce Taxes; dữ liệu lịch sử vẫn có thể xem, lọc và xuất khi cửa hàng ngừng nhận yêu cầu mới.
+* Chuyển trạng thái, tài liệu và lịch sử hóa đơn điện tử sang chế độ chỉ đọc khi quy trình quản lý bị tắt.
+* Sửa email Theo dõi vận chuyển để luôn sử dụng vận đơn hiện hành mới nhất sau khi vận đơn cũ bị hủy và tạo lại.
+* Rút gọn mã vận đơn GHTK trên giao diện và clipboard còn dãy số cuối sau dấu chấm, trong khi vẫn giữ mã đầy đủ cho tích hợp.
+* Tự động ẩn Hành trình vận chuyển thủ công khi có ít nhất một dịch vụ vận chuyển khả dụng.
 
 Xem lịch sử thay đổi chi tiết trong `changelog.txt`.

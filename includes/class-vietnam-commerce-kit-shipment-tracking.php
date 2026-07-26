@@ -408,6 +408,10 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 			return;
 		}
 
+		if ( ! empty( Yoohw_Vietnam_Store_Tools_Shipping::get_providers() ) ) {
+			return;
+		}
+
 		$events   = self::get_timeline( $order );
 		$statuses = self::get_timeline_statuses();
 		$nonce    = wp_create_nonce( 'yoohw_vietnam_store_tools_tracking_timeline_' . $order->get_id() );
@@ -553,6 +557,10 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 	}
 
 	public function render_order_timeline( $order_id ) {
+		if ( ! Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY ) ) {
+			return;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( $order instanceof WC_Order ) {
@@ -730,13 +738,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 	}
 
 	private function get_lookup_result_html( $order ) {
-		$shipping = Yoohw_Vietnam_Store_Tools_Shipping::get_order_shipping_data( $order );
-		$rows     = [
+		$shipping              = Yoohw_Vietnam_Store_Tools_Shipping::get_order_shipping_data( $order );
+		$display_tracking_code = Yoohw_Vietnam_Store_Tools_Shipping::get_display_tracking_code( $shipping['provider'], $shipping['tracking_code'] );
+		$rows                  = [
 			__( 'Order number', 'yoohw-vietnam-store-tools' )     => '#' . $order->get_order_number(),
 			__( 'Order date', 'yoohw-vietnam-store-tools' )       => $order->get_date_created() ? wc_format_datetime( $order->get_date_created() ) : '',
 			__( 'Order status', 'yoohw-vietnam-store-tools' )     => wc_get_order_status_name( $order->get_status() ),
 			__( 'Shipping provider', 'yoohw-vietnam-store-tools' ) => $shipping['provider_name'],
-			__( 'Tracking code', 'yoohw-vietnam-store-tools' )    => $shipping['tracking_code'],
+			__( 'Tracking code', 'yoohw-vietnam-store-tools' )    => $display_tracking_code,
 			__( 'Shipping status', 'yoohw-vietnam-store-tools' )  => $shipping['status'],
 		];
 

@@ -28,6 +28,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 	const META_RAW_RESPONSE  = '_vck_shipping_raw_response';
 	const META_TRACKING_EMAIL_STATUS  = '_vck_shipping_tracking_email_status';
 	const META_TRACKING_EMAIL_SENT_AT = '_vck_shipping_tracking_email_sent_at';
+	const META_TRACKING_EMAIL_CODE     = '_vck_shipping_tracking_email_code';
 
 	private $auto_synced_order_ids = [];
 
@@ -47,6 +48,10 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 	}
 
 	public function render_frontend_order_tracking( $order_id ) {
+		if ( ! Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY ) ) {
+			return;
+		}
+
 		$order = wc_get_order( $order_id );
 
 		if ( ! $order instanceof WC_Order ) {
@@ -62,7 +67,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		$rows = [
 			__( 'Provider', 'yoohw-vietnam-store-tools' )      => $data['provider_name'],
 			__( 'Service', 'yoohw-vietnam-store-tools' )       => $data['service_name'],
-			__( 'Tracking code', 'yoohw-vietnam-store-tools' ) => $this->format_frontend_tracking_code( $data['tracking_code'], $data['tracking_url'] ),
+			__( 'Tracking code', 'yoohw-vietnam-store-tools' ) => $this->format_frontend_tracking_code( $data['provider'], $data['tracking_code'], $data['tracking_url'] ),
 			__( 'Status', 'yoohw-vietnam-store-tools' )        => $data['status'],
 		];
 
@@ -82,19 +87,20 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		echo '</section>';
 	}
 
-	private function format_frontend_tracking_code( $tracking_code, $tracking_url ) {
-		$tracking_code = trim( (string) $tracking_code );
-		$tracking_url  = trim( (string) $tracking_url );
+	private function format_frontend_tracking_code( $provider_id, $tracking_code, $tracking_url ) {
+		$tracking_code         = trim( (string) $tracking_code );
+		$display_tracking_code = self::get_display_tracking_code( $provider_id, $tracking_code );
+		$tracking_url          = trim( (string) $tracking_url );
 
 		if ( '' === $tracking_code ) {
 			return '';
 		}
 
 		if ( '' === $tracking_url ) {
-			return esc_html( $tracking_code );
+			return esc_html( $display_tracking_code );
 		}
 
-		return '<a href="' . esc_url( $tracking_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $tracking_code ) . '</a>';
+		return '<a href="' . esc_url( $tracking_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $display_tracking_code ) . '</a>';
 	}
 
 	public function register_email_classes( $emails ) {
@@ -201,11 +207,28 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		return isset( $providers[ $provider_id ] ) ? $providers[ $provider_id ] : null;
 	}
 
-	public static function get_order_shipping_data( $order ) {
+	public static function get_display_tracking_code( $provider_id, $tracking_code ) {
+		$tracking_code = trim( (string) $tracking_code );
+		$separator_pos = strrpos( $tracking_code, '.' );
+
+		if ( 'ghtk' !== sanitize_key( $provider_id ) || false === $separator_pos ) {
+			return $tracking_code;
+		}
+
+		$short_code = trim( (string) substr( $tracking_code, $separator_pos + 1 ) );
+
+		return '' !== $short_code ? $short_code : $tracking_code;
+	}
+
+	public static function get_order_shipping_data( $order, $force_refresh = false ) {
 		$order = self::get_order( $order );
 
 		if ( ! $order ) {
 			return [];
+		}
+
+		if ( $force_refresh && is_callable( [ $order, 'read_meta_data' ] ) ) {
+			$order->read_meta_data( true );
 		}
 
 		$data = [
@@ -235,14 +258,44 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
 		}
 
-		$provider = is_array( $provider ) ? self::normalize_provider( $provider ) : self::get_provider( $provider );
+		$previous_provider      = sanitize_key( $order->get_meta( self::META_PROVIDER, true ) );
+		$previous_tracking_code = trim( (string) $order->get_meta( self::META_TRACKING_CODE, true ) );
+		$provider               = is_array( $provider ) ? self::normalize_provider( $provider ) : self::get_provider( $provider );
 
 		if ( ! $provider ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_provider', __( 'Shipping provider is not available.', 'yoohw-vietnam-store-tools' ) );
 		}
 
+		$data                   = is_array( $data ) ? $data : [];
+		$has_tracking_code      = array_key_exists( 'tracking_code', $data ) && null !== $data['tracking_code'];
+
+		if ( $previous_provider !== $provider['id'] && ! $has_tracking_code ) {
+			$data['tracking_code'] = '';
+			$has_tracking_code     = true;
+		}
+
+		$incoming_tracking_code = $has_tracking_code ? trim( (string) $data['tracking_code'] ) : $previous_tracking_code;
+		$shipment_changed       = $previous_provider !== $provider['id'] || ( $has_tracking_code && $previous_tracking_code !== $incoming_tracking_code );
+
+		if ( $shipment_changed ) {
+			$shipment_reset_defaults = [
+				'label_id'     => '',
+				'tracking_id'  => '',
+				'tracking_url' => '',
+				'status_id'    => '',
+				'status'       => '',
+				'raw_response' => [],
+			];
+
+			foreach ( $shipment_reset_defaults as $shipment_data_key => $default_value ) {
+				if ( ! array_key_exists( $shipment_data_key, $data ) ) {
+					$data[ $shipment_data_key ] = $default_value;
+				}
+			}
+		}
+
 		$data = wp_parse_args(
-			is_array( $data ) ? $data : [],
+			$data,
 			[
 				'provider'      => $provider['id'],
 				'provider_name' => $provider['name'],
@@ -276,6 +329,12 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			$order->update_meta_data( $meta_key, self::sanitize_meta_value( $data_key, $data[ $data_key ] ) );
 		}
 
+		if ( $shipment_changed ) {
+			$order->delete_meta_data( self::META_TRACKING_EMAIL_STATUS );
+			$order->delete_meta_data( self::META_TRACKING_EMAIL_SENT_AT );
+			$order->delete_meta_data( self::META_TRACKING_EMAIL_CODE );
+		}
+
 		$order->save();
 
 		return true;
@@ -288,7 +347,9 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
 		}
 
-		$data = wp_parse_args(
+		$previous_provider      = sanitize_key( $order->get_meta( self::META_PROVIDER, true ) );
+		$previous_tracking_code = trim( (string) $order->get_meta( self::META_TRACKING_CODE, true ) );
+		$data                   = wp_parse_args(
 			is_array( $data ) ? $data : [],
 			[
 				'provider'      => '',
@@ -329,6 +390,12 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 
 		foreach ( $meta_map as $data_key => $meta_key ) {
 			$order->update_meta_data( $meta_key, self::sanitize_meta_value( $data_key, $data[ $data_key ] ) );
+		}
+
+		if ( $previous_provider !== sanitize_key( $data['provider'] ) || $previous_tracking_code !== trim( (string) $data['tracking_code'] ) ) {
+			$order->delete_meta_data( self::META_TRACKING_EMAIL_STATUS );
+			$order->delete_meta_data( self::META_TRACKING_EMAIL_SENT_AT );
+			$order->delete_meta_data( self::META_TRACKING_EMAIL_CODE );
 		}
 
 		$order->save();
@@ -701,7 +768,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			],
 			[
 				'label' => __( 'Tracking code', 'yoohw-vietnam-store-tools' ),
-				'value' => $this->format_tracking_code_value( $tracking_code, $data['tracking_url'] ),
+				'value' => $this->format_tracking_code_value( $data['provider'], $tracking_code, $data['tracking_url'] ),
 			],
 			[
 				'label' => __( 'Status', 'yoohw-vietnam-store-tools' ),
@@ -1624,7 +1691,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return false;
 		}
 
-		$shipping_data = self::get_order_shipping_data( $order );
+		$shipping_data = self::get_order_shipping_data( $order, true );
 
 		if ( ! is_array( $provider ) ) {
 			$provider = self::get_provider( $shipping_data['provider'] );
@@ -1640,14 +1707,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		}
 
 		if ( '' === trim( $shipping_data['tracking_code'] ) || '' === trim( (string) $order->get_billing_email() ) || ! function_exists( 'WC' ) || ! WC() ) {
-			self::record_tracking_email_result( $order, false );
+			self::record_tracking_email_result( $order, false, $shipping_data['tracking_code'] );
 			return false;
 		}
 
 		$mailer = WC()->mailer();
 
 		if ( ! $mailer || ! method_exists( $mailer, 'get_emails' ) ) {
-			self::record_tracking_email_result( $order, false );
+			self::record_tracking_email_result( $order, false, $shipping_data['tracking_code'] );
 			return false;
 		}
 
@@ -1655,19 +1722,20 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		$email_key = 'Yoohw_Vietnam_Store_Tools_Customer_Shipping_Tracking_Email';
 
 		if ( empty( $emails[ $email_key ] ) || ! is_callable( [ $emails[ $email_key ], 'trigger' ] ) ) {
-			self::record_tracking_email_result( $order, false );
+			self::record_tracking_email_result( $order, false, $shipping_data['tracking_code'] );
 			return false;
 		}
 
 		$sent = (bool) $emails[ $email_key ]->trigger( $order->get_id(), $shipping_data, $provider );
 
-		self::record_tracking_email_result( $order, $sent );
+		self::record_tracking_email_result( $order, $sent, $shipping_data['tracking_code'] );
 
 		return $sent;
 	}
 
-	private static function record_tracking_email_result( $order, $sent ) {
+	private static function record_tracking_email_result( $order, $sent, $tracking_code = '' ) {
 		$order->update_meta_data( self::META_TRACKING_EMAIL_STATUS, $sent ? 'sent' : 'failed' );
+		$order->update_meta_data( self::META_TRACKING_EMAIL_CODE, sanitize_text_field( (string) $tracking_code ) );
 
 		if ( $sent ) {
 			$order->update_meta_data( self::META_TRACKING_EMAIL_SENT_AT, gmdate( 'c' ) );
@@ -1774,19 +1842,20 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		return '' !== $data['status'] ? $data['status'] : $data['status_id'];
 	}
 
-	private function format_tracking_code_value( $tracking_code, $tracking_url ) {
-		$tracking_code = trim( (string) $tracking_code );
-		$tracking_url  = trim( (string) $tracking_url );
+	private function format_tracking_code_value( $provider_id, $tracking_code, $tracking_url ) {
+		$tracking_code         = trim( (string) $tracking_code );
+		$display_tracking_code = self::get_display_tracking_code( $provider_id, $tracking_code );
+		$tracking_url          = trim( (string) $tracking_url );
 
 		if ( '' === $tracking_code ) {
 			return '';
 		}
 
 		$value = '' === $tracking_url
-			? '<span class="vck-admin-shipping-card__tracking-text">' . esc_html( $tracking_code ) . '</span>'
-			: '<a class="vck-admin-shipping-card__tracking-text" href="' . esc_url( $tracking_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $tracking_code ) . '</a>';
+			? '<span class="vck-admin-shipping-card__tracking-text">' . esc_html( $display_tracking_code ) . '</span>'
+			: '<a class="vck-admin-shipping-card__tracking-text" href="' . esc_url( $tracking_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $display_tracking_code ) . '</a>';
 
-		return '<span class="vck-admin-shipping-card__copyable">' . $value . '<button type="button" class="vck-admin-shipping-card__copy" data-vck-shipping-copy="' . esc_attr( $tracking_code ) . '" data-vck-copy-label="' . esc_attr__( 'Copy tracking code', 'yoohw-vietnam-store-tools' ) . '" data-vck-copied-label="' . esc_attr__( 'Copied', 'yoohw-vietnam-store-tools' ) . '" aria-label="' . esc_attr__( 'Copy tracking code', 'yoohw-vietnam-store-tools' ) . '" title="' . esc_attr__( 'Copy tracking code', 'yoohw-vietnam-store-tools' ) . '"><span class="dashicons dashicons-admin-page" aria-hidden="true"></span></button></span>';
+		return '<span class="vck-admin-shipping-card__copyable">' . $value . '<button type="button" class="vck-admin-shipping-card__copy" data-vck-shipping-copy="' . esc_attr( $display_tracking_code ) . '" data-vck-copy-label="' . esc_attr__( 'Copy tracking code', 'yoohw-vietnam-store-tools' ) . '" data-vck-copied-label="' . esc_attr__( 'Copied', 'yoohw-vietnam-store-tools' ) . '" aria-label="' . esc_attr__( 'Copy tracking code', 'yoohw-vietnam-store-tools' ) . '" title="' . esc_attr__( 'Copy tracking code', 'yoohw-vietnam-store-tools' ) . '"><span class="dashicons dashicons-admin-page" aria-hidden="true"></span></button></span>';
 	}
 
 	private function format_money_value( $value ) {
