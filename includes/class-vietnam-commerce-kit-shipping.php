@@ -1100,6 +1100,41 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			.vck-admin-shipping-summary--danger .vck-admin-shipping-card__status .vck-admin-shipping-card__value {
 				color: #b32d2e;
 			}
+			.vck-admin-shipping-manual-form__toggle {
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+				margin: 12px 0 0;
+				padding: 10px 2px;
+				border: 0;
+				border-top: 1px solid #dcdcde;
+				border-bottom: 1px solid #dcdcde;
+				background: transparent;
+				color: var(--wp-admin-theme-color, #2271b1);
+				cursor: pointer;
+				font-weight: 600;
+				text-align: left;
+			}
+			.vck-admin-shipping-manual-form__toggle:hover,
+			.vck-admin-shipping-manual-form__toggle:focus {
+				color: var(--wp-admin-theme-color-darker-10, #135e96);
+			}
+			.vck-admin-shipping-manual-form__toggle:focus-visible {
+				border-radius: 2px;
+				box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+				outline: 2px solid transparent;
+			}
+			.vck-admin-shipping-manual-form__toggle .dashicons {
+				transition: transform 0.15s ease;
+			}
+			.vck-admin-shipping-manual-form__toggle[aria-expanded="true"] .dashicons {
+				transform: rotate(180deg);
+			}
+			.vck-admin-shipping-manual-form[hidden] {
+				display: none;
+			}
 		</style>
 		<?php
 	}
@@ -1142,7 +1177,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			? __( 'Save tracking code', 'yoohw-vietnam-store-tools' )
 			: __( 'Update tracking code', 'yoohw-vietnam-store-tools' );
 
-		echo '<div id="' . esc_attr( $panel_id ) . '" data-vck-shipping-create-panel class="vck-admin-shipping-manual-form" style="margin-top:12px;">';
+		if ( '' !== $tracking_code ) {
+			echo '<button type="button" class="vck-admin-shipping-manual-form__toggle" data-vck-manual-shipping-toggle aria-expanded="false" aria-controls="' . esc_attr( $panel_id ) . '">';
+			echo '<span>' . esc_html__( 'Update tracking code', 'yoohw-vietnam-store-tools' ) . '</span>';
+			echo '<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>';
+			echo '</button>';
+		}
+
+		echo '<div id="' . esc_attr( $panel_id ) . '" data-vck-shipping-create-panel class="vck-admin-shipping-manual-form" style="margin-top:12px;"' . ( '' !== $tracking_code ? ' hidden' : '' ) . '>';
 		echo '<p><label for="vck_manual_shipping_provider_' . esc_attr( $order->get_id() ) . '">' . esc_html__( 'Provider', 'yoohw-vietnam-store-tools' ) . '</label>';
 		echo '<select id="vck_manual_shipping_provider_' . esc_attr( $order->get_id() ) . '" name="provider_id" class="widefat">';
 
@@ -1550,6 +1592,29 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 						return;
 					}
 
+					var manualFormToggle = event.target.closest('[data-vck-manual-shipping-toggle]');
+
+					if (manualFormToggle) {
+						event.preventDefault();
+
+						var manualForm = document.getElementById(manualFormToggle.getAttribute('aria-controls') || '');
+						if (!manualForm) {
+							return;
+						}
+
+						var shouldExpand = manualFormToggle.getAttribute('aria-expanded') !== 'true';
+						manualFormToggle.setAttribute('aria-expanded', shouldExpand ? 'true' : 'false');
+						manualForm.hidden = !shouldExpand;
+
+						if (shouldExpand) {
+							var firstField = manualForm.querySelector('select:not([disabled]), input:not([disabled]), textarea:not([disabled])');
+							if (firstField) {
+								firstField.focus();
+							}
+						}
+						return;
+					}
+
 					var button = event.target.closest('[data-vck-shipping-action]');
 					if (!button) {
 						return;
@@ -1684,7 +1749,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		return in_array( strtolower( trim( (string) $value ) ), [ '1', 'yes', 'true', 'on' ], true );
 	}
 
-	public static function send_customer_tracking_email( $order, $provider = null ) {
+	public static function send_customer_tracking_email( $order, $provider = null, $context = [] ) {
 		$order = self::get_order( $order );
 
 		if ( ! $order ) {
@@ -1726,7 +1791,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return false;
 		}
 
-		$sent = (bool) $emails[ $email_key ]->trigger( $order->get_id(), $shipping_data, $provider );
+		$sent = (bool) $emails[ $email_key ]->trigger( $order->get_id(), $shipping_data, $provider, is_array( $context ) ? $context : [] );
 
 		self::record_tracking_email_result( $order, $sent, $shipping_data['tracking_code'] );
 

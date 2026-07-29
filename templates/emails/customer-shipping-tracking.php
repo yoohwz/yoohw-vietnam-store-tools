@@ -67,6 +67,12 @@ printf(
 				<th class="td text-align-left" scope="row"><?php esc_html_e( 'Tracking code', 'yoohw-vietnam-store-tools' ); ?></th>
 				<td class="td text-align-left"><?php echo wp_kses_post( $tracking_code_display ); ?></td>
 			</tr>
+			<?php foreach ( $shipment_details as $detail ) : ?>
+				<tr class="order-totals vck-shipping-tracking-row">
+					<th class="td text-align-left" scope="row"><?php echo esc_html( $detail['label'] ); ?></th>
+					<td class="td text-align-left"><?php echo wp_kses_post( $detail['value'] ); ?></td>
+				</tr>
+			<?php endforeach; ?>
 		</tbody>
 	</table>
 </div>

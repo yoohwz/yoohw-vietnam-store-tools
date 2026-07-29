@@ -402,13 +402,20 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 	}
 
 	public function render_admin_timeline( $order, $shipping_data = [] ) {
-		unset( $shipping_data );
-
 		if ( ! $order instanceof WC_Order || ! current_user_can( 'manage_woocommerce' ) ) {
 			return;
 		}
 
 		if ( ! empty( Yoohw_Vietnam_Store_Tools_Shipping::get_providers() ) ) {
+			return;
+		}
+
+		$shipping_data      = is_array( $shipping_data ) ? $shipping_data : [];
+		$tracking_code      = trim( (string) ( $shipping_data['tracking_code'] ?? '' ) );
+		$shipment_status_id = sanitize_key( $shipping_data['status_id'] ?? '' );
+		$shipment_status    = sanitize_key( $shipping_data['status'] ?? '' );
+
+		if ( '' === $tracking_code || ( 'manual' !== $shipment_status_id && 'manual' !== $shipment_status ) ) {
 			return;
 		}
 

@@ -297,13 +297,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 	}
 
 	private function get_setting_groups() {
-		$providers          = class_exists( 'Yoohw_Vietnam_Store_Tools_Shipping' ) ? Yoohw_Vietnam_Store_Tools_Shipping::get_providers() : [];
-		$enabled_providers  = array_filter(
-			$providers,
-			static function ( $provider ) {
-				return ! empty( $provider['enabled'] );
-			}
-		);
+		$enabled_providers  = class_exists( 'Yoohw_Vietnam_Store_Tools_Shipping' ) ? Yoohw_Vietnam_Store_Tools_Shipping::get_providers() : [];
 		$service_settings   = class_exists( 'Yoohw_Vietnam_Store_Tools_Internal' );
 		$lookup_enabled     = 'yes' === get_option( Yoohw_Vietnam_Store_Tools_Shipment_Tracking::OPTION_LOOKUP_ENABLED, 'yes' );
 		$address_enabled    = self::is_feature_enabled( self::OPTION_ADDRESS_FIELDS );
