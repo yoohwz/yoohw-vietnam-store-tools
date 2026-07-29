@@ -17,6 +17,14 @@ Bộ công cụ WooCommerce Việt Nam cho địa chỉ hai cấp, Checkout Bloc
 
 Vietnam Store Toolkit for WooCommerce bổ sung các công cụ cần thiết cho cửa hàng tại Việt Nam: địa chỉ tỉnh/thành phố và phường/xã, VietQR, hóa đơn GTGT, số điện thoại, phí vận chuyển, mã vận đơn và tra cứu đơn hàng.
 
+= Liên kết chính thức =
+
+* [Website Vietnam Store Toolkit](https://vietnamstore.org/) — giới thiệu tổng quan và các tính năng.
+* [Tài liệu sử dụng](https://vietnamstore.org/documentation/) — yêu cầu hệ thống, cấu hình và ví dụ.
+* [Hỗ trợ](https://vietnamstore.org/support/) — nguồn hỗ trợ chính thức và cách gửi yêu cầu.
+* [Mã nguồn và phát triển trên GitHub](https://github.com/yoohwz/yoohw-vietnam-store-tools) — xem code, báo lỗi, đề xuất tính năng và pull request.
+* [Bản phát hành trên WordPress.org](https://wordpress.org/plugins/yoohw-vietnam-store-tools/) — nguồn cài đặt công khai chính thức.
+
 = Tính năng chính =
 
 * Địa chỉ hai cấp gồm 34 tỉnh/thành phố và 3.321 phường/xã/đặc khu.
