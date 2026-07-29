@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.1\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.2\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
 "POT-Creation-Date: 2026-07-17 00:00:00+0000\n"
 "PO-Revision-Date: 2026-07-17 00:00:00+0000\n"
@@ -14816,3 +14816,57 @@ msgstr "Quản lý quy trình hóa đơn điện tử đang bị tắt. Dữ li�
 
 msgid "Allow customers to submit company and tax details for new orders."
 msgstr "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng mới."
+msgid "Sending..."
+msgstr "Đang gửi..."
+
+msgid "Send invoice email to customer"
+msgstr "Gửi email hóa đơn cho khách hàng"
+
+msgid "The electronic invoice email could not be sent."
+msgstr "Không thể gửi email hóa đơn điện tử."
+
+msgid "Electronic invoice emailed to the customer."
+msgstr "Đã gửi hóa đơn điện tử qua email cho khách hàng."
+
+msgid "Electronic invoice email sent to the customer."
+msgstr "Đã gửi email hóa đơn điện tử cho khách hàng."
+
+msgid "Vietnam electronic invoice"
+msgstr "Hóa đơn điện tử Việt Nam"
+
+msgid "Manually send electronic invoice details and available PDF/XML files to the customer."
+msgstr "Gửi thủ công thông tin hóa đơn điện tử cùng các tệp PDF/XML hiện có cho khách hàng."
+
+msgid "Electronic invoice for order #{order_number} on {site_title}"
+msgstr "Hóa đơn điện tử cho đơn hàng #{order_number} tại {site_title}"
+
+msgid "Your electronic invoice"
+msgstr "Hóa đơn điện tử của bạn"
+
+msgid "If you need help with this invoice, please contact us at {store_email}."
+msgstr "Nếu bạn cần hỗ trợ về hóa đơn này, vui lòng liên hệ với chúng tôi qua {store_email}."
+
+#. translators: %s: order number.
+msgid "Your electronic invoice for order #%s is ready."
+msgstr "Hóa đơn điện tử cho đơn hàng #%s của bạn đã sẵn sàng."
+
+msgid "Invoice details"
+msgstr "Thông tin hóa đơn"
+
+msgid "Look up electronic invoice"
+msgstr "Tra cứu hóa đơn điện tử"
+
+msgid "Available invoice files are attached to this email."
+msgstr "Các tệp hóa đơn hiện có được đính kèm trong email này."
+
+msgid "Invoice lookup URL"
+msgstr "Liên kết tra cứu hóa đơn"
+
+msgid "Shipping update: {shipment_status} - Order #{order_number}"
+msgstr "Cập nhật vận chuyển: {shipment_status} - Đơn hàng #{order_number}"
+
+msgid "Shipping service"
+msgstr "Dịch vụ vận chuyển"
+
+msgid "Last shipment update"
+msgstr "Cập nhật vận đơn gần nhất"

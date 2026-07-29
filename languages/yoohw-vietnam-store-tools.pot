@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.1\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.2\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15092,4 +15092,58 @@ msgstr ""
 
 #: blocks/order-tracking/index.js
 msgid "Customers enter an order number and their billing email or phone number to view shipment tracking."
+msgstr ""
+msgid "Sending..."
+msgstr ""
+
+msgid "Send invoice email to customer"
+msgstr ""
+
+msgid "The electronic invoice email could not be sent."
+msgstr ""
+
+msgid "Electronic invoice emailed to the customer."
+msgstr ""
+
+msgid "Electronic invoice email sent to the customer."
+msgstr ""
+
+msgid "Vietnam electronic invoice"
+msgstr ""
+
+msgid "Manually send electronic invoice details and available PDF/XML files to the customer."
+msgstr ""
+
+msgid "Electronic invoice for order #{order_number} on {site_title}"
+msgstr ""
+
+msgid "Your electronic invoice"
+msgstr ""
+
+msgid "If you need help with this invoice, please contact us at {store_email}."
+msgstr ""
+
+#. translators: %s: order number.
+msgid "Your electronic invoice for order #%s is ready."
+msgstr ""
+
+msgid "Invoice details"
+msgstr ""
+
+msgid "Look up electronic invoice"
+msgstr ""
+
+msgid "Available invoice files are attached to this email."
+msgstr ""
+
+msgid "Invoice lookup URL"
+msgstr ""
+
+msgid "Shipping update: {shipment_status} - Order #{order_number}"
+msgstr ""
+
+msgid "Shipping service"
+msgstr ""
+
+msgid "Last shipment update"
 msgstr ""
