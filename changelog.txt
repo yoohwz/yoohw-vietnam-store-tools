@@ -1,5 +1,19 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
+= 1.1.2 (In development) =
+
+* Bổ sung Plugin URI cùng các URL có thể nhấp tới Website, Tài liệu, Hỗ trợ và nội dung chuyên đề chính thức để xác minh nguồn sản phẩm.
+* Thu gọn biểu mẫu cập nhật vận đơn thủ công sau khi đã có mã vận đơn; quản trị viên mở lại biểu mẫu bằng dòng “Cập nhật mã vận đơn” có màu theo admin color scheme của từng người dùng.
+* Bổ sung trạng thái vận đơn, dịch vụ, tiền COD và thời gian cập nhật trong email được kích hoạt bởi trình kết nối vận chuyển nội bộ; không hiển thị biểu phí nội bộ của tài khoản shop.
+* Dùng tiêu đề riêng `Cập nhật vận chuyển: {trạng thái vận đơn} - Đơn hàng #{order_number}` cho email do plugin nội bộ kích hoạt.
+* Sửa triệt để vòng đời placeholder của email vận chuyển và hóa đơn điện tử: khôi phục `{site_title}`, `{site_address}`, `{site_url}`, `{store_email}` ở mỗi lần gửi; làm mới placeholder đơn hàng/vận đơn/hóa đơn và hỗ trợ đúng trong subject, heading cùng nội dung bổ sung qua nhiều lần gửi.
+* Ẩn dòng thông tin VAT trong cột Thông tin của danh sách đơn hàng khi tính năng nhận yêu cầu hóa đơn tại trang thanh toán bị tắt, đồng thời giữ nguyên bộ lọc và khả năng xuất dữ liệu hóa đơn lịch sử.
+* Chỉ hiển thị biểu mẫu Hành trình vận chuyển thủ công trong metabox đơn hàng sau khi vận đơn thủ công có mã theo dõi đã được tạo.
+* Sửa số lượng dịch vụ vận chuyển đang bật trên trang Vietnam store bằng cách đếm trực tiếp các nhà cung cấp khả dụng đã đăng ký.
+* Bổ sung email WooCommerce cho quy trình hóa đơn điện tử với mẫu HTML và văn bản thuần, tùy chỉnh trong cài đặt email, gửi thủ công từ metabox đơn hàng và đính kèm tệp PDF/XML hiện có.
+* Tự động chuyển trạng thái hóa đơn sang Đã gửi cho khách hàng sau khi gửi email thành công, đồng thời lưu trạng thái, thời gian gửi và hiển thị thông báo kết quả.
+* Hoàn thiện bản dịch tiếng Việt cho chức năng gửi email hóa đơn điện tử.
+
 = 1.1.1 (26/7/2026) =
 
 * Bổ sung menu Vietnam store ngay dưới WooCommerce cùng trang cấu hình tập trung cho các tính năng, dịch vụ và công cụ vận hành.
