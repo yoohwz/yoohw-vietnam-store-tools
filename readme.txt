@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 10.9
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -137,7 +137,7 @@ Có. Plugin tương thích HPOS và bao gồm bản dịch tiếng Việt cho gi
 
 == Changelog ==
 
-= 1.1.2 (In development) =
+= 1.1.2 (30/7/2026) =
 
 * Bổ sung Plugin URI cùng các URL có thể nhấp tới Website, Tài liệu, Hỗ trợ và nội dung chuyên đề chính thức để xác minh nguồn sản phẩm.
 * Thu gọn biểu mẫu cập nhật vận đơn thủ công sau khi đã có mã vận đơn; quản trị viên mở lại biểu mẫu bằng dòng “Cập nhật mã vận đơn” có màu theo admin color scheme của từng người dùng.
