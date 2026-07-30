@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 
 	const ACTION_SAVE = 'yoohw_vietnam_store_tools_save_einvoice_workflow';
+	const ACTION_SEND_EMAIL = 'yoohw_vietnam_store_tools_send_einvoice_email';
 
 	const META_STATUS            = '_yoohw_vietnam_store_tools_einvoice_status';
 	const META_NUMBER            = '_yoohw_vietnam_store_tools_einvoice_number';
@@ -22,6 +23,8 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	const META_XML_ATTACHMENT_ID = '_yoohw_vietnam_store_tools_einvoice_xml_attachment_id';
 	const META_PROVIDER          = '_yoohw_vietnam_store_tools_einvoice_provider';
 	const META_HISTORY           = '_yoohw_vietnam_store_tools_einvoice_history';
+	const META_EMAIL_STATUS      = '_yoohw_vietnam_store_tools_einvoice_email_status';
+	const META_EMAIL_SENT_AT     = '_yoohw_vietnam_store_tools_einvoice_email_sent_at';
 
 	private $handling_invoice_upload = '';
 
@@ -29,11 +32,13 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
 		add_action( 'admin_notices', [ $this, 'render_admin_notices' ] );
+		add_filter( 'woocommerce_email_classes', [ $this, 'register_email_classes' ] );
 
 		if ( self::is_workflow_enabled() ) {
 			add_action( 'woocommerce_checkout_create_order', [ $this, 'initialize_requested_workflow' ], 50 );
 			add_action( 'woocommerce_store_api_checkout_update_order_from_request', [ $this, 'initialize_requested_workflow' ], 50 );
 			add_action( 'admin_post_' . self::ACTION_SAVE, [ $this, 'handle_save_action' ] );
+			add_action( 'admin_post_' . self::ACTION_SEND_EMAIL, [ $this, 'handle_send_email_action' ] );
 			add_filter( 'upload_mimes', [ $this, 'allow_invoice_upload_mimes' ], 20, 2 );
 			add_filter( 'wp_check_filetype_and_ext', [ $this, 'normalize_invoice_xml_filetype' ], 20, 5 );
 		}
@@ -41,6 +46,20 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 
 	public static function is_workflow_enabled() {
 		return Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE );
+	}
+
+	public function register_email_classes( $emails ) {
+		$email_class_file = YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'includes/emails/class-vietnam-commerce-kit-customer-electronic-invoice-email.php';
+
+		if ( file_exists( $email_class_file ) ) {
+			include_once $email_class_file;
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email' ) ) {
+			$emails['Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email'] = new Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email();
+		}
+
+		return $emails;
 	}
 
 	public function allow_invoice_upload_mimes( $mimes, $user = null ) {
@@ -347,7 +366,9 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			[
 				'adminPostUrl' => admin_url( 'admin-post.php' ),
 				'action'       => self::ACTION_SAVE,
+				'sendAction'   => self::ACTION_SEND_EMAIL,
 				'saving'       => __( 'Saving...', 'yoohw-vietnam-store-tools' ),
+				'sending'      => __( 'Sending...', 'yoohw-vietnam-store-tools' ),
 			]
 		);
 	}
@@ -406,6 +427,8 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 
 			<div class="vck-einvoice__actions">
 				<button type="button" class="button button-primary" data-vck-einvoice-save data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( self::ACTION_SAVE . '_' . $order->get_id() ) ); ?>"><?php esc_html_e( 'Save invoice workflow', 'yoohw-vietnam-store-tools' ); ?></button>
+				<button type="button" class="button" data-vck-einvoice-send data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( self::ACTION_SEND_EMAIL . '_' . $order->get_id() ) ); ?>"<?php disabled( '' === trim( (string) $order->get_billing_email() ) ); ?>><?php esc_html_e( 'Send invoice email to customer', 'yoohw-vietnam-store-tools' ); ?></button>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=email&section=yoohw_vietnam_store_tools_customer_electronic_invoice' ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Email settings', 'yoohw-vietnam-store-tools' ); ?></a>
 			</div>
 
 			<?php $this->render_history( $order ); ?>
@@ -483,13 +506,103 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		$this->redirect_to_order( $order, [ 'vck_einvoice_notice' => 'saved' ] );
 	}
 
+	public function handle_send_email_action() {
+		$order_id = absint( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'order_id' ) );
+
+		if ( ! $order_id || ! current_user_can( 'edit_shop_order', $order_id ) ) {
+			wp_die( esc_html__( 'You do not have permission to edit this order.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		if ( ! check_admin_referer( self::ACTION_SEND_EMAIL . '_' . $order_id, 'yoohw_vietnam_store_tools_einvoice_nonce', false ) ) {
+			wp_die( esc_html__( 'Security check failed. Please reload the page and try again.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		$order = self::get_order( $order_id );
+
+		if ( ! self::is_workflow_enabled() ) {
+			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'Electronic invoice workflow management is disabled.', 'yoohw-vietnam-store-tools' ) ] );
+		}
+
+		if ( ! self::order_has_invoice_request( $order ) ) {
+			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'This order does not contain a VAT invoice request.', 'yoohw-vietnam-store-tools' ) ] );
+		}
+
+		if ( '' === trim( (string) $order->get_billing_email() ) ) {
+			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'The customer billing email is missing.', 'yoohw-vietnam-store-tools' ) ] );
+		}
+
+		if ( ! self::send_customer_invoice_email( $order ) ) {
+			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'The electronic invoice email could not be sent.', 'yoohw-vietnam-store-tools' ) ] );
+		}
+
+		$current_data = self::get_order_data( $order );
+
+		if ( 'sent' !== $current_data['status'] ) {
+			self::update_order_data(
+				$order,
+				[ 'status' => 'sent' ],
+				[
+					'source' => 'customer_email',
+					'note'   => __( 'Electronic invoice emailed to the customer.', 'yoohw-vietnam-store-tools' ),
+				]
+			);
+		}
+
+		$this->redirect_to_order( $order, [ 'vck_einvoice_notice' => 'email_sent' ] );
+	}
+
+	public static function send_customer_invoice_email( $order ) {
+		$order = self::get_order( $order );
+
+		if ( ! $order || '' === trim( (string) $order->get_billing_email() ) || ! function_exists( 'WC' ) || ! WC() ) {
+			return false;
+		}
+
+		$mailer = WC()->mailer();
+
+		if ( ! $mailer || ! method_exists( $mailer, 'get_emails' ) ) {
+			self::record_email_result( $order, false );
+			return false;
+		}
+
+		$emails    = $mailer->get_emails();
+		$email_key = 'Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email';
+
+		if ( empty( $emails[ $email_key ] ) || ! is_callable( [ $emails[ $email_key ], 'trigger' ] ) ) {
+			self::record_email_result( $order, false );
+			return false;
+		}
+
+		$sent = (bool) $emails[ $email_key ]->trigger( $order->get_id(), self::get_order_data( $order ) );
+
+		self::record_email_result( $order, $sent );
+
+		return $sent;
+	}
+
+	private static function record_email_result( $order, $sent ) {
+		$order->update_meta_data( self::META_EMAIL_STATUS, $sent ? 'sent' : 'failed' );
+
+		if ( $sent ) {
+			$order->update_meta_data( self::META_EMAIL_SENT_AT, gmdate( 'c' ) );
+		} else {
+			$order->delete_meta_data( self::META_EMAIL_SENT_AT );
+		}
+
+		$order->save();
+	}
+
 	public function render_admin_notices() {
 		if ( ! current_user_can( 'edit_shop_orders' ) ) {
 			return;
 		}
 
-		if ( 'saved' === sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'vck_einvoice_notice' ) ) ) {
+		$notice = sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'vck_einvoice_notice' ) );
+
+		if ( 'saved' === $notice ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Electronic invoice workflow saved.', 'yoohw-vietnam-store-tools' ) . '</p></div>';
+		} elseif ( 'email_sent' === $notice ) {
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Electronic invoice email sent to the customer.', 'yoohw-vietnam-store-tools' ) . '</p></div>';
 		}
 
 		$error = Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'vck_einvoice_error' );

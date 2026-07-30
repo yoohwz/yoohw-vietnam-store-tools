@@ -294,7 +294,7 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 			return;
 		}
 
-		$invoice_enabled       = $this->is_invoice_feature_enabled();
+		$invoice_enabled       = Yoohw_Vietnam_Store_Tools_Tax_Invoice::accepts_new_requests();
 		$shipping              = Yoohw_Vietnam_Store_Tools_Shipping::get_order_shipping_data( $order );
 		$carrier               = trim( (string) $shipping['provider_name'] );
 		$tracking_code         = trim( (string) $shipping['tracking_code'] );

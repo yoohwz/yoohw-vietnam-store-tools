@@ -67,4 +67,34 @@
 		document.body.appendChild( form );
 		form.submit();
 	} );
+
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest( '[data-vck-einvoice-send]' );
+
+		if ( ! button || button.disabled ) {
+			return;
+		}
+
+		var form = document.createElement( 'form' );
+		form.method = 'post';
+		form.action = settings.adminPostUrl || '';
+		form.hidden = true;
+
+		function appendValue( name, value ) {
+			var input = document.createElement( 'input' );
+			input.type = 'hidden';
+			input.name = name;
+			input.value = value == null ? '' : String( value );
+			form.appendChild( input );
+		}
+
+		appendValue( 'action', settings.sendAction || '' );
+		appendValue( 'order_id', button.getAttribute( 'data-order-id' ) || '' );
+		appendValue( 'yoohw_vietnam_store_tools_einvoice_nonce', button.getAttribute( 'data-nonce' ) || '' );
+
+		button.disabled = true;
+		button.textContent = settings.sending || button.textContent;
+		document.body.appendChild( form );
+		form.submit();
+	} );
 }() );

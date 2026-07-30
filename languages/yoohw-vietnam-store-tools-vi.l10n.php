@@ -1,7 +1,7 @@
 <?php
 return json_decode(<<<'JSON'
 {
-  "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.1",
+  "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.2",
   "report-msgid-bugs-to": "https://yoohw.com",
   "pot-creation-date": "2026-07-17 00:00:00+0000",
   "po-revision-date": "2026-07-17 00:00:00+0000",
@@ -3482,6 +3482,7 @@ return json_decode(<<<'JSON'
     "Shipping fee": "Phí vận chuyển",
     "COD amount": "Số tiền COD",
     "Last synced": "Đồng bộ lần cuối",
+    "Last shipment update": "Cập nhật vận đơn gần nhất",
     "No shipment data has been saved for this order.": "Đơn hàng này chưa có dữ liệu vận đơn.",
     "No shipping providers are registered.": "Chưa có nhà cung cấp vận chuyển nào được đăng ký.",
     "Sync shipment": "Đồng bộ vận đơn",
@@ -3497,6 +3498,7 @@ return json_decode(<<<'JSON'
     "Vietnam shipping tracking": "Theo dõi vận chuyển",
     "Manually send customers their Vietnam shipping provider and tracking code from the order shipping metabox.": "Gửi thủ công nhà vận chuyển và mã vận đơn cho khách hàng từ metabox vận chuyển của đơn hàng.",
     "Shipping update for order #{order_number} on {site_title}": "Cập nhật vận chuyển cho đơn hàng #{order_number} tại {site_title}",
+    "Shipping update: {shipment_status} - Order #{order_number}": "Cập nhật vận chuyển: {shipment_status} - Đơn hàng #{order_number}",
     "Your order is on its way": "Đơn hàng của bạn đang được vận chuyển",
     "If you need any help with your shipment, please contact us at {store_email}.": "Nếu cần hỗ trợ về vận chuyển, vui lòng liên hệ với chúng tôi tại {store_email}.",
     "Hi %s,": "Xin chào %s,",
@@ -3504,6 +3506,7 @@ return json_decode(<<<'JSON'
     "The shipping details for order #%s have been updated.": "Thông tin vận chuyển cho đơn hàng #%s đã được cập nhật.",
     "Shipping details": "Thông tin vận chuyển",
     "Shipping provider": "Nhà vận chuyển",
+    "Shipping service": "Dịch vụ vận chuyển",
     "Tracking link": "Liên kết theo dõi",
     "Track shipment": "Theo dõi vận đơn",
     "You can use this information to follow the delivery status with the carrier.": "Bạn có thể dùng thông tin này để theo dõi trạng thái giao hàng với đơn vị vận chuyển.",
@@ -3824,7 +3827,22 @@ return json_decode(<<<'JSON'
     "Invoice requests and electronic invoice workflow are configured separately in <a href=\"%s\">Vietnam store</a>.": "Yêu cầu hóa đơn và quy trình hóa đơn điện tử được cấu hình riêng trong <a href=\"%s\">Vietnam store</a>.",
     "Electronic invoice workflow management is disabled.": "Quản lý quy trình hóa đơn điện tử đang bị tắt.",
     "Electronic invoice workflow management is disabled. Existing invoice data is shown in read-only mode.": "Quản lý quy trình hóa đơn điện tử đang bị tắt. Dữ liệu hóa đơn hiện có được hiển thị ở chế độ chỉ đọc.",
-    "Allow customers to submit company and tax details for new orders.": "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng mới."
+    "Allow customers to submit company and tax details for new orders.": "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng mới.",
+    "Sending...": "Đang gửi...",
+    "Send invoice email to customer": "Gửi email hóa đơn cho khách hàng",
+    "The electronic invoice email could not be sent.": "Không thể gửi email hóa đơn điện tử.",
+    "Electronic invoice emailed to the customer.": "Đã gửi hóa đơn điện tử qua email cho khách hàng.",
+    "Electronic invoice email sent to the customer.": "Đã gửi email hóa đơn điện tử cho khách hàng.",
+    "Vietnam electronic invoice": "Hóa đơn điện tử Việt Nam",
+    "Manually send electronic invoice details and available PDF/XML files to the customer.": "Gửi thủ công thông tin hóa đơn điện tử cùng các tệp PDF/XML hiện có cho khách hàng.",
+    "Electronic invoice for order #{order_number} on {site_title}": "Hóa đơn điện tử cho đơn hàng #{order_number} tại {site_title}",
+    "Your electronic invoice": "Hóa đơn điện tử của bạn",
+    "If you need help with this invoice, please contact us at {store_email}.": "Nếu bạn cần hỗ trợ về hóa đơn này, vui lòng liên hệ với chúng tôi qua {store_email}.",
+    "Your electronic invoice for order #%s is ready.": "Hóa đơn điện tử cho đơn hàng #%s của bạn đã sẵn sàng.",
+    "Invoice details": "Thông tin hóa đơn",
+    "Look up electronic invoice": "Tra cứu hóa đơn điện tử",
+    "Available invoice files are attached to this email.": "Các tệp hóa đơn hiện có được đính kèm trong email này.",
+    "Invoice lookup URL": "Liên kết tra cứu hóa đơn"
   },
   "plural-forms": "nplurals=1; plural=0;"
 }

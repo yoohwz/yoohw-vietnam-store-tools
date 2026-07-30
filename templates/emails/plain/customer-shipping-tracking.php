@@ -39,6 +39,11 @@ if ( '' !== $provider_name ) {
 
 echo esc_html__( 'Tracking code', 'yoohw-vietnam-store-tools' ) . ': ' . esc_html( $tracking_code ) . "\n";
 
+foreach ( $shipment_details as $detail ) {
+	$plain_value = html_entity_decode( wp_strip_all_tags( $detail['value'] ), ENT_QUOTES, get_bloginfo( 'charset' ) );
+	echo esc_html( $detail['label'] ) . ': ' . esc_html( $plain_value ) . "\n";
+}
+
 if ( '' !== $tracking_url ) {
 	echo esc_html__( 'Tracking link', 'yoohw-vietnam-store-tools' ) . ': ' . esc_url( $tracking_url ) . "\n";
 }
