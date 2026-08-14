@@ -311,12 +311,38 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 		$email_settings     = get_option( 'woocommerce_yoohw_vietnam_store_tools_customer_shipping_tracking_settings', [] );
 		$email_settings     = is_array( $email_settings ) ? $email_settings : [];
 		$email_enabled      = 'no' !== ( $email_settings['enabled'] ?? 'yes' );
+		$show_devvn_migration = class_exists( 'Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools' )
+			&& Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools::has_pending_migration_data();
 
 		$shipping_services_status = sprintf(
 			/* translators: %d: number of enabled shipping services. */
 			_n( '%d service enabled', '%d services enabled', count( $enabled_providers ), 'yoohw-vietnam-store-tools' ),
 			count( $enabled_providers )
 		);
+
+		$maintenance_items = [
+			[
+				'title'       => __( 'Order management', 'yoohw-vietnam-store-tools' ),
+				'description' => __( 'Use Vietnam-specific order columns, filters, shipment actions, and invoice information from the order list.', 'yoohw-vietnam-store-tools' ),
+				'status'      => self::is_feature_enabled( self::OPTION_ORDER_MANAGEMENT ) ? __( 'Enabled', 'yoohw-vietnam-store-tools' ) : __( 'Disabled', 'yoohw-vietnam-store-tools' ),
+				'active'      => self::is_feature_enabled( self::OPTION_ORDER_MANAGEMENT ),
+				'icon'        => 'dashicons-list-view',
+				'url'         => $this->get_orders_url(),
+				'action'      => __( 'Manage orders', 'yoohw-vietnam-store-tools' ),
+			],
+		];
+
+		if ( $show_devvn_migration ) {
+			$maintenance_items[] = [
+				'title'       => __( 'DevVN migration', 'yoohw-vietnam-store-tools' ),
+				'description' => __( 'Inspect and migrate compatible address and order data using WooCommerce status tools.', 'yoohw-vietnam-store-tools' ),
+				'status'      => __( 'Manual tool', 'yoohw-vietnam-store-tools' ),
+				'active'      => true,
+				'icon'        => 'dashicons-database-import',
+				'url'         => admin_url( 'admin.php?page=wc-status&tab=tools' ),
+				'action'      => __( 'Open migration tools', 'yoohw-vietnam-store-tools' ),
+			];
+		}
 
 		return [
 			[
@@ -406,26 +432,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 				'id'          => 'yoohw-vietnam-store-tools',
 				'title'       => __( 'Maintenance tools', 'yoohw-vietnam-store-tools' ),
 				'description' => __( 'Review operational data and migrate compatible settings from legacy Vietnam checkout plugins.', 'yoohw-vietnam-store-tools' ),
-				'items'       => [
-					[
-						'title'       => __( 'Order management', 'yoohw-vietnam-store-tools' ),
-						'description' => __( 'Use Vietnam-specific order columns, filters, shipment actions, and invoice information from the order list.', 'yoohw-vietnam-store-tools' ),
-						'status'      => self::is_feature_enabled( self::OPTION_ORDER_MANAGEMENT ) ? __( 'Enabled', 'yoohw-vietnam-store-tools' ) : __( 'Disabled', 'yoohw-vietnam-store-tools' ),
-						'active'      => self::is_feature_enabled( self::OPTION_ORDER_MANAGEMENT ),
-						'icon'        => 'dashicons-list-view',
-						'url'         => $this->get_orders_url(),
-						'action'      => __( 'Manage orders', 'yoohw-vietnam-store-tools' ),
-					],
-					[
-						'title'       => __( 'DevVN migration', 'yoohw-vietnam-store-tools' ),
-						'description' => __( 'Inspect and migrate compatible address and order data using WooCommerce status tools.', 'yoohw-vietnam-store-tools' ),
-						'status'      => __( 'Manual tool', 'yoohw-vietnam-store-tools' ),
-						'active'      => true,
-						'icon'        => 'dashicons-database-import',
-						'url'         => admin_url( 'admin.php?page=wc-status&tab=tools' ),
-						'action'      => __( 'Open migration tools', 'yoohw-vietnam-store-tools' ),
-					],
-				],
+				'items'       => $maintenance_items,
 			],
 		];
 	}

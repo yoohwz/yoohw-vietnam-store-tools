@@ -303,9 +303,10 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 	}
 
 	public static function add_timeline_event( $order, $event_data ) {
-		$order    = wc_get_order( $order );
-		$statuses = self::get_timeline_statuses();
-		$status   = isset( $event_data['status'] ) ? sanitize_key( $event_data['status'] ) : '';
+		$order                          = wc_get_order( $order );
+		$statuses                       = self::get_timeline_statuses();
+		$status                         = isset( $event_data['status'] ) ? sanitize_key( $event_data['status'] ) : '';
+		$update_shipment_status          = ! array_key_exists( 'update_shipment_status', $event_data ) || ! empty( $event_data['update_shipment_status'] );
 
 		if ( ! $order instanceof WC_Order ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_invalid_tracking_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
@@ -340,9 +341,12 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		);
 
 		$order->update_meta_data( self::META_TIMELINE, $events );
-		$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS_ID, $status );
-		$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS, $statuses[ $status ]['label'] );
-		$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_LAST_SYNCED, gmdate( 'c' ) );
+
+		if ( $update_shipment_status ) {
+			$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS_ID, $status );
+			$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS, $statuses[ $status ]['label'] );
+			$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_LAST_SYNCED, gmdate( 'c' ) );
+		}
 		$order->save();
 
 		do_action( 'yoohw_vietnam_store_tools_tracking_timeline_updated', $order, $events, 'add' );
@@ -412,16 +416,15 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 
 		$shipping_data      = is_array( $shipping_data ) ? $shipping_data : [];
 		$tracking_code      = trim( (string) ( $shipping_data['tracking_code'] ?? '' ) );
-		$shipment_status_id = sanitize_key( $shipping_data['status_id'] ?? '' );
-		$shipment_status    = sanitize_key( $shipping_data['status'] ?? '' );
 
-		if ( '' === $tracking_code || ( 'manual' !== $shipment_status_id && 'manual' !== $shipment_status ) ) {
+		if ( '' === $tracking_code ) {
 			return;
 		}
 
 		$events   = self::get_timeline( $order );
 		$statuses = self::get_timeline_statuses();
 		$nonce    = wp_create_nonce( 'yoohw_vietnam_store_tools_tracking_timeline_' . $order->get_id() );
+		$panel_id = 'vck-tracking-timeline-form-' . $order->get_id();
 		?>
 		<section id="yoohw-vietnam-store-tools-tracking-timeline" class="vck-admin-tracking-timeline">
 			<h4><?php esc_html_e( 'Manual tracking timeline', 'yoohw-vietnam-store-tools' ); ?></h4>
@@ -431,7 +434,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 						<li class="vck-admin-tracking-timeline__event vck-admin-tracking-timeline__event--<?php echo esc_attr( $statuses[ $event['status'] ]['tone'] ); ?>">
 							<div class="vck-admin-tracking-timeline__event-heading">
 								<strong><?php echo esc_html( $statuses[ $event['status'] ]['label'] ); ?></strong>
-								<button type="button" class="button-link-delete" data-vck-delete-tracking-event="<?php echo esc_attr( $event['id'] ); ?>" aria-label="<?php esc_attr_e( 'Delete timeline event', 'yoohw-vietnam-store-tools' ); ?>"><?php esc_html_e( 'Delete', 'yoohw-vietnam-store-tools' ); ?></button>
+								<button type="button" class="button button-secondary vck-admin-tracking-timeline__delete" data-vck-delete-tracking-event="<?php echo esc_attr( $event['id'] ); ?>" aria-label="<?php esc_attr_e( 'Delete timeline event', 'yoohw-vietnam-store-tools' ); ?>"><?php esc_html_e( 'Delete', 'yoohw-vietnam-store-tools' ); ?></button>
 							</div>
 							<time datetime="<?php echo esc_attr( $event['occurred_at'] ); ?>"><?php echo esc_html( self::format_event_datetime( $event['occurred_at'] ) ); ?></time>
 							<?php if ( '' !== $event['location'] ) : ?><span><?php echo esc_html( $event['location'] ); ?></span><?php endif; ?>
@@ -443,7 +446,12 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 				<p class="description"><?php esc_html_e( 'No manual tracking events have been added.', 'yoohw-vietnam-store-tools' ); ?></p>
 			<?php endif; ?>
 
-			<div class="vck-admin-tracking-timeline__fields" data-vck-tracking-timeline-form>
+			<button type="button" class="vck-admin-shipping-form__toggle" data-vck-shipping-form-toggle aria-expanded="false" aria-controls="<?php echo esc_attr( $panel_id ); ?>">
+				<span><?php esc_html_e( 'Add timeline event', 'yoohw-vietnam-store-tools' ); ?></span>
+				<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
+			</button>
+
+			<div id="<?php echo esc_attr( $panel_id ); ?>" class="vck-admin-tracking-timeline__fields" data-vck-tracking-timeline-form hidden>
 				<p><label for="vck_tracking_event_status_<?php echo esc_attr( $order->get_id() ); ?>"><?php esc_html_e( 'Shipment status', 'yoohw-vietnam-store-tools' ); ?></label>
 				<select id="vck_tracking_event_status_<?php echo esc_attr( $order->get_id() ); ?>" class="widefat" data-vck-tracking-field="status">
 					<?php foreach ( $statuses as $status_id => $status ) : ?>
@@ -747,14 +755,18 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 	private function get_lookup_result_html( $order ) {
 		$shipping              = Yoohw_Vietnam_Store_Tools_Shipping::get_order_shipping_data( $order );
 		$display_tracking_code = Yoohw_Vietnam_Store_Tools_Shipping::get_display_tracking_code( $shipping['provider'], $shipping['tracking_code'] );
+		$show_shipping_status  = class_exists( 'Yoohw_Vietnam_Store_Tools_Internal' ) || ! empty( self::get_timeline( $order ) );
 		$rows                  = [
 			__( 'Order number', 'yoohw-vietnam-store-tools' )     => '#' . $order->get_order_number(),
 			__( 'Order date', 'yoohw-vietnam-store-tools' )       => $order->get_date_created() ? wc_format_datetime( $order->get_date_created() ) : '',
 			__( 'Order status', 'yoohw-vietnam-store-tools' )     => wc_get_order_status_name( $order->get_status() ),
 			__( 'Shipping provider', 'yoohw-vietnam-store-tools' ) => $shipping['provider_name'],
 			__( 'Tracking code', 'yoohw-vietnam-store-tools' )    => $display_tracking_code,
-			__( 'Shipping status', 'yoohw-vietnam-store-tools' )  => $shipping['status'],
 		];
+
+		if ( $show_shipping_status ) {
+			$rows[ __( 'Shipping status', 'yoohw-vietnam-store-tools' ) ] = $shipping['status'];
+		}
 
 		ob_start();
 		?>

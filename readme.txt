@@ -7,148 +7,137 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 10.9
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Bộ công cụ WooCommerce Việt Nam cho địa chỉ hai cấp, Checkout Blocks, VietQR, hóa đơn GTGT, phí vận chuyển và tracking đơn hàng.
+A Vietnam-focused WooCommerce toolkit for two-tier addresses, Checkout Blocks, VietQR, VAT invoices, shipping fees, and order tracking.
 
 == Description ==
 
-Vietnam Store Toolkit for WooCommerce bổ sung các công cụ cần thiết cho cửa hàng tại Việt Nam: địa chỉ tỉnh/thành phố và phường/xã, VietQR, hóa đơn GTGT, số điện thoại, phí vận chuyển, mã vận đơn và tra cứu đơn hàng.
+Vietnam Store Toolkit for WooCommerce adds essential tools for stores in Vietnam: province/city and ward/commune addresses, VietQR, VAT invoices, phone numbers, shipping fees, tracking numbers, and order tracking.
 
-Tìm hiểu đầy đủ về plugin tại [website chính thức Vietnam Store Toolkit](https://vietnamstore.org/).
+Learn more about the plugin on the [official Vietnam Store Toolkit website](https://vietnamstore.org/).
 
-= Liên kết chính thức =
+= Official Links =
 
-* [Website Vietnam Store Toolkit](https://vietnamstore.org/) — giới thiệu tổng quan và các tính năng.
-* [Tài liệu sử dụng](https://vietnamstore.org/documentation/) — yêu cầu hệ thống, cấu hình và ví dụ.
-* [Hỗ trợ](https://vietnamstore.org/support/) — nguồn hỗ trợ chính thức và cách gửi yêu cầu.
-* [Mã nguồn và phát triển trên GitHub](https://github.com/yoohwz/yoohw-vietnam-store-tools) — xem code, báo lỗi, đề xuất tính năng và pull request.
-* [Bản phát hành trên WordPress.org](https://wordpress.org/plugins/yoohw-vietnam-store-tools/) — nguồn cài đặt công khai chính thức.
-* [Địa chỉ Việt Nam cho WooCommerce](https://vietnamstore.org/dia-chi-viet-nam-woocommerce/)
-* [VietQR cho WooCommerce](https://vietnamstore.org/vietqr-woocommerce/)
-* [Hóa đơn GTGT cho WooCommerce](https://vietnamstore.org/hoa-don-gtgt-woocommerce/)
-* [Tracking đơn hàng WooCommerce](https://vietnamstore.org/tracking-don-hang-woocommerce/)
-* [So sánh Classic Checkout và Checkout Blocks](https://vietnamstore.org/classic-checkout-vs-checkout-blocks/)
-* [Hướng dẫn chuyển dữ liệu địa chỉ WooCommerce](https://vietnamstore.org/chuyen-du-lieu-dia-chi-woocommerce/)
+* [Vietnam Store Toolkit Website](https://vietnamstore.org/) — overview and features.
+* [Documentation](https://vietnamstore.org/documentation/) — system requirements, configuration, and examples.
+* [Support](https://vietnamstore.org/support/) — official support resources and instructions for submitting requests.
+* [Source Code and Development on GitHub](https://github.com/yoohwz/yoohw-vietnam-store-tools) — view the code, report issues, suggest features, and submit pull requests.
+* [WordPress.org Release](https://wordpress.org/plugins/yoohw-vietnam-store-tools/) — the official public installation source.
+* [Vietnamese Addresses for WooCommerce](https://vietnamstore.org/dia-chi-viet-nam-woocommerce/)
+* [VietQR for WooCommerce](https://vietnamstore.org/vietqr-woocommerce/)
+* [VAT Invoices for WooCommerce](https://vietnamstore.org/hoa-don-gtgt-woocommerce/)
+* [WooCommerce Order Tracking](https://vietnamstore.org/tracking-don-hang-woocommerce/)
+* [Classic Checkout vs. Checkout Blocks](https://vietnamstore.org/classic-checkout-vs-checkout-blocks/)
+* [WooCommerce Address Data Migration Guide](https://vietnamstore.org/chuyen-du-lieu-dia-chi-woocommerce/)
 
-= Tính năng chính =
+= Key Features =
 
-* Địa chỉ hai cấp gồm 34 tỉnh/thành phố và 3.321 phường/xã/đặc khu.
-* Danh sách Phường/Xã phụ thuộc Tỉnh/Thành trong Classic Checkout, Cart và Checkout Blocks.
-* Yêu cầu hóa đơn GTGT và quy trình hóa đơn điện tử trung lập nhà cung cấp.
-* VietQR cho WooCommerce Direct bank transfer.
-* Chuẩn hóa và xác thực số điện thoại Việt Nam.
-* Quy tắc phí vận chuyển theo địa chỉ, giỏ hàng, khối lượng, shipping class, miễn phí vận chuyển và COD.
-* Mã vận đơn, timeline thủ công và trang tra cứu đơn hàng không cần API hãng vận chuyển.
-* Bộ lọc, thao tác hàng loạt và xuất CSV đơn hàng, tương thích HPOS.
+* Two-tier addresses covering 34 provinces/cities and 3,321 wards/communes/special zones.
+* Province/city-dependent ward/commune lists in Classic Checkout, Cart, and Checkout Blocks.
+* VAT invoice requests and a provider-neutral electronic invoicing workflow.
+* VietQR for WooCommerce Direct bank transfer.
+* Vietnamese phone number normalization and validation.
+* Shipping fee rules based on address, cart, weight, shipping class, free shipping, and COD.
+* Tracking numbers, a manual timeline, and an order tracking page with no carrier API required.
+* HPOS-compatible order filters, bulk actions, and CSV exports.
 
-= Có gì mới trong phiên bản 1.1.2 =
+= Vietnamese Addresses and Checkout Blocks =
 
-Phiên bản 1.1.2 mở rộng email cập nhật vận chuyển với trạng thái và thông tin vận đơn cần thiết, sửa tên website bị thiếu trong tiêu đề, đồng thời bổ sung email gửi hóa đơn điện tử.
+The plugin stores province/city codes in WooCommerce's `state` field and ward/commune codes in its `city` field, and hides the postcode when appropriate. Address combinations are validated before they are saved, and ward/commune lists are loaded only when needed.
 
-= Địa chỉ Việt Nam và Checkout Blocks =
+The fields are applied to checkout, My Account, the cart, store addresses, customer profiles, and orders in wp-admin. In Cart and Checkout Blocks, Ward/Commune is a Province/City-dependent list that synchronizes directly with the Store API, including on custom block pages.
 
-Plugin lưu mã tỉnh/thành phố vào `state` và mã phường/xã vào `city` của WooCommerce, đồng thời ẩn mã bưu chính khi phù hợp. Tổ hợp địa chỉ được xác thực trước khi lưu và danh sách phường/xã chỉ tải khi cần.
+= VAT Invoices and VietQR =
 
-Các trường được áp dụng cho checkout, My Account, giỏ hàng, địa chỉ cửa hàng, hồ sơ khách hàng và đơn hàng trong wp-admin. Trong Cart và Checkout Blocks, Phường/Xã là danh sách phụ thuộc Tỉnh/Thành và đồng bộ trực tiếp với Store API, kể cả trên trang block tùy chỉnh.
+The invoice request feature is enabled independently under Vietnam store > Core features and does not depend on WooCommerce tax calculation. Classic Checkout and Checkout Blocks can collect the company name, tax identification number, invoice email address, and company address.
 
-= Hóa đơn GTGT và VietQR =
+The electronic invoicing workflow stores the status, number/series, issue date, lookup URL, provider, PDF/XML files, and change log. The plugin does not issue invoices itself or call a provider API.
 
-Tính năng nhận yêu cầu hóa đơn được bật độc lập trong Vietnam store > Tính năng cốt lõi và không phụ thuộc vào việc tính thuế của WooCommerce. Classic Checkout và Checkout Block có thể thu thập tên công ty, mã số thuế, email nhận hóa đơn và địa chỉ công ty.
+VietQR is added to WooCommerce Direct bank transfer (`bacs`) and does not create a new payment gateway. The QR image and transfer details can appear on the order confirmation page, in My Account, in emails, and in wp-admin. The plugin does not confirm transactions or automatically mark orders as paid.
 
-Quy trình hóa đơn điện tử lưu trạng thái, số/ký hiệu, ngày phát hành, URL tra cứu, nhà cung cấp, tệp PDF/XML và nhật ký thay đổi. Plugin không tự phát hành hóa đơn hoặc gọi API nhà cung cấp.
+= Shipping Fees and Order Tracking =
 
-VietQR được thêm vào WooCommerce Direct bank transfer (`bacs`), không tạo cổng thanh toán mới. Ảnh QR và thông tin chuyển khoản có thể xuất hiện trên trang xác nhận đơn hàng, My Account, email và wp-admin. Plugin không xác nhận giao dịch hoặc tự đánh dấu đơn đã thanh toán.
+The “Shipping Fee Rules” method works within WooCommerce Shipping Zones. Rules are evaluated from top to bottom and can be based on province/city, ward/commune, cart total, weight, shipping class, fee, free-shipping threshold, and COD. The editor supports sorting and UTF-8 CSV import/export.
 
-= Phí vận chuyển và tracking đơn hàng =
+The Shipping panel lets you enter a carrier, tracking number, and tracking URL; send an email; and maintain a manual timeline. URL templates generate links from `{tracking_code}`, and administrators can also define custom carriers.
 
-Phương thức “Quy tắc phí vận chuyển” hoạt động trong WooCommerce Shipping Zones. Quy tắc được kiểm tra từ trên xuống dưới và có thể dựa trên tỉnh/thành phố, phường/xã, tổng giỏ hàng, khối lượng, shipping class, phí, ngưỡng miễn phí và COD. Trình chỉnh sửa hỗ trợ sắp xếp cùng nhập/xuất CSV UTF-8.
+Add the “Order Tracking” block or `[yoohw_order_tracking]` shortcode to let customers look up orders using the order number together with their billing email address or phone number. Results do not display addresses, products, totals, or contact details.
 
-Hộp Vận chuyển cho phép nhập hãng, mã vận đơn, URL theo dõi, gửi email và ghi timeline thủ công. Mẫu URL tự tạo liên kết từ `{tracking_code}`; quản trị viên cũng có thể khai báo hãng tùy chỉnh.
+= Order Management and HPOS =
 
-Thêm block “Tra cứu đơn hàng” hoặc shortcode `[yoohw_order_tracking]` để khách tra cứu bằng mã đơn cùng email hoặc số điện thoại thanh toán. Kết quả không hiển thị địa chỉ, sản phẩm, tổng tiền hay thông tin liên hệ.
+The WooCommerce > Orders screen includes a compact Information column for invoice and tracking details, advanced filters, actions to resend tracking emails and update carriers, CSV exports, and handoff progress controls. The plugin uses the WooCommerce order API and supports both HPOS and legacy storage.
 
-= Quản lý đơn hàng và HPOS =
+= Migration and Data =
 
-Màn hình WooCommerce > Đơn hàng có cột Thông tin gọn cho hóa đơn và vận đơn, bộ lọc nâng cao, thao tác gửi lại email tracking, cập nhật hãng, xuất CSV và đánh dấu tiến độ bàn giao. Plugin dùng API đơn hàng WooCommerce, tương thích HPOS và chế độ lưu trữ cũ.
+WooCommerce Status Tools can scan, back up, and batch-synchronize legacy addresses and GHTK data from Le Van Toan's plugin. Run the scan tool and review its report before synchronizing.
 
-= Di chuyển và dữ liệu =
+The 2026-07 administrative dataset is based on the National Statistics Office of Viet Nam through Vietnam Provinces API v2. The bank and BIN lists are based on the VietQR bank list API. Sources and update procedures are documented in `data/SOURCES.md`.
 
-WooCommerce Status Tools có thể quét, sao lưu và đồng bộ theo lô địa chỉ cũ cùng dữ liệu GHTK từ plugin của Le Van Toan. Hãy chạy công cụ quét và xem báo cáo trước khi đồng bộ.
+= External Services and Privacy =
 
-Dữ liệu hành chính phiên bản 2026-07 dựa trên National Statistics Office of Viet Nam thông qua Vietnam Provinces API v2. Danh sách ngân hàng và BIN dựa trên VietQR bank list API. Nguồn và quy trình cập nhật được ghi trong `data/SOURCES.md`.
+Source APIs are used only to build static data; the plugin does not call them at runtime. When VietQR is enabled, the browser or email client loads the QR image from VietQR.io by CASSO. The image URL may contain the BIN, account number, QR template, amount, transfer description, and account holder name.
 
-= Dịch vụ bên ngoài và quyền riêng tư =
+* Service: https://vietqr.io/
+* Documentation: https://vietqr.io/danh-sach-api/link-tao-ma-nhan/
+* Terms: https://casso.vn/thoa-thuan-su-dung-phan-mem/
+* Privacy: https://casso.vn/chinh-sach-bao-mat-thong-tin/
 
-Các API nguồn chỉ được dùng để xây dựng dữ liệu tĩnh; plugin không gọi chúng trong thời gian chạy. Khi VietQR được bật, trình duyệt hoặc trình đọc email tải ảnh QR từ VietQR.io by CASSO. URL ảnh có thể chứa BIN, số tài khoản, mẫu QR, số tiền, nội dung chuyển khoản và tên chủ tài khoản.
-
-* Dịch vụ: https://vietqr.io/
-* Tài liệu: https://vietqr.io/danh-sach-api/link-tao-ma-nhan/
-* Điều khoản: https://casso.vn/thoa-thuan-su-dung-phan-mem/
-* Quyền riêng tư: https://casso.vn/chinh-sach-bao-mat-thong-tin/
-
-Dữ liệu địa chỉ, điện thoại, hóa đơn và vận chuyển được lưu trong WordPress/WooCommerce của cửa hàng. Plugin không thêm phân tích, quảng cáo hoặc dịch vụ thu thập dữ liệu từ xa.
+Address, phone, invoice, and shipping data is stored in the store's WordPress/WooCommerce installation. The plugin does not add analytics, advertising, or remote data collection services.
 
 == Installation ==
 
-1. Cài đặt và kích hoạt WooCommerce.
-2. Cài và kích hoạt Vietnam Store Toolkit for WooCommerce.
-3. Kiểm tra khu vực bán hàng và địa chỉ cửa hàng trong cài đặt WooCommerce.
-4. Cấu hình Direct bank transfer nếu cần VietQR.
-5. Nếu cần hóa đơn, bật “Nhận yêu cầu hóa đơn tại trang thanh toán” trong Vietnam store > Tính năng cốt lõi.
-6. Nếu cần phí theo địa chỉ, thêm “Quy tắc phí vận chuyển” vào Shipping Zone.
-7. Nếu chuyển từ plugin của Le Van Toan, chạy công cụ quét trước khi đồng bộ.
+1. Install and activate WooCommerce.
+2. Install and activate Vietnam Store Toolkit for WooCommerce.
+3. Review your selling locations and store address in WooCommerce settings.
+4. Configure Direct bank transfer if you need VietQR.
+5. If you need invoices, enable “Accept invoice requests at checkout” under Vietnam store > Core features.
+6. If you need address-based fees, add “Shipping Fee Rules” to a Shipping Zone.
+7. If you are migrating from Le Van Toan's plugin, run the scan tool before synchronizing.
 
 == Frequently Asked Questions ==
 
-= Plugin có hỗ trợ Cart và Checkout Blocks không? =
+= Does the plugin support Cart and Checkout Blocks? =
 
-Có. Plugin hỗ trợ Tỉnh/Thành, Phường/Xã, hóa đơn GTGT, xác thực số điện thoại, VietQR và thông tin vận chuyển. WooCommerce 8.9 trở lên được yêu cầu.
+Yes. The plugin supports Province/City and Ward/Commune fields, VAT invoices, phone number validation, VietQR, and shipping information. WooCommerce 8.9 or later is required.
 
-= Plugin lưu địa chỉ Việt Nam như thế nào? =
+= How does the plugin store Vietnamese addresses? =
 
-Mã tỉnh/thành phố được lưu vào `state`; mã phường/xã/đặc khu được lưu vào `city` của WooCommerce.
+Province/city codes are stored in WooCommerce's `state` field; ward/commune/special-zone codes are stored in its `city` field.
 
-= Khách hàng có thể yêu cầu hóa đơn GTGT không? =
+= Can customers request VAT invoices? =
 
-Có, khi “Nhận yêu cầu hóa đơn tại trang thanh toán” được bật trong Vietnam store > Tính năng cốt lõi.
+Yes, when “Accept invoice requests at checkout” is enabled under Vietnam store > Core features.
 
-= VietQR có tự xác nhận thanh toán không? =
+= Does VietQR automatically confirm payments? =
 
-Không. VietQR được thêm vào Direct bank transfer nhưng không kết nối giao dịch ngân hàng.
+No. VietQR is added to Direct bank transfer but does not connect to bank transactions.
 
-= Tôi cấu hình phí vận chuyển đến cấp phường/xã ở đâu? =
+= Where do I configure shipping fees at the ward/commune level? =
 
-Đi tới WooCommerce > Cài đặt > Vận chuyển, mở một khu vực và thêm “Quy tắc phí vận chuyển”.
+Go to WooCommerce > Settings > Shipping, open a zone, and add “Shipping Fee Rules.”
 
-= Tôi tạo trang tra cứu đơn hàng như thế nào? =
+= How do I create an order tracking page? =
 
-Thêm block “Tra cứu đơn hàng” hoặc shortcode `[yoohw_order_tracking]` vào một trang.
+Add the “Order Tracking” block or `[yoohw_order_tracking]` shortcode to a page.
 
-= Plugin có tích hợp sẵn API hãng vận chuyển không? =
+= Does the plugin include carrier API integrations? =
 
-Không. Bản công khai cung cấp tracking không cần API và khung cho trình kết nối riêng.
+No. The public release provides API-free tracking and a framework for custom connectors.
 
-= Plugin có hỗ trợ HPOS và tiếng Việt không? =
+= Does the plugin support HPOS and Vietnamese? =
 
-Có. Plugin tương thích HPOS và bao gồm bản dịch tiếng Việt cho giao diện, email cùng thông báo xác thực.
+Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the interface, emails, and validation messages.
 
 == Changelog ==
 
-= 1.1.2 (30/7/2026) =
+= 1.1.3 (August 14, 2026) =
 
-* Bổ sung Plugin URI cùng các URL có thể nhấp tới Website, Tài liệu, Hỗ trợ và nội dung chuyên đề chính thức để xác minh nguồn sản phẩm.
-* Thu gọn biểu mẫu cập nhật vận đơn thủ công sau khi đã có mã vận đơn; quản trị viên mở lại biểu mẫu bằng dòng “Cập nhật mã vận đơn” có màu theo admin color scheme của từng người dùng.
-* Bổ sung trạng thái vận đơn, dịch vụ, tiền COD và thời gian cập nhật trong email được kích hoạt bởi trình kết nối vận chuyển nội bộ; không hiển thị biểu phí nội bộ của tài khoản shop.
-* Dùng tiêu đề riêng `Cập nhật vận chuyển: {trạng thái vận đơn} - Đơn hàng #{order_number}` cho email do plugin nội bộ kích hoạt.
-* Sửa triệt để vòng đời placeholder của email vận chuyển và hóa đơn điện tử: khôi phục `{site_title}`, `{site_address}`, `{site_url}`, `{store_email}` ở mỗi lần gửi; làm mới placeholder đơn hàng/vận đơn/hóa đơn và hỗ trợ đúng trong subject, heading cùng nội dung bổ sung qua nhiều lần gửi.
-* Ẩn dòng thông tin VAT trong cột Thông tin của danh sách đơn hàng khi tính năng nhận yêu cầu hóa đơn tại trang thanh toán bị tắt, đồng thời giữ nguyên bộ lọc và khả năng xuất dữ liệu hóa đơn lịch sử.
-* Chỉ hiển thị biểu mẫu Hành trình vận chuyển thủ công trong metabox đơn hàng sau khi vận đơn thủ công có mã theo dõi đã được tạo.
-* Sửa số lượng dịch vụ vận chuyển đang bật trên trang Vietnam store bằng cách đếm trực tiếp các nhà cung cấp khả dụng đã đăng ký.
-* Bổ sung email WooCommerce cho quy trình hóa đơn điện tử với mẫu HTML và văn bản thuần, tùy chỉnh trong cài đặt email, gửi thủ công từ metabox đơn hàng và đính kèm tệp PDF/XML hiện có.
-* Tự động chuyển trạng thái hóa đơn sang Đã gửi cho khách hàng sau khi gửi email thành công, đồng thời lưu trạng thái, thời gian gửi và hiển thị thông báo kết quả.
-* Hoàn thiện bản dịch tiếng Việt cho chức năng gửi email hóa đơn điện tử.
+* Improve: Collapsed the Create shipment and Add shipment journey event forms in the order Shipping metabox, keeping the interface compact while preserving keyboard-accessible toggles.
+* Fix: Kept manually added shipment journey events visible in the order metabox after saving.
+* Update: Refined the customer-facing Order Tracking status row: Core hides it when no journey event exists, while connector-provided status information remains available.
+* Developer: Added an extension point that lets shipping connectors append journey events without replacing their detailed carrier status.
 
-Xem lịch sử thay đổi chi tiết trong `changelog.txt`.
+See `changelog.txt` for the complete change history.
