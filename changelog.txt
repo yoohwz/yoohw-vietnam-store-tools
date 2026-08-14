@@ -1,88 +1,95 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
-= 1.1.2 (30/7/2026) =
+= 1.1.3 (In Development) =
 
-* Bổ sung Plugin URI cùng các URL có thể nhấp tới Website, Tài liệu, Hỗ trợ và nội dung chuyên đề chính thức để xác minh nguồn sản phẩm.
-* Thu gọn biểu mẫu cập nhật vận đơn thủ công sau khi đã có mã vận đơn; quản trị viên mở lại biểu mẫu bằng dòng “Cập nhật mã vận đơn” có màu theo admin color scheme của từng người dùng.
-* Bổ sung trạng thái vận đơn, dịch vụ, tiền COD và thời gian cập nhật trong email được kích hoạt bởi trình kết nối vận chuyển nội bộ; không hiển thị biểu phí nội bộ của tài khoản shop.
-* Dùng tiêu đề riêng `Cập nhật vận chuyển: {trạng thái vận đơn} - Đơn hàng #{order_number}` cho email do plugin nội bộ kích hoạt.
-* Sửa triệt để vòng đời placeholder của email vận chuyển và hóa đơn điện tử: khôi phục `{site_title}`, `{site_address}`, `{site_url}`, `{store_email}` ở mỗi lần gửi; làm mới placeholder đơn hàng/vận đơn/hóa đơn và hỗ trợ đúng trong subject, heading cùng nội dung bổ sung qua nhiều lần gửi.
-* Ẩn dòng thông tin VAT trong cột Thông tin của danh sách đơn hàng khi tính năng nhận yêu cầu hóa đơn tại trang thanh toán bị tắt, đồng thời giữ nguyên bộ lọc và khả năng xuất dữ liệu hóa đơn lịch sử.
-* Chỉ hiển thị biểu mẫu Hành trình vận chuyển thủ công trong metabox đơn hàng sau khi vận đơn thủ công có mã theo dõi đã được tạo.
-* Sửa số lượng dịch vụ vận chuyển đang bật trên trang Vietnam store bằng cách đếm trực tiếp các nhà cung cấp khả dụng đã đăng ký.
-* Bổ sung email WooCommerce cho quy trình hóa đơn điện tử với mẫu HTML và văn bản thuần, tùy chỉnh trong cài đặt email, gửi thủ công từ metabox đơn hàng và đính kèm tệp PDF/XML hiện có.
-* Tự động chuyển trạng thái hóa đơn sang Đã gửi cho khách hàng sau khi gửi email thành công, đồng thời lưu trạng thái, thời gian gửi và hiển thị thông báo kết quả.
-* Hoàn thiện bản dịch tiếng Việt cho chức năng gửi email hóa đơn điện tử.
+* Improve: Collapsed the Create shipment and Add shipment journey event forms in the order Shipping metabox, keeping the interface compact while preserving keyboard-accessible toggles.
+* Fix: Kept manually added shipment journey events visible in the order metabox after saving.
+* Update: Refined the customer-facing Order Tracking status row: Core hides it when no journey event exists, while connector-provided status information remains available.
+* Developer: Added an extension point that lets shipping connectors append journey events without replacing their detailed carrier status.
 
-= 1.1.1 (26/7/2026) =
+= 1.1.2 (July 30, 2026) =
 
-* Bổ sung menu Vietnam store ngay dưới WooCommerce cùng trang cấu hình tập trung cho các tính năng, dịch vụ và công cụ vận hành.
-* Cung cấp switch bật/tắt trường địa chỉ, chuẩn hóa điện thoại, thông tin vận chuyển cho khách hàng, quản lý đơn hàng, nhận yêu cầu hóa đơn và quy trình hóa đơn điện tử; màu switch tuân theo color scheme của người dùng.
-* Thiết kế hero quản trị với icon plugin và icon menu SVG hình vuông bo góc, ngôi sao năm cánh khoét âm; CSS mask giúp icon hiển thị ổn định khi chuyển trang.
-* Tách việc nhận yêu cầu hóa đơn tại checkout khỏi tính thuế WooCommerce và quy trình quản lý hóa đơn điện tử.
-* Duy trì khả năng xem thông tin hóa đơn lịch sử trong hộp đơn hàng, bộ lọc và tệp CSV khi cửa hàng ngừng nhận yêu cầu mới.
-* Chuyển quy trình hóa đơn điện tử sang chế độ chỉ đọc khi tắt, đồng thời tiếp tục hiển thị trạng thái, nhà cung cấp, số/ký hiệu, ngày phát hành, URL tra cứu, PDF/XML và lịch sử.
-* Thay tùy chọn hóa đơn trùng lặp trong WooCommerce Tax Settings bằng liên kết đến trang Vietnam store.
-* Sửa logic email Theo dõi vận chuyển để chọn bản ghi hiện hành mới nhất, tránh dùng lại mã vận đơn bị hủy sau khi tạo vận đơn thay thế.
-* Rút gọn mã vận đơn GHTK trên giao diện và clipboard còn dãy số cuối sau dấu chấm; mã đầy đủ vẫn được lưu cho API và xử lý nội bộ.
-* Tự động ẩn Hành trình vận chuyển thủ công khi có ít nhất một dịch vụ vận chuyển khả dụng, đồng thời giữ biểu mẫu này khi không có trình kết nối.
-* Hoàn thiện bản dịch tiếng Việt cho trang cài đặt, trạng thái tính năng và chế độ chỉ đọc hóa đơn.
+* New: Added the Plugin URI and clickable links to the official Website, Documentation, Support, and key topic pages so the product source can be verified.
+* New: Added a WooCommerce email for the electronic invoicing workflow, with HTML and plain-text templates, customization in email settings, manual sending from the order metabox, and attachments for available PDF/XML files.
+* New: Automatically changed the invoice status to Sent to customer after an email was sent successfully, while storing the status and send time and displaying a result notice.
+* Update: Added shipment status, service, COD amount, and update time to emails triggered by an internal shipping connector; internal shop-account rate details are not displayed.
+* Update: Used the dedicated subject `Shipping update: {shipment_status} - Order #{order_number}` for emails triggered by an internal connector.
+* Update: Hid the VAT information row in the order list's Information column when invoice requests at checkout are disabled, while retaining filters and historical invoice data exports.
+* Update: Displayed the manual Shipment Journey form in the order metabox only after a manual shipment with a tracking number has been created.
+* Improve: Collapsed the manual tracking update form after a tracking number has been created; administrators can reopen it from the “Update tracking number” row, whose color follows each user's admin color scheme.
+* Improve: Fixed the shipping and electronic invoice email placeholder lifecycle: restored `{site_title}`, `{site_address}`, `{site_url}`, and `{store_email}` on every send; refreshed order/shipment/invoice placeholders; and ensured they work correctly in subjects, headings, and additional content across repeated sends.
+* Improve: Fixed the enabled shipping service count on the Vietnam store page by directly counting registered, available providers.
+* Improve: Completed the Vietnamese translation for the electronic invoice email feature.
 
-= 1.1.0 (17/7/2026) =
+= 1.1.1 (July 26, 2026) =
 
-* Hỗ trợ Cart và Checkout Blocks cho địa chỉ Việt Nam với danh sách Phường/Xã phụ thuộc Tỉnh/Thành.
-* Cho phép nhúng Cart/Checkout Block trên trang tùy chỉnh chưa được gán làm trang giỏ hàng hoặc thanh toán mặc định của WooCommerce.
-* Đồng bộ địa chỉ Blocks với các trường `state` và `city` của Store API, bao gồm chuẩn hóa và xác thực phía máy chủ.
-* Tích hợp yêu cầu hóa đơn GTGT vào Checkout Block qua Additional Checkout Fields API với điều kiện hiển thị và xác thực tương ứng.
-* Chuyển yêu cầu hóa đơn GTGT vào phần Tùy chọn thuế; checkout, quản trị đơn hàng và workflow hóa đơn chỉ hoạt động khi WooCommerce bật tính thuế.
-* Bổ sung khả năng chuẩn hóa và xác thực số điện thoại Việt Nam cho Store API.
-* Hiển thị thông tin vận chuyển trên trang xác nhận đơn hàng của Checkout Block và trang xem đơn hàng trong My Account.
-* Xác nhận luồng VietQR trên trang xác nhận đơn hàng và khai báo tương thích Cart/Checkout Blocks sau khi kiểm thử cả Classic lẫn Blocks.
-* Cung cấp phương thức Quy tắc phí vận chuyển theo Shipping Zones, gồm điều kiện địa chỉ đến cấp phường/xã, tổng giỏ hàng, khối lượng, mức phân loại vận chuyển, ngưỡng miễn phí, COD, phí mặc định và nhập/xuất CSV.
-* Rút gọn các nhãn yêu cầu hóa đơn, vận chuyển, bộ lọc và tra cứu đơn hàng để loại bỏ hậu tố “Việt Nam” không cần thiết.
-* Mở rộng công cụ quản lý đơn hàng tương thích HPOS với bộ lọc hóa đơn GTGT, đơn vị vận chuyển, mã vận đơn, trạng thái email theo dõi, tiến độ bàn giao, số điện thoại chuẩn hóa và địa chỉ Việt Nam.
-* Cung cấp thao tác hàng loạt để gửi lại email theo dõi, cập nhật đơn vị vận chuyển, xuất CSV giao hàng/hóa đơn và đánh dấu tiến độ bàn giao.
-* Xây dựng quy trình hóa đơn điện tử trung lập nhà cung cấp với bảy trạng thái, số/ký hiệu hóa đơn, ngày phát hành, URL tra cứu, tệp PDF/XML, bộ lọc, dữ liệu CSV và nhật ký thay đổi.
-* Bổ sung cột Thông tin gọn trên danh sách đơn hàng để hiển thị thông tin vận đơn và trạng thái VAT theo điều kiện.
-* Hỗ trợ tracking không cần API với mẫu URL theo hãng, liên kết tự tạo từ mã vận đơn, hãng tùy chỉnh, hành trình thủ công và trang tra cứu bằng block/shortcode.
-* Đơn giản hóa hộp Vận chuyển khi chưa đăng ký nhà cung cấp vận chuyển.
-* Hoàn thiện bản dịch tiếng Việt cho nút lưu/cập nhật mã vận đơn và các chuỗi giao diện còn thiếu.
-* Đặt liên kết Cài đặt email bên cạnh tùy chọn gửi thông tin vận chuyển cho khách hàng.
-* Sắp xếp trường Tên và Số điện thoại trên cùng một hàng trong địa chỉ giao hàng.
+* New: Added a Vietnam store menu directly below WooCommerce and a centralized configuration page for features, services, and operational tools.
+* New: Added switches for enabling or disabling address fields, phone normalization, customer-facing shipping information, order management, invoice requests, and the electronic invoicing workflow; switch colors follow each user's admin color scheme.
+* New: Designed the admin hero with a plugin icon and a rounded-square SVG menu icon featuring a five-point star cutout; CSS masking keeps the icon rendering consistently during page navigation.
+* Update: Decoupled invoice requests at checkout from WooCommerce tax calculation and the electronic invoice management workflow.
+* Update: Preserved access to historical invoice details in the order panel, filters, and CSV files when a store stops accepting new requests.
+* Update: Made the electronic invoicing workflow read-only when disabled while continuing to display the status, provider, number/series, issue date, lookup URL, PDF/XML files, and history.
+* Update: Replaced the duplicate invoice option in WooCommerce Tax settings with a link to the Vietnam store page.
+* Update: Shortened GHTK tracking numbers in the interface and clipboard to the final numeric sequence after the period; the full number remains stored for API and internal processing.
+* Update: Automatically hid the manual Shipment Journey when at least one shipping service is available, while retaining the form when no connector is present.
+* Improve: Fixed Shipping Tracking email logic to select the newest current record and avoid reusing a canceled tracking number after a replacement shipment is created.
+* Improve: Completed Vietnamese translations for the settings page, feature statuses, and invoice read-only mode.
 
-= 1.0.2 (5/7/2026) =
+= 1.1.0 (July 17, 2026) =
 
-* Bổ sung mẫu email WooCommerce gửi khách hàng để cập nhật thông tin theo dõi vận chuyển tại Việt Nam.
-* Cung cấp hộp kiểm trong phần thông tin vận chuyển Việt Nam của đơn hàng để gửi email theo dõi khi quản trị viên lưu mã vận đơn thủ công.
-* Điều chỉnh bảng chi tiết trong email theo dõi vận chuyển cho phù hợp với bố cục mẫu email mới của WooCommerce.
-* Hoàn thiện bản dịch tiếng Việt cho email theo dõi vận chuyển và các điều khiển gửi thủ công.
+* New: Added Cart and Checkout Blocks support for Vietnamese addresses with Province/City-dependent Ward/Commune lists.
+* New: Allowed Cart/Checkout Blocks to be embedded on custom pages that are not assigned as WooCommerce's default cart or checkout page.
+* New: Synchronized Block addresses with the Store API's `state` and `city` fields, including server-side normalization and validation.
+* New: Integrated VAT invoice requests into Checkout Blocks through the Additional Checkout Fields API, with corresponding display conditions and validation.
+* New: Added Vietnamese phone number normalization and validation to the Store API.
+* New: Displayed shipping information on the Checkout Block order confirmation page and the order details page in My Account.
+* New: Added a Shipping Fee Rules method for Shipping Zones, with conditions for addresses down to ward/commune level, cart total, weight, shipping class, free-shipping threshold, COD, default fees, and CSV import/export.
+* New: Expanded HPOS-compatible order management tools with filters for VAT invoices, carriers, tracking numbers, tracking email status, handoff progress, normalized phone numbers, and Vietnamese addresses.
+* New: Added bulk actions to resend tracking emails, update carriers, export shipping/invoice CSV files, and mark handoff progress.
+* New: Built a provider-neutral electronic invoicing workflow with seven statuses, invoice number/series, issue date, lookup URL, PDF/XML files, filters, CSV data, and a change log.
+* New: Added a compact Information column to the order list for conditionally displaying tracking details and VAT status.
+* New: Added API-free tracking with carrier URL templates, links generated from tracking numbers, custom carriers, a manual journey, and a block/shortcode tracking page.
+* Update: Moved VAT invoice requests to Tax options; checkout, order administration, and the invoice workflow operate only when WooCommerce tax calculation is enabled.
+* Update: Verified the VietQR flow on the order confirmation page and declared Cart/Checkout Blocks compatibility after testing both Classic Checkout and Blocks.
+* Update: Shortened invoice request, shipping, filter, and order tracking labels by removing the unnecessary “Vietnam” suffix.
+* Update: Simplified the Shipping panel when no shipping provider is registered.
+* Update: Placed an Email settings link next to the option to send shipping information to customers.
+* Update: Arranged the Name and Phone fields on the same row in shipping addresses.
+* Improve: Completed Vietnamese translations for the save/update tracking number button and remaining interface strings.
 
-= 1.0.1 (28/6/2026) =
+= 1.0.2 (July 5, 2026) =
 
-* Bổ sung biểu mẫu vận chuyển thủ công trong phần thông tin vận chuyển Việt Nam của đơn hàng khi chưa đăng ký trình kết nối của đơn vị vận chuyển.
-* Cho phép chọn hãng vận chuyển và nhập mã vận đơn thủ công bằng siêu dữ liệu đơn hàng `_vck_shipping_*` tiêu chuẩn của plugin.
-* Mở rộng công cụ di chuyển dữ liệu từ Le Van Toan để quét và đồng bộ địa chỉ thanh toán, địa chỉ giao hàng trong hồ sơ khách hàng, địa chỉ đơn hàng và dữ liệu vận chuyển.
-* Cải thiện việc di chuyển địa chỉ cũ đối với bí danh phường/xã trước năm 2025 và địa chỉ khách hàng Việt Nam thiếu giá trị quốc gia.
-* Tách thông báo tiến trình di chuyển theo dòng địa chỉ đơn hàng, dòng địa chỉ khách hàng và đơn hàng vận chuyển.
-* Sắp xếp lại các trường địa chỉ Việt Nam trong hồ sơ khách hàng theo thứ tự: quốc gia, tỉnh/thành phố, phường/xã, dòng địa chỉ 1, dòng địa chỉ 2 và mã bưu chính.
+* New: Added a WooCommerce customer email template for Vietnamese shipping tracking updates.
+* New: Added a checkbox to the order's Vietnamese shipping information panel for sending a tracking email when an administrator saves a manual tracking number.
+* Improve: Adjusted the detail table in tracking emails to fit WooCommerce's new email template layout.
+* Improve: Completed Vietnamese translations for tracking emails and manual sending controls.
 
-= 1.0.0 (27/6/2026) =
+= 1.0.1 (June 28, 2026) =
 
-* Bản phát hành công khai đầu tiên với tên Vietnam Store Toolkit for WooCommerce.
-* Cung cấp danh sách chọn tỉnh/thành phố và phường/xã Việt Nam cho WooCommerce.
-* Tích hợp dữ liệu đơn vị hành chính hai cấp của Việt Nam cho 34 tỉnh/thành phố và 3.321 phường/xã/đặc khu.
-* Điều chỉnh các trường thanh toán tại Việt Nam cho họ và tên, thông tin liên hệ, khả năng hiển thị quốc gia, trường công ty và mã bưu chính.
-* Bổ sung các trường yêu cầu hóa đơn GTGT và thông tin hóa đơn trong trang quản trị đơn hàng.
-* Hiển thị thông tin hóa đơn GTGT trong email New Order gửi quản trị viên cửa hàng.
-* Tích hợp VietQR vào WooCommerce Direct bank transfer.
-* Cung cấp bộ chọn ngân hàng Việt Nam và mẫu nội dung chuyển khoản cho tài khoản ngân hàng.
-* Hiển thị mã QR VietQR trên đơn hàng ở giao diện người dùng, email khách hàng và trang quản trị.
-* Bổ sung thao tác sao chép số tài khoản ngân hàng và nội dung chuyển khoản.
-* Hỗ trợ chuẩn hóa số điện thoại Việt Nam và lưu trữ siêu dữ liệu tương ứng.
-* Xây dựng khung tích hợp đơn vị vận chuyển với siêu dữ liệu đơn hàng được chuẩn hóa và các thao tác quản trị.
-* Làm gọn dòng vận chuyển trong trang quản trị WooCommerce bằng cách ẩn siêu dữ liệu kỹ thuật của mức phí vận chuyển.
-* Cho phép chọn trước đơn vị vận chuyển khi tạo vận đơn dựa trên phương thức khách hàng chọn tại trang thanh toán, nếu phương thức đó có siêu dữ liệu của đơn vị vận chuyển.
-* Bổ sung WooCommerce Status Tools với quy trình một lần nhấp để xử lý địa chỉ đơn hàng và dữ liệu vận chuyển từ plugin của Le Van Toan.
-* Thêm cảnh báo bảo vệ quá trình di chuyển cho các cửa hàng chuyển từ plugin của Le Van Toan.
-* Chuẩn bị text domain cho WordPress.org, tiền tố công khai duy nhất, thao tác AJAX, biến JavaScript toàn cục và cơ chế kiểm tra quyền yêu cầu.
-* Hoàn thiện bản dịch tiếng Việt.
+* New: Added a manual shipping form to the order's Vietnamese shipping information panel when no carrier connector is registered.
+* New: Allowed administrators to select a carrier and enter a tracking number manually using the plugin's standard `_vck_shipping_*` order metadata.
+* Update: Expanded the migration tool for Le Van Toan's plugin to scan and synchronize billing addresses, customer-profile shipping addresses, order addresses, and shipping data.
+* Update: Separated migration progress notices into order address rows, customer address rows, and shipping order rows.
+* Update: Reordered Vietnamese address fields in customer profiles as follows: country, province/city, ward/commune, address line 1, address line 2, and postcode.
+* Improve: Improved legacy address migration for pre-2025 ward/commune aliases and Vietnamese customer addresses with no country value.
+
+= 1.0.0 (June 27, 2026) =
+
+* New: Initial public release under the name Vietnam Store Toolkit for WooCommerce.
+* New: Added Vietnamese province/city and ward/commune selectors to WooCommerce.
+* New: Integrated Vietnam's two-tier administrative division dataset covering 34 provinces/cities and 3,321 wards/communes/special zones.
+* New: Adjusted Vietnamese checkout fields for full names, contact details, country visibility, company fields, and postcodes.
+* New: Added VAT invoice request fields and invoice details to the order administration screen.
+* New: Displayed VAT invoice details in New Order emails sent to store administrators.
+* New: Integrated VietQR into WooCommerce Direct bank transfer.
+* New: Added a Vietnamese bank selector and transfer-description template for bank accounts.
+* New: Displayed VietQR codes on customer-facing order pages, in customer emails, and in wp-admin.
+* New: Added actions to copy bank account numbers and transfer descriptions.
+* New: Added Vietnamese phone number normalization and storage of corresponding metadata.
+* New: Built a carrier integration framework with normalized order metadata and administrative actions.
+* New: Simplified shipping rows in WooCommerce administration by hiding technical shipping-rate metadata.
+* New: Allowed the carrier to be preselected when creating a shipment based on the shipping method chosen at checkout, when that method contains carrier metadata.
+* New: Added WooCommerce Status Tools with a one-click workflow for processing order addresses and shipping data from Le Van Toan's plugin.
+* New: Added migration safeguards for stores moving from Le Van Toan's plugin.
+* New: Prepared the WordPress.org text domain, unique public prefix, AJAX actions, global JavaScript variables, and request permission checks.
+* Improve: Completed Vietnamese translations.

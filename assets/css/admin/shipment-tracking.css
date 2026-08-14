@@ -1,5 +1,4 @@
 .vck-admin-tracking-timeline {
-	border-top: 1px solid #dcdcde;
 	margin-top: 16px;
 	padding-top: 14px;
 }
@@ -42,6 +41,22 @@
 	display: flex;
 	gap: 8px;
 	justify-content: space-between;
+}
+
+.wp-core-ui .vck-admin-tracking-timeline .button.vck-admin-tracking-timeline__delete {
+	border-color: #a00 !important;
+	color: #a00 !important;
+	font-size: 12px !important;
+	height: 28px !important;
+	line-height: 26px !important;
+	min-height: 28px !important;
+	padding: 0 10px !important;
+}
+
+.wp-core-ui .vck-admin-tracking-timeline .button.vck-admin-tracking-timeline__delete:hover,
+.wp-core-ui .vck-admin-tracking-timeline .button.vck-admin-tracking-timeline__delete:focus {
+	border-color: #8b0000 !important;
+	color: #8b0000 !important;
 }
 
 .vck-admin-tracking-timeline__event time,

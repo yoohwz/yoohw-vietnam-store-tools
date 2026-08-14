@@ -1100,7 +1100,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			.vck-admin-shipping-summary--danger .vck-admin-shipping-card__status .vck-admin-shipping-card__value {
 				color: #b32d2e;
 			}
-			.vck-admin-shipping-manual-form__toggle {
+			.vck-admin-shipping-form__toggle {
 				box-sizing: border-box;
 				display: flex;
 				align-items: center;
@@ -1117,19 +1117,19 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 				font-weight: 600;
 				text-align: left;
 			}
-			.vck-admin-shipping-manual-form__toggle:hover,
-			.vck-admin-shipping-manual-form__toggle:focus {
+			.vck-admin-shipping-form__toggle:hover,
+			.vck-admin-shipping-form__toggle:focus {
 				color: var(--wp-admin-theme-color-darker-10, #135e96);
 			}
-			.vck-admin-shipping-manual-form__toggle:focus-visible {
+			.vck-admin-shipping-form__toggle:focus-visible {
 				border-radius: 2px;
 				box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
 				outline: 2px solid transparent;
 			}
-			.vck-admin-shipping-manual-form__toggle .dashicons {
+			.vck-admin-shipping-form__toggle .dashicons {
 				transition: transform 0.15s ease;
 			}
-			.vck-admin-shipping-manual-form__toggle[aria-expanded="true"] .dashicons {
+			.vck-admin-shipping-form__toggle[aria-expanded="true"] .dashicons {
 				transform: rotate(180deg);
 			}
 			.vck-admin-shipping-manual-form[hidden] {
@@ -1178,7 +1178,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			: __( 'Update tracking code', 'yoohw-vietnam-store-tools' );
 
 		if ( '' !== $tracking_code ) {
-			echo '<button type="button" class="vck-admin-shipping-manual-form__toggle" data-vck-manual-shipping-toggle aria-expanded="false" aria-controls="' . esc_attr( $panel_id ) . '">';
+			echo '<button type="button" class="vck-admin-shipping-form__toggle" data-vck-shipping-form-toggle aria-expanded="false" aria-controls="' . esc_attr( $panel_id ) . '">';
 			echo '<span>' . esc_html__( 'Update tracking code', 'yoohw-vietnam-store-tools' ) . '</span>';
 			echo '<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>';
 			echo '</button>';
@@ -1378,10 +1378,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 	}
 
 	private function render_create_shipment_form( $order, $data, $providers ) {
-		$panel_id            = 'vck-shipping-create-form-' . $order->get_id();
+		$panel_id             = 'vck-shipping-create-form-' . $order->get_id();
 		$selected_provider_id = $this->get_selected_create_shipment_provider_id( $order, $data, $providers );
 
-		echo '<div id="' . esc_attr( $panel_id ) . '" data-vck-shipping-create-panel style="margin:0 0 8px;">';
+		echo '<button type="button" class="vck-admin-shipping-form__toggle" data-vck-shipping-form-toggle aria-expanded="false" aria-controls="' . esc_attr( $panel_id ) . '">';
+		echo '<span>' . esc_html__( 'Create shipment', 'yoohw-vietnam-store-tools' ) . '</span>';
+		echo '<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>';
+		echo '</button>';
+		echo '<div id="' . esc_attr( $panel_id ) . '" data-vck-shipping-create-panel style="margin:12px 0 8px;" hidden>';
 		echo '<p><label for="vck_shipping_provider">' . esc_html__( 'Provider', 'yoohw-vietnam-store-tools' ) . '</label>';
 		echo '<select id="vck_shipping_provider" name="provider_id" class="widefat">';
 
@@ -1592,22 +1596,22 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 						return;
 					}
 
-					var manualFormToggle = event.target.closest('[data-vck-manual-shipping-toggle]');
+					var formToggle = event.target.closest('[data-vck-shipping-form-toggle]');
 
-					if (manualFormToggle) {
+					if (formToggle) {
 						event.preventDefault();
 
-						var manualForm = document.getElementById(manualFormToggle.getAttribute('aria-controls') || '');
-						if (!manualForm) {
+						var formPanel = document.getElementById(formToggle.getAttribute('aria-controls') || '');
+						if (!formPanel) {
 							return;
 						}
 
-						var shouldExpand = manualFormToggle.getAttribute('aria-expanded') !== 'true';
-						manualFormToggle.setAttribute('aria-expanded', shouldExpand ? 'true' : 'false');
-						manualForm.hidden = !shouldExpand;
+						var shouldExpand = formToggle.getAttribute('aria-expanded') !== 'true';
+						formToggle.setAttribute('aria-expanded', shouldExpand ? 'true' : 'false');
+						formPanel.hidden = !shouldExpand;
 
 						if (shouldExpand) {
-							var firstField = manualForm.querySelector('select:not([disabled]), input:not([disabled]), textarea:not([disabled])');
+							var firstField = formPanel.querySelector('select:not([disabled]), input:not([disabled]), textarea:not([disabled])');
 							if (firstField) {
 								firstField.focus();
 							}
