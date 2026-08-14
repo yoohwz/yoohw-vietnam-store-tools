@@ -21,14 +21,26 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 
 	private const TRACKING_BATCH_SIZE = 200;
 
+	private static $instance = null;
+
 	private $ward_to_province = null;
 
 	private $legacy_ward_aliases = null;
 
 	public function __construct() {
+		self::$instance = $this;
+
 		add_filter( 'woocommerce_debug_tools', [ $this, 'register_tools' ], 30 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'wp_ajax_yoohw_vietnam_store_tools_devvn_migration_step', [ $this, 'ajax_migration_step' ] );
+	}
+
+	public static function has_pending_migration_data() {
+		if ( ! self::$instance instanceof self ) {
+			return false;
+		}
+
+		return self::$instance->detect_pending_migration_data();
 	}
 
 	public function register_tools( $tools ) {
@@ -308,23 +320,39 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 	}
 
 	private function get_ajax_migration_status() {
+		$pending = $this->get_pending_migration_status();
+
+		return [
+			'remaining'               => $pending['remaining'],
+			'done'                    => 0 === $pending['remaining'],
+			'addressesTotal'          => (int) $pending['orders']['total'],
+			'addressesSafe'           => (int) $pending['orders']['exact_mappable'],
+			'addressesReview'         => (int) $pending['orders']['needs_review'],
+			'customerAddressesTotal'  => (int) $pending['customers']['total'],
+			'customerAddressesSafe'   => (int) $pending['customers']['exact_mappable'],
+			'customerAddressesReview' => (int) $pending['customers']['needs_review'],
+			'trackingTotal'           => (int) $pending['tracking']['total_orders'],
+			'trackingRemaining'       => (int) $pending['tracking']['needs_sync_count'],
+			'message'                 => $this->format_ajax_status_message( $pending['orders'], $pending['customers'], $pending['tracking'] ),
+		];
+	}
+
+	private function detect_pending_migration_data() {
+		$pending = $this->get_pending_migration_status();
+
+		return $pending['remaining'] > 0;
+	}
+
+	private function get_pending_migration_status() {
 		$address_report          = $this->analyze_legacy_addresses();
 		$customer_address_report = $this->analyze_legacy_customer_addresses();
 		$tracking_report         = $this->analyze_ghtk_tracking_meta();
-		$remaining               = (int) $address_report['exact_mappable'] + (int) $customer_address_report['exact_mappable'] + (int) $tracking_report['needs_sync_count'];
 
 		return [
-			'remaining'               => $remaining,
-			'done'                    => 0 === $remaining,
-			'addressesTotal'          => (int) $address_report['total'],
-			'addressesSafe'           => (int) $address_report['exact_mappable'],
-			'addressesReview'         => (int) $address_report['needs_review'],
-			'customerAddressesTotal'  => (int) $customer_address_report['total'],
-			'customerAddressesSafe'   => (int) $customer_address_report['exact_mappable'],
-			'customerAddressesReview' => (int) $customer_address_report['needs_review'],
-			'trackingTotal'           => (int) $tracking_report['total_orders'],
-			'trackingRemaining'       => (int) $tracking_report['needs_sync_count'],
-			'message'                 => $this->format_ajax_status_message( $address_report, $customer_address_report, $tracking_report ),
+			'orders'    => $address_report,
+			'customers' => $customer_address_report,
+			'tracking'  => $tracking_report,
+			'remaining' => (int) $address_report['exact_mappable'] + (int) $customer_address_report['exact_mappable'] + (int) $tracking_report['needs_sync_count'],
 		];
 	}
 
