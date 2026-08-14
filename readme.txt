@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 10.9
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,7 +133,7 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.1.3 (In Development) =
+= 1.1.3 (August 14, 2026) =
 
 * Improve: Collapsed the Create shipment and Add shipment journey event forms in the order Shipping metabox, keeping the interface compact while preserving keyboard-accessible toggles.
 * Fix: Kept manually added shipment journey events visible in the order metabox after saving.
