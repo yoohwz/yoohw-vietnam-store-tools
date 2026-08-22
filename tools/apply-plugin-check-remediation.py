@@ -1,0 +1,147 @@
+from pathlib import Path
+
+
+def replace(path, old, new, expected=1):
+    p = Path(path)
+    data = p.read_text(encoding='utf-8')
+    actual = data.count(old)
+    if actual != expected:
+        raise SystemExit(f'{path}: expected {expected} occurrence(s), found {actual}')
+    p.write_text(data.replace(old, new, expected), encoding='utf-8')
+
+
+replace(
+    'includes/class-vietnam-commerce-kit-admin-address-fields.php',
+    "__( 'State / County', 'woocommerce' )",
+    "__( 'State / County', 'yoohw-vietnam-store-tools' )",
+)
+
+replace(
+    'includes/class-vietnam-commerce-kit-blocks-integration.php',
+    "\t\tif ( class_exists( $exception_class ) ) {\n\t\t\tthrow new $exception_class( $code, $message, 400, [ 'field' => $field ] );\n\t\t}\n",
+    "\t\tif ( class_exists( $exception_class ) ) {\n\t\t\t// RouteException carries structured Store API error data; escaping belongs to the HTTP rendering boundary.\n\t\t\t// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped\n\t\t\tthrow new $exception_class( $code, $message, 400, [ 'field' => $field ] );\n\t\t\t// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped\n\t\t}\n",
+)
+
+replace(
+    'includes/class-vietnam-commerce-kit-phone-normalization.php',
+    "\t\tif ( class_exists( $exception_class ) ) {\n\t\t\tthrow new $exception_class(\n\t\t\t\t'yoohw_vietnam_store_tools_invalid_' . $address_type . '_phone',\n\t\t\t\t$message,\n\t\t\t\t400,\n\t\t\t\t[ 'field' => $address_type . '_phone' ]\n\t\t\t);\n\t\t}\n",
+    "\t\tif ( class_exists( $exception_class ) ) {\n\t\t\t// RouteException carries structured Store API error data; escaping belongs to the HTTP rendering boundary.\n\t\t\t// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped\n\t\t\tthrow new $exception_class(\n\t\t\t\t'yoohw_vietnam_store_tools_invalid_' . $address_type . '_phone',\n\t\t\t\t$message,\n\t\t\t\t400,\n\t\t\t\t[ 'field' => $address_type . '_phone' ]\n\t\t\t);\n\t\t\t// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped\n\t\t}\n",
+)
+
+replace(
+    'includes/class-vietnam-commerce-kit-order-management.php',
+    "\t\tfwrite( $output, \"\\xEF\\xBB\\xBF\" );",
+    "\t\t// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- php://output is an HTTP response stream; WP_Filesystem is not an equivalent transport.\n\t\tfwrite( $output, \"\\xEF\\xBB\\xBF\" );",
+)
+replace(
+    'includes/class-vietnam-commerce-kit-order-management.php',
+    "\t\tfclose( $output );",
+    "\t\t// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing the php://output response stream is intentional.\n\t\tfclose( $output );",
+)
+
+replace(
+    'languages/yoohw-vietnam-store-tools-vi.l10n.php',
+    "<?php\nreturn json_decode(",
+    "<?php\nif ( ! defined( 'ABSPATH' ) ) {\n\texit;\n}\n\nreturn json_decode(",
+)
+
+replace(
+    'includes/class-vietnam-commerce-kit-electronic-invoice.php',
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The action nonce is verified before this method is called.\n\t\tif ( empty( $_FILES[ $field_name ] ) || UPLOAD_ERR_NO_FILE === (int) $_FILES[ $field_name ]['error'] ) {",
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- The action nonce is verified before this method is called; PHP supplies the upload error field.\n\t\tif ( empty( $_FILES[ $field_name ] ) || UPLOAD_ERR_NO_FILE === (int) $_FILES[ $field_name ]['error'] ) {",
+)
+replace(
+    'includes/class-vietnam-commerce-kit-electronic-invoice.php',
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The action nonce is verified before this method is called.\n\t\t$filename = sanitize_file_name( wp_unslash( $_FILES[ $field_name ]['name'] ) );",
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- The action nonce is verified before this method is called; the filename is sanitized immediately.\n\t\t$filename = sanitize_file_name( wp_unslash( $_FILES[ $field_name ]['name'] ) );",
+)
+replace(
+    'includes/class-vietnam-commerce-kit-electronic-invoice.php',
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The action nonce is verified before this method is called.\n\t\tif ( 'xml' === $expected_extension && ! self::is_valid_xml_file( $_FILES[ $field_name ]['tmp_name'] ) ) {",
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- PHP supplies tmp_name as a server-side temporary path; it must remain an exact filesystem path for XML validation.\n\t\tif ( 'xml' === $expected_extension && ! self::is_valid_xml_file( $_FILES[ $field_name ]['tmp_name'] ) ) {",
+)
+
+replace(
+    'includes/class-vietnam-commerce-kit-shipping.php',
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Shipment action handlers verify the nonce before this payload is read.\n\t\treturn $this->sanitize_action_request( wp_unslash( $_POST[ $request_key ] ) );",
+    "\t\t// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Shipment handlers verify the nonce; sanitize_action_request() recursively sanitizes every key and scalar value.\n\t\treturn $this->sanitize_action_request( wp_unslash( $_POST[ $request_key ] ) );",
+)
+
+replace(
+    'includes/class-vietnam-commerce-kit-admin-menu.php',
+    "\t\t$submitted = isset( $_POST['features'] ) && is_array( $_POST['features'] )\n\t\t\t? wp_unslash( $_POST['features'] )\n\t\t\t: [];",
+    "\t\t$submitted = isset( $_POST['features'] ) && is_array( $_POST['features'] )\n\t\t\t// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each submitted feature value is sanitized and allowlisted before persistence below.\n\t\t\t? wp_unslash( $_POST['features'] )\n\t\t\t: [];",
+)
+replace(
+    'includes/class-vietnam-commerce-kit-admin-menu.php',
+    "\t\t<div class=\"wrap yoohw-vietnam-store\">\n\t\t\t<?php if ( isset( $_GET['updated'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['updated'] ) ) ) : ?>",
+    "\t\t<div class=\"wrap yoohw-vietnam-store\">\n\t\t\t<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice flag; no state is changed from this query argument. ?>\n\t\t\t<?php if ( isset( $_GET['updated'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['updated'] ) ) ) : ?>",
+)
+
+template_disable = "\n// WooCommerce email templates intentionally use injected local variables and core WooCommerce hook names.\n// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound\n"
+for path in [
+    'templates/emails/customer-shipping-tracking.php',
+    'templates/emails/plain/customer-shipping-tracking.php',
+    'templates/emails/plain/customer-electronic-invoice.php',
+    'templates/emails/customer-electronic-invoice.php',
+]:
+    replace(path, "if ( ! defined( 'ABSPATH' ) ) {\n\texit;\n}\n", "if ( ! defined( 'ABSPATH' ) ) {\n\texit;\n}\n" + template_disable)
+
+replace(
+    'yoohw-vietnam-store-tools.php',
+    "\t\tload_plugin_textdomain( 'yoohw-vietnam-store-tools', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );",
+    "\t\t// Bundled translations in /languages are intentionally loaded for stores that do not use WordPress.org language packs.\n\t\tload_plugin_textdomain( 'yoohw-vietnam-store-tools', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );",
+)
+
+replace(
+    '.github/workflows/publish-wordpress-org.yml',
+    "          # 1.1.4 was already finalized/tagged before Plugin Check became a release gate.\n          # Keep this waiver release-scoped; issue #17 removes it before the next release.\n          ignore-codes: ${{ env.RELEASE_VERSION == '1.1.4' && 'WordPress.WP.I18n.TextDomainMismatch,WordPress.Security.EscapeOutput.ExceptionNotEscaped,WordPress.WP.AlternativeFunctions.file_system_operations_fwrite,WordPress.WP.AlternativeFunctions.file_system_operations_fclose,missing_direct_file_access_protection' || '' }}\n",
+    "",
+)
+
+ci_path = Path('.github/workflows/ci.yml')
+ci = ci_path.read_text(encoding='utf-8')
+if '\n  plugin-check:\n' in ci:
+    raise SystemExit('ci.yml: plugin-check job already exists')
+ci += '''
+
+  plugin-check:
+    name: WordPress Plugin Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Stage reviewed WordPress.org payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf wporg-dist
+          mkdir wporg-dist
+          for path in \\
+            assets \\
+            blocks \\
+            data \\
+            includes \\
+            languages \\
+            templates \\
+            index.php \\
+            yoohw-vietnam-store-tools.php \\
+            readme.txt \\
+            changelog.txt \\
+            changelog-vi.txt
+          do
+            test -e "$path"
+            cp -a "$path" wporg-dist/
+          done
+
+      - name: Run WordPress Plugin Check
+        uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        with:
+          build-dir: wporg-dist
+          slug: yoohw-vietnam-store-tools
+'''
+ci_path.write_text(ci, encoding='utf-8')
