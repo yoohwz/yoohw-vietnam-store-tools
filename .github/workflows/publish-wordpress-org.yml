@@ -1,0 +1,256 @@
+name: Publish to WordPress.org
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-org-publish
+  cancel-in-progress: false
+
+env:
+  WPORG_SLUG: yoohw-vietnam-store-tools
+
+jobs:
+  validate-package:
+    name: Validate WordPress.org package
+    if: ${{ github.event.release.prerelease == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout published release tag
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify release tag and metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION='${{ github.event.release.tag_name }}'
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release tag must be semantic x.y.z, got: $VERSION" >&2
+            exit 1
+          fi
+
+          RELEASE_BRANCH="release/$VERSION"
+          git fetch --no-tags origin "refs/heads/$RELEASE_BRANCH:refs/remotes/origin/$RELEASE_BRANCH"
+
+          TAG_SHA="$(git rev-parse HEAD)"
+          RELEASE_SHA="$(git rev-parse "origin/$RELEASE_BRANCH")"
+          if [[ "$TAG_SHA" != "$RELEASE_SHA" ]]; then
+            echo "Tag $VERSION must point exactly at $RELEASE_BRANCH head." >&2
+            echo "tag=$TAG_SHA release=$RELEASE_SHA" >&2
+            exit 1
+          fi
+
+          PLUGIN_VERSION="$(awk -F': ' '/^[[:space:]]*\*[[:space:]]Version:/ {print $2; exit}' yoohw-vietnam-store-tools.php)"
+          STABLE_TAG="$(awk -F': ' '/^Stable tag:/ {print $2; exit}' readme.txt)"
+          CHANGELOG_VERSION="$(sed -nE 's/^= ([0-9]+(\.[0-9]+)+) \(.*/\1/p' changelog.txt | head -n 1)"
+          CONTRACT_STABLE="$(sed -nE 's/^PUBLISHED_STABLE_VERSION = "([^"]+)"/\1/p' tests/repository-contract-tests.py)"
+
+          for VALUE in "$PLUGIN_VERSION" "$STABLE_TAG" "$CHANGELOG_VERSION" "$CONTRACT_STABLE"; do
+            if [[ "$VALUE" != "$VERSION" ]]; then
+              echo "Release metadata is not synchronized with tag $VERSION." >&2
+              echo "plugin=$PLUGIN_VERSION stable=$STABLE_TAG changelog=$CHANGELOG_VERSION contract=$CONTRACT_STABLE" >&2
+              exit 1
+            fi
+          done
+
+          python3 tests/repository-contract-tests.py
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Stage reviewed WordPress.org payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf wporg-dist
+          mkdir wporg-dist
+
+          for path in \
+            assets \
+            blocks \
+            data \
+            includes \
+            languages \
+            templates \
+            index.php \
+            yoohw-vietnam-store-tools.php \
+            readme.txt \
+            changelog.txt \
+            changelog-vi.txt
+          do
+            if [[ ! -e "$path" ]]; then
+              echo "Required distribution path is missing: $path" >&2
+              exit 1
+            fi
+            cp -a "$path" wporg-dist/
+          done
+
+          find wporg-dist -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Build exact deploy package without publishing
+        id: package
+        uses: 10up/action-wordpress-plugin-deploy@2.3.0
+        with:
+          dry-run: true
+          generate-zip: true
+        env:
+          SLUG: ${{ env.WPORG_SLUG }}
+          BUILD_DIR: wporg-dist
+
+      - name: Unpack and inspect generated package
+        id: unpack
+        shell: bash
+        env:
+          ZIP_PATH: ${{ steps.package.outputs.zip-path }}
+        run: |
+          set -euo pipefail
+          test -f "$ZIP_PATH"
+
+          ROOT="$RUNNER_TEMP/wporg-package"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT"
+          unzip -q "$ZIP_PATH" -d "$ROOT"
+
+          if [[ -f "$ROOT/yoohw-vietnam-store-tools.php" ]]; then
+            PLUGIN_DIR="$ROOT"
+          else
+            mapfile -t DIRS < <(find "$ROOT" -mindepth 1 -maxdepth 1 -type d)
+            if [[ ${#DIRS[@]} -ne 1 || ! -f "${DIRS[0]}/yoohw-vietnam-store-tools.php" ]]; then
+              echo "Unable to identify generated plugin root." >&2
+              find "$ROOT" -maxdepth 2 -print
+              exit 1
+            fi
+            PLUGIN_DIR="${DIRS[0]}"
+          fi
+
+          printf '%s\n' \
+            assets \
+            blocks \
+            changelog-vi.txt \
+            changelog.txt \
+            data \
+            includes \
+            index.php \
+            languages \
+            readme.txt \
+            templates \
+            yoohw-vietnam-store-tools.php | sort > "$RUNNER_TEMP/expected-top-level.txt"
+
+          find "$PLUGIN_DIR" -mindepth 1 -maxdepth 1 -printf '%f\n' | sort > "$RUNNER_TEMP/actual-top-level.txt"
+
+          if ! diff -u "$RUNNER_TEMP/expected-top-level.txt" "$RUNNER_TEMP/actual-top-level.txt"; then
+            echo "Generated WordPress.org top-level payload differs from the reviewed allowlist." >&2
+            exit 1
+          fi
+
+          if find "$PLUGIN_DIR" \
+            \( -name '.git' -o -name '.github' -o -name 'AGENTS.md' -o -name 'tests' -o -name '.DS_Store' -o -name '*.zip' \) \
+            -print -quit | grep -q .; then
+            echo "Generated package contains a forbidden development artifact." >&2
+            exit 1
+          fi
+
+          echo "plugin_dir=$PLUGIN_DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Run WordPress Plugin Check on generated package
+        uses: wordpress/plugin-check-action@v1.1.9
+        with:
+          build-dir: ${{ steps.unpack.outputs.plugin_dir }}
+          slug: ${{ env.WPORG_SLUG }}
+
+      - name: Upload exact WordPress.org ZIP for Human inspection
+        if: ${{ always() && steps.package.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          path: ${{ steps.package.outputs.zip-path }}
+          archive: false
+          retention-days: 7
+
+  deploy:
+    name: Deploy to WordPress.org
+    needs:
+      - validate-package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: wordpress.org
+      url: https://wordpress.org/plugins/yoohw-vietnam-store-tools/
+    steps:
+      - name: Checkout approved release tag
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Re-verify approved release source
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION='${{ github.event.release.tag_name }}'
+          RELEASE_BRANCH="release/$VERSION"
+          git fetch --no-tags origin "refs/heads/$RELEASE_BRANCH:refs/remotes/origin/$RELEASE_BRANCH"
+          [[ "$(git rev-parse HEAD)" == "$(git rev-parse "origin/$RELEASE_BRANCH")" ]]
+          [[ "$(awk -F': ' '/^Stable tag:/ {print $2; exit}' readme.txt)" == "$VERSION" ]]
+
+      - name: Stage reviewed WordPress.org payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf wporg-dist
+          mkdir wporg-dist
+
+          for path in \
+            assets \
+            blocks \
+            data \
+            includes \
+            languages \
+            templates \
+            index.php \
+            yoohw-vietnam-store-tools.php \
+            readme.txt \
+            changelog.txt \
+            changelog-vi.txt
+          do
+            test -e "$path"
+            cp -a "$path" wporg-dist/
+          done
+
+      - name: Deploy approved release to WordPress.org SVN
+        uses: 10up/action-wordpress-plugin-deploy@2.3.0
+        env:
+          SLUG: ${{ env.WPORG_SLUG }}
+          BUILD_DIR: wporg-dist
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+
+      - name: Verify WordPress.org SVN tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION='${{ github.event.release.tag_name }}'
+          svn ls "https://plugins.svn.wordpress.org/${WPORG_SLUG}/tags/${VERSION}/" >/dev/null
+          {
+            echo "### WordPress.org SVN deployment complete"
+            echo
+            echo "- Plugin: ${WPORG_SLUG}"
+            echo "- Version: ${VERSION}"
+            echo "- SVN tag exists: yes"
+            echo
+            echo "If WordPress.org Release Confirmation is enabled, the release still requires confirmation in WordPress.org before it is issued to users."
+          } >> "$GITHUB_STEP_SUMMARY"

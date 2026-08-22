@@ -1,0 +1,14 @@
+/.git
+/.github
+/.wordpress-org
+/tests
+/AGENTS.md
+/README.md
+/CONTRIBUTING.md
+/CODE_OF_CONDUCT.md
+/SECURITY.md
+/.gitignore
+/.gitattributes
+/.distignore
+.DS_Store
+*.zip
