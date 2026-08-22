@@ -15,22 +15,22 @@
 
 ## Changes
 
-- 
+-
 
 ## Validation
 
 <!-- List only checks that actually ran. Use `NOT RUN — reason` for unavailable checks. -->
 
-- 
+-
 
 ## Runtime evidence / limitations
 
 <!-- Required for runtime-sensitive changes. Use `Not applicable` only when genuinely static/non-runtime work. -->
 
-- 
+-
 
 ## Release boundary
 
 <!-- State whether this PR changes version/release metadata. Publishing to WordPress.org, creating release tags, deployment, or other production actions require explicit Human scope. -->
 
-- 
+-
