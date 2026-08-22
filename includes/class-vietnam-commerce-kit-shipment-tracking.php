@@ -730,14 +730,30 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 			return true;
 		}
 
-		$key      = 'yoohw_vst_lookup_' . hash_hmac( 'sha256', $identifier, wp_salt( 'nonce' ) );
-		$attempts = absint( get_transient( $key ) );
+		$key        = 'yoohw_vst_lookup_' . hash_hmac( 'sha256', $identifier, wp_salt( 'nonce' ) );
+		$now        = time();
+		$state      = get_transient( $key );
+		$state      = is_array( $state ) ? $state : [];
+		$attempts   = isset( $state['attempts'] ) ? absint( $state['attempts'] ) : 0;
+		$expires_at = isset( $state['expires_at'] ) ? absint( $state['expires_at'] ) : 0;
+
+		if ( $expires_at <= $now ) {
+			$attempts   = 0;
+			$expires_at = $now + $window;
+		}
 
 		if ( $attempts >= $limit ) {
 			return false;
 		}
 
-		set_transient( $key, $attempts + 1, $window );
+		set_transient(
+			$key,
+			[
+				'attempts'   => $attempts + 1,
+				'expires_at' => $expires_at,
+			],
+			max( 1, $expires_at - $now )
+		);
 
 		return true;
 	}

@@ -179,14 +179,23 @@ assert_audit_contract( 'https://example.com/track/123', $valid_order->meta[ Yooh
 $tracking = new_without_constructor( 'Yoohw_Vietnam_Store_Tools_Shipment_Tracking' );
 $_SERVER['REMOTE_ADDR'] = '203.0.113.10';
 
-for ( $attempt = 1; $attempt <= Yoohw_Vietnam_Store_Tools_Shipment_Tracking::LOOKUP_RATE_LIMIT; ++$attempt ) {
+assert_audit_contract( true, invoke_private_method( $tracking, 'allow_lookup_attempt' ), 'Lookup attempt 1 is allowed within the default limit' );
+$transient_key    = (string) array_key_first( $test_transients );
+$first_window_end = $test_transients[ $transient_key ]['value']['expires_at'];
+
+for ( $attempt = 2; $attempt <= Yoohw_Vietnam_Store_Tools_Shipment_Tracking::LOOKUP_RATE_LIMIT; ++$attempt ) {
 	assert_audit_contract( true, invoke_private_method( $tracking, 'allow_lookup_attempt' ), 'Lookup attempt ' . $attempt . ' is allowed within the default limit' );
 }
 
 assert_audit_contract( false, invoke_private_method( $tracking, 'allow_lookup_attempt' ), 'Lookup attempt above the default limit is blocked' );
-$transient_key = (string) array_key_first( $test_transients );
 assert_audit_contract( false, false !== strpos( $transient_key, $_SERVER['REMOTE_ADDR'] ), 'Rate-limit transient key does not persist the raw IP address' );
-assert_audit_contract( Yoohw_Vietnam_Store_Tools_Shipment_Tracking::LOOKUP_RATE_WINDOW, $test_transients[ $transient_key ]['expiration'], 'Rate-limit transient uses the bounded default window' );
+assert_audit_contract( true, 0 < $test_transients[ $transient_key ]['expiration'] && Yoohw_Vietnam_Store_Tools_Shipment_Tracking::LOOKUP_RATE_WINDOW >= $test_transients[ $transient_key ]['expiration'], 'Rate-limit transient remains within the bounded default window' );
+assert_audit_contract( $first_window_end, $test_transients[ $transient_key ]['value']['expires_at'], 'Allowed attempts do not extend the fixed window end' );
+assert_audit_contract( Yoohw_Vietnam_Store_Tools_Shipment_Tracking::LOOKUP_RATE_LIMIT, $test_transients[ $transient_key ]['value']['attempts'], 'Rate-limit state records attempts within the fixed window' );
+
+$test_transients[ $transient_key ]['value']['expires_at'] = time() - 1;
+assert_audit_contract( true, invoke_private_method( $tracking, 'allow_lookup_attempt' ), 'Expired fixed window starts a new lookup window' );
+assert_audit_contract( 1, $test_transients[ $transient_key ]['value']['attempts'], 'New fixed window resets the attempt counter' );
 
 $test_transients          = [];
 $_SERVER['REMOTE_ADDR']   = 'not-an-ip';
