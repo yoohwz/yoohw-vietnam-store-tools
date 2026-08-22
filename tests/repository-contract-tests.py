@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# Update this with readme.txt only at the explicit Human Release gate.
+PUBLISHED_STABLE_VERSION = "1.1.2"
 
 
 def read(path: str) -> str:
@@ -22,10 +24,46 @@ def require_match(pattern: str, text: str, label: str, flags: int = 0) -> str:
     return match.group(1).strip()
 
 
+def parse_semver(version: str, label: str) -> tuple[int, int, int]:
+    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version):
+        raise AssertionError(f"{label} must be a semantic x.y.z version: {version}")
+    return tuple(int(part) for part in version.split("."))
+
+
+def validate_stable_tag(
+    stable_tag: str, development_version: str, expected_stable: str
+) -> None:
+    stable_parts = parse_semver(stable_tag, "readme stable tag")
+    development_parts = parse_semver(development_version, "development version")
+    parse_semver(expected_stable, "expected published stable version")
+
+    if stable_parts > development_parts:
+        raise AssertionError(
+            "Published stable tag cannot be newer than the development version: "
+            f"stable={stable_tag}, development={development_version}"
+        )
+    if stable_tag != expected_stable:
+        raise AssertionError(
+            "Published stable tag does not match the release-stage expectation: "
+            f"stable={stable_tag}, expected={expected_stable}"
+        )
+
+
+def require_stable_tag_rejection(
+    stable_tag: str, development_version: str, expected_stable: str
+) -> None:
+    try:
+        validate_stable_tag(stable_tag, development_version, expected_stable)
+    except AssertionError:
+        return
+    raise AssertionError(f"Stable-tag contract unexpectedly accepted {stable_tag}")
+
+
 def main() -> int:
     plugin = read("yoohw-vietnam-store-tools.php")
     readme = read("readme.txt")
     changelog = read("changelog.txt")
+    changelog_vi = read("changelog-vi.txt")
     asset = read("blocks/order-tracking/index.asset.php")
 
     plugin_version = require_match(
@@ -48,6 +86,18 @@ def main() -> int:
         "latest changelog version",
         re.MULTILINE,
     )
+    changelog_vi_version = require_match(
+        r"^=\s*([0-9]+(?:\.[0-9]+)+)\s*\(",
+        changelog_vi,
+        "latest Vietnamese changelog version",
+        re.MULTILINE,
+    )
+    readme_changelog_version = require_match(
+        r"^== Changelog ==\s*\n\s*=\s*([0-9]+(?:\.[0-9]+)+)\s*\(",
+        readme,
+        "latest readme changelog version",
+        re.MULTILINE,
+    )
 
     block_path = ROOT / "blocks/order-tracking/block.json"
     block = json.loads(block_path.read_text(encoding="utf-8"))
@@ -61,17 +111,60 @@ def main() -> int:
         "block asset version",
     )
 
-    versions = {
+    translation_catalogs = (
+        "languages/yoohw-vietnam-store-tools.pot",
+        "languages/yoohw-vietnam-store-tools-vi.po",
+        "languages/yoohw-vietnam-store-tools-vi_VN.po",
+    )
+    translation_versions = {
+        path: require_match(
+            r"Project-Id-Version:\s*Vietnam Store Toolkit for WooCommerce\s+(\S+)\\n",
+            read(path),
+            f"{path} project version",
+        )
+        for path in translation_catalogs
+    }
+    translation_versions["languages/yoohw-vietnam-store-tools-vi.l10n.php"] = (
+        require_match(
+            r'"project-id-version":\s*"Vietnam Store Toolkit for WooCommerce\s+(\S+)"',
+            read("languages/yoohw-vietnam-store-tools-vi.l10n.php"),
+            "PHP translation catalog project version",
+        )
+    )
+
+    development_versions = {
         "plugin header": plugin_version,
         "plugin fallback": fallback_version,
-        "readme stable tag": stable_tag,
         "latest changelog": changelog_version,
+        "latest Vietnamese changelog": changelog_vi_version,
+        "latest readme changelog": readme_changelog_version,
         "block.json": block_version,
         "index.asset.php": asset_version,
+        **translation_versions,
     }
-    if len(set(versions.values())) != 1:
-        details = ", ".join(f"{name}={value}" for name, value in versions.items())
-        raise AssertionError(f"Version sources are inconsistent: {details}")
+    if len(set(development_versions.values())) != 1:
+        details = ", ".join(
+            f"{name}={value}" for name, value in development_versions.items()
+        )
+        raise AssertionError(f"Development version sources are inconsistent: {details}")
+
+    validate_stable_tag(stable_tag, plugin_version, PUBLISHED_STABLE_VERSION)
+    require_stable_tag_rejection("1.1", plugin_version, "1.1")
+    plugin_parts = parse_semver(plugin_version, "development version")
+    future_version = ".".join(
+        str(part) for part in (*plugin_parts[:2], plugin_parts[2] + 1)
+    )
+    require_stable_tag_rejection(future_version, plugin_version, future_version)
+
+    project_header = (
+        f"Project-Id-Version: Vietnam Store Toolkit for WooCommerce {plugin_version}"
+    ).encode()
+    for path in (
+        "languages/yoohw-vietnam-store-tools-vi.mo",
+        "languages/yoohw-vietnam-store-tools-vi_VN.mo",
+    ):
+        if project_header not in (ROOT / path).read_bytes():
+            raise AssertionError(f"{path} has an inconsistent project version")
 
     metadata_pairs = {
         "Requires at least": "Requires at least",
@@ -108,7 +201,8 @@ def main() -> int:
             json.load(handle)
 
     print(
-        f"Repository contracts PASS: version {plugin_version}; "
+        f"Repository contracts PASS: development version {plugin_version}; "
+        f"published stable {stable_tag}; "
         f"metadata synchronized; {len(json_files)} JSON file(s) valid."
     )
     return 0

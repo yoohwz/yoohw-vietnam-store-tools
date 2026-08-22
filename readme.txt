@@ -2,12 +2,12 @@
 Contributors: yoohw, baonguyen0310
 Tags: woocommerce, vietnam, vietqr, checkout blocks, shipping
 Requires at least: 6.3
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 11.0
-Stable tag: 1.1.3
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -132,6 +132,14 @@ No. The public release provides API-free tracking and a framework for custom con
 Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the interface, emails, and validation messages.
 
 == Changelog ==
+
+= 1.1.4 (In development) =
+
+* Fix: Formatted valid legacy Vietnamese province and ward values when the country is missing without treating unknown international addresses as Vietnamese.
+* Fix: Validated Vietnamese province and ward pairs before saving order addresses in WooCommerce administration.
+* Security: Scoped electronic-invoice PDF/XML MIME allowances to active uploads, rejected unsafe manual tracking URLs before order mutation, and added bounded HMAC-keyed public lookup rate limiting.
+* Compatibility: Validated WordPress 7.1 and WooCommerce 11.0.1 across HPOS, Classic Checkout, Checkout Blocks, and Store API integrations.
+* Developer: Expanded address and audit-hardening contract coverage and integrated the suites into CI.
 
 = 1.1.3 (August 14, 2026) =
 

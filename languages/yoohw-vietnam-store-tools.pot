@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.2\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.4\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
