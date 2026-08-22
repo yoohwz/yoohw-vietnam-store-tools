@@ -1,0 +1,64 @@
+name: Apply Plugin Check remediation from PR v2
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-plugin-check-remediation-pr-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ github.head_ref == 'agent/plugin-check-baseline-remediation' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout task branch
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: agent/plugin-check-baseline-remediation
+          fetch-depth: 0
+
+      - name: Correct helper matcher and apply patch
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tools/apply-plugin-check-remediation.py')
+          data = p.read_text(encoding='utf-8')
+          old = "replace(path, \"if ( ! defined( 'ABSPATH' ) ) {\\n\\texit;\\n}\\n\", \"if ( ! defined( 'ABSPATH' ) ) {\\n\\texit;\\n}\\n\" + template_disable)"
+          new = "replace(path, \"defined( 'ABSPATH' ) || exit;\\n\", \"defined( 'ABSPATH' ) || exit;\\n\" + template_disable)"
+          if data.count(old) != 1:
+              raise SystemExit(f'helper matcher: expected 1 occurrence, found {data.count(old)}')
+          p.write_text(data.replace(old, new, 1), encoding='utf-8')
+          PY
+          python3 tools/apply-plugin-check-remediation.py
+          git diff --check
+          git status --short
+
+      - name: Commit remediation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            .github/workflows/ci.yml \
+            .github/workflows/publish-wordpress-org.yml \
+            includes/class-vietnam-commerce-kit-admin-address-fields.php \
+            includes/class-vietnam-commerce-kit-blocks-integration.php \
+            includes/class-vietnam-commerce-kit-phone-normalization.php \
+            includes/class-vietnam-commerce-kit-order-management.php \
+            includes/class-vietnam-commerce-kit-electronic-invoice.php \
+            includes/class-vietnam-commerce-kit-shipping.php \
+            includes/class-vietnam-commerce-kit-admin-menu.php \
+            languages/yoohw-vietnam-store-tools-vi.l10n.php \
+            templates/emails/customer-shipping-tracking.php \
+            templates/emails/plain/customer-shipping-tracking.php \
+            templates/emails/plain/customer-electronic-invoice.php \
+            templates/emails/customer-electronic-invoice.php \
+            yoohw-vietnam-store-tools.php
+          git commit -m "fix: resolve Plugin Check baseline"
+          git push origin HEAD:agent/plugin-check-baseline-remediation
