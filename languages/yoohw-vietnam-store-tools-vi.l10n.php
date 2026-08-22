@@ -1,7 +1,7 @@
 <?php
 return json_decode(<<<'JSON'
 {
-  "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.2",
+  "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.4",
   "report-msgid-bugs-to": "https://yoohw.com",
   "pot-creation-date": "2026-08-22 00:00:00+0000",
   "po-revision-date": "2026-08-22 00:00:00+0000",
