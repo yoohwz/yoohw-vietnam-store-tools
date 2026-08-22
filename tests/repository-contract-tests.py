@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 # Update this with readme.txt only at the explicit Human Release gate.
-PUBLISHED_STABLE_VERSION = "1.1.2"
+PUBLISHED_STABLE_VERSION = "1.1.4"
 
 
 def read(path: str) -> str:

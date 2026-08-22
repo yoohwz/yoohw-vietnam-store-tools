@@ -1,6 +1,6 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
-= 1.1.4 (In development) =
+= 1.1.4 (August 22, 2026) =
 
 * Fix: Formatted valid legacy Vietnamese province and ward values when the country is missing without treating unknown international addresses as Vietnamese.
 * Fix: Validated Vietnamese province and ward pairs before saving order addresses in WooCommerce administration.
@@ -26,7 +26,7 @@
 * Update: Hid the VAT information row in the order list's Information column when invoice requests at checkout are disabled, while retaining filters and historical invoice data exports.
 * Update: Displayed the manual Shipment Journey form in the order metabox only after a manual shipment with a tracking number has been created.
 * Improve: Collapsed the manual tracking update form after a tracking number has been created; administrators can reopen it from the “Update tracking number” row, whose color follows each user's admin color scheme.
-* Improve: Fixed the shipping and electronic invoice email placeholder lifecycle: restored `{site_title}`, `{site_address}`, `{site_url}`, and `{store_email}` on every send; refreshed order/shipment/invoice placeholders; and ensured they work correctly in subjects, headings, and additional content across repeated sends.
+* Improve: Fixed the shipping and electronic invoice email placeholder lifecycle: restored `{site_title}`, `{site_address}`, `{site_url}`, `{store_email}` on every send; refreshed order/shipment/invoice placeholders; and ensured they work correctly in subjects, headings, and additional content across repeated sends.
 * Improve: Fixed the enabled shipping service count on the Vietnam store page by directly counting registered, available providers.
 * Improve: Completed the Vietnamese translation for the electronic invoice email feature.
 
