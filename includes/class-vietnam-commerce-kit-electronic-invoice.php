@@ -65,16 +65,15 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	public function allow_invoice_upload_mimes( $mimes, $user = null ) {
 		unset( $user );
 
-		if ( ! self::is_workflow_enabled() ) {
+		if ( ! self::is_workflow_enabled() || ! in_array( $this->handling_invoice_upload, [ 'pdf', 'xml' ], true ) ) {
 			return $mimes;
 		}
 
-		if ( '' === $this->handling_invoice_upload && ! current_user_can( 'edit_shop_orders' ) ) {
-			return $mimes;
+		if ( 'pdf' === $this->handling_invoice_upload ) {
+			$mimes['pdf'] = 'application/pdf';
+		} else {
+			$mimes['xml'] = 'application/xml';
 		}
-
-		$mimes['pdf'] = 'application/pdf';
-		$mimes['xml'] = 'application/xml';
 
 		return $mimes;
 	}

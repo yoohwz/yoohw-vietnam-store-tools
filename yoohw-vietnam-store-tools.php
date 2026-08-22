@@ -11,7 +11,7 @@
  * Requires at least: 6.3
  * Requires PHP: 7.4
  * WC requires at least: 8.9
- * WC tested up to: 10.9
+ * WC tested up to: 11.0
  * Text Domain: yoohw-vietnam-store-tools
  * Domain Path: /languages
  * Requires Plugins: woocommerce
