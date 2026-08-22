@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 return json_decode(<<<'JSON'
 {
   "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.4",

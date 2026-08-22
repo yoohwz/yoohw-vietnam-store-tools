@@ -11,6 +11,9 @@ use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 defined( 'ABSPATH' ) || exit;
 
+// WooCommerce email templates intentionally use injected local variables and core WooCommerce hook names.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound,WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+
 if ( ! $order instanceof WC_Order ) {
 	return;
 }

@@ -57,6 +57,7 @@ final class Yoohw_Vietnam_Store_Tools {
 			define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 		}
 
+		// Bundled translations in /languages are intentionally loaded for stores that do not use WordPress.org language packs.
 		load_plugin_textdomain( 'yoohw-vietnam-store-tools', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 		add_action( 'before_woocommerce_init', [ $this, 'declare_woocommerce_compatibility' ] );

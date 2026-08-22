@@ -232,7 +232,10 @@ final class Yoohw_Vietnam_Store_Tools_Blocks_Integration {
 		$exception_class = '\\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException';
 
 		if ( class_exists( $exception_class ) ) {
+			// RouteException carries structured Store API error data; escaping belongs to the HTTP rendering boundary.
+			// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 			throw new $exception_class( $code, $message, 400, [ 'field' => $field ] );
+			// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		throw new Exception( esc_html( $message ) );

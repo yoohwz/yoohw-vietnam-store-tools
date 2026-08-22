@@ -125,6 +125,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 		check_admin_referer( self::ACTION_SAVE_FEATURES );
 
 		$submitted = isset( $_POST['features'] ) && is_array( $_POST['features'] )
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each submitted feature value is sanitized and allowlisted before persistence below.
 			? wp_unslash( $_POST['features'] )
 			: [];
 
@@ -153,6 +154,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 		$groups = $this->get_setting_groups();
 		?>
 		<div class="wrap yoohw-vietnam-store">
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice flag; no state is changed from this query argument. ?>
 			<?php if ( isset( $_GET['updated'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['updated'] ) ) ) : ?>
 				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Vietnam store feature settings saved.', 'yoohw-vietnam-store-tools' ); ?></p></div>
 			<?php endif; ?>

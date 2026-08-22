@@ -1742,7 +1742,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return [];
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Shipment action handlers verify the nonce before this payload is read.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Shipment handlers verify the nonce; sanitize_action_request() recursively sanitizes every key and scalar value.
 		return $this->sanitize_action_request( wp_unslash( $_POST[ $request_key ] ) );
 	}
 
