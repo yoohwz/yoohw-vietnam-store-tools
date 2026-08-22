@@ -61,6 +61,12 @@ jobs:
       - name: Email placeholder contracts
         run: php tests/email-placeholder-contract-tests.php
 
+      - name: Address contracts
+        run: php tests/address-contract-tests.php
+
+      - name: Audit hardening contracts
+        run: php tests/audit-hardening-contract-tests.php
+
       - name: Repository metadata contracts
         run: python3 tests/repository-contract-tests.py
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.2\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
-"POT-Creation-Date: 2026-07-17 00:00:00+0000\n"
-"PO-Revision-Date: 2026-07-17 00:00:00+0000\n"
+"POT-Creation-Date: 2026-08-22 00:00:00+0000\n"
+"PO-Revision-Date: 2026-08-22 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
 "Language: vi\n"
@@ -14083,6 +14083,9 @@ msgstr "Nhà vận chuyển đã lưu hiện không khả dụng."
 msgid "Tracking code is required."
 msgstr "Mã vận đơn là bắt buộc."
 
+msgid "Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the carrier template."
+msgstr "Nhập URL theo dõi HTTP hoặc HTTPS hợp lệ, hoặc để trống để sử dụng mẫu của đơn vị vận chuyển."
+
 msgid "Update tracking code"
 msgstr "Cập nhật mã vận đơn"
 
@@ -14526,6 +14529,9 @@ msgstr "Chức năng tra cứu đơn hàng công khai hiện đang tắt."
 
 msgid "The order could not be verified. Please try again."
 msgstr "Không thể xác minh đơn hàng. Vui lòng thử lại."
+
+msgid "Too many order lookup attempts. Please wait and try again."
+msgstr "Có quá nhiều lần tra cứu đơn hàng. Vui lòng đợi rồi thử lại."
 
 msgid "No matching order was found. Check the order number and email or phone number."
 msgstr "Không tìm thấy đơn hàng phù hợp. Hãy kiểm tra mã đơn và email hoặc số điện thoại."

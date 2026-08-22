@@ -369,6 +369,17 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 				'raw_response'  => [],
 			]
 		);
+		$tracking_url           = self::sanitize_manual_tracking_url( $data['tracking_url'] );
+
+		if ( is_wp_error( $tracking_url ) ) {
+			return $tracking_url;
+		}
+
+		$data['tracking_url'] = $tracking_url;
+
+		if ( is_array( $data['raw_response'] ) && array_key_exists( 'tracking_url', $data['raw_response'] ) ) {
+			$data['raw_response']['tracking_url'] = $tracking_url;
+		}
 
 		$meta_map = [
 			'provider'      => self::META_PROVIDER,
@@ -1833,6 +1844,22 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		}
 
 		return '';
+	}
+
+	private static function sanitize_manual_tracking_url( $value ) {
+		$raw_value = trim( (string) $value );
+
+		if ( '' === $raw_value ) {
+			return '';
+		}
+
+		$url = trim( esc_url_raw( $raw_value, [ 'http', 'https' ] ) );
+
+		if ( '' === $url || ! wp_http_validate_url( $url ) ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_tracking_url', __( 'Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the carrier template.', 'yoohw-vietnam-store-tools' ) );
+		}
+
+		return $url;
 	}
 
 	private static function get_order( $order ) {
