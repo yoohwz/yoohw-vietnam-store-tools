@@ -1,9 +1,16 @@
 name: Publish to WordPress.org
+run-name: Publish VST ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }} to WordPress.org
 
 on:
   release:
     types:
       - published
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published GitHub Release version (x.y.z)
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,30 +21,42 @@ concurrency:
 
 env:
   WPORG_SLUG: yoohw-vietnam-store-tools
+  RELEASE_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
 
 jobs:
   validate-package:
     name: Validate WordPress.org package
-    if: ${{ github.event.release.prerelease == false }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout published release tag
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ env.RELEASE_VERSION }}
           fetch-depth: 0
           persist-credentials: false
 
       - name: Verify release tag and metadata
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
-          VERSION='${{ github.event.release.tag_name }}'
+          VERSION="$RELEASE_VERSION"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Release tag must be semantic x.y.z, got: $VERSION" >&2
             exit 1
+          fi
+
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            RELEASE_STATE="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${VERSION}" --jq '[.draft, .prerelease] | @tsv')"
+            if [[ "$RELEASE_STATE" != $'false\tfalse' ]]; then
+              echo "Manual publish requires an existing published, non-prerelease GitHub Release for $VERSION." >&2
+              echo "release_state=$RELEASE_STATE" >&2
+              exit 1
+            fi
           fi
 
           RELEASE_BRANCH="release/$VERSION"
@@ -193,7 +212,7 @@ jobs:
       - name: Checkout approved release tag
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ env.RELEASE_VERSION }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -201,7 +220,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION='${{ github.event.release.tag_name }}'
+          VERSION="$RELEASE_VERSION"
           RELEASE_BRANCH="release/$VERSION"
           git fetch --no-tags origin "refs/heads/$RELEASE_BRANCH:refs/remotes/origin/$RELEASE_BRANCH"
           [[ "$(git rev-parse HEAD)" == "$(git rev-parse "origin/$RELEASE_BRANCH")" ]]
@@ -243,7 +262,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION='${{ github.event.release.tag_name }}'
+          VERSION="$RELEASE_VERSION"
           svn ls "https://plugins.svn.wordpress.org/${WPORG_SLUG}/tags/${VERSION}/" >/dev/null
           {
             echo "### WordPress.org SVN deployment complete"
