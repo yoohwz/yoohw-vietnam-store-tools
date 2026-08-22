@@ -26,11 +26,177 @@ These instructions apply to the entire `yoohw-vietnam-store-tools` repository.
 
 - `main` contains reviewed, merged code and is protected.
 - Use `release/<version>` to integrate an official version, for example `release/1.1.3`.
-- Use `agent/<version>-<scope>` for isolated features, fixes, documentation, or experiments.
+- Use `agent/<version>-<scope>` for version-bound features, fixes, documentation, or experiments.
+- Repo-level CI, tooling, or governance work that is intentionally independent of a product version may use `agent/<scope>`.
 - Start a new version from the latest `origin/main` after updating local `main` with a fast-forward-only pull.
 - If new work depends on an unmerged release branch, branch from that release branch and target the dependent pull request there. Rebase or retarget onto `main` after the prerequisite release merges.
 - Concurrent Codex tasks must use separate Git worktrees or separate clean checkouts. Do not let two tasks modify the same working directory.
 - Free-VST remains authoritative. Work from another Codex project must not commit or push this repository directly.
+
+## AI-assisted delivery workflow
+
+Use ChatGPT and Codex for different strengths instead of asking one agent to own the complete development lifecycle.
+
+### Roles
+
+- **Human** owns product direction, unresolved trade-offs, merge approval, version/release decisions, production actions, and WordPress.org publication.
+- **ChatGPT** is the product/architecture/review authority. It defines the goal and boundaries, classifies risk, performs external research when useful, reviews plans for higher-risk work, and independently reviews the actual pull-request diff and evidence.
+- **Codex** is the repository implementation authority. It performs code discovery, prepares an implementation plan when required, edits code, adds tests, runs validation, commits, pushes the task branch, opens or updates the draft pull request, and corrects review findings.
+- **GitHub** is the execution record for code, commits, pull requests, CI, review history, and release history.
+
+Do not duplicate this record into a separate task-management or governance system unless the user explicitly needs one.
+
+### Human command interface
+
+Keep Human commands short. Complexity belongs to ChatGPT and Codex, not to the Human operator.
+
+Normal commands may be as short as:
+
+- `Chạy task này`
+- `Chạy VST-xxxx`
+- `Tiếp tục`
+- `Tiếp tục VST-xxxx`
+- `Review`
+- `Review VST-xxxx`
+- `Sửa tiếp`
+- `Chuẩn bị release`
+- `Release`
+
+These are examples, not magic strings. Interpret equivalent short natural-language instructions the same way.
+
+When there is one active task in the current context, `Tiếp tục` means continue the next valid workflow step for that task. The receiving agent should recover the current task, status, latest artifact, open review findings, branch, and pull request from available context or GitHub instead of asking the Human to restate them.
+
+Use a task identifier only when it improves traceability, such as parallel work, long-running work, or work that spans conversations. Do not require an ID for every small fix or documentation change.
+
+Ask the Human for clarification only when a real product, safety, release, or mutually exclusive implementation decision cannot be resolved from the task, repository, or review history.
+
+### Task brief
+
+Before implementation, ChatGPT should reduce the request to the minimum useful brief:
+
+- **Goal** — the observable result to achieve.
+- **Problem** — why the change is needed.
+- **In Scope** — permitted change surface.
+- **Out of Scope** — explicit exclusions when useful.
+- **Invariants** — behavior or contracts that must remain true.
+- **Acceptance Criteria** — conditions for completion.
+- **Validation** — tests or runtime checks expected.
+- **Risk Lane** — `Fast` or `Controlled`.
+
+Add **Unresolved Decisions** only when a real decision remains. The brief may stay in the working conversation; do not create a repository task document merely to mirror it.
+
+### Risk lanes
+
+Use only two lanes.
+
+#### Fast Lane
+
+Use Fast Lane for low-risk, isolated work such as:
+
+- documentation and translation;
+- copy or text-only changes;
+- test additions that do not alter runtime behavior;
+- isolated UI/CSS/JavaScript fixes with a narrow behavior surface;
+- repository tooling or CI changes;
+- small bug fixes with an already understood cause;
+- local refactors that do not change public or persistence contracts.
+
+Normal flow:
+
+`Human -> ChatGPT task brief -> Codex implementation -> draft PR/evidence -> ChatGPT technical review -> Human merge gate`
+
+Fast Lane does not require a separate plan-review gate unless discovery reveals higher risk.
+
+#### Controlled Lane
+
+Use Controlled Lane when work changes or may materially affect:
+
+- Classic Checkout or Cart/Checkout Blocks;
+- Store API behavior;
+- VietQR, payment, or bank-transfer behavior;
+- shipping calculation, shipment state, tracking, or carrier integration;
+- VAT/tax invoice or electronic-invoice workflows;
+- order mutation, customer/order data, HPOS, or legacy order storage;
+- migration or persistence behavior;
+- REST, AJAX, capability, nonce, upload, or other security boundaries;
+- database/schema behavior;
+- public hooks, filters, APIs, stored metadata, or backward compatibility;
+- release/version semantics or cross-feature architecture.
+
+Normal flow:
+
+`Human -> ChatGPT task brief -> Codex discovery/plan -> ChatGPT plan review -> Codex implementation -> draft PR/evidence -> ChatGPT technical review -> Human merge gate`
+
+If a Fast Lane task discovers one of these risks, stop implementation at a safe boundary and promote it to Controlled Lane.
+
+### Status protocol
+
+Use this small status vocabulary at handoff boundaries:
+
+- `PLAN_REVIEW_REQUIRED` — Controlled Lane discovery is complete and the implementation plan needs ChatGPT review before coding continues.
+- `TECHNICAL_REVIEW_REQUIRED` — implementation and available validation are complete enough for independent review of the pull request.
+- `TECHNICAL_CHANGES_REQUIRED` — the reviewer found blocking technical or acceptance issues that Codex must correct.
+- `HUMAN_DECISION_REQUIRED` — progress depends on a product, architecture, compatibility, release, or other decision reserved for the Human.
+- `READY_FOR_HUMAN_MERGE` — independent technical review passed; merge remains a Human action.
+
+Do not invent additional statuses unless a future workflow demonstrably needs them.
+
+### Codex handoff
+
+After implementation, keep the handoff concise and factual:
+
+```text
+STATUS: TECHNICAL_REVIEW_REQUIRED
+
+Branch:
+PR:
+
+Implemented:
+- ...
+
+Validation:
+- PASS ...
+- NOT RUN ... because ...
+
+Runtime evidence:
+- ...
+
+Known limitations:
+- ...
+
+Scope deviations:
+- None
+```
+
+For Controlled Lane plan review, return `PLAN_REVIEW_REQUIRED` with only the relevant architecture, affected contracts/files, implementation approach, validation strategy, risks, and unresolved decisions.
+
+Never claim a check passed when it could not be run.
+
+### Independent technical review
+
+ChatGPT technical review must inspect the actual GitHub pull request, not merely trust the Codex summary.
+
+At minimum, review:
+
+1. intended base and head branches;
+2. changed files and actual diff;
+3. scope and acceptance criteria;
+4. logic and regression surface;
+5. WordPress/WooCommerce compatibility;
+6. security and data handling where relevant;
+7. tests and validation evidence;
+8. CI results when available;
+9. runtime/manual evidence for runtime-sensitive changes;
+10. release-boundary compliance.
+
+If blocking findings exist, use `TECHNICAL_CHANGES_REQUIRED`. Codex fixes them and returns the same pull request for another review. Do not create a replacement branch or pull request unless replacement is actually necessary.
+
+### Pull requests as the execution record
+
+- The pull request is the primary durable record of implementation scope and evidence.
+- GitHub Issues are optional and should be used for roadmap items, feature requests, bugs needing long-term tracking, or multi-step/multi-release work; do not create an issue for every small task.
+- Durable architectural decisions may be added to repository documentation when they need to survive beyond a pull request. Do not create planning, review, acceptance, and status documents that simply repeat GitHub history.
+- A green CI run proves only the checks that CI actually executes. It does not replace relevant WordPress/WooCommerce runtime verification.
 
 ## Version workflow
 
