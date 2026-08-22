@@ -29,6 +29,8 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      payload_sha256: ${{ steps.payload.outputs.sha256 }}
     steps:
       - name: Checkout published release tag
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -91,7 +93,8 @@ jobs:
           php-version: '8.4'
           coverage: none
 
-      - name: Stage reviewed WordPress.org payload
+      - name: Stage and validate reviewed WordPress.org payload
+        id: payload
         shell: bash
         run: |
           set -euo pipefail
@@ -120,42 +123,6 @@ jobs:
 
           find wporg-dist -name '*.php' -print0 | xargs -0 -n1 php -l
 
-      - name: Build exact deploy package without publishing
-        id: package
-        uses: 10up/action-wordpress-plugin-deploy@2.3.0
-        with:
-          dry-run: true
-          generate-zip: true
-        env:
-          SLUG: ${{ env.WPORG_SLUG }}
-          BUILD_DIR: wporg-dist
-
-      - name: Unpack and inspect generated package
-        id: unpack
-        shell: bash
-        env:
-          ZIP_PATH: ${{ steps.package.outputs.zip-path }}
-        run: |
-          set -euo pipefail
-          test -f "$ZIP_PATH"
-
-          ROOT="$RUNNER_TEMP/wporg-package"
-          rm -rf "$ROOT"
-          mkdir -p "$ROOT"
-          unzip -q "$ZIP_PATH" -d "$ROOT"
-
-          if [[ -f "$ROOT/yoohw-vietnam-store-tools.php" ]]; then
-            PLUGIN_DIR="$ROOT"
-          else
-            mapfile -t DIRS < <(find "$ROOT" -mindepth 1 -maxdepth 1 -type d)
-            if [[ ${#DIRS[@]} -ne 1 || ! -f "${DIRS[0]}/yoohw-vietnam-store-tools.php" ]]; then
-              echo "Unable to identify generated plugin root." >&2
-              find "$ROOT" -maxdepth 2 -print
-              exit 1
-            fi
-            PLUGIN_DIR="${DIRS[0]}"
-          fi
-
           printf '%s\n' \
             assets \
             blocks \
@@ -169,34 +136,70 @@ jobs:
             templates \
             yoohw-vietnam-store-tools.php | sort > "$RUNNER_TEMP/expected-top-level.txt"
 
-          find "$PLUGIN_DIR" -mindepth 1 -maxdepth 1 -printf '%f\n' | sort > "$RUNNER_TEMP/actual-top-level.txt"
+          find wporg-dist -mindepth 1 -maxdepth 1 -printf '%f\n' | sort > "$RUNNER_TEMP/actual-top-level.txt"
+          diff -u "$RUNNER_TEMP/expected-top-level.txt" "$RUNNER_TEMP/actual-top-level.txt"
 
-          if ! diff -u "$RUNNER_TEMP/expected-top-level.txt" "$RUNNER_TEMP/actual-top-level.txt"; then
-            echo "Generated WordPress.org top-level payload differs from the reviewed allowlist." >&2
-            exit 1
-          fi
-
-          if find "$PLUGIN_DIR" \
+          if find wporg-dist \
             \( -name '.git' -o -name '.github' -o -name 'AGENTS.md' -o -name 'tests' -o -name '.DS_Store' -o -name '*.zip' \) \
             -print -quit | grep -q .; then
-            echo "Generated package contains a forbidden development artifact." >&2
+            echo "WordPress.org payload contains a forbidden development artifact." >&2
             exit 1
           fi
 
-          echo "plugin_dir=$PLUGIN_DIR" >> "$GITHUB_OUTPUT"
+          if find wporg-dist -type l -print -quit | grep -q .; then
+            echo "WordPress.org payload contains a symbolic link." >&2
+            exit 1
+          fi
+
+          (
+            cd wporg-dist
+            while IFS= read -r -d '' file; do
+              FILE_SHA="$(sha256sum "$file" | awk '{print $1}')"
+              printf '%s  %s\n' "$FILE_SHA" "${file#./}"
+            done < <(find . -type f -print0 | sort -z)
+          ) > "$RUNNER_TEMP/wporg-payload.manifest"
+
+          PAYLOAD_SHA256="$(sha256sum "$RUNNER_TEMP/wporg-payload.manifest" | awk '{print $1}')"
+          echo "sha256=$PAYLOAD_SHA256" >> "$GITHUB_OUTPUT"
+          echo "Validated payload manifest SHA-256: $PAYLOAD_SHA256"
+
+      - name: Build exact WordPress.org ZIP without SVN credentials
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PACKAGE_ROOT="$RUNNER_TEMP/wporg-package-root"
+          INSPECT_ROOT="$RUNNER_TEMP/wporg-package-inspect"
+          ZIP_PATH="$GITHUB_WORKSPACE/${WPORG_SLUG}.zip"
+
+          rm -rf "$PACKAGE_ROOT" "$INSPECT_ROOT" "$ZIP_PATH"
+          mkdir -p "$PACKAGE_ROOT/$WPORG_SLUG" "$INSPECT_ROOT"
+          cp -a wporg-dist/. "$PACKAGE_ROOT/$WPORG_SLUG/"
+
+          (
+            cd "$PACKAGE_ROOT"
+            zip -qr "$ZIP_PATH" "$WPORG_SLUG"
+          )
+
+          unzip -q "$ZIP_PATH" -d "$INSPECT_ROOT"
+          diff -qr wporg-dist "$INSPECT_ROOT/$WPORG_SLUG"
+
+          echo "zip_path=$ZIP_PATH" >> "$GITHUB_OUTPUT"
 
       - name: Run WordPress Plugin Check on generated package
-        uses: wordpress/plugin-check-action@v1.1.9
+        uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         with:
-          build-dir: ${{ steps.unpack.outputs.plugin_dir }}
+          build-dir: wporg-dist
           slug: ${{ env.WPORG_SLUG }}
 
       - name: Upload exact WordPress.org ZIP for Human inspection
         if: ${{ always() && steps.package.outcome == 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: ${{ steps.package.outputs.zip-path }}
+          path: ${{ steps.package.outputs.zip_path }}
           archive: false
+          if-no-files-found: error
           retention-days: 7
 
   deploy:
@@ -226,8 +229,10 @@ jobs:
           [[ "$(git rev-parse HEAD)" == "$(git rev-parse "origin/$RELEASE_BRANCH")" ]]
           [[ "$(awk -F': ' '/^Stable tag:/ {print $2; exit}' readme.txt)" == "$VERSION" ]]
 
-      - name: Stage reviewed WordPress.org payload
+      - name: Re-stage approved WordPress.org payload
         shell: bash
+        env:
+          EXPECTED_PAYLOAD_SHA256: ${{ needs.validate-package.outputs.payload_sha256 }}
         run: |
           set -euo pipefail
           rm -rf wporg-dist
@@ -250,10 +255,28 @@ jobs:
             cp -a "$path" wporg-dist/
           done
 
+          (
+            cd wporg-dist
+            while IFS= read -r -d '' file; do
+              FILE_SHA="$(sha256sum "$file" | awk '{print $1}')"
+              printf '%s  %s\n' "$FILE_SHA" "${file#./}"
+            done < <(find . -type f -print0 | sort -z)
+          ) > "$RUNNER_TEMP/wporg-payload.manifest"
+
+          ACTUAL_PAYLOAD_SHA256="$(sha256sum "$RUNNER_TEMP/wporg-payload.manifest" | awk '{print $1}')"
+          if [[ -z "$EXPECTED_PAYLOAD_SHA256" || "$ACTUAL_PAYLOAD_SHA256" != "$EXPECTED_PAYLOAD_SHA256" ]]; then
+            echo "Deploy payload does not match the payload validated before Environment approval." >&2
+            echo "expected=$EXPECTED_PAYLOAD_SHA256 actual=$ACTUAL_PAYLOAD_SHA256" >&2
+            exit 1
+          fi
+
+          echo "Approved payload manifest SHA-256 matches: $ACTUAL_PAYLOAD_SHA256"
+
       - name: Deploy approved release to WordPress.org SVN
-        uses: 10up/action-wordpress-plugin-deploy@2.3.0
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # v2.3.0
         env:
           SLUG: ${{ env.WPORG_SLUG }}
+          VERSION: ${{ env.RELEASE_VERSION }}
           BUILD_DIR: wporg-dist
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
