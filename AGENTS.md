@@ -66,6 +66,8 @@ These are examples, not magic strings. Interpret equivalent short natural-langua
 
 When there is one active task in the current context, `Tiếp tục` means continue the next valid workflow step for that task. The receiving agent should recover the current task, status, latest artifact, open review findings, branch, and pull request from available context or GitHub instead of asking the Human to restate them.
 
+`Review` is a routing command, not a request for one fixed review type. ChatGPT must resolve whether the current task needs plan review, technical review, re-review after corrections, or a Human decision by following the durable handoff and review-routing rules below. The Human should not have to say `Plan Review` versus `Technical Review` when the task state already makes that clear.
+
 Use a task identifier only when it improves traceability, such as parallel work, long-running work, or work that spans conversations. Do not require an ID for every small fix or documentation change.
 
 Ask the Human for clarification only when a real product, safety, release, or mutually exclusive implementation decision cannot be resolved from the task, repository, or review history.
@@ -141,6 +143,31 @@ Use this small status vocabulary at handoff boundaries:
 
 Do not invent additional statuses unless a future workflow demonstrably needs them.
 
+### Durable handoffs and review routing
+
+Cross-agent handoffs must be recoverable from GitHub before the Human is expected to issue a short follow-up command.
+
+- A session-only handoff is not a durable cross-agent handoff. Before returning control to the Human, the sending agent must persist the gate artifact or result to the linked GitHub issue or pull request.
+- Controlled Lane work that requires plan review must have a durable GitHub planning anchor. Reuse an existing issue when one exists. If no issue exists, Codex should create a lightweight issue before returning `PLAN_REVIEW_REQUIRED`; this is the narrow exception to the general rule that GitHub Issues are optional.
+- Codex must post the full `PLAN_REVIEW_REQUIRED` handoff as an issue comment before runtime implementation begins. Include the relevant base/branch state, affected architecture/contracts/files, implementation approach, validation strategy, risks, and unresolved decisions.
+- ChatGPT must post the plan-review result back to the same issue. Use clear prose such as `PLAN REVIEW: APPROVED — implementation may proceed` or `PLAN REVIEW: CHANGES REQUIRED`, followed by any blocking findings. These are review results, not additional workflow statuses.
+- Do not claim in a pull request that plan review was completed unless a durable plan handoff and ChatGPT review result can be located in GitHub history.
+- After implementation, Codex must update the draft pull-request body with current scope/evidence and post `STATUS: TECHNICAL_REVIEW_REQUIRED` in the PR conversation with the current head SHA.
+- ChatGPT must persist the technical-review result in the same PR conversation as either `STATUS: TECHNICAL_CHANGES_REQUIRED` with blocking findings or `STATUS: READY_FOR_HUMAN_MERGE` with the review evidence. If GitHub prevents a formal review event because the authenticated user owns the PR, the PR conversation comment remains the authoritative handoff.
+- Any commit pushed after a `TECHNICAL_REVIEW_REQUIRED` handoff invalidates that technical-review target. After corrections and validation, Codex must post a new `TECHNICAL_REVIEW_REQUIRED` handoff for the new head SHA before ChatGPT treats the PR as ready for re-review.
+- If the Human pastes a newer handoff directly into the current ChatGPT conversation, ChatGPT may use it immediately and verify the linked GitHub artifacts instead of forcing the Human to repost it. Missing persistence should be recorded as a workflow/process finding, not used to make the Human repeat information that is already available.
+
+When the Human says `Review`, ChatGPT must route the request in this order:
+
+1. Recover the active task from an explicit task/issue/PR reference, the current conversation, and linked GitHub artifacts. If there is only one credible active task, do not ask which task to review.
+2. Inspect the linked issue and open pull request, including their conversation history, and identify the newest applicable durable handoff. Use the referenced head SHA and timestamps to distinguish current artifacts from stale ones.
+3. If the newest handoff is `PLAN_REVIEW_REQUIRED`, review the persisted plan rather than searching for an implementation PR. Persist the plan-review result to the issue before handing control back.
+4. If the newest handoff is `TECHNICAL_REVIEW_REQUIRED`, independently review the current PR head, actual diff, CI, tests, runtime evidence, acceptance criteria, and release boundary.
+5. If the newest result is `TECHNICAL_CHANGES_REQUIRED`, do not re-review the stale head. First check whether Codex has pushed corrections and posted a newer `TECHNICAL_REVIEW_REQUIRED`. If yes, review that new head; otherwise report that corrections are still pending.
+6. If the newest handoff is `HUMAN_DECISION_REQUIRED`, surface the unresolved decision instead of pretending a technical review can resolve it.
+7. If the newest result is `READY_FOR_HUMAN_MERGE`, no additional review is required unless the Human explicitly requests revalidation or the PR head/base changed afterward.
+8. Never infer that a review gate passed merely from PR prose such as `plan review completed`. The durable handoff/result and the artifact it refers to are authoritative.
+
 ### Codex handoff
 
 After implementation, keep the handoff concise and factual:
@@ -150,6 +177,7 @@ STATUS: TECHNICAL_REVIEW_REQUIRED
 
 Branch:
 PR:
+Head SHA:
 
 Implemented:
 - ...
@@ -168,7 +196,7 @@ Scope deviations:
 - None
 ```
 
-For Controlled Lane plan review, return `PLAN_REVIEW_REQUIRED` with only the relevant architecture, affected contracts/files, implementation approach, validation strategy, risks, and unresolved decisions.
+For Controlled Lane plan review, return `PLAN_REVIEW_REQUIRED` with only the relevant architecture, affected contracts/files, implementation approach, validation strategy, risks, and unresolved decisions. Persist that handoff to the linked GitHub issue before returning control to the Human.
 
 Never claim a check passed when it could not be run.
 
@@ -194,7 +222,7 @@ If blocking findings exist, use `TECHNICAL_CHANGES_REQUIRED`. Codex fixes them a
 ### Pull requests as the execution record
 
 - The pull request is the primary durable record of implementation scope and evidence.
-- GitHub Issues are optional and should be used for roadmap items, feature requests, bugs needing long-term tracking, or multi-step/multi-release work; do not create an issue for every small task.
+- GitHub Issues are optional and should be used for roadmap items, feature requests, bugs needing long-term tracking, or multi-step/multi-release work; do not create an issue for every small task. Controlled Lane plan review is the exception: it requires a durable GitHub issue anchor so the plan can be reviewed across agents/sessions before implementation.
 - Durable architectural decisions may be added to repository documentation when they need to survive beyond a pull request. Do not create planning, review, acceptance, and status documents that simply repeat GitHub history.
 - A green CI run proves only the checks that CI actually executes. It does not replace relevant WordPress/WooCommerce runtime verification.
 

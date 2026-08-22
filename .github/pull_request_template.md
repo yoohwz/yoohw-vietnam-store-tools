@@ -11,7 +11,13 @@
 - [ ] Fast
 - [ ] Controlled
 
-<!-- For Controlled Lane work, note the completed plan-review handoff if applicable. -->
+## Workflow handoff
+
+- Task / issue:
+- Current status:
+- Plan review evidence:
+
+<!-- Controlled Lane: link the durable GitHub issue comment/result for plan review. Do not write that plan review was completed unless that artifact exists. After implementation, keep Current status aligned with the latest PR-conversation handoff for the current head SHA. -->
 
 ## Changes
 

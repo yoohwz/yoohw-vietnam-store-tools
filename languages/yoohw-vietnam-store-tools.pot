@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.2\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.4\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-17 00:00:00+0000\n"
+"POT-Creation-Date: 2026-08-22 00:00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -1257,6 +1257,10 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:571
 msgid "Tracking code is required."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-shipping.php
+msgid "Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the carrier template."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:719
@@ -15044,6 +15048,10 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php
 msgid "The order could not be verified. Please try again."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php
+msgid "Too many order lookup attempts. Please wait and try again."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php

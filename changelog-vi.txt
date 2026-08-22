@@ -1,5 +1,14 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
+= 1.1.4 (22/08/2026) =
+
+* Sửa lỗi: Định dạng đúng tỉnh/thành và phường/xã hợp lệ cho dữ liệu địa chỉ Việt Nam cũ bị thiếu quốc gia mà không nhận nhầm địa chỉ quốc tế không xác định.
+* Sửa lỗi: Xác thực cặp tỉnh/thành và phường/xã Việt Nam trước khi lưu địa chỉ đơn hàng trong trang quản trị WooCommerce.
+* Bảo mật: Chỉ cho phép MIME PDF/XML trong đúng ngữ cảnh tải lên hóa đơn điện tử đang hoạt động, đồng thời từ chối URL theo dõi thủ công không dùng HTTP/HTTPS trước khi thay đổi dữ liệu đơn hàng.
+* Bảo mật: Bổ sung cơ chế giới hạn tần suất có ngưỡng hữu hạn và hỗ trợ filter cho tra cứu đơn hàng công khai, dùng khóa người yêu cầu dựa trên HMAC thay vì lưu địa chỉ IP thô.
+* Tương thích: Xác nhận WordPress 7.1 và WooCommerce 11.0.1 với HPOS, Classic Checkout, Checkout Blocks và Store API.
+* Dành cho nhà phát triển: Mở rộng kiểm thử hợp đồng cho địa chỉ và audit hardening, đồng thời tích hợp các bộ kiểm thử vào CI.
+
 = 1.1.3 (14/08/2026) =
 
 * Cải tiến: Thu gọn biểu mẫu Tạo vận đơn và Thêm sự kiện vận chuyển trong metabox Vận chuyển của đơn hàng, giữ giao diện gọn gàng và vẫn hỗ trợ thao tác bằng bàn phím.

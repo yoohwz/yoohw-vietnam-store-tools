@@ -13,6 +13,8 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Order_Fields {
 
 	const COUNTRY_CODE = 'VN';
 
+	private $reported_invalid_addresses = [];
+
 	public function __construct() {
 		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'prepare_billing_fields' ], 20, 3 );
 		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'prepare_shipping_fields' ], 20, 3 );
@@ -73,6 +75,11 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Order_Fields {
 		$country      = $this->get_posted_admin_field_value( $address_type, 'country' );
 
 		if ( self::COUNTRY_CODE === $country ) {
+			if ( in_array( $field, [ 'state', 'city' ], true ) && ! $this->is_posted_vietnam_address_valid( $address_type ) ) {
+				$this->report_invalid_admin_address( $address_type );
+				return;
+			}
+
 			if ( 'state' === $field ) {
 				$value = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_province_code_value( $value );
 			} elseif ( 'city' === $field ) {
@@ -88,6 +95,28 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Order_Fields {
 		}
 
 		$order->update_meta_data( $field_id, $value );
+	}
+
+	private function is_posted_vietnam_address_valid( $address_type ) {
+		$state = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_province_code_value( $this->get_posted_admin_field_value( $address_type, 'state' ) );
+		$ward  = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_ward_code_value( $this->get_posted_admin_field_value( $address_type, 'city' ) );
+
+		return Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::province_exists( $state )
+			&& Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::ward_exists( $ward, $state );
+	}
+
+	private function report_invalid_admin_address( $address_type ) {
+		if ( isset( $this->reported_invalid_addresses[ $address_type ] ) ) {
+			return;
+		}
+
+		$this->reported_invalid_addresses[ $address_type ] = true;
+
+		if ( class_exists( 'WC_Admin_Meta_Boxes' ) ) {
+			WC_Admin_Meta_Boxes::add_error(
+				__( 'Please select a valid ward / commune for the selected city / province.', 'yoohw-vietnam-store-tools' )
+			);
+		}
 	}
 
 	private function prepare_address_fields( $fields, $order, $context, $address_type ) {

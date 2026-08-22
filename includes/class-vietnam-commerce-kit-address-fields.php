@@ -333,17 +333,24 @@ final class Yoohw_Vietnam_Store_Tools_Address_Fields {
 			return $replacements;
 		}
 
-		if ( empty( $args['country'] ) || self::COUNTRY_CODE !== $args['country'] ) {
+		$country = isset( $args['country'] ) ? (string) $args['country'] : '';
+		$state   = isset( $args['state'] ) ? Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_province_code_value( $args['state'] ) : '';
+		$city    = isset( $args['city'] ) ? Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_ward_code_value( $args['city'] ) : '';
+
+		$is_vietnam = self::COUNTRY_CODE === $country
+			|| ( '' === $country && Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::province_exists( $state ) && Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::ward_exists( $city, $state ) );
+
+		if ( ! $is_vietnam ) {
 			return $replacements;
 		}
 
-		if ( ! empty( $args['state'] ) ) {
-			$replacements['{state}']       = esc_html( Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_province_name( $args['state'] ) );
+		if ( '' !== $state ) {
+			$replacements['{state}']       = esc_html( Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_province_name( $state ) );
 			$replacements['{state_upper}'] = wc_strtoupper( $replacements['{state}'] );
 		}
 
-		if ( ! empty( $args['city'] ) ) {
-			$replacements['{city}']       = esc_html( Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_ward_name( $args['city'], $args['state'] ) );
+		if ( '' !== $city ) {
+			$replacements['{city}']       = esc_html( Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_ward_name( $city, $state ) );
 			$replacements['{city_upper}'] = wc_strtoupper( $replacements['{city}'] );
 		}
 

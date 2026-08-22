@@ -1,5 +1,14 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
+= 1.1.4 (August 22, 2026) =
+
+* Fix: Formatted valid legacy Vietnamese province and ward values when the country is missing without treating unknown international addresses as Vietnamese.
+* Fix: Validated Vietnamese province and ward pairs before saving order addresses in WooCommerce administration.
+* Security: Limited electronic-invoice PDF/XML MIME allowances to the active invoice-upload field, and rejected non-HTTP/HTTPS manual tracking URLs before changing order data.
+* Security: Added bounded, filterable public order-lookup rate limiting with HMAC-based requester keys instead of storing raw IP addresses.
+* Compatibility: Validated WordPress 7.1 and WooCommerce 11.0.1 across HPOS, Classic Checkout, Checkout Blocks, and Store API integrations.
+* Developer: Expanded address and audit-hardening contract coverage and integrated the suites into CI.
+
 = 1.1.3 (August 14, 2026) =
 
 * Improve: Collapsed the Create shipment and Add shipment journey event forms in the order Shipping metabox, keeping the interface compact while preserving keyboard-accessible toggles.
@@ -17,7 +26,7 @@
 * Update: Hid the VAT information row in the order list's Information column when invoice requests at checkout are disabled, while retaining filters and historical invoice data exports.
 * Update: Displayed the manual Shipment Journey form in the order metabox only after a manual shipment with a tracking number has been created.
 * Improve: Collapsed the manual tracking update form after a tracking number has been created; administrators can reopen it from the “Update tracking number” row, whose color follows each user's admin color scheme.
-* Improve: Fixed the shipping and electronic invoice email placeholder lifecycle: restored `{site_title}`, `{site_address}`, `{site_url}`, and `{store_email}` on every send; refreshed order/shipment/invoice placeholders; and ensured they work correctly in subjects, headings, and additional content across repeated sends.
+* Improve: Fixed the shipping and electronic invoice email placeholder lifecycle: restored `{site_title}`, `{site_address}`, `{site_url}`, `{store_email}` on every send; refreshed order/shipment/invoice placeholders; and ensured they work correctly in subjects, headings, and additional content across repeated sends.
 * Improve: Fixed the enabled shipping service count on the Vietnam store page by directly counting registered, available providers.
 * Improve: Completed the Vietnamese translation for the electronic invoice email feature.
 

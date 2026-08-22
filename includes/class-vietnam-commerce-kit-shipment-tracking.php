@@ -18,6 +18,8 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 	const META_TIMELINE             = '_yoohw_vietnam_store_tools_tracking_timeline';
 	const SHORTCODE                 = 'yoohw_order_tracking';
 	const BLOCK_NAME                = 'yoohw-vietnam-store-tools/order-tracking';
+	const LOOKUP_RATE_LIMIT         = 10;
+	const LOOKUP_RATE_WINDOW        = 600;
 
 	public function __construct() {
 		add_filter( 'woocommerce_get_sections_shipping', [ $this, 'add_settings_section' ] );
@@ -672,6 +674,8 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 
 			if ( '' !== $honeypot || ! wp_verify_nonce( $nonce, 'yoohw_vietnam_store_tools_order_lookup' ) ) {
 				$error = __( 'The order could not be verified. Please try again.', 'yoohw-vietnam-store-tools' );
+			} elseif ( ! $this->allow_lookup_attempt() ) {
+				$error = __( 'Too many order lookup attempts. Please wait and try again.', 'yoohw-vietnam-store-tools' );
 			} else {
 				$order = $this->find_lookup_order( $order_number, $contact );
 
@@ -703,6 +707,64 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		<?php
 
 		return ob_get_clean();
+	}
+
+	private function allow_lookup_attempt() {
+		$settings = (array) apply_filters(
+			'yoohw_vietnam_store_tools_tracking_lookup_rate_limit',
+			[
+				'limit'  => self::LOOKUP_RATE_LIMIT,
+				'window' => self::LOOKUP_RATE_WINDOW,
+			]
+		);
+		$limit    = isset( $settings['limit'] ) ? absint( $settings['limit'] ) : self::LOOKUP_RATE_LIMIT;
+		$window   = isset( $settings['window'] ) ? absint( $settings['window'] ) : self::LOOKUP_RATE_WINDOW;
+
+		if ( 0 === $limit || 0 === $window ) {
+			return true;
+		}
+
+		$identifier = $this->get_lookup_rate_limit_identifier();
+
+		if ( '' === $identifier ) {
+			return true;
+		}
+
+		$key        = 'yoohw_vst_lookup_' . hash_hmac( 'sha256', $identifier, wp_salt( 'nonce' ) );
+		$now        = time();
+		$state      = get_transient( $key );
+		$state      = is_array( $state ) ? $state : [];
+		$attempts   = isset( $state['attempts'] ) ? absint( $state['attempts'] ) : 0;
+		$expires_at = isset( $state['expires_at'] ) ? absint( $state['expires_at'] ) : 0;
+
+		if ( $expires_at <= $now ) {
+			$attempts   = 0;
+			$expires_at = $now + $window;
+		}
+
+		if ( $attempts >= $limit ) {
+			return false;
+		}
+
+		set_transient(
+			$key,
+			[
+				'attempts'   => $attempts + 1,
+				'expires_at' => $expires_at,
+			],
+			max( 1, $expires_at - $now )
+		);
+
+		return true;
+	}
+
+	private function get_lookup_rate_limit_identifier() {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated as an IP address below.
+		$remote_address = isset( $_SERVER['REMOTE_ADDR'] ) ? trim( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$remote_address = false !== filter_var( $remote_address, FILTER_VALIDATE_IP ) ? $remote_address : '';
+		$identifier     = apply_filters( 'yoohw_vietnam_store_tools_tracking_lookup_rate_limit_identifier', $remote_address );
+
+		return is_scalar( $identifier ) ? trim( (string) $identifier ) : '';
 	}
 
 	private function find_lookup_order( $order_number, $contact ) {
