@@ -736,19 +736,19 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	}
 
 	private function handle_attachment_upload( $field_name, $expected_extension, $order ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The action nonce is verified before this method is called.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- The action nonce is verified before this method is called; PHP supplies the upload error field.
 		if ( empty( $_FILES[ $field_name ] ) || UPLOAD_ERR_NO_FILE === (int) $_FILES[ $field_name ]['error'] ) {
 			return 0;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The action nonce is verified before this method is called.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- The action nonce is verified before this method is called; the filename is sanitized immediately.
 		$filename = sanitize_file_name( wp_unslash( $_FILES[ $field_name ]['name'] ) );
 
 		if ( strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) ) !== $expected_extension ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_einvoice_invalid_file', __( 'Only PDF and XML invoice files are accepted in their matching fields.', 'yoohw-vietnam-store-tools' ) );
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The action nonce is verified before this method is called.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotValidated,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- PHP supplies tmp_name as a server-side temporary path; it must remain an exact filesystem path for XML validation.
 		if ( 'xml' === $expected_extension && ! self::is_valid_xml_file( $_FILES[ $field_name ]['tmp_name'] ) ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_einvoice_invalid_xml', __( 'The XML invoice file is not well-formed.', 'yoohw-vietnam-store-tools' ) );
 		}

@@ -144,7 +144,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Address_Fields {
 				'i18n'     => [
 					'cityLabel'           => __( 'City', 'yoohw-vietnam-store-tools' ),
 					'provinceLabel'       => __( 'City / Province', 'yoohw-vietnam-store-tools' ),
-					'stateLabel'          => __( 'State / County', 'woocommerce' ),
+					'stateLabel'          => __( 'State / County', 'yoohw-vietnam-store-tools' ),
 					'wardLabel'           => __( 'Ward / Commune', 'yoohw-vietnam-store-tools' ),
 					'selectWard'          => __( 'Select a ward / commune', 'yoohw-vietnam-store-tools' ),
 					'selectProvinceFirst' => __( 'Select a city / province first', 'yoohw-vietnam-store-tools' ),

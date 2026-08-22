@@ -192,9 +192,6 @@ jobs:
         with:
           build-dir: wporg-dist
           slug: ${{ env.WPORG_SLUG }}
-          # 1.1.4 was already finalized/tagged before Plugin Check became a release gate.
-          # Keep this waiver release-scoped; issue #17 removes it before the next release.
-          ignore-codes: ${{ env.RELEASE_VERSION == '1.1.4' && 'WordPress.WP.I18n.TextDomainMismatch,WordPress.Security.EscapeOutput.ExceptionNotEscaped,WordPress.WP.AlternativeFunctions.file_system_operations_fwrite,WordPress.WP.AlternativeFunctions.file_system_operations_fclose,missing_direct_file_access_protection' || '' }}
 
       - name: Upload exact WordPress.org ZIP for Human inspection
         if: ${{ always() && steps.package.outcome == 'success' }}

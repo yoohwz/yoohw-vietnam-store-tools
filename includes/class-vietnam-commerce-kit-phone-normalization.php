@@ -382,12 +382,15 @@ final class Yoohw_Vietnam_Store_Tools_Phone_Normalization {
 		$message         = __( 'Please enter a valid Vietnamese phone number.', 'yoohw-vietnam-store-tools' );
 
 		if ( class_exists( $exception_class ) ) {
+			// RouteException carries structured Store API error data; escaping belongs to the HTTP rendering boundary.
+			// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 			throw new $exception_class(
 				'yoohw_vietnam_store_tools_invalid_' . $address_type . '_phone',
 				$message,
 				400,
 				[ 'field' => $address_type . '_phone' ]
 			);
+			// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		throw new Exception( esc_html( $message ) );

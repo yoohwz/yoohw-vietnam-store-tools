@@ -856,6 +856,7 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 			wp_die( esc_html__( 'Could not create the CSV export.', 'yoohw-vietnam-store-tools' ) );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite -- php://output is an HTTP response stream; WP_Filesystem is not an equivalent transport.
 		fwrite( $output, "\xEF\xBB\xBF" );
 		fputcsv( $output, $headers, ',', '"', '' );
 
@@ -863,6 +864,7 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 			fputcsv( $output, array_map( [ $this, 'sanitize_csv_cell' ], $row ), ',', '"', '' );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing the php://output response stream is intentional.
 		fclose( $output );
 		exit;
 	}
