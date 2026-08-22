@@ -1,6 +1,6 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
-= 1.1.4 (Đang phát triển) =
+= 1.1.4 (22/08/2026) =
 
 * Sửa lỗi: Định dạng đúng tỉnh/thành và phường/xã hợp lệ cho dữ liệu địa chỉ Việt Nam cũ bị thiếu quốc gia mà không nhận nhầm địa chỉ quốc tế không xác định.
 * Sửa lỗi: Xác thực cặp tỉnh/thành và phường/xã Việt Nam trước khi lưu địa chỉ đơn hàng trong trang quản trị WooCommerce.
