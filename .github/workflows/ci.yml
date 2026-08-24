@@ -67,6 +67,9 @@ jobs:
       - name: Audit hardening contracts
         run: php tests/audit-hardening-contract-tests.php
 
+      - name: Architecture foundation contracts
+        run: php tests/architecture-contract-tests.php
+
       - name: Repository metadata contracts
         run: python3 tests/repository-contract-tests.py
 

@@ -75,6 +75,8 @@ final class Yoohw_Vietnam_Store_Tools {
 	private function includes() {
 		$files = [
 			'includes/class-vietnam-commerce-kit-request-security.php',
+			'includes/class-vietnam-commerce-kit-security.php',
+			'includes/class-vietnam-commerce-kit-logger.php',
 			'includes/class-vietnam-commerce-kit-admin-menu.php',
 			'includes/class-vietnam-commerce-kit-vietnam-address-data.php',
 			'includes/class-vietnam-commerce-kit-legacy-plugin-guard.php',

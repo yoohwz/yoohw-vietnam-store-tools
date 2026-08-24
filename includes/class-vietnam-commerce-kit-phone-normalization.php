@@ -213,13 +213,14 @@ final class Yoohw_Vietnam_Store_Tools_Phone_Normalization {
 		$national  = self::to_vietnam_national_number( $sanitized );
 
 		$result = [
-			'raw'       => $raw,
-			'sanitized' => $sanitized,
-			'national'  => '',
-			'e164'      => '',
-			'type'      => '',
-			'carrier'   => '',
-			'valid'     => false,
+			'raw'                     => $raw,
+			'sanitized'               => $sanitized,
+			'national'                => '',
+			'e164'                    => '',
+			'type'                    => '',
+			'carrier'                 => '',
+			'original_prefix_carrier' => '',
+			'valid'                   => false,
 		];
 
 		if ( '' === $national ) {
@@ -232,11 +233,14 @@ final class Yoohw_Vietnam_Store_Tools_Phone_Normalization {
 			return $result;
 		}
 
-		$result['national'] = $national;
-		$result['e164']     = '+84' . substr( $national, 1 );
-		$result['type']     = $type;
-		$result['carrier']  = 'mobile' === $type ? self::get_mobile_prefix_carrier( $national ) : '';
-		$result['valid']    = true;
+		$result['national']                = $national;
+		$result['e164']                    = '+84' . substr( $national, 1 );
+		$result['type']                    = $type;
+		// Prefix data identifies the original carrier allocation, not the current carrier after mobile-number portability.
+		$result['original_prefix_carrier'] = 'mobile' === $type ? self::get_mobile_prefix_carrier( $national ) : '';
+		// Backward-compatible alias retained for existing consumers and stored metadata.
+		$result['carrier']                 = $result['original_prefix_carrier'];
+		$result['valid']                   = true;
 
 		return $result;
 	}
