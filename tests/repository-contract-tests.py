@@ -65,6 +65,8 @@ def main() -> int:
     changelog = read("changelog.txt")
     changelog_vi = read("changelog-vi.txt")
     asset = read("blocks/order-tracking/index.asset.php")
+    ci_workflow = read(".github/workflows/ci.yml")
+    publish_workflow = read(".github/workflows/publish-wordpress-org.yml")
 
     plugin_version = require_match(
         r"^\s*\*\s*Version:\s*(\S+)\s*$",
@@ -124,13 +126,13 @@ def main() -> int:
         )
         for path in translation_catalogs
     }
-    translation_versions["languages/yoohw-vietnam-store-tools-vi.l10n.php"] = (
-        require_match(
-            r'"project-id-version":\s*"Vietnam Store Toolkit for WooCommerce\s+(\S+)"',
-            read("languages/yoohw-vietnam-store-tools-vi.l10n.php"),
-            "PHP translation catalog project version",
+    for locale in ("vi", "vi_VN"):
+        path = f"languages/yoohw-vietnam-store-tools-{locale}.l10n.php"
+        translation_versions[path] = require_match(
+            r"['\"]project-id-version['\"]\s*=>\s*['\"]Vietnam Store Toolkit for WooCommerce\s+([0-9]+(?:\.[0-9]+)+)['\"]",
+            read(path),
+            f"{locale} PHP translation catalog project version",
         )
-    )
 
     development_versions = {
         "plugin header": plugin_version,
@@ -199,6 +201,31 @@ def main() -> int:
     for path in json_files:
         with path.open("r", encoding="utf-8") as handle:
             json.load(handle)
+
+    for workflow_name, workflow in (
+        ("normal CI", ci_workflow),
+        ("WordPress.org publish validation", publish_workflow),
+    ):
+        if "scripts/localization-quality.sh check" not in workflow:
+            raise AssertionError(f"{workflow_name} does not run the localization gate")
+        if not re.search(r"^\s+strict:\s*true\s*$", workflow, re.MULTILINE):
+            raise AssertionError(f"{workflow_name} does not run strict Plugin Check")
+        for forbidden in ("ignore-codes:", "ignore-warnings:", "ignore-errors:"):
+            if forbidden in workflow:
+                raise AssertionError(f"{workflow_name} weakens Plugin Check with {forbidden}")
+
+    for runtime_version in ("6.3", "6.7", "latest"):
+        if runtime_version not in ci_workflow:
+            raise AssertionError(
+                f"Localization runtime matrix is missing WordPress {runtime_version}"
+            )
+
+    localization_position = publish_workflow.find("scripts/localization-quality.sh check")
+    package_position = publish_workflow.find("Build exact WordPress.org ZIP")
+    if localization_position < 0 or package_position < 0 or localization_position > package_position:
+        raise AssertionError("Publish localization validation must run before package build")
+    if not re.search(r"deploy:\n(?:.|\n)*?needs:\n\s+- validate-package", publish_workflow):
+        raise AssertionError("WordPress.org deploy must require validate-package")
 
     print(
         f"Repository contracts PASS: development version {plugin_version}; "

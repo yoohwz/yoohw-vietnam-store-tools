@@ -136,6 +136,8 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 = 1.1.5 (In development) =
 
 * Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline, removed the temporary 1.1.4 waiver, and normal CI now checks the reviewed WordPress.org payload.
+* Quality: Added deterministic Vietnamese localization gates for source completeness, compiled catalog consistency, locale parity, visible JavaScript localization, and strict zero-warning release validation.
+* Compatibility: Preserved WordPress.org language-pack priority and bundled Vietnamese fallback translations across WordPress 6.3 and later without eager text-domain loading.
 * Compatibility: Added additive `original_prefix_carrier` handoff semantics while preserving legacy carrier metadata behavior.
 * Developer: Added provider-neutral internal security, redaction, and structured-logging foundations.
 * Developer: Documented stable shipping, tracking, and electronic-invoice extension contracts and added architecture contract tests.

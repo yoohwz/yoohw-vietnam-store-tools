@@ -93,6 +93,21 @@ jobs:
           php-version: '8.4'
           coverage: none
 
+      - name: Install pinned localization tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          curl -fsSL https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o "$RUNNER_TEMP/wp"
+          echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  $RUNNER_TEMP/wp" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/wp"
+
+      - name: Validate release localization sources and catalogs
+        env:
+          WP_CLI_BIN: ${{ runner.temp }}/wp
+        run: scripts/localization-quality.sh check
+
       - name: Stage and validate reviewed WordPress.org payload
         id: payload
         shell: bash
@@ -192,6 +207,7 @@ jobs:
         with:
           build-dir: wporg-dist
           slug: ${{ env.WPORG_SLUG }}
+          strict: true
 
       - name: Upload exact WordPress.org ZIP for Human inspection
         if: ${{ always() && steps.package.outcome == 'success' }}

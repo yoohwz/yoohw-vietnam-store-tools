@@ -92,6 +92,107 @@ jobs:
             git diff --check HEAD^..HEAD
           fi
 
+  localization-quality:
+    name: Localization quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Install pinned localization tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          curl -fsSL https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o "$RUNNER_TEMP/wp"
+          echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  $RUNNER_TEMP/wp" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/wp"
+
+      - name: Validate localization sources and compiled catalogs
+        env:
+          WP_CLI_BIN: ${{ runner.temp }}/wp
+        run: scripts/localization-quality.sh check
+
+  localization-runtime:
+    name: WordPress ${{ matrix.label }} translation runtime
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: '6.3'
+            core: '"WordPress/WordPress#6.3"'
+          - label: '6.7'
+            core: '"WordPress/WordPress#6.7"'
+          - label: latest
+            core: 'null'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - name: Prepare runtime fixture and wp-env
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          msgfmt --check --check-format tests/fixtures/vst-language-pack-sentinel.po -o tests/fixtures/.runtime-sentinel.mo
+          cat > .wp-env.json <<'JSON'
+          {
+            "core": ${{ matrix.core }},
+            "mappings": {
+              "wp-content/plugins/yoohw-vietnam-store-tools": "."
+            },
+            "config": {
+              "WP_DEBUG": true,
+              "WP_DEBUG_LOG": true,
+              "WP_DEBUG_DISPLAY": true
+            }
+          }
+          JSON
+          npx --yes @wordpress/env@11.13.0 start --update
+
+      - name: Verify bundled fallback and language-pack priority
+        shell: bash
+        run: |
+          set -euo pipefail
+          wp_env=(npx --yes @wordpress/env@11.13.0)
+
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
+          "${wp_env[@]}" run cli wp plugin activate woocommerce
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" );'
+          "${wp_env[@]}" run cli wp option update WPLANG vi
+
+          "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
+          ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
+
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
+
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
+
+      - name: Stop wp-env
+        if: ${{ always() }}
+        run: npx --yes @wordpress/env@11.13.0 stop
+
   plugin-check:
     name: WordPress Plugin Check
     runs-on: ubuntu-latest
@@ -152,3 +253,4 @@ jobs:
           # the last published Stable tag until the explicit Human release gate.
           build-dir: plugin-check-dist
           slug: yoohw-vietnam-store-tools
+          strict: true
