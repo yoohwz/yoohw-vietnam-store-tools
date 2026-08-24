@@ -125,8 +125,30 @@ jobs:
             cp -a "$path" wporg-dist/
           done
 
+      - name: Prepare strict Plugin Check validation payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          PLUGIN_VERSION="$(awk -F': ' '/^[[:space:]]*\*[[:space:]]Version:/ {print $2; exit}' wporg-dist/yoohw-vietnam-store-tools.php)"
+          STABLE_TAG="$(awk -F': ' '/^Stable tag:/ {print $2; exit}' wporg-dist/readme.txt)"
+          PUBLISHED_STABLE_VERSION="$(sed -nE 's/^PUBLISHED_STABLE_VERSION = "([^"]+)"/\1/p' tests/repository-contract-tests.py)"
+
+          test -n "$PLUGIN_VERSION"
+          test -n "$STABLE_TAG"
+          test -n "$PUBLISHED_STABLE_VERSION"
+          test "$STABLE_TAG" = "$PUBLISHED_STABLE_VERSION"
+
+          cp -a wporg-dist plugin-check-dist
+          if [[ "$STABLE_TAG" != "$PLUGIN_VERSION" ]]; then
+            sed -i -E "s/^Stable tag: .+$/Stable tag: ${PLUGIN_VERSION}/" plugin-check-dist/readme.txt
+          fi
+          test "$(awk -F': ' '/^Stable tag:/ {print $2; exit}' plugin-check-dist/readme.txt)" = "$PLUGIN_VERSION"
+
       - name: Run WordPress Plugin Check
         uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         with:
-          build-dir: wporg-dist
+          # Plugin Check requires Stable tag to match the plugin header. During
+          # release preparation, the exact staged payload intentionally keeps
+          # the last published Stable tag until the explicit Human release gate.
+          build-dir: plugin-check-dist
           slug: yoohw-vietnam-store-tools
