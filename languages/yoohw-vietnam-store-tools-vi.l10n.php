@@ -5,10 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 return json_decode(<<<'JSON'
 {
-  "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.4",
+  "project-id-version": "Vietnam Store Toolkit for WooCommerce 1.1.5",
   "report-msgid-bugs-to": "https://yoohw.com",
-  "pot-creation-date": "2026-08-22 00:00:00+0000",
-  "po-revision-date": "2026-08-22 00:00:00+0000",
+  "pot-creation-date": "2026-08-24 00:00:00+0000",
+  "po-revision-date": "2026-08-24 00:00:00+0000",
   "last-translator": "YoOhw Studio <support@yoohw.com>",
   "language-team": "Vietnamese",
   "language": "vi",
@@ -3536,6 +3536,7 @@ return json_decode(<<<'JSON'
     "Calculate shipping by Vietnamese city/province, ward/commune, cart total, weight, and shipping class.": "Tính phí vận chuyển theo tỉnh/thành phố, phường/xã, tổng giỏ hàng, khối lượng và mức phân loại vận chuyển.",
     "Cash on delivery": "Thanh toán khi nhận hàng",
     "City": "Thành phố",
+    "State / County": "Bang / Hạt",
     "Could not import the CSV file. Check the header row and data format.": "Không thể nhập tệp CSV. Hãy kiểm tra hàng tiêu đề và định dạng dữ liệu.",
     "Could not load the ward / commune list. Please try again.": "Không thể tải danh sách phường / xã. Vui lòng thử lại.",
     "Country": "Quốc gia",

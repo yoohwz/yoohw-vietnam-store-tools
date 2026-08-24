@@ -133,6 +133,13 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
+= 1.1.5 (In development) =
+
+* Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline, removed the temporary 1.1.4 waiver, and normal CI now checks the reviewed WordPress.org payload.
+* Compatibility: Added additive `original_prefix_carrier` handoff semantics while preserving legacy carrier metadata behavior.
+* Developer: Added provider-neutral internal security, redaction, and structured-logging foundations.
+* Developer: Documented stable shipping, tracking, and electronic-invoice extension contracts and added architecture contract tests.
+
 = 1.1.4 (August 22, 2026) =
 
 * Fix: Formatted valid legacy Vietnamese province and ward values when the country is missing without treating unknown international addresses as Vietnamese.

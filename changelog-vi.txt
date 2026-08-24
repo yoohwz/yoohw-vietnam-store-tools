@@ -1,5 +1,12 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
+= 1.1.5 (Đang phát triển) =
+
+* Chất lượng: Khôi phục WordPress Plugin Check nghiêm ngặt làm tiêu chuẩn CI chặn bản phát hành sau khi xử lý các phát hiện trong mã nguồn và gỡ bỏ ngoại lệ tạm thời của 1.1.4; CI thông thường hiện kiểm tra đúng gói WordPress.org đã được rà soát.
+* Tương thích: Bổ sung ngữ nghĩa bàn giao `original_prefix_carrier` theo hướng cộng thêm, đồng thời duy trì hành vi cũ của `carrier` và metadata đã lưu.
+* Dành cho nhà phát triển: Bổ sung helper bảo mật nội bộ trung lập với nhà cung cấp cho keyed hash và che dữ liệu nhạy cảm, cùng nền tảng logger có cấu trúc.
+* Dành cho nhà phát triển: Tài liệu hóa các hợp đồng mở rộng ổn định cho vận chuyển, theo dõi đơn hàng và hóa đơn điện tử, đồng thời bổ sung kiểm thử hợp đồng kiến trúc vào CI.
+
 = 1.1.4 (22/08/2026) =
 
 * Sửa lỗi: Định dạng đúng tỉnh/thành và phường/xã hợp lệ cho dữ liệu địa chỉ Việt Nam cũ bị thiếu quốc gia mà không nhận nhầm địa chỉ quốc tế không xác định.

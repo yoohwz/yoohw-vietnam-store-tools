@@ -1,5 +1,12 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
+= 1.1.5 (In development) =
+
+* Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline after resolving source findings and removing the temporary 1.1.4 waiver; normal CI now checks the reviewed WordPress.org payload.
+* Compatibility: Added additive `original_prefix_carrier` handoff semantics while preserving legacy `carrier` and stored-metadata behavior.
+* Developer: Added provider-neutral internal security helpers for keyed hashes and sensitive-data redaction, plus a structured logger foundation.
+* Developer: Documented stable shipping, tracking, and electronic-invoice extension contracts and added architecture contract coverage to CI.
+
 = 1.1.4 (August 22, 2026) =
 
 * Fix: Formatted valid legacy Vietnamese province and ward values when the country is missing without treating unknown international addresses as Vietnamese.

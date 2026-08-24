@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.4\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.5\n"
 "Report-Msgid-Bugs-To: https://yoohw.com\n"
-"POT-Creation-Date: 2026-08-22 00:00:00+0000\n"
-"PO-Revision-Date: 2026-08-22 00:00:00+0000\n"
+"POT-Creation-Date: 2026-08-24 00:00:00+0000\n"
+"PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
 "Language: vi\n"
@@ -13932,6 +13932,10 @@ msgstr "Thanh toán khi nhận hàng"
 
 msgid "City"
 msgstr "Thành phố"
+
+#: includes/class-vietnam-commerce-kit-admin-address-fields.php:147
+msgid "State / County"
+msgstr "Bang / Hạt"
 
 msgid "Could not import the CSV file. Check the header row and data format."
 msgstr "Không thể nhập tệp CSV. Hãy kiểm tra hàng tiêu đề và định dạng dữ liệu."
