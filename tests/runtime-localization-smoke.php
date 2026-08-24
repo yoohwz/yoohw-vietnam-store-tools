@@ -19,6 +19,10 @@ if ( ! did_action( 'init' ) ) {
 	do_action( 'init' );
 }
 
+if ( ! switch_to_locale( 'vi' ) ) {
+	WP_CLI::error( 'Unable to switch the runtime locale to vi.' );
+}
+
 $actual = __( 'Add rule', 'yoohw-vietnam-store-tools' );
 
 if ( $actual !== $expected ) {
