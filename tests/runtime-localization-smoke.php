@@ -19,7 +19,7 @@ if ( ! did_action( 'init' ) ) {
 	do_action( 'init' );
 }
 
-if ( ! switch_to_locale( 'vi' ) ) {
+if ( 'vi' !== determine_locale() && ! switch_to_locale( 'vi' ) ) {
 	WP_CLI::error( 'Unable to switch the runtime locale to vi.' );
 }
 
