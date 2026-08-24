@@ -9,29 +9,34 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-24T02:49:26+00:00\n"
+"POT-Creation-Date: 2026-08-24T04:19:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
 
 #. Plugin Name of the plugin
+#: yoohw-vietnam-store-tools.php
 #: includes/class-vietnam-commerce-kit-admin-menu.php:173
 msgid "Vietnam Store Toolkit for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "https://vietnamstore.org/"
 msgstr ""
 
 #. Description of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice requests, VietQR bank transfer, shipping, and phone normalization."
 msgstr ""
 
 #. Author of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "YoOhw Studio"
 msgstr ""
 
 #. Author URI of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "https://yoohw.com"
 msgstr ""
 
@@ -158,6 +163,7 @@ msgstr ""
 
 #. translators: %s: plugin version.
 #: includes/class-vietnam-commerce-kit-admin-menu.php:183
+#, php-format
 msgid "Version %s"
 msgstr ""
 
@@ -223,6 +229,7 @@ msgstr ""
 
 #. translators: %d: number of enabled shipping services.
 #: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#, php-format
 msgid "%d service enabled"
 msgid_plural "%d services enabled"
 msgstr[0] ""
@@ -630,6 +637,7 @@ msgstr ""
 
 #. translators: %d: batch size.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:59
+#, php-format
 msgid "Sync all safe order addresses, customer profile addresses, and shipment data created by Le Van Toan plugins into Vietnam Store Toolkit for WooCommerce data. The browser will process the sync in chunks of up to %d address rows per data type. Address values are backed up before changes are saved."
 msgstr ""
 
@@ -689,22 +697,26 @@ msgstr ""
 
 #. translators: 1: order ID, 2: address type, 3: state, 4: city, 5: address line 2.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:245
+#, php-format
 msgid "Order #%1$d %2$s: %3$s / %4$s / %5$s"
 msgstr ""
 
 #. translators: 1: user ID, 2: address type, 3: state, 4: city, 5: address line 2.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:305
+#, php-format
 msgid "User #%1$d %2$s: %3$s / %4$s / %5$s"
 msgstr ""
 
 #. translators: %d: order ID.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:402
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:522
+#, php-format
 msgid "Order #%d could not be loaded."
 msgstr ""
 
 #. translators: %d: user ID.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:472
+#, php-format
 msgid "User #%d could not be loaded."
 msgstr ""
 
@@ -718,26 +730,31 @@ msgstr ""
 
 #. translators: 1: total rows, 2: mappable rows, 3: review rows, 4: billing rows, 5: shipping rows, 6: orders, 7: old three-level rows, 8: new two-level rows.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1171
+#, php-format
 msgid "Le Van Toan plugin data scan complete. Order address rows: %1$d total (%4$d billing, %5$d shipping). Safe order sync: %2$d address rows across %6$d orders (%7$d old three-level rows, %8$d new two-level rows). Order address rows needing official mapping/manual review: %3$d."
 msgstr ""
 
 #. translators: 1: total rows, 2: mappable rows, 3: review rows, 4: billing rows, 5: shipping rows, 6: users, 7: old three-level rows, 8: new two-level rows, 9: already-normalized rows with missing country.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1184
+#, php-format
 msgid "Customer address rows: %1$d total (%4$d billing, %5$d shipping). Safe customer sync: %2$d address rows across %6$d users (%7$d old three-level rows, %8$d new two-level rows, %9$d already-normalized rows with missing country). Customer address rows needing official mapping/manual review: %3$d."
 msgstr ""
 
 #. translators: 1: tracking total, 2: tracking remaining.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1198
+#, php-format
 msgid "Shipment orders: %1$d total; %2$d still need normalized VCK shipment data."
 msgstr ""
 
 #. translators: %s: samples.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1206
+#, php-format
 msgid "Order address review samples: %s."
 msgstr ""
 
 #. translators: %s: samples.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1214
+#, php-format
 msgid "Customer address review samples: %s."
 msgstr ""
 
@@ -747,16 +764,19 @@ msgstr ""
 
 #. translators: 1: safe order address rows, 2: safe customer address rows, 3: tracking orders, 4: order review rows, 5: customer review rows.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1229
+#, php-format
 msgid "Remaining: %1$d safe order address rows, %2$d safe customer address rows, %3$d shipment orders. Manual review still needed for %4$d order address rows and %5$d customer address rows."
 msgstr ""
 
 #. translators: 1: orders updated, 2: order addresses migrated, 3: users updated, 4: customer addresses migrated, 5: tracking orders synced, 6: remaining safe order rows, 7: remaining safe customer rows, 8: remaining order review rows, 9: remaining customer review rows.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1241
+#, php-format
 msgid "Le Van Toan plugin data sync batch complete. Updated %1$d orders and synced %2$d order address rows. Updated %3$d users and synced %4$d customer address rows. Synced %5$d shipment orders. Remaining safe order address rows: %6$d. Remaining safe customer address rows: %7$d. Remaining address rows needing mapping/manual review: %8$d order rows and %9$d customer rows."
 msgstr ""
 
 #. translators: %s: error messages.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1258
+#, php-format
 msgid "Errors: %s"
 msgstr ""
 
@@ -1010,6 +1030,7 @@ msgstr ""
 
 #. translators: 1: previous invoice workflow status, 2: new invoice workflow status.
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:942
+#, php-format
 msgid "Electronic invoice workflow status changed from %1$s to %2$s."
 msgstr ""
 
@@ -1019,6 +1040,7 @@ msgstr ""
 
 #. translators: 1: changed field label, 2: previous value, 3: new value.
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:966
+#, php-format
 msgid "%1$s: %2$s → %3$s"
 msgstr ""
 
@@ -1066,6 +1088,7 @@ msgstr ""
 
 #. translators: 1: bulk action label, 2: updated order count, 3: skipped order count.
 #: includes/class-vietnam-commerce-kit-order-management.php:283
+#, php-format
 msgid "%1$s: %2$d orders updated, %3$d skipped."
 msgstr ""
 
@@ -1236,11 +1259,13 @@ msgstr ""
 
 #. translators: %s: carrier name.
 #: includes/class-vietnam-commerce-kit-order-management.php:724
+#, php-format
 msgid "Carrier updated in bulk to %s."
 msgstr ""
 
 #. translators: %s: handover status label.
 #: includes/class-vietnam-commerce-kit-order-management.php:744
+#, php-format
 msgid "Handover status updated in bulk to %s."
 msgstr ""
 
@@ -1563,6 +1588,7 @@ msgstr ""
 
 #. translators: %s: store currency symbol.
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:66
+#, php-format
 msgid "Used when no rule matches. Leave blank to hide this method when no rule matches. Amount in %s."
 msgstr ""
 
@@ -1598,6 +1624,7 @@ msgstr ""
 
 #. translators: %1$s: currency symbol, %2$s: store weight unit.
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:97
+#, php-format
 msgid "Rules are checked from top to bottom; the first match is used. Cart totals are after discounts and exclude tax. Fees use %1$s and weights use %2$s."
 msgstr ""
 
@@ -1618,6 +1645,7 @@ msgstr ""
 
 #. translators: %d: shipping rule position.
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:277
+#, php-format
 msgid "Shipping rule %d"
 msgstr ""
 
@@ -1790,6 +1818,7 @@ msgstr ""
 #. translators: %s: error message.
 #: includes/class-vietnam-commerce-kit-shipping.php:601
 #: includes/class-vietnam-commerce-kit-shipping.php:734
+#, php-format
 msgid "Shipping action failed: %s"
 msgstr ""
 
@@ -1917,6 +1946,7 @@ msgstr ""
 
 #. translators: %s: URL to Vietnam store invoice settings.
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:251
+#, php-format
 msgid "Invoice requests and electronic invoice workflow are configured separately in <a href=\"%s\">Vietnam store</a>."
 msgstr ""
 
@@ -1996,6 +2026,7 @@ msgstr ""
 #: templates/emails/customer-shipping-tracking.php:40
 #: templates/emails/plain/customer-electronic-invoice.php:26
 #: templates/emails/plain/customer-shipping-tracking.php:27
+#, php-format
 msgid "Hi %s,"
 msgstr ""
 
@@ -2009,6 +2040,7 @@ msgstr ""
 #. translators: %s: order number.
 #: templates/emails/customer-electronic-invoice.php:42
 #: templates/emails/plain/customer-electronic-invoice.php:33
+#, php-format
 msgid "Your electronic invoice for order #%s is ready."
 msgstr ""
 
@@ -2028,6 +2060,7 @@ msgstr ""
 #. translators: %s: order number.
 #: templates/emails/customer-shipping-tracking.php:51
 #: templates/emails/plain/customer-shipping-tracking.php:34
+#, php-format
 msgid "The shipping details for order #%s have been updated."
 msgstr ""
 

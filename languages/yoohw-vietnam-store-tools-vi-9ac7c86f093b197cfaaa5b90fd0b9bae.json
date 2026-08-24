@@ -1,6 +1,6 @@
 {
-    "translation-revision-date": "2026-07-17 00:00:00+000",
-    "generator": "WP-CLI\/2.9.0",
+    "translation-revision-date": "2026-08-24 00:00:00+0000",
+    "generator": "WP-CLI\/2.12.0",
     "source": "blocks\/order-tracking\/index.js",
     "domain": "messages",
     "locale_data": {
@@ -8,7 +8,7 @@
             "": {
                 "domain": "messages",
                 "lang": "vi",
-                "plural-forms": "nplurals=2; plural=(n != 1);"
+                "plural-forms": "nplurals=1; plural=0;"
             },
             "Vietnam order tracking": [
                 "Tra c\u1ee9u \u0111\u01a1n h\u00e0ng"

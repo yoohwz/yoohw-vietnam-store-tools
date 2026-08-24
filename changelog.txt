@@ -3,6 +3,8 @@
 = 1.1.5 (In development) =
 
 * Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline after resolving source findings and removing the temporary 1.1.4 waiver; normal CI now checks the reviewed WordPress.org payload.
+* Quality: Added deterministic Vietnamese localization gates for POT/PO completeness, locale parity, MO/PHP/JSON consistency, visible JavaScript localization contracts, and strict zero-warning Plugin Check in both CI and WordPress.org publish validation.
+* Compatibility: Preserved WordPress.org language-pack priority and bundled Vietnamese fallback translations across WordPress 6.3 and later without eagerly loading the plugin text domain.
 * Compatibility: Added additive `original_prefix_carrier` handoff semantics while preserving legacy `carrier` and stored-metadata behavior.
 * Developer: Added provider-neutral internal security helpers for keyed hashes and sensitive-data redaction, plus a structured logger foundation.
 * Developer: Documented stable shipping, tracking, and electronic-invoice extension contracts and added architecture contract coverage to CI.

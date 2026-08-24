@@ -57,12 +57,60 @@ final class Yoohw_Vietnam_Store_Tools {
 			define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 		}
 
-		// Bundled translations in /languages are intentionally loaded for stores that do not use WordPress.org language packs.
-		load_plugin_textdomain( 'yoohw-vietnam-store-tools', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+		$this->register_translation_path();
 
 		add_action( 'before_woocommerce_init', [ $this, 'declare_woocommerce_compatibility' ] );
 
 		$this->includes();
+	}
+
+	/**
+	 * Register bundled translations as the fallback for WordPress JIT loading.
+	 *
+	 * WordPress language packs remain authoritative because the textdomain
+	 * registry checks WP_LANG_DIR/plugins before this custom path.
+	 */
+	private function register_translation_path() {
+		global $wp_textdomain_registry, $wp_version;
+
+		if ( ! is_object( $wp_textdomain_registry ) || ! is_callable( [ $wp_textdomain_registry, 'set_custom_path' ] ) ) {
+			return;
+		}
+
+		$wp_textdomain_registry->set_custom_path(
+			'yoohw-vietnam-store-tools',
+			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'languages'
+		);
+
+		if ( version_compare( (string) $wp_version, '6.5', '<' ) ) {
+			add_filter( 'determine_locale', [ $this, 'prefer_wordpress_language_pack' ], PHP_INT_MAX );
+		}
+	}
+
+	/**
+	 * Preserve language-pack precedence in the WordPress 6.3-6.4 registry.
+	 *
+	 * Those releases continue scanning after finding WP_LANG_DIR/plugins and
+	 * can otherwise replace that result with the bundled custom path.
+	 *
+	 * @param string $locale Current locale.
+	 * @return string
+	 */
+	public function prefer_wordpress_language_pack( $locale ) {
+		global $wp_textdomain_registry;
+
+		$language_pack_dir = WP_LANG_DIR . '/plugins';
+		$language_pack     = $language_pack_dir . '/yoohw-vietnam-store-tools-' . $locale . '.mo';
+
+		if (
+			is_readable( $language_pack )
+			&& is_object( $wp_textdomain_registry )
+			&& is_callable( [ $wp_textdomain_registry, 'set' ] )
+		) {
+			$wp_textdomain_registry->set( 'yoohw-vietnam-store-tools', $locale, $language_pack_dir );
+		}
+
+		return $locale;
 	}
 
 	public function declare_woocommerce_compatibility() {

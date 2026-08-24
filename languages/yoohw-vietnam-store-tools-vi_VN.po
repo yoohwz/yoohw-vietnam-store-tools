@@ -1,12 +1,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.5\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-store-tools\n"
-"POT-Creation-Date: 2026-08-24T02:49:26+00:00\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
+"store-tools\n"
+"POT-Creation-Date: 2026-08-24T03:32:54+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
-"Language: vi\n"
+"Language: vi_VN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,23 +16,33 @@ msgstr ""
 "X-Domain: yoohw-vietnam-store-tools\n"
 
 #. Plugin Name of the plugin
+#: yoohw-vietnam-store-tools.php
 #: includes/class-vietnam-commerce-kit-admin-menu.php:173
 msgid "Vietnam Store Toolkit for WooCommerce"
 msgstr "Vietnam Store Toolkit for WooCommerce"
 
 #. Plugin URI of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "https://vietnamstore.org/"
 msgstr "https://vietnamstore.org/"
 
 #. Description of the plugin
-msgid "WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice requests, VietQR bank transfer, shipping, and phone normalization."
-msgstr "Bộ công cụ WooCommerce dành cho cửa hàng tại Việt Nam, gồm trường địa chỉ, trải nghiệm thanh toán, yêu cầu hóa đơn VAT, chuyển khoản VietQR, vận chuyển và chuẩn hóa số điện thoại."
+#: yoohw-vietnam-store-tools.php
+msgid ""
+"WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice "
+"requests, VietQR bank transfer, shipping, and phone normalization."
+msgstr ""
+"Bộ công cụ WooCommerce dành cho cửa hàng tại Việt Nam, gồm trường địa chỉ, "
+"trải nghiệm thanh toán, yêu cầu hóa đơn VAT, chuyển khoản VietQR, vận chuyển "
+"và chuẩn hóa số điện thoại."
 
 #. Author of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "YoOhw Studio"
 msgstr "YoOhw Studio"
 
 #. Author URI of the plugin
+#: yoohw-vietnam-store-tools.php
 msgid "https://yoohw.com"
 msgstr "https://yoohw.com"
 
@@ -49,13 +60,13 @@ msgstr "Họ và tên"
 #: includes/class-vietnam-commerce-kit-order-management.php:760
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:110
 msgid "City / Province"
-msgstr "Thành phố / Tỉnh"
+msgstr "Tỉnh / Thành phố"
 
 #: includes/class-vietnam-commerce-kit-address-fields.php:94
 #: includes/class-vietnam-commerce-kit-address-fields.php:376
 #: includes/class-vietnam-commerce-kit-admin-order-fields.php:139
 msgid "Select a city / province"
-msgstr "Chọn thành phố / tỉnh"
+msgstr "Chọn tỉnh / thành phố"
 
 #: includes/class-vietnam-commerce-kit-address-fields.php:102
 #: includes/class-vietnam-commerce-kit-address-fields.php:395
@@ -96,7 +107,7 @@ msgstr "Chọn phường / xã"
 #: includes/class-vietnam-commerce-kit-order-management.php:389
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:109
 msgid "Select a city / province first"
-msgstr "Chọn thành phố / tỉnh trước"
+msgstr "Chọn tỉnh / thành phố trước"
 
 #: includes/class-vietnam-commerce-kit-address-fields.php:218
 #: includes/class-vietnam-commerce-kit-blocks-integration.php:101
@@ -113,7 +124,7 @@ msgstr "không bắt buộc"
 #: includes/class-vietnam-commerce-kit-address-fields.php:443
 #: includes/class-vietnam-commerce-kit-blocks-integration.php:182
 msgid "Please select a valid city / province."
-msgstr "Vui lòng chọn thành phố / tỉnh hợp lệ."
+msgstr "Vui lòng chọn tỉnh / thành phố hợp lệ."
 
 #: includes/class-vietnam-commerce-kit-address-fields.php:284
 #: includes/class-vietnam-commerce-kit-address-fields.php:317
@@ -121,7 +132,7 @@ msgstr "Vui lòng chọn thành phố / tỉnh hợp lệ."
 #: includes/class-vietnam-commerce-kit-admin-order-fields.php:117
 #: includes/class-vietnam-commerce-kit-blocks-integration.php:190
 msgid "Please select a valid ward / commune for the selected city / province."
-msgstr "Vui lòng chọn phường / xã hợp lệ cho thành phố / tỉnh đã chọn."
+msgstr "Vui lòng chọn phường / xã hợp lệ cho tỉnh / thành phố đã chọn."
 
 #: includes/class-vietnam-commerce-kit-admin-address-fields.php:145
 #: includes/class-vietnam-commerce-kit-admin-order-fields.php:55
@@ -153,11 +164,16 @@ msgid "Vietnam store feature settings saved."
 msgstr "Đã lưu cài đặt tính năng Vietnam store."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:175
-msgid "Manage the Vietnam-specific checkout, payments, invoices, shipping, and order tools used by your WooCommerce store."
-msgstr "Quản lý các công cụ thanh toán, hóa đơn, vận chuyển và đơn hàng dành riêng cho cửa hàng WooCommerce tại Việt Nam."
+msgid ""
+"Manage the Vietnam-specific checkout, payments, invoices, shipping, and "
+"order tools used by your WooCommerce store."
+msgstr ""
+"Quản lý các công cụ thanh toán, hóa đơn, vận chuyển và đơn hàng dành riêng "
+"cho cửa hàng WooCommerce tại Việt Nam."
 
 #. translators: %s: plugin version.
 #: includes/class-vietnam-commerce-kit-admin-menu.php:183
+#, php-format
 msgid "Version %s"
 msgstr "Phiên bản %s"
 
@@ -166,8 +182,12 @@ msgid "Core features"
 msgstr "Tính năng cốt lõi"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:216
-msgid "Enable only the Vietnam store enhancements that fit your workflow. Disabling a feature does not delete its existing data."
-msgstr "Chỉ bật các cải tiến phù hợp với quy trình của cửa hàng. Việc tắt tính năng không xóa dữ liệu đã có."
+msgid ""
+"Enable only the Vietnam store enhancements that fit your workflow. Disabling "
+"a feature does not delete its existing data."
+msgstr ""
+"Chỉ bật các cải tiến phù hợp với quy trình của cửa hàng. Việc tắt tính năng "
+"không xóa dữ liệu đã có."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:242
 msgid "Save feature settings"
@@ -178,32 +198,48 @@ msgid "Vietnam address fields"
 msgstr "Trường địa chỉ Việt Nam"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:253
-msgid "Use Vietnam provinces and wards, compact name fields, address normalization, and compatible Classic or Block checkout behavior."
-msgstr "Sử dụng tỉnh thành, phường xã Việt Nam, trường họ tên gọn, chuẩn hóa địa chỉ và tương thích thanh toán Classic hoặc Block."
+msgid ""
+"Use Vietnam provinces and wards, compact name fields, address normalization, "
+"and compatible Classic or Block checkout behavior."
+msgstr ""
+"Sử dụng tỉnh thành, phường xã Việt Nam, trường họ tên gọn, chuẩn hóa địa chỉ "
+"và tương thích thanh toán Classic hoặc Block."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:256
 msgid "Vietnam phone validation and normalization"
 msgstr "Xác thực và chuẩn hóa số điện thoại Việt Nam"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:257
-msgid "Validate Vietnamese phone numbers and store them consistently across checkout, customer profiles, and orders."
-msgstr "Xác thực số điện thoại Việt Nam và lưu nhất quán trong thanh toán, hồ sơ khách hàng và đơn hàng."
+msgid ""
+"Validate Vietnamese phone numbers and store them consistently across "
+"checkout, customer profiles, and orders."
+msgstr ""
+"Xác thực số điện thoại Việt Nam và lưu nhất quán trong thanh toán, hồ sơ "
+"khách hàng và đơn hàng."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:260
 msgid "Customer shipment information"
 msgstr "Thông tin vận chuyển cho khách hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:261
-msgid "Show the carrier, tracking code, shipment status, and tracking timeline on order confirmation and My Account pages."
-msgstr "Hiển thị đơn vị vận chuyển, mã vận đơn, trạng thái và hành trình vận chuyển trên trang xác nhận đơn và Tài khoản."
+msgid ""
+"Show the carrier, tracking code, shipment status, and tracking timeline on "
+"order confirmation and My Account pages."
+msgstr ""
+"Hiển thị đơn vị vận chuyển, mã vận đơn, trạng thái và hành trình vận chuyển "
+"trên trang xác nhận đơn và Tài khoản."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:264
 msgid "Vietnam order management tools"
 msgstr "Công cụ quản lý đơn hàng Việt Nam"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:265
-msgid "Add Vietnam-specific order information, filters, bulk actions, and CSV exports to the WooCommerce order list."
-msgstr "Thêm thông tin đơn hàng, bộ lọc, thao tác hàng loạt và xuất CSV dành cho Việt Nam vào danh sách đơn WooCommerce."
+msgid ""
+"Add Vietnam-specific order information, filters, bulk actions, and CSV "
+"exports to the WooCommerce order list."
+msgstr ""
+"Thêm thông tin đơn hàng, bộ lọc, thao tác hàng loạt và xuất CSV dành cho "
+"Việt Nam vào danh sách đơn WooCommerce."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:268
 msgid "Accept invoice requests at checkout"
@@ -211,18 +247,26 @@ msgstr "Nhận yêu cầu hóa đơn tại trang thanh toán"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:269
 msgid "Allow customers to submit company and tax details for new orders."
-msgstr "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng mới."
+msgstr ""
+"Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng "
+"mới."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:273
 msgid "Manage electronic invoice workflow"
 msgstr "Quản lý quy trình hóa đơn điện tử"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:274
-msgid "Allow staff to update invoice status, references, notes, PDF, and XML files. When disabled, existing invoice data remains read-only."
-msgstr "Cho phép nhân viên cập nhật trạng thái, mã tham chiếu, ghi chú và tệp PDF, XML của hóa đơn. Khi tắt, dữ liệu hóa đơn hiện có vẫn được hiển thị ở chế độ chỉ đọc."
+msgid ""
+"Allow staff to update invoice status, references, notes, PDF, and XML files. "
+"When disabled, existing invoice data remains read-only."
+msgstr ""
+"Cho phép nhân viên cập nhật trạng thái, mã tham chiếu, ghi chú và tệp PDF, "
+"XML của hóa đơn. Khi tắt, dữ liệu hóa đơn hiện có vẫn được hiển thị ở chế độ "
+"chỉ đọc."
 
 #. translators: %d: number of enabled shipping services.
 #: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#, php-format
 msgid "%d service enabled"
 msgid_plural "%d services enabled"
 msgstr[0] "Đã bật %d dịch vụ"
@@ -232,8 +276,12 @@ msgid "Order management"
 msgstr "Quản lý đơn hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:328
-msgid "Use Vietnam-specific order columns, filters, shipment actions, and invoice information from the order list."
-msgstr "Sử dụng cột đơn hàng, bộ lọc, thao tác vận chuyển và thông tin hóa đơn dành cho Việt Nam trong danh sách đơn hàng."
+msgid ""
+"Use Vietnam-specific order columns, filters, shipment actions, and invoice "
+"information from the order list."
+msgstr ""
+"Sử dụng cột đơn hàng, bộ lọc, thao tác vận chuyển và thông tin hóa đơn dành "
+"cho Việt Nam trong danh sách đơn hàng."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:329
 #: includes/class-vietnam-commerce-kit-admin-menu.php:387
@@ -260,8 +308,12 @@ msgid "DevVN migration"
 msgstr "Di chuyển dữ liệu DevVN"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:340
-msgid "Inspect and migrate compatible address and order data using WooCommerce status tools."
-msgstr "Kiểm tra và di chuyển dữ liệu địa chỉ, đơn hàng tương thích bằng công cụ trạng thái WooCommerce."
+msgid ""
+"Inspect and migrate compatible address and order data using WooCommerce "
+"status tools."
+msgstr ""
+"Kiểm tra và di chuyển dữ liệu địa chỉ, đơn hàng tương thích bằng công cụ "
+"trạng thái WooCommerce."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:341
 msgid "Manual tool"
@@ -276,20 +328,31 @@ msgid "Shipping and delivery"
 msgstr "Vận chuyển và giao hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:353
-msgid "Connect carriers, define shipping rules, and control the tracking experience."
-msgstr "Kết nối đơn vị vận chuyển, thiết lập quy tắc giao hàng và quản lý trải nghiệm theo dõi vận chuyển."
+msgid ""
+"Connect carriers, define shipping rules, and control the tracking experience."
+msgstr ""
+"Kết nối đơn vị vận chuyển, thiết lập quy tắc giao hàng và quản lý trải "
+"nghiệm theo dõi vận chuyển."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:356
 msgid "Shipping services"
 msgstr "Dịch vụ vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:358
-msgid "Configure carrier accounts, pickup addresses, automatic synchronization, and shipment status mappings."
-msgstr "Cấu hình tài khoản vận chuyển, địa chỉ lấy hàng, đồng bộ tự động và ánh xạ trạng thái vận đơn."
+msgid ""
+"Configure carrier accounts, pickup addresses, automatic synchronization, and "
+"shipment status mappings."
+msgstr ""
+"Cấu hình tài khoản vận chuyển, địa chỉ lấy hàng, đồng bộ tự động và ánh xạ "
+"trạng thái vận đơn."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:359
-msgid "No shipping service connector is installed. Manual shipment management remains available on orders."
-msgstr "Chưa cài đặt kết nối dịch vụ vận chuyển. Bạn vẫn có thể quản lý vận chuyển thủ công trên đơn hàng."
+msgid ""
+"No shipping service connector is installed. Manual shipment management "
+"remains available on orders."
+msgstr ""
+"Chưa cài đặt kết nối dịch vụ vận chuyển. Bạn vẫn có thể quản lý vận chuyển "
+"thủ công trên đơn hàng."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:360
 msgid "Manual only"
@@ -304,8 +367,12 @@ msgid "Shipping zones and rules"
 msgstr "Khu vực và quy tắc vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:368
-msgid "Assign rates and the Vietnam shipping rules method to WooCommerce shipping zones."
-msgstr "Gán mức phí và phương thức quy tắc vận chuyển Việt Nam cho các khu vực giao hàng WooCommerce."
+msgid ""
+"Assign rates and the Vietnam shipping rules method to WooCommerce shipping "
+"zones."
+msgstr ""
+"Gán mức phí và phương thức quy tắc vận chuyển Việt Nam cho các khu vực giao "
+"hàng WooCommerce."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:369
 msgid "WooCommerce settings"
@@ -320,8 +387,12 @@ msgid "Shipment tracking"
 msgstr "Theo dõi vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:377
-msgid "Configure public order lookup, carrier tracking URL templates, and custom carriers."
-msgstr "Cấu hình tra cứu đơn hàng công khai, mẫu URL theo dõi và đơn vị vận chuyển tùy chỉnh."
+msgid ""
+"Configure public order lookup, carrier tracking URL templates, and custom "
+"carriers."
+msgstr ""
+"Cấu hình tra cứu đơn hàng công khai, mẫu URL theo dõi và đơn vị vận chuyển "
+"tùy chỉnh."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:378
 msgid "Public lookup enabled"
@@ -340,8 +411,12 @@ msgid "Shipping tracking email"
 msgstr "Email theo dõi vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:386
-msgid "Control the subject, heading, content, and email format for customer shipment updates."
-msgstr "Thiết lập tiêu đề, nội dung và định dạng email cập nhật vận chuyển gửi cho khách hàng."
+msgid ""
+"Control the subject, heading, content, and email format for customer "
+"shipment updates."
+msgstr ""
+"Thiết lập tiêu đề, nội dung và định dạng email cập nhật vận chuyển gửi cho "
+"khách hàng."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:391
 msgid "Configure email"
@@ -353,15 +428,21 @@ msgstr "Thanh toán và hóa đơn"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:398
 msgid "Manage Vietnam checkout behavior and payment or invoice features."
-msgstr "Quản lý quy trình thanh toán và các tính năng thanh toán hoặc hóa đơn dành cho Việt Nam."
+msgstr ""
+"Quản lý quy trình thanh toán và các tính năng thanh toán hoặc hóa đơn dành "
+"cho Việt Nam."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:401
 msgid "Vietnam address and phone fields"
 msgstr "Địa chỉ và số điện thoại Việt Nam"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:402
-msgid "Control Vietnam address formatting, checkout compatibility, phone validation, and normalization in Core features."
-msgstr "Quản lý định dạng địa chỉ Việt Nam, tương thích thanh toán, xác thực và chuẩn hóa số điện thoại trong phần Tính năng cốt lõi."
+msgid ""
+"Control Vietnam address formatting, checkout compatibility, phone "
+"validation, and normalization in Core features."
+msgstr ""
+"Quản lý định dạng địa chỉ Việt Nam, tương thích thanh toán, xác thực và "
+"chuẩn hóa số điện thoại trong phần Tính năng cốt lõi."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:405
 msgid "Partially enabled"
@@ -378,8 +459,12 @@ msgid "VietQR bank transfer"
 msgstr "Chuyển khoản VietQR"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:413
-msgid "Configure bank accounts, transfer content, QR layout, order amount, and customer email display."
-msgstr "Cấu hình tài khoản ngân hàng, nội dung chuyển khoản, giao diện QR, số tiền đơn hàng và hiển thị trong email khách hàng."
+msgid ""
+"Configure bank accounts, transfer content, QR layout, order amount, and "
+"customer email display."
+msgstr ""
+"Cấu hình tài khoản ngân hàng, nội dung chuyển khoản, giao diện QR, số tiền "
+"đơn hàng và hiển thị trong email khách hàng."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:418
 msgid "Configure VietQR"
@@ -390,8 +475,12 @@ msgid "Business invoices"
 msgstr "Hóa đơn doanh nghiệp"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:422
-msgid "Collect invoice requests at checkout and manage electronic invoice data on orders as two independent capabilities."
-msgstr "Tiếp nhận yêu cầu hóa đơn tại trang thanh toán và quản lý dữ liệu hóa đơn điện tử trên đơn hàng như hai tính năng độc lập."
+msgid ""
+"Collect invoice requests at checkout and manage electronic invoice data on "
+"orders as two independent capabilities."
+msgstr ""
+"Tiếp nhận yêu cầu hóa đơn tại trang thanh toán và quản lý dữ liệu hóa đơn "
+"điện tử trên đơn hàng như hai tính năng độc lập."
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:424
 msgid "Requests and workflow enabled"
@@ -414,8 +503,12 @@ msgid "Maintenance tools"
 msgstr "Công cụ bảo trì"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:436
-msgid "Review operational data and migrate compatible settings from legacy Vietnam checkout plugins."
-msgstr "Kiểm tra dữ liệu vận hành và di chuyển các cài đặt tương thích từ plugin thanh toán Việt Nam cũ."
+msgid ""
+"Review operational data and migrate compatible settings from legacy Vietnam "
+"checkout plugins."
+msgstr ""
+"Kiểm tra dữ liệu vận hành và di chuyển các cài đặt tương thích từ plugin "
+"thanh toán Việt Nam cũ."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:39
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:191
@@ -427,8 +520,14 @@ msgid "VietQR"
 msgstr "VietQR"
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:53
-msgid "Choose a bank in each bank transfer account to generate VietQR payment QR codes for Vietnamese bank transfers. Existing legacy Bank BIN and Sort code values are still supported."
-msgstr "Chọn ngân hàng trong từng tài khoản chuyển khoản để tạo mã QR VietQR cho chuyển khoản ngân hàng tại Việt Nam. Các giá trị Mã BIN ngân hàng và Sort code cũ vẫn được hỗ trợ."
+msgid ""
+"Choose a bank in each bank transfer account to generate VietQR payment QR "
+"codes for Vietnamese bank transfers. Existing legacy Bank BIN and Sort code "
+"values are still supported."
+msgstr ""
+"Chọn ngân hàng trong từng tài khoản chuyển khoản để tạo mã QR VietQR cho "
+"chuyển khoản ngân hàng tại Việt Nam. Các giá trị Mã BIN ngân hàng và Sort "
+"code cũ vẫn được hỗ trợ."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:57
 msgid "VietQR payment QR"
@@ -484,15 +583,19 @@ msgid "Show VietQR code in customer bank transfer emails"
 msgstr "Hiển thị mã VietQR trong email chuyển khoản gửi khách hàng"
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:192
-msgid "Enter the VietQR/NAPAS bank BIN for this Vietnam bank account, for example 970436."
-msgstr "Nhập Mã BIN VietQR/NAPAS cho tài khoản ngân hàng Việt Nam này, ví dụ 970436."
+msgid ""
+"Enter the VietQR/NAPAS bank BIN for this Vietnam bank account, for example "
+"970436."
+msgstr ""
+"Nhập Mã BIN VietQR/NAPAS cho tài khoản ngân hàng Việt Nam này, ví dụ 970436."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:193
 msgid "Bank BIN is required to generate VietQR codes."
 msgstr "Cần nhập Mã BIN ngân hàng để tạo mã VietQR."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:194
-msgid "Choose the receiving bank. The VietQR bank BIN will be filled automatically."
+msgid ""
+"Choose the receiving bank. The VietQR bank BIN will be filled automatically."
 msgstr "Chọn ngân hàng nhận tiền. Mã BIN VietQR sẽ được tự động điền."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:195
@@ -507,8 +610,12 @@ msgid "Please select a bank to generate VietQR codes."
 msgstr "Vui lòng chọn ngân hàng để tạo mã VietQR."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:197
-msgid "Vietnam Store Toolkit for WooCommerce uses Vietnam bank transfer accounts for VietQR."
-msgstr "Vietnam Store Toolkit for WooCommerce sử dụng tài khoản chuyển khoản ngân hàng Việt Nam cho VietQR."
+msgid ""
+"Vietnam Store Toolkit for WooCommerce uses Vietnam bank transfer accounts "
+"for VietQR."
+msgstr ""
+"Vietnam Store Toolkit for WooCommerce sử dụng tài khoản chuyển khoản ngân "
+"hàng Việt Nam cho VietQR."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:198
 msgid "Country"
@@ -582,7 +689,7 @@ msgstr "Sao chép nội dung chuyển khoản"
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:355
 msgid "Transfer note"
-msgstr "Nội dung"
+msgstr "Nội dung chuyển khoản"
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:358
 msgid "Account holder"
@@ -607,8 +714,10 @@ msgid "Could not load the ward / commune list. Please try again."
 msgstr "Không thể tải danh sách phường / xã. Vui lòng thử lại."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:48
-msgid "Vietnam Store Toolkit for WooCommerce: scan data from Le Van Toan plugins"
-msgstr "Vietnam Store Toolkit for WooCommerce: quét dữ liệu từ plugin của Le Van Toan"
+msgid ""
+"Vietnam Store Toolkit for WooCommerce: scan data from Le Van Toan plugins"
+msgstr ""
+"Vietnam Store Toolkit for WooCommerce: quét dữ liệu từ plugin của Le Van Toan"
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:49
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:74
@@ -616,12 +725,21 @@ msgid "Scan data"
 msgstr "Quét dữ liệu"
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:50
-msgid "Scan order addresses, customer profile addresses, and shipment data created by Le Van Toan plugins without changing data. Use this before running the sync."
-msgstr "Quét địa chỉ đơn hàng, địa chỉ hồ sơ khách hàng và dữ liệu vận chuyển do các plugin của Lê Văn Toàn tạo mà không thay đổi dữ liệu. Hãy dùng công cụ này trước khi chạy đồng bộ."
+msgid ""
+"Scan order addresses, customer profile addresses, and shipment data created "
+"by Le Van Toan plugins without changing data. Use this before running the "
+"sync."
+msgstr ""
+"Quét địa chỉ đơn hàng, địa chỉ hồ sơ khách hàng và dữ liệu vận chuyển do các "
+"plugin của Lê Văn Toàn tạo mà không thay đổi dữ liệu. Hãy dùng công cụ này "
+"trước khi chạy đồng bộ."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:55
-msgid "Vietnam Store Toolkit for WooCommerce: sync data from Le Van Toan plugins"
-msgstr "Vietnam Store Toolkit for WooCommerce: đồng bộ dữ liệu từ plugin của Le Van Toan"
+msgid ""
+"Vietnam Store Toolkit for WooCommerce: sync data from Le Van Toan plugins"
+msgstr ""
+"Vietnam Store Toolkit for WooCommerce: đồng bộ dữ liệu từ plugin của Le Van "
+"Toan"
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:56
 msgid "Sync all"
@@ -629,8 +747,18 @@ msgstr "Đồng bộ tất cả"
 
 #. translators: %d: batch size.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:59
-msgid "Sync all safe order addresses, customer profile addresses, and shipment data created by Le Van Toan plugins into Vietnam Store Toolkit for WooCommerce data. The browser will process the sync in chunks of up to %d address rows per data type. Address values are backed up before changes are saved."
-msgstr "Đồng bộ toàn bộ địa chỉ đơn hàng, địa chỉ hồ sơ khách hàng và dữ liệu vận chuyển an toàn do các plugin của Lê Văn Toàn tạo vào dữ liệu của Vietnam Store Toolkit for WooCommerce. Trình duyệt sẽ xử lý theo từng đợt, tối đa %d dòng địa chỉ cho mỗi loại dữ liệu. Các giá trị địa chỉ được sao lưu trước khi lưu thay đổi."
+#, php-format
+msgid ""
+"Sync all safe order addresses, customer profile addresses, and shipment data "
+"created by Le Van Toan plugins into Vietnam Store Toolkit for WooCommerce "
+"data. The browser will process the sync in chunks of up to %d address rows "
+"per data type. Address values are backed up before changes are saved."
+msgstr ""
+"Đồng bộ toàn bộ địa chỉ đơn hàng, địa chỉ hồ sơ khách hàng và dữ liệu vận "
+"chuyển an toàn do các plugin của Lê Văn Toàn tạo vào dữ liệu của Vietnam "
+"Store Toolkit for WooCommerce. Trình duyệt sẽ xử lý theo từng đợt, tối đa %d "
+"dòng địa chỉ cho mỗi loại dữ liệu. Các giá trị địa chỉ được sao lưu trước "
+"khi lưu thay đổi."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:100
 msgid "Preparing sync..."
@@ -649,16 +777,24 @@ msgid "No safe data from Le Van Toan plugins is available to sync."
 msgstr "Không có dữ liệu an toàn nào từ plugin của Le Van Toan để đồng bộ."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:104
-msgid "Sync stopped because no progress was made in the latest step. Please run the scan tool and review the remaining data."
-msgstr "Đồng bộ đã dừng vì bước gần nhất không có tiến trình mới. Vui lòng chạy công cụ quét và kiểm tra dữ liệu còn lại."
+msgid ""
+"Sync stopped because no progress was made in the latest step. Please run the "
+"scan tool and review the remaining data."
+msgstr ""
+"Đồng bộ đã dừng vì bước gần nhất không có tiến trình mới. Vui lòng chạy công "
+"cụ quét và kiểm tra dữ liệu còn lại."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:105
 msgid "Sync request failed. Please try again."
 msgstr "Yêu cầu đồng bộ thất bại. Vui lòng thử lại."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:106
-msgid "This will sync all safe data from Le Van Toan plugins in the background. Continue?"
-msgstr "Thao tác này sẽ đồng bộ toàn bộ dữ liệu an toàn từ plugin của Le Van Toan ở nền. Tiếp tục?"
+msgid ""
+"This will sync all safe data from Le Van Toan plugins in the background. "
+"Continue?"
+msgstr ""
+"Thao tác này sẽ đồng bộ toàn bộ dữ liệu an toàn từ plugin của Le Van Toan ở "
+"nền. Tiếp tục?"
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:107
 msgid "order address rows"
@@ -688,22 +824,26 @@ msgstr "Bạn không có quyền chạy công cụ này."
 
 #. translators: 1: order ID, 2: address type, 3: state, 4: city, 5: address line 2.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:245
+#, php-format
 msgid "Order #%1$d %2$s: %3$s / %4$s / %5$s"
 msgstr "Đơn hàng #%1$d %2$s: %3$s / %4$s / %5$s"
 
 #. translators: 1: user ID, 2: address type, 3: state, 4: city, 5: address line 2.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:305
+#, php-format
 msgid "User #%1$d %2$s: %3$s / %4$s / %5$s"
 msgstr "Người dùng #%1$d %2$s: %3$s / %4$s / %5$s"
 
 #. translators: %d: order ID.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:402
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:522
+#, php-format
 msgid "Order #%d could not be loaded."
 msgstr "Không thể tải đơn hàng #%d."
 
 #. translators: %d: user ID.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:472
+#, php-format
 msgid "User #%d could not be loaded."
 msgstr "Không thể tải người dùng #%d."
 
@@ -717,45 +857,95 @@ msgstr "Giao hàng"
 
 #. translators: 1: total rows, 2: mappable rows, 3: review rows, 4: billing rows, 5: shipping rows, 6: orders, 7: old three-level rows, 8: new two-level rows.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1171
-msgid "Le Van Toan plugin data scan complete. Order address rows: %1$d total (%4$d billing, %5$d shipping). Safe order sync: %2$d address rows across %6$d orders (%7$d old three-level rows, %8$d new two-level rows). Order address rows needing official mapping/manual review: %3$d."
-msgstr "Đã hoàn tất quét dữ liệu plugin Lê Văn Toàn. Dòng địa chỉ đơn hàng: tổng cộng %1$d (%4$d thanh toán, %5$d giao hàng). Có thể đồng bộ an toàn: %2$d dòng địa chỉ trong %6$d đơn hàng (%7$d dòng địa chỉ ba cấp cũ, %8$d dòng địa chỉ hai cấp mới). Dòng địa chỉ đơn hàng cần ánh xạ chính thức/xem xét thủ công: %3$d."
+#, php-format
+msgid ""
+"Le Van Toan plugin data scan complete. Order address rows: %1$d total (%4$d "
+"billing, %5$d shipping). Safe order sync: %2$d address rows across %6$d "
+"orders (%7$d old three-level rows, %8$d new two-level rows). Order address "
+"rows needing official mapping/manual review: %3$d."
+msgstr ""
+"Đã hoàn tất quét dữ liệu plugin Lê Văn Toàn. Dòng địa chỉ đơn hàng: tổng "
+"cộng %1$d (%4$d thanh toán, %5$d giao hàng). Có thể đồng bộ an toàn: %2$d "
+"dòng địa chỉ trong %6$d đơn hàng (%7$d dòng địa chỉ ba cấp cũ, %8$d dòng địa "
+"chỉ hai cấp mới). Dòng địa chỉ đơn hàng cần ánh xạ chính thức/xem xét thủ "
+"công: %3$d."
 
 #. translators: 1: total rows, 2: mappable rows, 3: review rows, 4: billing rows, 5: shipping rows, 6: users, 7: old three-level rows, 8: new two-level rows, 9: already-normalized rows with missing country.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1184
-msgid "Customer address rows: %1$d total (%4$d billing, %5$d shipping). Safe customer sync: %2$d address rows across %6$d users (%7$d old three-level rows, %8$d new two-level rows, %9$d already-normalized rows with missing country). Customer address rows needing official mapping/manual review: %3$d."
-msgstr "Dòng địa chỉ khách hàng: tổng cộng %1$d (%4$d thanh toán, %5$d giao hàng). Có thể đồng bộ an toàn: %2$d dòng địa chỉ trong %6$d người dùng (%7$d dòng địa chỉ ba cấp cũ, %8$d dòng địa chỉ hai cấp mới, %9$d dòng đã chuẩn hóa nhưng thiếu quốc gia). Dòng địa chỉ khách hàng cần ánh xạ chính thức/xem xét thủ công: %3$d."
+#, php-format
+msgid ""
+"Customer address rows: %1$d total (%4$d billing, %5$d shipping). Safe "
+"customer sync: %2$d address rows across %6$d users (%7$d old three-level "
+"rows, %8$d new two-level rows, %9$d already-normalized rows with missing "
+"country). Customer address rows needing official mapping/manual review: %3$d."
+msgstr ""
+"Dòng địa chỉ khách hàng: tổng cộng %1$d (%4$d thanh toán, %5$d giao hàng). "
+"Có thể đồng bộ an toàn: %2$d dòng địa chỉ trong %6$d người dùng (%7$d dòng "
+"địa chỉ ba cấp cũ, %8$d dòng địa chỉ hai cấp mới, %9$d dòng đã chuẩn hóa "
+"nhưng thiếu quốc gia). Dòng địa chỉ khách hàng cần ánh xạ chính thức/xem xét "
+"thủ công: %3$d."
 
 #. translators: 1: tracking total, 2: tracking remaining.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1198
-msgid "Shipment orders: %1$d total; %2$d still need normalized VCK shipment data."
-msgstr "Đơn hàng có vận đơn: tổng cộng %1$d; còn %2$d đơn hàng cần chuẩn hóa dữ liệu vận chuyển VCK."
+#, php-format
+msgid ""
+"Shipment orders: %1$d total; %2$d still need normalized VCK shipment data."
+msgstr ""
+"Đơn hàng có vận đơn: tổng cộng %1$d; còn %2$d đơn hàng cần chuẩn hóa dữ liệu "
+"vận chuyển VCK."
 
 #. translators: %s: samples.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1206
+#, php-format
 msgid "Order address review samples: %s."
 msgstr "Mẫu địa chỉ đơn hàng cần xem xét: %s."
 
 #. translators: %s: samples.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1214
+#, php-format
 msgid "Customer address review samples: %s."
 msgstr "Mẫu địa chỉ khách hàng cần xem xét: %s."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1224
-msgid "All safe data from Le Van Toan plugins has been synced. Any remaining address rows require official mapping or manual review."
-msgstr "Toàn bộ dữ liệu an toàn từ plugin của Le Van Toan đã được đồng bộ. Các dòng địa chỉ còn lại cần đối chiếu chính thức hoặc kiểm tra thủ công."
+msgid ""
+"All safe data from Le Van Toan plugins has been synced. Any remaining "
+"address rows require official mapping or manual review."
+msgstr ""
+"Toàn bộ dữ liệu an toàn từ plugin của Le Van Toan đã được đồng bộ. Các dòng "
+"địa chỉ còn lại cần đối chiếu chính thức hoặc kiểm tra thủ công."
 
 #. translators: 1: safe order address rows, 2: safe customer address rows, 3: tracking orders, 4: order review rows, 5: customer review rows.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1229
-msgid "Remaining: %1$d safe order address rows, %2$d safe customer address rows, %3$d shipment orders. Manual review still needed for %4$d order address rows and %5$d customer address rows."
-msgstr "Còn lại: %1$d dòng địa chỉ đơn hàng an toàn, %2$d dòng địa chỉ khách hàng an toàn, %3$d đơn hàng có vận đơn. Vẫn cần xem xét thủ công %4$d dòng địa chỉ đơn hàng và %5$d dòng địa chỉ khách hàng."
+#, php-format
+msgid ""
+"Remaining: %1$d safe order address rows, %2$d safe customer address rows, "
+"%3$d shipment orders. Manual review still needed for %4$d order address rows "
+"and %5$d customer address rows."
+msgstr ""
+"Còn lại: %1$d dòng địa chỉ đơn hàng an toàn, %2$d dòng địa chỉ khách hàng an "
+"toàn, %3$d đơn hàng có vận đơn. Vẫn cần xem xét thủ công %4$d dòng địa chỉ "
+"đơn hàng và %5$d dòng địa chỉ khách hàng."
 
 #. translators: 1: orders updated, 2: order addresses migrated, 3: users updated, 4: customer addresses migrated, 5: tracking orders synced, 6: remaining safe order rows, 7: remaining safe customer rows, 8: remaining order review rows, 9: remaining customer review rows.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1241
-msgid "Le Van Toan plugin data sync batch complete. Updated %1$d orders and synced %2$d order address rows. Updated %3$d users and synced %4$d customer address rows. Synced %5$d shipment orders. Remaining safe order address rows: %6$d. Remaining safe customer address rows: %7$d. Remaining address rows needing mapping/manual review: %8$d order rows and %9$d customer rows."
-msgstr "Đã hoàn tất một đợt đồng bộ dữ liệu plugin Lê Văn Toàn. Đã cập nhật %1$d đơn hàng và đồng bộ %2$d dòng địa chỉ đơn hàng. Đã cập nhật %3$d người dùng và đồng bộ %4$d dòng địa chỉ khách hàng. Đã đồng bộ %5$d đơn hàng có vận đơn. Còn %6$d dòng địa chỉ đơn hàng an toàn. Còn %7$d dòng địa chỉ khách hàng an toàn. Số dòng địa chỉ cần ánh xạ/xem xét thủ công còn lại: %8$d dòng đơn hàng và %9$d dòng khách hàng."
+#, php-format
+msgid ""
+"Le Van Toan plugin data sync batch complete. Updated %1$d orders and synced "
+"%2$d order address rows. Updated %3$d users and synced %4$d customer address "
+"rows. Synced %5$d shipment orders. Remaining safe order address rows: %6$d. "
+"Remaining safe customer address rows: %7$d. Remaining address rows needing "
+"mapping/manual review: %8$d order rows and %9$d customer rows."
+msgstr ""
+"Đã hoàn tất một đợt đồng bộ dữ liệu plugin Lê Văn Toàn. Đã cập nhật %1$d đơn "
+"hàng và đồng bộ %2$d dòng địa chỉ đơn hàng. Đã cập nhật %3$d người dùng và "
+"đồng bộ %4$d dòng địa chỉ khách hàng. Đã đồng bộ %5$d đơn hàng có vận đơn. "
+"Còn %6$d dòng địa chỉ đơn hàng an toàn. Còn %7$d dòng địa chỉ khách hàng an "
+"toàn. Số dòng địa chỉ cần ánh xạ/xem xét thủ công còn lại: %8$d dòng đơn "
+"hàng và %9$d dòng khách hàng."
 
 #. translators: %s: error messages.
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1258
+#, php-format
 msgid "Errors: %s"
 msgstr "Lỗi: %s"
 
@@ -834,12 +1024,20 @@ msgid "Current status"
 msgstr "Trạng thái hiện tại"
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:393
-msgid "This workflow records invoice progress and files only. It does not issue invoices or call a provider API."
-msgstr "Quy trình này chỉ ghi nhận tiến độ và tệp hóa đơn. Plugin không phát hành hóa đơn hoặc gọi API của nhà cung cấp."
+msgid ""
+"This workflow records invoice progress and files only. It does not issue "
+"invoices or call a provider API."
+msgstr ""
+"Quy trình này chỉ ghi nhận tiến độ và tệp hóa đơn. Plugin không phát hành "
+"hóa đơn hoặc gọi API của nhà cung cấp."
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:398
-msgid "Electronic invoice workflow management is disabled. Existing invoice data is shown in read-only mode."
-msgstr "Quản lý quy trình hóa đơn điện tử đang bị tắt. Dữ liệu hóa đơn hiện có được hiển thị ở chế độ chỉ đọc."
+msgid ""
+"Electronic invoice workflow management is disabled. Existing invoice data is "
+"shown in read-only mode."
+msgstr ""
+"Quản lý quy trình hóa đơn điện tử đang bị tắt. Dữ liệu hóa đơn hiện có được "
+"hiển thị ở chế độ chỉ đọc."
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:409
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:897
@@ -1009,6 +1207,7 @@ msgstr "Hãy nhập ngày phát hành hóa đơn hợp lệ."
 
 #. translators: 1: previous invoice workflow status, 2: new invoice workflow status.
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:942
+#, php-format
 msgid "Electronic invoice workflow status changed from %1$s to %2$s."
 msgstr "Trạng thái quy trình hóa đơn điện tử đã đổi từ %1$s thành %2$s."
 
@@ -1018,16 +1217,28 @@ msgstr "Đã cập nhật thông tin quy trình hóa đơn điện tử."
 
 #. translators: 1: changed field label, 2: previous value, 3: new value.
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:966
+#, php-format
 msgid "%1$s: %2$s → %3$s"
 msgstr "%1$s: %2$s → %3$s"
 
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:69
-msgid "Vietnam Store Toolkit for WooCommerce detected active plugins from Le Van Toan."
-msgstr "Vietnam Store Toolkit for WooCommerce phát hiện plugin của Le Van Toan đang hoạt động."
+msgid ""
+"Vietnam Store Toolkit for WooCommerce detected active plugins from Le Van "
+"Toan."
+msgstr ""
+"Vietnam Store Toolkit for WooCommerce phát hiện plugin của Le Van Toan đang "
+"hoạt động."
 
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:71
-msgid "These plugins can also modify WooCommerce Vietnam address and checkout fields. Run the scan and sync tools before disabling the old plugin to avoid city/province, ward/commune, city, state, and address line 2 data conflicts."
-msgstr "Các plugin này cũng có thể thay đổi các trường địa chỉ và checkout dành cho Việt Nam trong WooCommerce. Hãy chạy công cụ quét và đồng bộ trước khi tắt plugin cũ để tránh xung đột dữ liệu Thành phố/Tỉnh, Phường/Xã, city, state và địa chỉ dòng 2."
+msgid ""
+"These plugins can also modify WooCommerce Vietnam address and checkout "
+"fields. Run the scan and sync tools before disabling the old plugin to avoid "
+"city/province, ward/commune, city, state, and address line 2 data conflicts."
+msgstr ""
+"Các plugin này cũng có thể thay đổi các trường địa chỉ và checkout dành cho "
+"Việt Nam trong WooCommerce. Hãy chạy công cụ quét và đồng bộ trước khi tắt "
+"plugin cũ để tránh xung đột dữ liệu Thành phố/Tỉnh, Phường/Xã, city, state "
+"và địa chỉ dòng 2."
 
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:75
 msgid "Open sync tools"
@@ -1038,8 +1249,16 @@ msgid "I have handled this"
 msgstr "Tôi đã xử lý"
 
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:87
-msgid "Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. Both plugins may modify city/province and ward/commune checkout fields, which can cause city, state, address line 2, or admin/frontend display conflicts."
-msgstr "Vietnam Store Toolkit for WooCommerce phát hiện plugin của Le Van Toan đang hoạt động. Cả hai plugin đều có thể thay đổi trường Thành phố/Tỉnh và Phường/Xã ở checkout, có thể gây xung đột city, state, địa chỉ dòng 2 hoặc hiển thị giữa admin và frontend."
+msgid ""
+"Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. "
+"Both plugins may modify city/province and ward/commune checkout fields, "
+"which can cause city, state, address line 2, or admin/frontend display "
+"conflicts."
+msgstr ""
+"Vietnam Store Toolkit for WooCommerce phát hiện plugin của Le Van Toan đang "
+"hoạt động. Cả hai plugin đều có thể thay đổi trường Thành phố/Tỉnh và Phường/"
+"Xã ở checkout, có thể gây xung đột city, state, địa chỉ dòng 2 hoặc hiển thị "
+"giữa admin và frontend."
 
 #: includes/class-vietnam-commerce-kit-order-management.php:67
 #: includes/class-vietnam-commerce-kit-order-management.php:73
@@ -1065,6 +1284,7 @@ msgstr "Hãy chọn đơn vị vận chuyển trước khi áp dụng thao tác 
 
 #. translators: 1: bulk action label, 2: updated order count, 3: skipped order count.
 #: includes/class-vietnam-commerce-kit-order-management.php:283
+#, php-format
 msgid "%1$s: %2$d orders updated, %3$d skipped."
 msgstr "%1$s: đã cập nhật %2$d đơn hàng, bỏ qua %3$d đơn hàng."
 
@@ -1235,11 +1455,13 @@ msgstr "Đã bàn giao"
 
 #. translators: %s: carrier name.
 #: includes/class-vietnam-commerce-kit-order-management.php:724
+#, php-format
 msgid "Carrier updated in bulk to %s."
 msgstr "Đã cập nhật hàng loạt đơn vị vận chuyển thành %s."
 
 #. translators: %s: handover status label.
 #: includes/class-vietnam-commerce-kit-order-management.php:744
+#, php-format
 msgid "Handover status updated in bulk to %s."
 msgstr "Đã cập nhật hàng loạt trạng thái bàn giao thành %s."
 
@@ -1281,7 +1503,7 @@ msgstr "Tổng đơn hàng"
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:487
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:697
 msgid "Company legal name"
-msgstr "Tên đơn vị"
+msgstr "Tên pháp lý công ty"
 
 #: includes/class-vietnam-commerce-kit-order-management.php:799
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:109
@@ -1305,7 +1527,7 @@ msgstr "Email nhận hóa đơn"
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:512
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:700
 msgid "Company address"
-msgstr "Địa chỉ đơn vị"
+msgstr "Địa chỉ công ty"
 
 #: includes/class-vietnam-commerce-kit-order-management.php:810
 msgid "Billing phone"
@@ -1332,32 +1554,48 @@ msgid "Vietnam shipment tracking"
 msgstr "Theo dõi vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:57
-msgid "Create tracking links and a customer-facing tracking timeline without connecting to a carrier API."
-msgstr "Tạo liên kết theo dõi và hành trình vận chuyển hiển thị cho khách hàng mà không cần kết nối API hãng vận chuyển."
+msgid ""
+"Create tracking links and a customer-facing tracking timeline without "
+"connecting to a carrier API."
+msgstr ""
+"Tạo liên kết theo dõi và hành trình vận chuyển hiển thị cho khách hàng mà "
+"không cần kết nối API hãng vận chuyển."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:62
 msgid "Public order lookup"
 msgstr "Tra cứu đơn hàng công khai"
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:63
-msgid "Allow the order tracking block and shortcode to look up an order using its order number and the billing email or phone number."
-msgstr "Cho phép block và shortcode tra cứu đơn hàng bằng mã đơn cùng email hoặc số điện thoại thanh toán."
+msgid ""
+"Allow the order tracking block and shortcode to look up an order using its "
+"order number and the billing email or phone number."
+msgstr ""
+"Cho phép block và shortcode tra cứu đơn hàng bằng mã đơn cùng email hoặc số "
+"điện thoại thanh toán."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:70
 msgid "Tracking URL overrides"
 msgstr "Ghi đè URL theo dõi"
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:71
-msgid "Optional. Enter one carrier per line using carrier_id|URL. Use {tracking_code} where the tracking code should appear."
-msgstr "Không bắt buộc. Nhập mỗi hãng trên một dòng theo định dạng carrier_id|URL. Dùng {tracking_code} tại vị trí mã vận đơn."
+msgid ""
+"Optional. Enter one carrier per line using carrier_id|URL. Use "
+"{tracking_code} where the tracking code should appear."
+msgstr ""
+"Không bắt buộc. Nhập mỗi hãng trên một dòng theo định dạng carrier_id|URL. "
+"Dùng {tracking_code} tại vị trí mã vận đơn."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:80
 msgid "Custom carriers"
 msgstr "Hãng vận chuyển tùy chỉnh"
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:81
-msgid "Enter one carrier per line using carrier_id|Carrier name|Tracking URL template. The URL must be HTTP or HTTPS and include {tracking_code}."
-msgstr "Nhập mỗi hãng trên một dòng theo định dạng carrier_id|Tên hãng|Mẫu URL theo dõi. URL phải dùng HTTP hoặc HTTPS và chứa {tracking_code}."
+msgid ""
+"Enter one carrier per line using carrier_id|Carrier name|Tracking URL "
+"template. The URL must be HTTP or HTTPS and include {tracking_code}."
+msgstr ""
+"Nhập mỗi hãng trên một dòng theo định dạng carrier_id|Tên hãng|Mẫu URL theo "
+"dõi. URL phải dùng HTTP hoặc HTTPS và chứa {tracking_code}."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:258
 msgid "Shipment prepared"
@@ -1467,8 +1705,12 @@ msgstr "Tra cứu đơn hàng"
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:636
 #: blocks/order-tracking/index.js:13
-msgid "Customers enter an order number and their billing email or phone number to view shipment tracking."
-msgstr "Khách hàng nhập mã đơn cùng email hoặc số điện thoại thanh toán để xem thông tin vận chuyển."
+msgid ""
+"Customers enter an order number and their billing email or phone number to "
+"view shipment tracking."
+msgstr ""
+"Khách hàng nhập mã đơn cùng email hoặc số điện thoại thanh toán để xem thông "
+"tin vận chuyển."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:661
 msgid "Public order lookup is currently disabled."
@@ -1483,16 +1725,23 @@ msgid "Too many order lookup attempts. Please wait and try again."
 msgstr "Có quá nhiều lần tra cứu đơn hàng. Vui lòng đợi rồi thử lại."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:683
-msgid "No matching order was found. Check the order number and email or phone number."
-msgstr "Không tìm thấy đơn hàng phù hợp. Hãy kiểm tra mã đơn và email hoặc số điện thoại."
+msgid ""
+"No matching order was found. Check the order number and email or phone "
+"number."
+msgstr ""
+"Không tìm thấy đơn hàng phù hợp. Hãy kiểm tra mã đơn và email hoặc số điện "
+"thoại."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:692
 msgid "Track your order"
 msgstr "Tra cứu đơn hàng"
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:693
-msgid "Enter the order number and the billing email or phone number used for the order."
-msgstr "Nhập mã đơn cùng email hoặc số điện thoại thanh toán đã dùng cho đơn hàng."
+msgid ""
+"Enter the order number and the billing email or phone number used for the "
+"order."
+msgstr ""
+"Nhập mã đơn cùng email hoặc số điện thoại thanh toán đã dùng cho đơn hàng."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:697
 msgid "Email or phone number"
@@ -1525,8 +1774,12 @@ msgid "Vietnam shipping rules"
 msgstr "Quy tắc phí vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:28
-msgid "Calculate shipping by Vietnamese city/province, ward/commune, cart total, weight, and shipping class."
-msgstr "Tính phí vận chuyển theo tỉnh/thành phố, phường/xã, tổng giỏ hàng, khối lượng và mức phân loại vận chuyển."
+msgid ""
+"Calculate shipping by Vietnamese city/province, ward/commune, cart total, "
+"weight, and shipping class."
+msgstr ""
+"Tính phí vận chuyển theo tỉnh/thành phố, phường/xã, tổng giỏ hàng, khối "
+"lượng và mức phân loại vận chuyển."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:46
 msgid "Method title"
@@ -1562,16 +1815,23 @@ msgstr "Phí vận chuyển mặc định"
 
 #. translators: %s: store currency symbol.
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:66
-msgid "Used when no rule matches. Leave blank to hide this method when no rule matches. Amount in %s."
-msgstr "Dùng khi không có quy tắc nào khớp. Để trống để ẩn phương thức này khi không có quy tắc nào khớp. Số tiền tính bằng %s."
+#, php-format
+msgid ""
+"Used when no rule matches. Leave blank to hide this method when no rule "
+"matches. Amount in %s."
+msgstr ""
+"Dùng khi không có quy tắc nào khớp. Để trống để ẩn phương thức này khi không "
+"có quy tắc nào khớp. Số tiền tính bằng %s."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:74
 msgid "Default free shipping threshold"
 msgstr "Ngưỡng miễn phí vận chuyển mặc định"
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:76
-msgid "Applies to the default fee when no rule matches. Leave blank to disable."
-msgstr "Áp dụng cho phí mặc định khi không có quy tắc nào khớp. Để trống để tắt."
+msgid ""
+"Applies to the default fee when no rule matches. Leave blank to disable."
+msgstr ""
+"Áp dụng cho phí mặc định khi không có quy tắc nào khớp. Để trống để tắt."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:82
 msgid "Default cash on delivery"
@@ -1579,7 +1839,8 @@ msgstr "Thiết lập COD mặc định"
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:84
 msgid "Used by the default fee and by rules set to use the method default."
-msgstr "Dùng cho phí mặc định và các quy tắc được đặt theo mặc định của phương thức."
+msgstr ""
+"Dùng cho phí mặc định và các quy tắc được đặt theo mặc định của phương thức."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:88
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:123
@@ -1597,8 +1858,14 @@ msgstr "Quy tắc vận chuyển"
 
 #. translators: %1$s: currency symbol, %2$s: store weight unit.
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:97
-msgid "Rules are checked from top to bottom; the first match is used. Cart totals are after discounts and exclude tax. Fees use %1$s and weights use %2$s."
-msgstr "Các quy tắc được kiểm tra từ trên xuống dưới; quy tắc khớp đầu tiên sẽ được dùng. Tổng giỏ hàng được tính sau giảm giá và không gồm thuế. Phí dùng %1$s và khối lượng dùng %2$s."
+#, php-format
+msgid ""
+"Rules are checked from top to bottom; the first match is used. Cart totals "
+"are after discounts and exclude tax. Fees use %1$s and weights use %2$s."
+msgstr ""
+"Các quy tắc được kiểm tra từ trên xuống dưới; quy tắc khớp đầu tiên sẽ được "
+"dùng. Tổng giỏ hàng được tính sau giảm giá và không gồm thuế. Phí dùng %1$s "
+"và khối lượng dùng %2$s."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:196
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:98
@@ -1617,6 +1884,7 @@ msgstr "Xuất CSV"
 
 #. translators: %d: shipping rule position.
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:277
+#, php-format
 msgid "Shipping rule %d"
 msgstr "Quy tắc vận chuyển %d"
 
@@ -1707,7 +1975,9 @@ msgstr "Xóa quy tắc"
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:128
 msgid "Importing will replace the current rules in this editor. Continue?"
-msgstr "Việc nhập sẽ thay thế các quy tắc hiện có trong trình chỉnh sửa này. Tiếp tục?"
+msgstr ""
+"Việc nhập sẽ thay thế các quy tắc hiện có trong trình chỉnh sửa này. Tiếp "
+"tục?"
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:129
 msgid "CSV rules were imported. Save changes to apply them."
@@ -1715,7 +1985,8 @@ msgstr "Đã nhập các quy tắc từ CSV. Hãy lưu thay đổi để áp d�
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:130
 msgid "Could not import the CSV file. Check the header row and data format."
-msgstr "Không thể nhập tệp CSV. Hãy kiểm tra hàng tiêu đề và định dạng dữ liệu."
+msgstr ""
+"Không thể nhập tệp CSV. Hãy kiểm tra hàng tiêu đề và định dạng dữ liệu."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:131
 msgid "CSV rules were exported."
@@ -1775,11 +2046,14 @@ msgstr "Đã lưu thông tin vận đơn thủ công."
 
 #: includes/class-vietnam-commerce-kit-shipping.php:524
 msgid "Manual shipment details saved and tracking email sent to the customer."
-msgstr "Đã lưu thông tin vận đơn thủ công và gửi email mã vận đơn cho khách hàng."
+msgstr ""
+"Đã lưu thông tin vận đơn thủ công và gửi email mã vận đơn cho khách hàng."
 
 #: includes/class-vietnam-commerce-kit-shipping.php:528
-msgid "Manual shipment details saved, but the tracking email could not be sent."
-msgstr "Đã lưu thông tin vận đơn thủ công, nhưng không thể gửi email mã vận đơn."
+msgid ""
+"Manual shipment details saved, but the tracking email could not be sent."
+msgstr ""
+"Đã lưu thông tin vận đơn thủ công, nhưng không thể gửi email mã vận đơn."
 
 #: includes/class-vietnam-commerce-kit-shipping.php:582
 #: includes/class-vietnam-commerce-kit-shipping.php:723
@@ -1789,6 +2063,7 @@ msgstr "Nhà cung cấp này không hỗ trợ thao tác này."
 #. translators: %s: error message.
 #: includes/class-vietnam-commerce-kit-shipping.php:601
 #: includes/class-vietnam-commerce-kit-shipping.php:734
+#, php-format
 msgid "Shipping action failed: %s"
 msgstr "Thao tác vận chuyển thất bại: %s"
 
@@ -1869,8 +2144,12 @@ msgid "Create shipment"
 msgstr "Tạo vận đơn"
 
 #: includes/class-vietnam-commerce-kit-shipping.php:1859
-msgid "Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the carrier template."
-msgstr "Nhập URL theo dõi HTTP hoặc HTTPS hợp lệ, hoặc để trống để sử dụng mẫu của đơn vị vận chuyển."
+msgid ""
+"Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the "
+"carrier template."
+msgstr ""
+"Nhập URL theo dõi HTTP hoặc HTTPS hợp lệ, hoặc để trống để sử dụng mẫu của "
+"đơn vị vận chuyển."
 
 #: includes/class-vietnam-commerce-kit-shipping.php:1927
 msgid "Manually entered"
@@ -1916,8 +2195,13 @@ msgstr "Hóa đơn doanh nghiệp Việt Nam"
 
 #. translators: %s: URL to Vietnam store invoice settings.
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:251
-msgid "Invoice requests and electronic invoice workflow are configured separately in <a href=\"%s\">Vietnam store</a>."
-msgstr "Yêu cầu hóa đơn và quy trình hóa đơn điện tử được cấu hình riêng trong <a href=\"%s\">Vietnam store</a>."
+#, php-format
+msgid ""
+"Invoice requests and electronic invoice workflow are configured separately "
+"in <a href=\"%s\">Vietnam store</a>."
+msgstr ""
+"Yêu cầu hóa đơn và quy trình hóa đơn điện tử được cấu hình riêng trong <a "
+"href=\"%s\">Vietnam store</a>."
 
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:308
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:412
@@ -1928,11 +2212,11 @@ msgstr "Thông tin xuất hóa đơn"
 
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:339
 msgid "Please enter the company legal name for the tax invoice."
-msgstr "Vui lòng nhập tên đơn vị để xuất hóa đơn."
+msgstr "Vui lòng nhập tên pháp lý công ty để xuất hóa đơn."
 
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:361
 msgid "Please enter the company address for the tax invoice."
-msgstr "Vui lòng nhập địa chỉ đơn vị để xuất hóa đơn."
+msgstr "Vui lòng nhập địa chỉ công ty để xuất hóa đơn."
 
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:431
 msgid "Yes"
@@ -1943,8 +2227,12 @@ msgid "Vietnam electronic invoice"
 msgstr "Hóa đơn điện tử Việt Nam"
 
 #: includes/emails/class-vietnam-commerce-kit-customer-electronic-invoice-email.php:29
-msgid "Manually send electronic invoice details and available PDF/XML files to the customer."
-msgstr "Gửi thủ công thông tin hóa đơn điện tử cùng các tệp PDF/XML hiện có cho khách hàng."
+msgid ""
+"Manually send electronic invoice details and available PDF/XML files to the "
+"customer."
+msgstr ""
+"Gửi thủ công thông tin hóa đơn điện tử cùng các tệp PDF/XML hiện có cho "
+"khách hàng."
 
 #: includes/emails/class-vietnam-commerce-kit-customer-electronic-invoice-email.php:45
 msgid "Electronic invoice for order #{order_number} on {site_title}"
@@ -1956,15 +2244,21 @@ msgstr "Hóa đơn điện tử của bạn"
 
 #: includes/emails/class-vietnam-commerce-kit-customer-electronic-invoice-email.php:53
 msgid "If you need help with this invoice, please contact us at {store_email}."
-msgstr "Nếu bạn cần hỗ trợ về hóa đơn này, vui lòng liên hệ với chúng tôi qua {store_email}."
+msgstr ""
+"Nếu bạn cần hỗ trợ về hóa đơn này, vui lòng liên hệ với chúng tôi qua "
+"{store_email}."
 
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:32
 msgid "Vietnam shipping tracking"
 msgstr "Theo dõi vận chuyển"
 
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:33
-msgid "Manually send customers their Vietnam shipping provider and tracking code from the order shipping metabox."
-msgstr "Gửi thủ công nhà vận chuyển và mã vận đơn cho khách hàng từ metabox vận chuyển của đơn hàng."
+msgid ""
+"Manually send customers their Vietnam shipping provider and tracking code "
+"from the order shipping metabox."
+msgstr ""
+"Gửi thủ công nhà vận chuyển và mã vận đơn cho khách hàng từ metabox vận "
+"chuyển của đơn hàng."
 
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:51
 msgid "Shipping update for order #{order_number} on {site_title}"
@@ -1975,8 +2269,11 @@ msgid "Your order is on its way"
 msgstr "Đơn hàng của bạn đang được vận chuyển"
 
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:59
-msgid "If you need any help with your shipment, please contact us at {store_email}."
-msgstr "Nếu cần hỗ trợ về vận chuyển, vui lòng liên hệ với chúng tôi tại {store_email}."
+msgid ""
+"If you need any help with your shipment, please contact us at {store_email}."
+msgstr ""
+"Nếu cần hỗ trợ về vận chuyển, vui lòng liên hệ với chúng tôi tại "
+"{store_email}."
 
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:105
 msgid "Shipping update: {shipment_status} - Order #{order_number}"
@@ -1995,6 +2292,7 @@ msgstr "Cập nhật vận đơn gần nhất"
 #: templates/emails/customer-shipping-tracking.php:40
 #: templates/emails/plain/customer-electronic-invoice.php:26
 #: templates/emails/plain/customer-shipping-tracking.php:27
+#, php-format
 msgid "Hi %s,"
 msgstr "Xin chào %s,"
 
@@ -2008,6 +2306,7 @@ msgstr "Xin chào,"
 #. translators: %s: order number.
 #: templates/emails/customer-electronic-invoice.php:42
 #: templates/emails/plain/customer-electronic-invoice.php:33
+#, php-format
 msgid "Your electronic invoice for order #%s is ready."
 msgstr "Hóa đơn điện tử cho đơn hàng #%s của bạn đã sẵn sàng."
 
@@ -2027,6 +2326,7 @@ msgstr "Các tệp hóa đơn hiện có được đính kèm trong email này."
 #. translators: %s: order number.
 #: templates/emails/customer-shipping-tracking.php:51
 #: templates/emails/plain/customer-shipping-tracking.php:34
+#, php-format
 msgid "The shipping details for order #%s have been updated."
 msgstr "Thông tin vận chuyển cho đơn hàng #%s đã được cập nhật."
 
@@ -2036,8 +2336,11 @@ msgstr "Thông tin vận chuyển"
 
 #: templates/emails/customer-shipping-tracking.php:83
 #: templates/emails/plain/customer-shipping-tracking.php:54
-msgid "You can use this information to follow the delivery status with the carrier."
-msgstr "Bạn có thể dùng thông tin này để theo dõi trạng thái giao hàng với đơn vị vận chuyển."
+msgid ""
+"You can use this information to follow the delivery status with the carrier."
+msgstr ""
+"Bạn có thể dùng thông tin này để theo dõi trạng thái giao hàng với đơn vị "
+"vận chuyển."
 
 #: templates/emails/plain/customer-electronic-invoice.php:52
 msgid "Invoice lookup URL"
@@ -2055,4 +2358,5 @@ msgstr "Theo dõi đơn hàng Việt Nam"
 #: blocks/order-tracking/block.json
 msgctxt "block description"
 msgid "Order lookup by order number and customer email or phone number."
-msgstr "Tra cứu đơn hàng bằng mã đơn hàng và email hoặc số điện thoại của khách hàng."
+msgstr ""
+"Tra cứu đơn hàng bằng mã đơn hàng và email hoặc số điện thoại của khách hàng."
