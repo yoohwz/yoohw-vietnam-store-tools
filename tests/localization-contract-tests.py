@@ -17,15 +17,54 @@ DOMAIN = "yoohw-vietnam-store-tools"
 LOCALES = ("vi", "vi_VN")
 BLOCK_SOURCE = "blocks/order-tracking/index.js"
 
-# These values are intentionally invariant in Vietnamese. Keep this list exact
-# and reviewed; prose, sentences, and wildcard exemptions do not belong here.
-UNCHANGED_ALLOWLIST = {
-    "%1$s: %2$s → %3$s",
-    "VietQR",
+# Product and brand labels are canonical names, not untranslated prose. Every
+# active label here must exist in the POT and remain byte-for-byte identical in
+# both Vietnamese catalogs. A branding change requires an explicit Human
+# decision; extend this set deliberately when a new canonical label is added.
+PROTECTED_BRAND_LABELS = {
+    "Vietnam store",
     "Vietnam Store Toolkit for WooCommerce",
     "YoOhw Studio",
+}
+
+# These technical identifiers, standards, formats, and URLs are intentionally
+# invariant. Ordinary user-facing prose and wildcard exemptions do not belong
+# here; each addition requires contextual review.
+INTENTIONALLY_UNCHANGED_TECHNICAL_VALUES = {
+    "%1$s: %2$s → %3$s",
+    "VietQR",
     "https://vietnamstore.org/",
     "https://yoohw.com",
+}
+
+# Embedded English terms are approved only in these exact source contexts.
+# Source-copy changes or new uses must be reviewed instead of inheriting a
+# global exemption.
+REVIEWED_EMBEDDED_TECHNICAL_TERMS = {
+    "Sort code": {
+        "Choose a bank in each bank transfer account to generate VietQR payment QR codes for Vietnamese bank transfers. Existing legacy Bank BIN and Sort code values are still supported.",
+    },
+    "checkout": {
+        "These plugins can also modify WooCommerce Vietnam address and checkout fields. Run the scan and sync tools before disabling the old plugin to avoid city/province, ward/commune, city, state, and address line 2 data conflicts.",
+        "Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. Both plugins may modify city/province and ward/commune checkout fields, which can cause city, state, address line 2, or admin/frontend display conflicts.",
+    },
+    "city": {
+        "These plugins can also modify WooCommerce Vietnam address and checkout fields. Run the scan and sync tools before disabling the old plugin to avoid city/province, ward/commune, city, state, and address line 2 data conflicts.",
+        "Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. Both plugins may modify city/province and ward/commune checkout fields, which can cause city, state, address line 2, or admin/frontend display conflicts.",
+    },
+    "state": {
+        "These plugins can also modify WooCommerce Vietnam address and checkout fields. Run the scan and sync tools before disabling the old plugin to avoid city/province, ward/commune, city, state, and address line 2 data conflicts.",
+        "Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. Both plugins may modify city/province and ward/commune checkout fields, which can cause city, state, address line 2, or admin/frontend display conflicts.",
+    },
+    "admin": {
+        "Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. Both plugins may modify city/province and ward/commune checkout fields, which can cause city, state, address line 2, or admin/frontend display conflicts.",
+    },
+    "frontend": {
+        "Vietnam Store Toolkit for WooCommerce detected an active Le Van Toan plugin. Both plugins may modify city/province and ward/commune checkout fields, which can cause city, state, address line 2, or admin/frontend display conflicts.",
+    },
+    "metabox": {
+        "Manually send customers their Vietnam shipping provider and tracking code from the order shipping metabox.",
+    },
 }
 
 
@@ -154,8 +193,33 @@ def validate_catalogs() -> None:
                 fail(f"{locale} has untranslated value: {key}")
             sources = {key[1], key[2]} - {""}
             for value in entry.msgstr.values():
-                if value in sources and value not in UNCHANGED_ALLOWLIST:
+                if (
+                    value in sources
+                    and value not in PROTECTED_BRAND_LABELS
+                    and value not in INTENTIONALLY_UNCHANGED_TECHNICAL_VALUES
+                ):
                     fail(f"{locale} has unreviewed unchanged translation: {value!r}")
+
+    for label in PROTECTED_BRAND_LABELS:
+        key = ("", label, "")
+        if key not in pot:
+            fail(f"Protected brand label is not an active source message: {label!r}")
+        for locale, catalog in catalogs.items():
+            if catalog[key].msgstr != {0: label}:
+                fail(f"{locale} must preserve canonical brand label: {label!r}")
+
+    for term, reviewed_sources in REVIEWED_EMBEDDED_TECHNICAL_TERMS.items():
+        for locale, catalog in catalogs.items():
+            actual_sources = {
+                entry.msgid
+                for entry in catalog.values()
+                if any(term in value for value in entry.msgstr.values())
+            }
+            if actual_sources != reviewed_sources:
+                fail(
+                    f"{locale} embedded technical term {term!r} differs from reviewed contexts; "
+                    f"expected={sorted(reviewed_sources)} actual={sorted(actual_sources)}"
+                )
 
     vi_values = {key: entry.msgstr for key, entry in catalogs["vi"].items()}
     vi_vn_values = {key: entry.msgstr for key, entry in catalogs["vi_VN"].items()}
@@ -260,16 +324,31 @@ def validate_bootstrap_contract() -> None:
             fail(f"Missing translation registry contract: {token}")
 
 
+def validate_localization_policy() -> None:
+    policy = (ROOT / "docs" / "localization.md").read_text(encoding="utf-8")
+    required = (
+        "Product and brand names must retain their canonical spelling",
+        "explicit Human branding decision",
+        "PROTECTED_BRAND_LABELS",
+        "ordinary user-facing prose",
+        "scripts/localization-quality.sh check",
+    )
+    for statement in required:
+        if statement not in policy:
+            fail(f"Localization policy is missing required guidance: {statement!r}")
+
+
 def main() -> int:
     try:
         validate_catalogs()
         validate_visible_javascript_contracts()
         validate_compiled_artifact_shape()
         validate_bootstrap_contract()
+        validate_localization_policy()
     except (AssertionError, ValueError, SyntaxError, StopIteration) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
-    print("PASS: localization source, parity, compiled-artifact, and visible-JS contracts.")
+    print("PASS: localization source, brand, parity, compiled-artifact, policy, and visible-JS contracts.")
     return 0
 
 

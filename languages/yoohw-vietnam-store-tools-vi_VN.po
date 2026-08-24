@@ -147,7 +147,7 @@ msgstr "Bang / Hạt"
 #: includes/class-vietnam-commerce-kit-admin-menu.php:41
 #: includes/class-vietnam-commerce-kit-admin-menu.php:174
 msgid "Vietnam store"
-msgstr "Cửa hàng Việt Nam"
+msgstr "Vietnam store"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:86
 msgid "Settings"
