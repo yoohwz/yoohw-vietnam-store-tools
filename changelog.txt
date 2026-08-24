@@ -1,6 +1,6 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
-= 1.1.5 (In development) =
+= 1.1.5 (August 30, 2026) =
 
 * Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline after resolving source findings and removing the temporary 1.1.4 waiver; normal CI now checks the reviewed WordPress.org payload.
 * Quality: Added deterministic Vietnamese localization gates for POT/PO completeness, locale parity, MO/PHP/JSON consistency, visible JavaScript localization contracts, and strict zero-warning Plugin Check in both CI and WordPress.org publish validation.
