@@ -1,6 +1,6 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
-= 1.1.5 (Đang phát triển) =
+= 1.1.5 (30/08/2026) =
 
 * Chất lượng: Khôi phục WordPress Plugin Check nghiêm ngặt làm tiêu chuẩn CI chặn bản phát hành sau khi xử lý các phát hiện trong mã nguồn và gỡ bỏ ngoại lệ tạm thời của 1.1.4; CI thông thường hiện kiểm tra đúng gói WordPress.org đã được rà soát.
 * Chất lượng: Bổ sung gate bản địa hóa tiếng Việt xác định cho độ đầy đủ POT/PO, tính đồng nhất locale, tính nhất quán MO/PHP/JSON, hợp đồng bản địa hóa JavaScript hiển thị và Plugin Check nghiêm ngặt không cảnh báo trong cả CI lẫn quy trình kiểm tra trước khi phát hành WordPress.org.

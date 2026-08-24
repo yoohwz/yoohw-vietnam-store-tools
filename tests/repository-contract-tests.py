@@ -10,7 +10,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 # Update this with readme.txt only at the explicit Human Release gate.
-PUBLISHED_STABLE_VERSION = "1.1.4"
+PUBLISHED_STABLE_VERSION = "1.1.5"
+CHANGELOG_HISTORY_BASELINE = (
+    "1.1.4",
+    "1.1.3",
+    "1.1.2",
+    "1.1.1",
+    "1.1.0",
+    "1.0.2",
+    "1.0.1",
+    "1.0.0",
+)
 
 
 def read(path: str) -> str:
@@ -57,6 +67,64 @@ def require_stable_tag_rejection(
     except AssertionError:
         return
     raise AssertionError(f"Stable-tag contract unexpectedly accepted {stable_tag}")
+
+
+def changelog_versions(text: str) -> list[str]:
+    return re.findall(
+        r"^=\s*([0-9]+\.[0-9]+\.[0-9]+)\s*\(", text, re.MULTILINE
+    )
+
+
+def validate_changelog_history(
+    readme: str, changelog: str, changelog_vi: str, release_version: str
+) -> None:
+    readme_changelog = readme.split("== Changelog ==", 1)
+    if len(readme_changelog) != 2:
+        raise AssertionError("readme.txt has no Changelog section")
+
+    readme_versions = changelog_versions(readme_changelog[1])
+    if readme_versions != [release_version]:
+        raise AssertionError(
+            "readme.txt must expose exactly the latest changelog version: "
+            f"expected={[release_version]}, actual={readme_versions}"
+        )
+
+    english_versions = changelog_versions(changelog)
+    vietnamese_versions = changelog_versions(changelog_vi)
+    if english_versions != vietnamese_versions:
+        raise AssertionError(
+            "English and Vietnamese changelog version sequences differ: "
+            f"english={english_versions}, vietnamese={vietnamese_versions}"
+        )
+    if not english_versions or english_versions[0] != release_version:
+        raise AssertionError(
+            "Standalone changelogs must begin with the latest release version: "
+            f"expected={release_version}, actual={english_versions[:1]}"
+        )
+    if len(english_versions) != len(set(english_versions)):
+        raise AssertionError(
+            f"Standalone changelog versions must be unique: {english_versions}"
+        )
+    if any(
+        parse_semver(earlier, "changelog version")
+        <= parse_semver(later, "changelog version")
+        for earlier, later in zip(english_versions, english_versions[1:])
+    ):
+        raise AssertionError(
+            "Standalone changelog versions must be in descending order: "
+            f"{english_versions}"
+        )
+
+    missing_baseline = [
+        version
+        for version in CHANGELOG_HISTORY_BASELINE
+        if version not in english_versions
+    ]
+    if missing_baseline:
+        raise AssertionError(
+            "Standalone changelogs lost required historical versions: "
+            f"{missing_baseline}"
+        )
 
 
 def main() -> int:
@@ -149,6 +217,8 @@ def main() -> int:
             f"{name}={value}" for name, value in development_versions.items()
         )
         raise AssertionError(f"Development version sources are inconsistent: {details}")
+
+    validate_changelog_history(readme, changelog, changelog_vi, plugin_version)
 
     validate_stable_tag(stable_tag, plugin_version, PUBLISHED_STABLE_VERSION)
     require_stable_tag_rejection("1.1", plugin_version, "1.1")
