@@ -178,7 +178,7 @@ jobs:
 
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
           "${wp_env[@]}" run cli wp plugin activate woocommerce
-          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
           "${wp_env[@]}" run cli wp option update WPLANG vi
 
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
