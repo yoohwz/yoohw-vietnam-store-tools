@@ -137,33 +137,66 @@ jobs:
             git diff --check HEAD^..HEAD
           fi
 
-  php-syntax:
-    name: PHP ${{ matrix.php }} syntax
+  php-syntax-74:
+    name: PHP 7.4 syntax
     needs:
       - changes
       - repository-contracts
     if: ${{ needs.changes.outputs.run_php == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        php:
-          - '7.4'
-          - '8.2'
-          - '8.4'
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
-
-      - name: Set up PHP ${{ matrix.php }}
+      - name: Set up PHP 7.4
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '7.4'
           coverage: none
+      - name: PHP syntax
+        run: find . -name '*.php' -print0 | xargs -0 -n1 php -l
 
+  php-syntax-82:
+    name: PHP 8.2 syntax
+    needs:
+      - changes
+      - repository-contracts
+    if: ${{ needs.changes.outputs.run_php == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: PHP syntax
+        run: find . -name '*.php' -print0 | xargs -0 -n1 php -l
+
+  php-syntax-84:
+    name: PHP 8.4 syntax
+    needs:
+      - changes
+      - repository-contracts
+    if: ${{ needs.changes.outputs.run_php == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.4'
+          coverage: none
       - name: PHP syntax
         run: find . -name '*.php' -print0 | xargs -0 -n1 php -l
 
@@ -180,13 +213,11 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
-
       - name: Set up PHP 8.2
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.2'
           coverage: none
-
       - name: Install pinned localization tools
         shell: bash
         run: |
@@ -196,41 +227,28 @@ jobs:
           curl -fsSL https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o "$RUNNER_TEMP/wp"
           echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  $RUNNER_TEMP/wp" | sha256sum --check
           chmod +x "$RUNNER_TEMP/wp"
-
       - name: Validate localization sources and compiled catalogs
         env:
           WP_CLI_BIN: ${{ runner.temp }}/wp
         run: scripts/localization-quality.sh check
 
-  localization-runtime:
-    name: WordPress ${{ matrix.label }} translation runtime
+  localization-runtime-63:
+    name: WordPress 6.3 translation runtime
     needs:
       - changes
       - repository-contracts
     if: ${{ needs.changes.outputs.run_localization_runtime == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - label: '6.3'
-            core: '"WordPress/WordPress#6.3"'
-          - label: '6.7'
-            core: '"WordPress/WordPress#6.7"'
-          - label: latest
-            core: 'null'
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
-
       - name: Set up Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
-
       - name: Prepare runtime fixture and wp-env
         shell: bash
         run: |
@@ -240,7 +258,7 @@ jobs:
           msgfmt --check --check-format tests/fixtures/vst-language-pack-sentinel.po -o tests/fixtures/.runtime-sentinel.mo
           cat > .wp-env.json <<'JSON'
           {
-            "core": ${{ matrix.core }},
+            "core": "WordPress/WordPress#6.3",
             "mappings": {
               "wp-content/plugins/yoohw-vietnam-store-tools": "."
             },
@@ -252,26 +270,132 @@ jobs:
           }
           JSON
           npx --yes @wordpress/env@11.13.0 start --update
-
       - name: Verify bundled fallback and language-pack priority
         shell: bash
         run: |
           set -euo pipefail
           wp_env=(npx --yes @wordpress/env@11.13.0)
-
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
           "${wp_env[@]}" run cli wp plugin activate woocommerce
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
           "${wp_env[@]}" run cli wp option update WPLANG vi
-
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
           ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
-
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
-
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
+      - name: Stop wp-env
+        if: ${{ always() }}
+        run: npx --yes @wordpress/env@11.13.0 stop
 
+  localization-runtime-67:
+    name: WordPress 6.7 translation runtime
+    needs:
+      - changes
+      - repository-contracts
+    if: ${{ needs.changes.outputs.run_localization_runtime == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - name: Set up Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - name: Prepare runtime fixture and wp-env
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          msgfmt --check --check-format tests/fixtures/vst-language-pack-sentinel.po -o tests/fixtures/.runtime-sentinel.mo
+          cat > .wp-env.json <<'JSON'
+          {
+            "core": "WordPress/WordPress#6.7",
+            "mappings": {
+              "wp-content/plugins/yoohw-vietnam-store-tools": "."
+            },
+            "config": {
+              "WP_DEBUG": true,
+              "WP_DEBUG_LOG": true,
+              "WP_DEBUG_DISPLAY": true
+            }
+          }
+          JSON
+          npx --yes @wordpress/env@11.13.0 start --update
+      - name: Verify bundled fallback and language-pack priority
+        shell: bash
+        run: |
+          set -euo pipefail
+          wp_env=(npx --yes @wordpress/env@11.13.0)
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
+          "${wp_env[@]}" run cli wp plugin activate woocommerce
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
+          "${wp_env[@]}" run cli wp option update WPLANG vi
+          "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
+          ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
+      - name: Stop wp-env
+        if: ${{ always() }}
+        run: npx --yes @wordpress/env@11.13.0 stop
+
+  localization-runtime-latest:
+    name: WordPress latest translation runtime
+    needs:
+      - changes
+      - repository-contracts
+    if: ${{ needs.changes.outputs.run_localization_runtime == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - name: Set up Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - name: Prepare runtime fixture and wp-env
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          msgfmt --check --check-format tests/fixtures/vst-language-pack-sentinel.po -o tests/fixtures/.runtime-sentinel.mo
+          cat > .wp-env.json <<'JSON'
+          {
+            "core": null,
+            "mappings": {
+              "wp-content/plugins/yoohw-vietnam-store-tools": "."
+            },
+            "config": {
+              "WP_DEBUG": true,
+              "WP_DEBUG_LOG": true,
+              "WP_DEBUG_DISPLAY": true
+            }
+          }
+          JSON
+          npx --yes @wordpress/env@11.13.0 start --update
+      - name: Verify bundled fallback and language-pack priority
+        shell: bash
+        run: |
+          set -euo pipefail
+          wp_env=(npx --yes @wordpress/env@11.13.0)
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
+          "${wp_env[@]}" run cli wp plugin activate woocommerce
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
+          "${wp_env[@]}" run cli wp option update WPLANG vi
+          "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
+          ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
@@ -289,7 +413,6 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
-
       - name: Stage reviewed WordPress.org payload
         shell: bash
         run: |
@@ -312,7 +435,6 @@ jobs:
             test -e "$path"
             cp -a "$path" wporg-dist/
           done
-
       - name: Prepare strict Plugin Check validation payload
         shell: bash
         run: |
@@ -320,24 +442,18 @@ jobs:
           PLUGIN_VERSION="$(awk -F': ' '/^[[:space:]]*\*[[:space:]]Version:/ {print $2; exit}' wporg-dist/yoohw-vietnam-store-tools.php)"
           STABLE_TAG="$(awk -F': ' '/^Stable tag:/ {print $2; exit}' wporg-dist/readme.txt)"
           PUBLISHED_STABLE_VERSION="$(sed -nE 's/^PUBLISHED_STABLE_VERSION = "([^"]+)"/\1/p' tests/repository-contract-tests.py)"
-
           test -n "$PLUGIN_VERSION"
           test -n "$STABLE_TAG"
           test -n "$PUBLISHED_STABLE_VERSION"
           test "$STABLE_TAG" = "$PUBLISHED_STABLE_VERSION"
-
           cp -a wporg-dist plugin-check-dist
           if [[ "$STABLE_TAG" != "$PLUGIN_VERSION" ]]; then
             sed -i -E "s/^Stable tag: .+$/Stable tag: ${PLUGIN_VERSION}/" plugin-check-dist/readme.txt
           fi
           test "$(awk -F': ' '/^Stable tag:/ {print $2; exit}' plugin-check-dist/readme.txt)" = "$PLUGIN_VERSION"
-
       - name: Run WordPress Plugin Check
         uses: wordpress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         with:
-          # Plugin Check requires Stable tag to match the plugin header. During
-          # release preparation, the exact staged payload intentionally keeps
-          # the last published Stable tag until the explicit Human release gate.
           build-dir: plugin-check-dist
           slug: yoohw-vietnam-store-tools
           strict: true
@@ -347,9 +463,13 @@ jobs:
     needs:
       - changes
       - repository-contracts
-      - php-syntax
+      - php-syntax-74
+      - php-syntax-82
+      - php-syntax-84
       - localization-quality
-      - localization-runtime
+      - localization-runtime-63
+      - localization-runtime-67
+      - localization-runtime-latest
       - plugin-check
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -362,58 +482,53 @@ jobs:
           CHANGES_RESULT: ${{ needs.changes.result }}
           QUICK_RESULT: ${{ needs.repository-contracts.result }}
           PHP_EXPECTED: ${{ needs.changes.outputs.run_php }}
-          PHP_RESULT: ${{ needs.php-syntax.result }}
+          PHP_74_RESULT: ${{ needs.php-syntax-74.result }}
+          PHP_82_RESULT: ${{ needs.php-syntax-82.result }}
+          PHP_84_RESULT: ${{ needs.php-syntax-84.result }}
           LOCALIZATION_QUALITY_EXPECTED: ${{ needs.changes.outputs.run_localization_quality }}
           LOCALIZATION_QUALITY_RESULT: ${{ needs.localization-quality.result }}
           LOCALIZATION_RUNTIME_EXPECTED: ${{ needs.changes.outputs.run_localization_runtime }}
-          LOCALIZATION_RUNTIME_RESULT: ${{ needs.localization-runtime.result }}
+          LOCALIZATION_RUNTIME_63_RESULT: ${{ needs.localization-runtime-63.result }}
+          LOCALIZATION_RUNTIME_67_RESULT: ${{ needs.localization-runtime-67.result }}
+          LOCALIZATION_RUNTIME_LATEST_RESULT: ${{ needs.localization-runtime-latest.result }}
           PLUGIN_CHECK_EXPECTED: ${{ needs.changes.outputs.run_plugin_check }}
           PLUGIN_CHECK_RESULT: ${{ needs.plugin-check.result }}
         run: |
           set -euo pipefail
-
           require_success() {
             local expected="$1"
             local result="$2"
             local label="$3"
-
             if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
               echo "$label failed with result: $result" >&2
               return 1
             fi
-
             if [[ "$expected" == "true" && "$result" != "success" ]]; then
               echo "$label was required but result was: $result" >&2
               return 1
             fi
-
             if [[ "$expected" != "true" && "$result" != "success" && "$result" != "skipped" ]]; then
               echo "$label returned unexpected result: $result" >&2
               return 1
             fi
           }
-
-          [[ "$CHANGES_RESULT" == "success" ]] || {
-            echo "CI change classification did not succeed: $CHANGES_RESULT" >&2
-            exit 1
-          }
-          [[ "$QUICK_RESULT" == "success" ]] || {
-            echo "Repository contracts did not succeed: $QUICK_RESULT" >&2
-            exit 1
-          }
-
-          require_success "$PHP_EXPECTED" "$PHP_RESULT" "PHP syntax matrix"
+          [[ "$CHANGES_RESULT" == "success" ]] || exit 1
+          [[ "$QUICK_RESULT" == "success" ]] || exit 1
+          require_success "$PHP_EXPECTED" "$PHP_74_RESULT" "PHP 7.4 syntax"
+          require_success "$PHP_EXPECTED" "$PHP_82_RESULT" "PHP 8.2 syntax"
+          require_success "$PHP_EXPECTED" "$PHP_84_RESULT" "PHP 8.4 syntax"
           require_success "$LOCALIZATION_QUALITY_EXPECTED" "$LOCALIZATION_QUALITY_RESULT" "Localization quality"
-          require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_RESULT" "WordPress translation runtime matrix"
+          require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_63_RESULT" "WordPress 6.3 translation runtime"
+          require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_67_RESULT" "WordPress 6.7 translation runtime"
+          require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_LATEST_RESULT" "WordPress latest translation runtime"
           require_success "$PLUGIN_CHECK_EXPECTED" "$PLUGIN_CHECK_RESULT" "WordPress Plugin Check"
-
           {
             echo "### VST CI gate"
             echo
             echo "- Mode: \`${MODE:-unknown}\`"
             echo "- Repository contracts: $QUICK_RESULT"
-            echo "- PHP syntax matrix: $PHP_RESULT"
+            echo "- PHP 7.4 / 8.2 / 8.4: $PHP_74_RESULT / $PHP_82_RESULT / $PHP_84_RESULT"
             echo "- Localization quality: $LOCALIZATION_QUALITY_RESULT"
-            echo "- Localization runtime matrix: $LOCALIZATION_RUNTIME_RESULT"
+            echo "- Localization runtime 6.3 / 6.7 / latest: $LOCALIZATION_RUNTIME_63_RESULT / $LOCALIZATION_RUNTIME_67_RESULT / $LOCALIZATION_RUNTIME_LATEST_RESULT"
             echo "- WordPress Plugin Check: $PLUGIN_CHECK_RESULT"
           } >> "$GITHUB_STEP_SUMMARY"
