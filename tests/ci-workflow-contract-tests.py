@@ -53,7 +53,7 @@ def main() -> int:
             "pull_request",
             True,
             "Implementation in progress",
-            ["AGENTS.md", "docs/localization.md"],
+            ["AGENTS.md", "docs/extension-contracts-1.1.5.md"],
         ),
         php=False,
         quality=False,
@@ -111,6 +111,32 @@ def main() -> int:
         quality=True,
         runtime=True,
         plugin=True,
+        mode="risk-matched",
+    )
+    assert_flags(
+        classifier.classify(
+            "pull_request",
+            False,
+            "",
+            ["docs/localization.md"],
+        ),
+        php=False,
+        quality=True,
+        runtime=False,
+        plugin=False,
+        mode="risk-matched",
+    )
+    assert_flags(
+        classifier.classify(
+            "pull_request",
+            False,
+            "",
+            ["tests/localization-contract-tests.py"],
+        ),
+        php=False,
+        quality=True,
+        runtime=False,
+        plugin=False,
         mode="risk-matched",
     )
     assert_flags(

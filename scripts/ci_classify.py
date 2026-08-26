@@ -81,12 +81,21 @@ def classify(
             # with every deep gate even while the PR is still a draft.
             force_deep = True
 
+        if path == "docs/localization.md":
+            # The localization contract suite validates this durable policy.
+            run_localization_quality = True
+            continue
+
         if (
             path == "AGENTS.md"
             or path == ".github/pull_request_template.md"
             or path.startswith("docs/")
             or path == ".gitignore"
         ):
+            continue
+
+        if path == "tests/localization-contract-tests.py":
+            run_localization_quality = True
             continue
 
         if path in {
