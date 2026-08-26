@@ -38,10 +38,11 @@ def assert_flags(result, *, php, quality, runtime, plugin, mode):
 
 def main() -> int:
     classifier = load_classifier()
+    classifier_source = CLASSIFIER_PATH.read_text(encoding="utf-8")
     workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
 
     assert_flags(
-        classifier.classify("push", False, "", []),
+        classifier.classify("push", False, []),
         php=True,
         quality=True,
         runtime=True,
@@ -52,7 +53,6 @@ def main() -> int:
         classifier.classify(
             "pull_request",
             True,
-            "Implementation in progress",
             ["AGENTS.md", "docs/extension-contracts-1.1.5.md"],
         ),
         php=False,
@@ -65,7 +65,6 @@ def main() -> int:
         classifier.classify(
             "pull_request",
             True,
-            "Implementation in progress",
             ["includes/class-yoohw-address.php"],
         ),
         php=False,
@@ -74,24 +73,21 @@ def main() -> int:
         plugin=False,
         mode="quick-draft",
     )
+    # Even high-risk/fail-safe surfaces remain quick while implementation is
+    # draft; ready_for_review is the only normal transition to deep CI.
+    for draft_path in (".github/workflows/ci.yml", "unexpected-root-surface.txt"):
+        assert_flags(
+            classifier.classify("pull_request", True, [draft_path]),
+            php=False,
+            quality=False,
+            runtime=False,
+            plugin=False,
+            mode="quick-draft",
+        )
     assert_flags(
         classifier.classify(
             "pull_request",
             False,
-            "",
-            ["includes/class-yoohw-address.php"],
-        ),
-        php=True,
-        quality=True,
-        runtime=False,
-        plugin=True,
-        mode="risk-matched",
-    )
-    assert_flags(
-        classifier.classify(
-            "pull_request",
-            True,
-            "STATUS: TECHNICAL_REVIEW_REQUIRED",
             ["includes/class-yoohw-address.php"],
         ),
         php=True,
@@ -104,7 +100,6 @@ def main() -> int:
         classifier.classify(
             "pull_request",
             False,
-            "",
             ["languages/yoohw-vietnam-store-tools-vi.po"],
         ),
         php=False,
@@ -114,12 +109,7 @@ def main() -> int:
         mode="risk-matched",
     )
     assert_flags(
-        classifier.classify(
-            "pull_request",
-            False,
-            "",
-            ["docs/localization.md"],
-        ),
+        classifier.classify("pull_request", False, ["docs/localization.md"]),
         php=False,
         quality=True,
         runtime=False,
@@ -128,10 +118,7 @@ def main() -> int:
     )
     assert_flags(
         classifier.classify(
-            "pull_request",
-            False,
-            "",
-            ["tests/localization-contract-tests.py"],
+            "pull_request", False, ["tests/localization-contract-tests.py"]
         ),
         php=False,
         quality=True,
@@ -140,49 +127,26 @@ def main() -> int:
         mode="risk-matched",
     )
     assert_flags(
-        classifier.classify(
-            "pull_request",
-            False,
-            "",
-            ["readme.txt", "changelog.txt"],
-        ),
+        classifier.classify("pull_request", False, ["readme.txt", "changelog.txt"]),
         php=False,
         quality=False,
         runtime=False,
         plugin=True,
         mode="risk-matched",
     )
-    assert_flags(
-        classifier.classify(
-            "pull_request",
-            True,
-            "Implementation in progress",
-            [".github/workflows/ci.yml"],
-        ),
-        php=True,
-        quality=True,
-        runtime=True,
-        plugin=True,
-        mode="fail-safe-full",
-    )
-    assert_flags(
-        classifier.classify(
-            "pull_request",
-            True,
-            "Implementation in progress",
-            ["unexpected-root-surface.txt"],
-        ),
-        php=True,
-        quality=True,
-        runtime=True,
-        plugin=True,
-        mode="fail-safe-full",
-    )
+    for full_path in (".github/workflows/ci.yml", "unexpected-root-surface.txt"):
+        assert_flags(
+            classifier.classify("pull_request", False, [full_path]),
+            php=True,
+            quality=True,
+            runtime=True,
+            plugin=True,
+            mode="fail-safe-full",
+        )
 
     required_literals = (
         "ready_for_review",
         "converted_to_draft",
-        "edited",
         "python3 scripts/ci_classify.py",
         "python3 tests/ci-workflow-contract-tests.py",
         "name: VST Required Gate",
@@ -193,14 +157,21 @@ def main() -> int:
         if literal not in workflow:
             raise AssertionError(f"CI workflow is missing required contract: {literal}")
 
+    forbidden_literals = (
+        "      - edited\n",
+        "PR_BODY:",
+        "--pr-body",
+    )
+    for literal in forbidden_literals:
+        if literal in workflow:
+            raise AssertionError(f"CI workflow contains duplicate-trigger contract: {literal!r}")
+    if "TECHNICAL_REVIEW_REQUIRED" in classifier_source or "pr_body" in classifier_source:
+        raise AssertionError("Classifier must not derive CI depth from PR body/status text")
+
     for job_id in (
-        "php-syntax-74",
-        "php-syntax-82",
-        "php-syntax-84",
+        "php-syntax",
         "localization-quality",
-        "localization-runtime-63",
-        "localization-runtime-67",
-        "localization-runtime-latest",
+        "localization-runtime",
         "plugin-check",
     ):
         match = re.search(
@@ -215,21 +186,20 @@ def main() -> int:
             raise AssertionError(f"Deep job {job_id} must wait for the quick gate")
 
     for expected_name in (
-        "PHP 7.4 syntax",
-        "PHP 8.2 syntax",
-        "PHP 8.4 syntax",
-        "WordPress 6.3 translation runtime",
-        "WordPress 6.7 translation runtime",
-        "WordPress latest translation runtime",
+        "PHP ${{ matrix.php }} syntax",
+        "WordPress ${{ matrix.label }} translation runtime",
         "Localization quality",
         "WordPress Plugin Check",
     ):
         if f"name: {expected_name}" not in workflow:
             raise AssertionError(
-                f"Existing check context must remain stable for branch protection: {expected_name}"
+                f"Existing check context template must remain stable: {expected_name}"
             )
 
-    print("CI workflow contracts PASS: risk-aware staging, fail-safe routing, and stable check contexts.")
+    print(
+        "CI workflow contracts PASS: single ready-for-review deep transition, "
+        "risk-aware staging, fail-safe routing, and stable check contexts."
+    )
     return 0
 
 

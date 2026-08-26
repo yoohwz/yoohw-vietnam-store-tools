@@ -7,8 +7,6 @@ import argparse
 from dataclasses import dataclass
 from typing import Iterable
 
-TECHNICAL_REVIEW_MARKER = "TECHNICAL_REVIEW_REQUIRED"
-
 
 @dataclass(frozen=True)
 class Classification:
@@ -54,7 +52,6 @@ def _full(mode: str) -> Classification:
 def classify(
     event_name: str,
     pr_draft: bool,
-    pr_body: str,
     changed_paths: Iterable[str],
 ) -> Classification:
     """Return the minimum safe CI surface for the current change."""
@@ -77,12 +74,11 @@ def classify(
             or path.startswith("scripts/")
             or path == ".distignore"
         ):
-            # CI, release tooling, and distribution-policy changes self-test
-            # with every deep gate even while the PR is still a draft.
+            # CI, release tooling, and distribution-policy changes receive the
+            # full deep suite once the PR moves to ready-for-review.
             force_deep = True
 
         if path == "docs/localization.md":
-            # The localization contract suite validates this durable policy.
             run_localization_quality = True
             continue
 
@@ -155,20 +151,15 @@ def classify(
             or path.startswith("scripts/")
             or path == ".distignore"
         ):
-            # force_deep expands this surface below.
             continue
 
         # Unknown paths deliberately fail safe instead of guessing that a
-        # quality gate is irrelevant.
+        # quality gate is irrelevant once the PR is ready for review.
         force_deep = True
 
-    deep_requested = (
-        not pr_draft
-        or TECHNICAL_REVIEW_MARKER in pr_body
-        or force_deep
-    )
-
-    if not deep_requested:
+    # Draft is the implementation lane. Body/status edits do not alter CI
+    # depth; ready_for_review is the single canonical transition to deep CI.
+    if pr_draft:
         return Classification(
             mode="quick-draft",
             run_php=False,
@@ -204,14 +195,12 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--event-name", required=True)
     parser.add_argument("--pr-draft", default="false")
-    parser.add_argument("--pr-body", default="")
     parser.add_argument("paths", nargs="*")
     args = parser.parse_args()
 
     result = classify(
         event_name=args.event_name,
         pr_draft=parse_bool(args.pr_draft),
-        pr_body=args.pr_body,
         changed_paths=args.paths,
     )
     print(result.github_outputs())

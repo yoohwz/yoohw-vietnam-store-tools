@@ -17,7 +17,7 @@
 - Current status:
 - Plan review evidence:
 
-<!-- Controlled Lane: link the durable GitHub issue comment/result for plan review. Do not write that plan review was completed unless that artifact exists. Keep Current status aligned with the latest PR-conversation handoff for the current head SHA. While a draft is still implementation-in-progress, CI stays on the quick gate; when implementation is ready for independent review, use the review-status token defined in AGENTS.md so risk-matched deep CI can run. -->
+<!-- Controlled Lane: link the durable GitHub issue comment/result for plan review. Do not write that plan review was completed unless that artifact exists. Keep Current status aligned with the latest PR-conversation handoff for the current head SHA. Draft PRs stay on the quick CI gate. When implementation is complete, persist the TECHNICAL_REVIEW_REQUIRED handoff for the current head, then mark the PR ready for review; that ready_for_review transition is the single trigger for risk-matched deep CI. -->
 
 ## Changes
 
