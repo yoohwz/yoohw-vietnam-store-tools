@@ -133,6 +133,7 @@ final class Yoohw_Vietnam_Store_Tools {
 			'includes/class-vietnam-commerce-kit-phone-normalization.php',
 			'includes/class-vietnam-commerce-kit-shipping.php',
 			'includes/class-vietnam-commerce-kit-shipment-tracking.php',
+			'includes/class-vietnam-commerce-kit-shipping-zones.php',
 			'includes/class-vietnam-commerce-kit-shipping-rules.php',
 			'includes/class-vietnam-commerce-kit-bacs-vietqr.php',
 			'includes/class-vietnam-commerce-kit-tax-invoice.php',
@@ -186,6 +187,10 @@ final class Yoohw_Vietnam_Store_Tools {
 
 		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Shipment_Tracking' ) ) {
 			new Yoohw_Vietnam_Store_Tools_Shipment_Tracking();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Shipping_Zones' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Shipping_Zones();
 		}
 
 		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Shipping_Rules' ) ) {
