@@ -13,8 +13,6 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 
 	const LOCATION_TYPE = 'vck_ward';
 
-	private $has_ward_zones = null;
-
 	public function __construct() {
 		add_filter( 'woocommerce_valid_location_types', [ $this, 'register_location_type' ] );
 		add_action( 'woocommerce_before_shipping_zone_object_save', [ $this, 'sync_ward_locations_before_save' ], 10, 2 );
@@ -111,8 +109,6 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 				$zone->add_location( $code, self::LOCATION_TYPE );
 			}
 		}
-
-		$this->has_ward_zones = null;
 	}
 
 	/**
@@ -162,6 +158,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		}
 
 		if ( '' !== $ward_code ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- WooCommerce table name is derived from the trusted database prefix.
 			$criteria[] = $wpdb->prepare(
 				"AND ( zones.zone_id NOT IN ( SELECT zone_id FROM {$table} WHERE location_type = %s ) OR zones.zone_id IN ( SELECT zone_id FROM {$table} WHERE location_type = %s AND location_code = %s ) )",
 				self::LOCATION_TYPE,
@@ -169,6 +166,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 				$ward_code
 			);
 		} else {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- WooCommerce table name is derived from the trusted database prefix.
 			$criteria[] = $wpdb->prepare(
 				"AND zones.zone_id NOT IN ( SELECT zone_id FROM {$table} WHERE location_type = %s )",
 				self::LOCATION_TYPE
@@ -183,13 +181,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	 * packages whose city field carries a valid Vietnamese ward code.
 	 *
 	 * Core does not include city in this cache key, so two wards in the same
-	 * province could otherwise reuse the wrong cached zone.
+	 * province could otherwise reuse the wrong cached zone. Invalidating only
+	 * the exact package key preserves all unrelated cache entries.
 	 *
 	 * @param array $packages Cart shipping packages.
 	 * @return array
 	 */
 	public function invalidate_ward_zone_cache( $packages ) {
-		if ( ! is_array( $packages ) || ! $this->has_ward_zones() || ! class_exists( 'WC_Cache_Helper' ) ) {
+		if ( ! is_array( $packages ) || ! class_exists( 'WC_Cache_Helper' ) ) {
 			return $packages;
 		}
 
@@ -275,66 +274,39 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	}
 
 	/**
-	 * Check whether at least one custom ward location exists.
-	 *
-	 * @return bool
-	 */
-	private function has_ward_zones() {
-		if ( null !== $this->has_ward_zones ) {
-			return $this->has_ward_zones;
-		}
-
-		global $wpdb;
-
-		if ( ! isset( $wpdb ) || ! is_object( $wpdb ) || ! is_callable( [ $wpdb, 'get_var' ] ) || ! is_callable( [ $wpdb, 'prepare' ] ) ) {
-			$this->has_ward_zones = false;
-			return false;
-		}
-
-		$table = $wpdb->prefix . 'woocommerce_shipping_zone_locations';
-		$this->has_ward_zones = (bool) $wpdb->get_var(
-			$wpdb->prepare( "SELECT 1 FROM {$table} WHERE location_type = %s LIMIT 1", self::LOCATION_TYPE )
-		);
-
-		return $this->has_ward_zones;
-	}
-
-	/**
 	 * Build human-readable ward labels keyed by zone ID for the zones list.
 	 *
 	 * @return array
 	 */
 	private function get_zone_ward_labels() {
-		global $wpdb;
-
-		if ( ! isset( $wpdb ) || ! is_object( $wpdb ) || ! is_callable( [ $wpdb, 'get_results' ] ) || ! is_callable( [ $wpdb, 'prepare' ] ) ) {
+		if ( ! class_exists( 'WC_Shipping_Zones' ) || ! is_callable( [ 'WC_Shipping_Zones', 'get_shipping_zones' ] ) ) {
 			return [];
 		}
 
-		$table = $wpdb->prefix . 'woocommerce_shipping_zone_locations';
-		$rows  = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT zone_id, location_code FROM {$table} WHERE location_type = %s ORDER BY zone_id ASC, location_id ASC",
-				self::LOCATION_TYPE
-			)
-		);
 		$labels = [];
+		$zones  = WC_Shipping_Zones::get_shipping_zones();
 
-		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
-			$code = self::sanitize_ward_location_code( isset( $row->location_code ) ? $row->location_code : '' );
-
-			if ( '' === $code ) {
+		foreach ( is_array( $zones ) ? $zones : [] as $zone ) {
+			if ( ! is_object( $zone ) || ! is_callable( [ $zone, 'get_zone_locations' ] ) || ! is_callable( [ $zone, 'get_id' ] ) ) {
 				continue;
 			}
 
-			list( $province, $ward ) = explode( ':', $code, 2 );
-			$zone_id                 = isset( $row->zone_id ) ? absint( $row->zone_id ) : 0;
+			$zone_id = absint( $zone->get_id() );
 
-			if ( ! $zone_id ) {
-				continue;
+			foreach ( $zone->get_zone_locations() as $location ) {
+				if ( ! is_object( $location ) || ! isset( $location->type, $location->code ) || self::LOCATION_TYPE !== $location->type ) {
+					continue;
+				}
+
+				$code = self::sanitize_ward_location_code( $location->code );
+
+				if ( ! $zone_id || '' === $code ) {
+					continue;
+				}
+
+				list( $province, $ward ) = explode( ':', $code, 2 );
+				$labels[ $zone_id ][]    = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_ward_name( $ward, $province ) . ', ' . Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_province_name( $province );
 			}
-
-			$labels[ $zone_id ][] = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_ward_name( $ward, $province ) . ', ' . Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_province_name( $province );
 		}
 
 		return $labels;
