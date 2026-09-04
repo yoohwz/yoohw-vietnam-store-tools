@@ -42,6 +42,12 @@ HEAD_SHA_PATTERN = re.compile(
     r"^\s*(?:-\s*)?Head SHA:\s*`?(?P<sha>[0-9a-fA-F]{40})`?\s*$",
     re.IGNORECASE | re.MULTILINE,
 )
+INVALIDATED_COMMENT_PATTERN = re.compile(
+    r"\A\s*(?:#{1,6}\s*)?(?:\*{1,2}|_{1,2})?"
+    r"(?:(?:WORKFLOW\s+ARTIFACT:\s*)?(?:SUPERSEDED|INVALIDATED)\b|"
+    r"NOT\s+A\s+VALID\s+WORKFLOW\s+GATE\b)",
+    re.IGNORECASE,
+)
 TRUSTED_AUTHOR_ASSOCIATIONS = {"OWNER", "MEMBER", "COLLABORATOR"}
 
 
@@ -82,7 +88,7 @@ def _trusted_comment_bodies(
         if association not in TRUSTED_AUTHOR_ASSOCIATIONS:
             continue
         body = comment.get("body", "")
-        if isinstance(body, str):
+        if isinstance(body, str) and not INVALIDATED_COMMENT_PATTERN.search(body):
             yield body
 
 

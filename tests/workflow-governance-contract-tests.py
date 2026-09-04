@@ -94,6 +94,24 @@ def main() -> int:
     )
     expect_error(errors, "PLAN_REVIEW_REQUIRED")
 
+    issue_32_superseded_approval = comment(
+        """**SUPERSEDED / NOT A VALID WORKFLOW GATE**
+
+This review is retained as historical context only.
+
+---
+
+PLAN REVIEW: APPROVED — implementation may proceed.
+"""
+    )
+    errors = governance.validate_pull_request(
+        controlled_pr,
+        [],
+        task_issue=task_issue,
+        task_comments=[plan_handoff, issue_32_superseded_approval],
+    )
+    expect_error(errors, "PLAN_REVIEW_REQUIRED")
+
     errors = governance.validate_pull_request(
         controlled_pr,
         [],
@@ -128,6 +146,13 @@ def main() -> int:
         "CONTRIBUTOR",
     )
     errors = governance.validate_pull_request(ready_fast, [forged_handoff])
+    expect_error(errors, "Ready PR must have")
+
+    invalidated_handoff = comment(
+        f"WORKFLOW ARTIFACT: INVALIDATED\n\n"
+        f"STATUS: TECHNICAL_REVIEW_REQUIRED\n\nHead SHA: {HEAD}"
+    )
+    errors = governance.validate_pull_request(ready_fast, [invalidated_handoff])
     expect_error(errors, "Ready PR must have")
 
     stale_handoff = comment(
