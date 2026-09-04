@@ -1,9 +1,15 @@
-/* global yoohwVietnamStoreToolsShippingZones, shippingZoneMethodsLocalizeScript */
+/* global yoohwVietnamStoreToolsShippingZones, yoohwVietnamStoreToolsShippingRules, shippingZoneMethodsLocalizeScript */
 (function ($, data) {
 	'use strict';
 
 	function getZoneEditorData() {
 		return typeof shippingZoneMethodsLocalizeScript !== 'undefined' ? shippingZoneMethodsLocalizeScript : null;
+	}
+
+	function getString(key, fallback) {
+		var rulesData = typeof yoohwVietnamStoreToolsShippingRules !== 'undefined' ? yoohwVietnamStoreToolsShippingRules : null;
+
+		return rulesData && rulesData.i18n && rulesData.i18n[key] ? rulesData.i18n[key] : fallback;
 	}
 
 	function getEventLocations(event) {
@@ -24,6 +30,8 @@
 		var initialWards;
 		var $container;
 		var $select;
+		var wardLabel = getString('ward', 'Ward / Commune');
+		var anyWardLabel = getString('anyWard', 'Any ward / commune');
 
 		if (!zoneData || (!$reactRoot.length && !$legacyPicker.length) || $('.vck-shipping-zone-wards').length) {
 			return;
@@ -38,9 +46,9 @@
 
 		$container = $('<div class="vck-shipping-zone-wards">');
 		$container.css({ marginTop: '12px', maxWidth: '600px' });
-		$container.append($('<label>').css({ display: 'block', fontWeight: '600', marginBottom: '4px' }).text(data.i18n.ward));
+		$container.append($('<label>').css({ display: 'block', fontWeight: '600', marginBottom: '4px' }).text(wardLabel));
 		$select = $('<select multiple="multiple" class="wc-enhanced-select" style="width:100%">');
-		$select.attr('data-placeholder', data.i18n.anyWard);
+		$select.attr('data-placeholder', anyWardLabel);
 
 		Object.keys(data.provinces || {}).forEach(function (provinceCode) {
 			var provinceWards = data.wards && data.wards[provinceCode] ? data.wards[provinceCode] : {};
@@ -73,13 +81,13 @@
 		if (typeof $select.selectWoo === 'function') {
 			$select.selectWoo({
 				width: '100%',
-				placeholder: data.i18n.anyWard,
+				placeholder: anyWardLabel,
 				allowClear: true
 			});
 		} else if (typeof $select.select2 === 'function') {
 			$select.select2({
 				width: '100%',
-				placeholder: data.i18n.anyWard,
+				placeholder: anyWardLabel,
 				allowClear: true
 			});
 		}
@@ -118,6 +126,7 @@
 
 	function enhanceZonesList() {
 		var labelsByZone = data.zoneLabels || {};
+		var wardLabel = getString('ward', 'Ward / Commune');
 
 		Object.keys(labelsByZone).forEach(function (zoneId) {
 			var labels = labelsByZone[zoneId] || [];
@@ -129,7 +138,7 @@
 			}
 
 			$details = $('<div class="vck-shipping-zone-ward-labels">').css({ marginTop: '4px' });
-			$details.append($('<strong>').text(data.i18n.ward + ': '));
+			$details.append($('<strong>').text(wardLabel + ': '));
 			$details.append(document.createTextNode(labels.join(', ')));
 			$cell.append($details);
 		});
