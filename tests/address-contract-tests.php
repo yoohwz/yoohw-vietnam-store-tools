@@ -38,9 +38,25 @@ class Yoohw_Vietnam_Store_Tools_Request_Security {
 	public static function get_post_text( $key ) { return isset( $_POST[ $key ] ) ? wc_clean( $_POST[ $key ] ) : ''; }
 }
 
+class VCK_Address_Test_WPDB {
+	public $prefix = 'wp_';
+
+	public function prepare( $query ) {
+		$args = array_slice( func_get_args(), 1 );
+
+		foreach ( $args as $arg ) {
+			$replacement = "'" . str_replace( "'", "''", (string) $arg ) . "'";
+			$query       = preg_replace( '/%s/', $replacement, $query, 1 );
+		}
+
+		return $query;
+	}
+}
+
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-vietnam-address-data.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-address-fields.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-admin-order-fields.php';
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipping-zones.php';
 
 $failures  = [];
 $assertions = 0;
@@ -102,13 +118,69 @@ assert_address_contract( $province_code, $order->billing_state, 'Invalid admin p
 assert_address_contract( $ward_code, $order->billing_city, 'Invalid admin province/ward pair does not overwrite ward' );
 assert_address_contract( 1, count( WC_Admin_Meta_Boxes::$errors ), 'Invalid admin pair reports one error' );
 
-$order_copy_script   = file_get_contents( dirname( __DIR__ ) . '/assets/js/admin/order-address-fields.js' );
-$profile_copy_script = file_get_contents( dirname( __DIR__ ) . '/assets/js/admin/address-fields.js' );
-$blocks_script       = file_get_contents( dirname( __DIR__ ) . '/assets/js/frontend/blocks-address-fields.js' );
+$shipping_zones = new Yoohw_Vietnam_Store_Tools_Shipping_Zones();
+$location_types = $shipping_zones->register_location_type( [ 'postcode', 'state', 'country', 'continent' ] );
+assert_address_contract( true, in_array( Yoohw_Vietnam_Store_Tools_Shipping_Zones::LOCATION_TYPE, $location_types, true ), 'Ward location type is registered additively' );
+assert_address_contract(
+	$province_code . ':' . $ward_code,
+	Yoohw_Vietnam_Store_Tools_Shipping_Zones::sanitize_ward_location_code( $province_code . ':' . $ward_code ),
+	'Valid ward shipping-zone code is preserved'
+);
+assert_address_contract(
+	'',
+	Yoohw_Vietnam_Store_Tools_Shipping_Zones::sanitize_ward_location_code( $other_province . ':' . $ward_code ),
+	'Invalid province/ward shipping-zone pair is rejected'
+);
+
+$GLOBALS['wpdb'] = new VCK_Address_Test_WPDB();
+$criteria        = [
+	"( ( location_type = 'country' AND location_code = 'VN' )",
+	"OR ( location_type = 'state' AND location_code = 'VN:{$province_code}' )",
+	"OR ( location_type = 'continent' AND location_code = 'AS' )",
+	'OR ( location_type IS NULL ) )',
+];
+$ward_criteria   = $shipping_zones->add_ward_zone_criteria(
+	$criteria,
+	[
+		'destination' => [
+			'country' => 'VN',
+			'state'   => $province_code,
+			'city'    => $ward_code,
+		],
+	],
+	[]
+);
+$ward_sql = implode( ' ', $ward_criteria );
+assert_address_contract( true, false !== strpos( $ward_sql, "location_type = 'vck_ward'" ) && false !== strpos( $ward_sql, $province_code . ':' . $ward_code ), 'Zone criteria include the exact ward location' );
+assert_address_contract( true, false !== strpos( $ward_sql, 'zones.zone_id NOT IN' ) && false !== strpos( $ward_sql, 'zones.zone_id IN' ), 'Ward-restricted zones cannot fall through broader regions' );
+
+$missing_ward_criteria = $shipping_zones->add_ward_zone_criteria(
+	$criteria,
+	[
+		'destination' => [
+			'country' => 'VN',
+			'state'   => $province_code,
+			'city'    => '',
+		],
+	],
+	[]
+);
+$missing_ward_sql = implode( ' ', $missing_ward_criteria );
+assert_address_contract( true, false !== strpos( $missing_ward_sql, 'zones.zone_id NOT IN' ), 'Ward-restricted zones are excluded until a valid ward is known' );
+assert_address_contract( false, false !== strpos( $missing_ward_sql, $province_code . ':' . $ward_code ), 'Missing ward does not inject an exact ward match' );
+
+$order_copy_script     = file_get_contents( dirname( __DIR__ ) . '/assets/js/admin/order-address-fields.js' );
+$profile_copy_script   = file_get_contents( dirname( __DIR__ ) . '/assets/js/admin/address-fields.js' );
+$blocks_script         = file_get_contents( dirname( __DIR__ ) . '/assets/js/frontend/blocks-address-fields.js' );
+$shipping_zones_script = file_get_contents( dirname( __DIR__ ) . '/assets/js/admin/shipping-zones.js' );
+$shipping_zones_source = file_get_contents( dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipping-zones.php' );
 
 assert_address_contract( true, false !== strpos( $order_copy_script, "a.billing-same-as-shipping" ) && false !== strpos( $order_copy_script, "setSelectedWard( 'shipping'" ), 'Admin order copy restores shipping ward' );
 assert_address_contract( true, false !== strpos( $profile_copy_script, 'button.js_copy-billing' ) && false !== strpos( $profile_copy_script, "setSelected( 'shipping', 'state'" ), 'Customer profile copy restores Vietnamese state and ward' );
 assert_address_contract( true, false !== strpos( $blocks_script, 'billingAddress' ) && false !== strpos( $blocks_script, 'shippingAddress' ) && false !== strpos( $blocks_script, 'dataApi.subscribe' ), 'Checkout Blocks observes copied billing and shipping addresses' );
+assert_address_contract( true, false !== strpos( $shipping_zones_script, 'wc_region_picker_update' ) && false !== strpos( $shipping_zones_script, "data.locationType + ':'" ), 'Shipping Zone editor preserves native regions while adding ward selections' );
+assert_address_contract( true, false !== strpos( $shipping_zones_source, 'woocommerce_before_shipping_zone_object_save' ) && false !== strpos( $shipping_zones_source, 'woocommerce_get_zone_criteria' ), 'Shipping Zone integration covers persistence and matching hooks' );
+assert_address_contract( true, false !== strpos( $shipping_zones_source, 'woocommerce_cart_shipping_packages' ) && false !== strpos( $shipping_zones_source, 'wc_shipping_zone_' ), 'Shipping Zone integration handles the core cache key that omits city' );
 
 if ( ! empty( $failures ) ) {
 	fwrite( STDERR, "FAIL:\n- " . implode( "\n- ", $failures ) . "\n" );
