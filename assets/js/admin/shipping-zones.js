@@ -1,14 +1,11 @@
-/* global yoohwVietnamStoreToolsShippingZones, yoohwVietnamStoreToolsShippingRules, shippingZoneMethodsLocalizeScript */
+/* global yoohwVietnamStoreToolsShippingZones, yoohwVietnamStoreToolsShippingRules, shippingZoneMethodsLocalizeScript, yoohwVietnamStoreToolsShippingZoneInitialWards */
 (function ($, data) {
 	'use strict';
 
-	function getZoneEditorData() {
-		return typeof shippingZoneMethodsLocalizeScript !== 'undefined' ? shippingZoneMethodsLocalizeScript : null;
-	}
+	var rulesData = typeof yoohwVietnamStoreToolsShippingRules !== 'undefined' ? yoohwVietnamStoreToolsShippingRules : null;
+	var prefix = data.locationType + ':';
 
 	function getString(key, fallback) {
-		var rulesData = typeof yoohwVietnamStoreToolsShippingRules !== 'undefined' ? yoohwVietnamStoreToolsShippingRules : null;
-
 		return rulesData && rulesData.i18n && rulesData.i18n[key] ? rulesData.i18n[key] : fallback;
 	}
 
@@ -21,38 +18,38 @@
 	}
 
 	function initWardEditor() {
-		var zoneData = getZoneEditorData();
+		var zoneData = typeof shippingZoneMethodsLocalizeScript !== 'undefined' ? shippingZoneMethodsLocalizeScript : null;
+		var initialWards = typeof yoohwVietnamStoreToolsShippingZoneInitialWards !== 'undefined' && Array.isArray(yoohwVietnamStoreToolsShippingZoneInitialWards) ? yoohwVietnamStoreToolsShippingZoneInitialWards : [];
 		var $reactRoot = $('#wc-shipping-zone-region-picker-root');
-		var $legacyPicker = $('#zone_locations');
-		var prefix = data.locationType + ':';
 		var syncing = false;
 		var coreLocations;
-		var initialWards;
 		var $container;
 		var $select;
 		var wardLabel = getString('ward', 'Ward / Commune');
 		var anyWardLabel = getString('anyWard', 'Any ward / commune');
+		var provinces = rulesData && rulesData.provinces ? rulesData.provinces : {};
+		var wards = rulesData && rulesData.wards ? rulesData.wards : {};
 
-		if (!zoneData || (!$reactRoot.length && !$legacyPicker.length) || $('.vck-shipping-zone-wards').length) {
+		if (!zoneData || !$reactRoot.length || $('.vck-shipping-zone-wards').length) {
 			return;
 		}
 
-		coreLocations = (zoneData.locations || []).filter(function (location) {
-			return String(location).indexOf(prefix) !== 0;
-		});
-		initialWards = (zoneData.locations || []).filter(function (location) {
-			return String(location).indexOf(prefix) === 0;
-		});
-
+		coreLocations = Array.isArray(zoneData.locations) ? zoneData.locations.slice() : [];
 		$container = $('<div class="vck-shipping-zone-wards">');
-		$container.css({ marginTop: '12px', maxWidth: '600px' });
-		$container.append($('<label>').css({ display: 'block', fontWeight: '600', marginBottom: '4px' }).text(wardLabel));
-		$select = $('<select multiple="multiple" class="wc-enhanced-select" style="width:100%">');
-		$select.attr('data-placeholder', anyWardLabel);
+		$select = $('<select multiple="multiple" class="wc-enhanced-select vck-shipping-zone-wards__select">');
+		$select.attr({
+			id: 'vck-shipping-zone-wards',
+			'data-placeholder': anyWardLabel
+		});
+		$container.append(
+			$('<label class="vck-shipping-zone-wards__label">')
+				.attr('for', 'vck-shipping-zone-wards')
+				.text(wardLabel)
+		);
 
-		Object.keys(data.provinces || {}).forEach(function (provinceCode) {
-			var provinceWards = data.wards && data.wards[provinceCode] ? data.wards[provinceCode] : {};
-			var $group = $('<optgroup>').attr('label', data.provinces[provinceCode]);
+		Object.keys(provinces).forEach(function (provinceCode) {
+			var provinceWards = wards[provinceCode] || {};
+			var $group = $('<optgroup>').attr('label', provinces[provinceCode]);
 
 			Object.keys(provinceWards).forEach(function (wardCode) {
 				var value = prefix + provinceCode + ':' + wardCode;
@@ -71,12 +68,7 @@
 		});
 
 		$container.append($select);
-
-		if ($reactRoot.length) {
-			$reactRoot.after($container);
-		} else {
-			$legacyPicker.closest('td, .forminp, .wc-shipping-zone-region-select').first().append($container);
-		}
+		$reactRoot.after($container);
 
 		if (typeof $select.selectWoo === 'function') {
 			$select.selectWoo({
@@ -119,17 +111,22 @@
 			});
 
 			if (selectedWards().length) {
-				dispatchCombinedLocations();
+				/*
+				 * Let WooCommerce record the native event first. The deferred
+				 * combined event must be last regardless of listener order.
+				 */
+				window.setTimeout(dispatchCombinedLocations, 0);
 			}
 		});
 	}
 
 	function enhanceZonesList() {
-		var labelsByZone = data.zoneLabels || {};
+		var summariesByZone = data.zoneSummaries || {};
 		var wardLabel = getString('ward', 'Ward / Commune');
 
-		Object.keys(labelsByZone).forEach(function (zoneId) {
-			var labels = labelsByZone[zoneId] || [];
+		Object.keys(summariesByZone).forEach(function (zoneId) {
+			var summary = summariesByZone[zoneId] || {};
+			var labels = summary.labels || [];
 			var $cell = $('.wc-shipping-zone-rows tr[data-id="' + zoneId + '"] .wc-shipping-zone-region');
 			var $details;
 
@@ -137,22 +134,32 @@
 				return;
 			}
 
-			$details = $('<div class="vck-shipping-zone-ward-labels">').css({ marginTop: '4px' });
+			if (!summary.hasNativeLocations) {
+				$cell.empty();
+			}
+
+			$details = $('<div class="vck-shipping-zone-ward-labels">');
 			$details.append($('<strong>').text(wardLabel + ': '));
 			$details.append(document.createTextNode(labels.join(', ')));
 			$cell.append($details);
 		});
 	}
 
+	function observeZonesList() {
+		var rows = document.querySelector('.wc-shipping-zone-rows');
+
+		if (!rows || typeof MutationObserver === 'undefined') {
+			return;
+		}
+
+		new MutationObserver(function () {
+			enhanceZonesList();
+		}).observe(rows, { childList: true });
+	}
+
 	$(function () {
 		initWardEditor();
 		enhanceZonesList();
-
-		$(document.body).on('wc_backbone_modal_loaded saved:zones', function () {
-			window.setTimeout(function () {
-				initWardEditor();
-				enhanceZonesList();
-			}, 0);
-		});
+		observeZonesList();
 	});
 })(jQuery, yoohwVietnamStoreToolsShippingZones);

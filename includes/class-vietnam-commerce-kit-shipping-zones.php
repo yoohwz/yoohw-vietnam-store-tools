@@ -13,6 +13,12 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 
 	const LOCATION_TYPE = 'vck_ward';
 
+	private $shipping_zones = null;
+
+	private $has_ward_zones = null;
+
+	private $zone_cache_ward_tokens = [];
+
 	public function __construct() {
 		add_filter( 'woocommerce_valid_location_types', [ $this, 'register_location_type' ] );
 		add_action( 'woocommerce_before_shipping_zone_object_save', [ $this, 'sync_ward_locations_before_save' ], 10, 2 );
@@ -92,7 +98,8 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			return;
 		}
 
-		$locations = is_array( $changes['zone_locations'] ) ? $changes['zone_locations'] : [];
+		$locations  = is_array( $changes['zone_locations'] ) ? $changes['zone_locations'] : [];
+		$ward_codes = [];
 		$zone->clear_locations( self::LOCATION_TYPE );
 
 		foreach ( $locations as $location ) {
@@ -106,9 +113,16 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			$code = self::sanitize_ward_location_code( substr( $location, strlen( $prefix ) ) );
 
 			if ( '' !== $code ) {
-				$zone->add_location( $code, self::LOCATION_TYPE );
+				$ward_codes[ $code ] = true;
 			}
 		}
+
+		foreach ( array_keys( $ward_codes ) as $code ) {
+			$zone->add_location( $code, self::LOCATION_TYPE );
+		}
+
+		$this->shipping_zones = null;
+		$this->has_ward_zones = null;
 	}
 
 	/**
@@ -148,13 +162,23 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			$ward_code = $province . ':' . $ward;
 		}
 
-		if ( '' !== $ward_code && isset( $criteria[3] ) ) {
-			$ward_match = $wpdb->prepare(
-				'OR ( location_type = %s AND location_code = %s )',
+		if ( '' !== $ward_code ) {
+			// A ward row may open the core OR group only when the zone has no
+			// country/state/continent row of its own. Mixed zones must first
+			// satisfy one of those native rows, then the exact ward condition below.
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- WooCommerce table name is derived from the trusted database prefix.
+			$ward_only_match = $wpdb->prepare(
+				"OR ( location_type = %s AND location_code = %s AND NOT EXISTS ( SELECT 1 FROM {$table} AS vck_native_locations WHERE vck_native_locations.zone_id = zones.zone_id AND vck_native_locations.location_type IN ( 'country', 'state', 'continent' ) ) )",
 				self::LOCATION_TYPE,
 				$ward_code
 			);
-			$criteria[3] = $ward_match . ' ' . $criteria[3];
+
+			foreach ( $criteria as $index => $criterion ) {
+				if ( is_string( $criterion ) && false !== strpos( $criterion, 'location_type IS NULL' ) ) {
+					$criteria[ $index ] = $ward_only_match . ' ' . $criterion;
+					break;
+				}
+			}
 		}
 
 		if ( '' !== $ward_code ) {
@@ -177,18 +201,25 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	}
 
 	/**
-	 * Invalidate WooCommerce's country/state/postcode zone-match cache for
-	 * packages whose city field carries a valid Vietnamese ward code.
+	 * Invalidate WooCommerce's country/state/postcode zone-match cache before
+	 * ward-aware Vietnamese package matching.
 	 *
 	 * Core does not include city in this cache key, so two wards in the same
-	 * province could otherwise reuse the wrong cached zone. Invalidating only
-	 * the exact package key preserves all unrelated cache entries.
+	 * province could otherwise reuse the wrong cached zone. Missing or invalid
+	 * wards must also invalidate the key so they cannot reuse a positive match.
+	 * The first package always clears a possibly persistent cached value; later
+	 * identical packages in the same request avoid redundant deletion.
 	 *
 	 * @param array $packages Cart shipping packages.
 	 * @return array
 	 */
 	public function invalidate_ward_zone_cache( $packages ) {
-		if ( ! is_array( $packages ) || ! class_exists( 'WC_Cache_Helper' ) ) {
+		if (
+			! is_array( $packages )
+			|| ! class_exists( 'WC_Cache_Helper' )
+			|| ! function_exists( 'wp_cache_delete' )
+			|| ! $this->has_ward_restricted_zones()
+		) {
 			return $packages;
 		}
 
@@ -196,15 +227,24 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			$destination = isset( $package['destination'] ) && is_array( $package['destination'] ) ? $package['destination'] : [];
 			$country     = isset( $destination['country'] ) ? wc_strtoupper( wc_clean( $destination['country'] ) ) : '';
 			$state       = isset( $destination['state'] ) ? wc_strtoupper( wc_clean( $destination['state'] ) ) : '';
-			$city        = isset( $destination['city'] ) ? Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_ward_code_value( $destination['city'] ) : '';
 
-			if ( 'VN' !== $country || '' === $state || '' === $city || ! Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::ward_exists( $city, $state ) ) {
+			if ( 'VN' !== $country ) {
 				continue;
 			}
 
-			$postcode  = isset( $destination['postcode'] ) ? wc_normalize_postcode( wc_clean( $destination['postcode'] ) ) : '';
-			$cache_key = WC_Cache_Helper::get_cache_prefix( 'shipping_zones' ) . 'wc_shipping_zone_' . md5( sprintf( '%s+%s+%s', $country, $state, $postcode ) );
-			wp_cache_delete( $cache_key, 'shipping_zones' );
+			$postcode       = isset( $destination['postcode'] ) ? wc_normalize_postcode( wc_clean( $destination['postcode'] ) ) : '';
+			$city           = isset( $destination['city'] ) ? Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_ward_code_value( $destination['city'] ) : '';
+			$province       = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::normalize_province_code_value( $state );
+			$valid_ward     = '' !== $province && '' !== $city && Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::ward_exists( $city, $province );
+			$ward_token     = $valid_ward ? $province . ':' . $city : '__invalid__';
+			$cache_key      = WC_Cache_Helper::get_cache_prefix( 'shipping_zones' ) . 'wc_shipping_zone_' . md5( sprintf( '%s+%s+%s', $country, $state, $postcode ) );
+			$first_package  = ! array_key_exists( $cache_key, $this->zone_cache_ward_tokens );
+			$ward_changed   = ! $first_package && $ward_token !== $this->zone_cache_ward_tokens[ $cache_key ];
+
+			if ( $first_package || $ward_changed ) {
+				wp_cache_delete( $cache_key, 'shipping_zones' );
+				$this->zone_cache_ward_tokens[ $cache_key ] = $ward_token;
+			}
 		}
 
 		return $packages;
@@ -213,8 +253,8 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	/**
 	 * Enqueue the Shipping Zone ward editor and list enhancements.
 	 *
-	 * Reuses the Shipping Rules localized ward labels on this same settings
-	 * screen so the existing translation catalogs remain the single source.
+	 * Reuses the Shipping Rules localized address dataset on this same settings
+	 * screen instead of serializing all 3,321 wards a second time.
 	 *
 	 * @return void
 	 */
@@ -224,15 +264,33 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		}
 
 		$script_path = YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'assets/js/admin/shipping-zones.js';
+		$style_path  = YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'assets/css/admin/shipping-zones.css';
+		$screen_mode = $this->get_shipping_zones_screen_mode();
 
-		if ( ! file_exists( $script_path ) ) {
+		if ( '' === $screen_mode || ! file_exists( $script_path ) ) {
 			return;
+		}
+
+		if ( file_exists( $style_path ) ) {
+			wp_enqueue_style(
+				'yoohw-vietnam-store-tools-shipping-zones',
+				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/admin/shipping-zones.css',
+				[],
+				filemtime( $style_path )
+			);
+		}
+
+		$dependencies = [ 'jquery', 'yoohw-vietnam-store-tools-shipping-rules' ];
+
+		if ( 'editor' === $screen_mode ) {
+			$dependencies[] = 'wc-enhanced-select';
+			$this->add_region_picker_ward_capture();
 		}
 
 		wp_enqueue_script(
 			'yoohw-vietnam-store-tools-shipping-zones',
 			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/shipping-zones.js',
-			[ 'jquery', 'wc-enhanced-select' ],
+			$dependencies,
 			filemtime( $script_path ),
 			true
 		);
@@ -241,12 +299,34 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			'yoohw-vietnam-store-tools-shipping-zones',
 			'yoohwVietnamStoreToolsShippingZones',
 			[
-				'locationType' => self::LOCATION_TYPE,
-				'provinces'    => Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_provinces(),
-				'wards'        => Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_wards(),
-				'zoneLabels'   => $this->get_zone_ward_labels(),
+				'locationType'  => self::LOCATION_TYPE,
+				'zoneSummaries' => 'list' === $screen_mode ? $this->get_zone_ward_summaries() : [],
 			]
 		);
+	}
+
+	/**
+	 * Capture ward values after WooCommerce initializes its editor data but
+	 * before the dependent React region picker reads those locations.
+	 *
+	 * The plugin's main script intentionally does not depend on the core editor
+	 * handle. Enqueuing that dependency during admin_enqueue_scripts would print
+	 * WooCommerce's script before its settings screen localizes the handle.
+	 *
+	 * @return void
+	 */
+	private function add_region_picker_ward_capture() {
+		$prefix = wp_json_encode( self::LOCATION_TYPE . ':' );
+		$script = "(function () {\n"
+			. "\tvar data = window.shippingZoneMethodsLocalizeScript;\n"
+			. "\tvar prefix = {$prefix};\n"
+			. "\twindow.yoohwVietnamStoreToolsShippingZoneInitialWards = [];\n"
+			. "\tif (!data || !Array.isArray(data.locations)) { return; }\n"
+			. "\twindow.yoohwVietnamStoreToolsShippingZoneInitialWards = data.locations.filter(function (location) { return String(location).indexOf(prefix) === 0; });\n"
+			. "\tdata.locations = data.locations.filter(function (location) { return String(location).indexOf(prefix) !== 0; });\n"
+			. '}());';
+
+		wp_add_inline_script( 'wc-shipping-zone-methods', $script, 'after' );
 	}
 
 	/**
@@ -273,42 +353,137 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	}
 
 	/**
-	 * Build human-readable ward labels keyed by zone ID for the zones list.
+	 * Build ward summaries keyed by zone ID for the zones list.
 	 *
 	 * @return array
 	 */
-	private function get_zone_ward_labels() {
-		if ( ! class_exists( 'WC_Shipping_Zones' ) || ! is_callable( [ 'WC_Shipping_Zones', 'get_shipping_zones' ] ) ) {
-			return [];
-		}
+	private function get_zone_ward_summaries() {
+		$summaries = [];
 
-		$labels = [];
-		$zones  = WC_Shipping_Zones::get_shipping_zones();
+		foreach ( $this->get_shipping_zones() as $zone ) {
+			$zone_id   = $this->get_zone_id( $zone );
+			$locations = $this->get_zone_locations( $zone );
 
-		foreach ( is_array( $zones ) ? $zones : [] as $zone ) {
-			if ( ! is_object( $zone ) || ! is_callable( [ $zone, 'get_zone_locations' ] ) || ! is_callable( [ $zone, 'get_id' ] ) ) {
+			if ( ! $zone_id ) {
 				continue;
 			}
 
-			$zone_id = absint( $zone->get_id() );
+			$labels               = [];
+			$has_native_locations = false;
 
-			foreach ( $zone->get_zone_locations() as $location ) {
+			foreach ( $locations as $location ) {
 				if ( ! is_object( $location ) || ! isset( $location->type, $location->code ) || self::LOCATION_TYPE !== $location->type ) {
+					if ( is_object( $location ) && isset( $location->type ) && self::LOCATION_TYPE !== $location->type ) {
+						$has_native_locations = true;
+					}
 					continue;
 				}
 
 				$code = self::sanitize_ward_location_code( $location->code );
 
-				if ( ! $zone_id || '' === $code ) {
+				if ( '' === $code ) {
 					continue;
 				}
 
 				list( $province, $ward ) = explode( ':', $code, 2 );
-				$labels[ $zone_id ][]    = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_ward_name( $ward, $province ) . ', ' . Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_province_name( $province );
+				$label                   = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_ward_name( $ward, $province ) . ', ' . Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_province_name( $province );
+				$labels[ $label ]        = true;
+			}
+
+			if ( ! empty( $labels ) ) {
+				$summaries[ $zone_id ] = [
+					'labels'             => array_keys( $labels ),
+					'hasNativeLocations' => $has_native_locations,
+				];
 			}
 		}
 
-		return $labels;
+		return $summaries;
+	}
+
+	/**
+	 * Determine whether any configured zone has a ward restriction.
+	 *
+	 * @return bool
+	 */
+	private function has_ward_restricted_zones() {
+		if ( null !== $this->has_ward_zones ) {
+			return $this->has_ward_zones;
+		}
+
+		$this->has_ward_zones = false;
+
+		foreach ( $this->get_shipping_zones() as $zone ) {
+			foreach ( $this->get_zone_locations( $zone ) as $location ) {
+				if ( is_object( $location ) && isset( $location->type ) && self::LOCATION_TYPE === $location->type ) {
+					$this->has_ward_zones = true;
+					break 2;
+				}
+			}
+		}
+
+		return $this->has_ward_zones;
+	}
+
+	/**
+	 * Load zone records through APIs available from WooCommerce 8.9 onward.
+	 *
+	 * @return array
+	 */
+	private function get_shipping_zones() {
+		if ( null !== $this->shipping_zones ) {
+			return $this->shipping_zones;
+		}
+
+		$this->shipping_zones = [];
+
+		if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
+			return $this->shipping_zones;
+		}
+
+		if ( is_callable( [ 'WC_Shipping_Zones', 'get_shipping_zones' ] ) ) {
+			$zones = WC_Shipping_Zones::get_shipping_zones();
+		} elseif ( is_callable( [ 'WC_Shipping_Zones', 'get_zones' ] ) ) {
+			$zones = WC_Shipping_Zones::get_zones( 'admin' );
+		} else {
+			$zones = [];
+		}
+
+		$this->shipping_zones = is_array( $zones ) ? $zones : [];
+
+		return $this->shipping_zones;
+	}
+
+	/**
+	 * Get a zone ID from either the modern object API or WooCommerce 8.9 data.
+	 *
+	 * @param object|array $zone Zone record.
+	 * @return int
+	 */
+	private function get_zone_id( $zone ) {
+		if ( is_object( $zone ) && is_callable( [ $zone, 'get_id' ] ) ) {
+			return absint( $zone->get_id() );
+		}
+
+		return is_array( $zone ) && isset( $zone['zone_id'] ) ? absint( $zone['zone_id'] ) : 0;
+	}
+
+	/**
+	 * Get zone locations from either the modern object API or WooCommerce 8.9 data.
+	 *
+	 * @param object|array $zone Zone record.
+	 * @return array
+	 */
+	private function get_zone_locations( $zone ) {
+		if ( is_object( $zone ) && is_callable( [ $zone, 'get_zone_locations' ] ) ) {
+			$locations = $zone->get_zone_locations();
+		} elseif ( is_array( $zone ) && isset( $zone['zone_locations'] ) ) {
+			$locations = $zone['zone_locations'];
+		} else {
+			$locations = [];
+		}
+
+		return is_array( $locations ) ? $locations : [];
 	}
 
 	/**
@@ -327,5 +502,28 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
 
 		return 'shipping' === $tab;
+	}
+
+	/**
+	 * Identify the native zones list or an editable non-default zone.
+	 *
+	 * @return string `list`, `editor`, or an empty string.
+	 */
+	private function get_shipping_zones_screen_mode() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
+		$section = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : '';
+
+		if ( '' !== $section || isset( $_GET['instance_id'] ) ) {
+			return '';
+		}
+
+		if ( isset( $_GET['zone_id'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
+			$zone_id = wc_clean( wp_unslash( $_GET['zone_id'] ) );
+
+			return 0 < absint( $zone_id ) ? 'editor' : '';
+		}
+
+		return 'list';
 	}
 }

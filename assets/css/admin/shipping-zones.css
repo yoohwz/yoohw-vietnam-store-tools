@@ -1,0 +1,19 @@
+.vck-shipping-zone-wards {
+	max-width: 600px;
+	margin-top: 12px;
+}
+
+.vck-shipping-zone-wards__label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.vck-shipping-zone-wards__select,
+.vck-shipping-zone-wards .select2-container {
+	width: 100% !important;
+}
+
+.vck-shipping-zone-ward-labels {
+	margin-top: 4px;
+}
