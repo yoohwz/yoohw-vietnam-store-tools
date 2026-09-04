@@ -7,6 +7,7 @@ on:
   pull_request:
     types:
       - opened
+      - edited
       - synchronize
       - reopened
       - ready_for_review
@@ -15,6 +16,8 @@ on:
 
 permissions:
   contents: read
+  issues: read
+  pull-requests: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -43,6 +46,8 @@ jobs:
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action || '' }}
+          PR_BASE_CHANGED: ${{ github.event.changes.base != null }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
           PR_DRAFT: ${{ github.event.pull_request.draft || false }}
         run: |
@@ -55,13 +60,31 @@ jobs:
 
           python3 scripts/ci_classify.py \
             --event-name "$EVENT_NAME" \
+            --event-action "$EVENT_ACTION" \
+            --base-changed "$PR_BASE_CHANGED" \
             --pr-draft "$PR_DRAFT" \
             "${changed_files[@]}" >> "$GITHUB_OUTPUT"
+
+  governance:
+    name: Workflow governance
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Validate durable workflow gates
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/workflow_governance.py --event-path "$GITHUB_EVENT_PATH"
 
   repository-contracts:
     name: Repository contracts
     needs:
       - changes
+      - governance
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -114,6 +137,9 @@ jobs:
 
       - name: CI workflow contracts
         run: python3 tests/ci-workflow-contract-tests.py
+
+      - name: Workflow governance contracts
+        run: python3 tests/workflow-governance-contract-tests.py
 
       - name: Repository metadata contracts
         run: python3 tests/repository-contract-tests.py
@@ -462,6 +488,7 @@ jobs:
     name: VST Required Gate
     needs:
       - changes
+      - governance
       - repository-contracts
       - php-syntax-74
       - php-syntax-82
@@ -480,6 +507,7 @@ jobs:
         env:
           MODE: ${{ needs.changes.outputs.mode }}
           CHANGES_RESULT: ${{ needs.changes.result }}
+          GOVERNANCE_RESULT: ${{ needs.governance.result }}
           QUICK_RESULT: ${{ needs.repository-contracts.result }}
           PHP_EXPECTED: ${{ needs.changes.outputs.run_php }}
           PHP_74_RESULT: ${{ needs.php-syntax-74.result }}
@@ -513,6 +541,7 @@ jobs:
             fi
           }
           [[ "$CHANGES_RESULT" == "success" ]] || exit 1
+          [[ "$GOVERNANCE_RESULT" == "success" ]] || exit 1
           [[ "$QUICK_RESULT" == "success" ]] || exit 1
           require_success "$PHP_EXPECTED" "$PHP_74_RESULT" "PHP 7.4 syntax"
           require_success "$PHP_EXPECTED" "$PHP_82_RESULT" "PHP 8.2 syntax"
@@ -526,6 +555,7 @@ jobs:
             echo "### VST CI gate"
             echo
             echo "- Mode: \`${MODE:-unknown}\`"
+            echo "- Workflow governance: $GOVERNANCE_RESULT"
             echo "- Repository contracts: $QUICK_RESULT"
             echo "- PHP 7.4 / 8.2 / 8.4: $PHP_74_RESULT / $PHP_82_RESULT / $PHP_84_RESULT"
             echo "- Localization quality: $LOCALIZATION_QUALITY_RESULT"
