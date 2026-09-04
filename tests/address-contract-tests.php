@@ -108,8 +108,14 @@ class VCK_Address_Test_WPDB {
 		$args = array_slice( func_get_args(), 1 );
 
 		foreach ( $args as $arg ) {
-			$replacement = "'" . str_replace( "'", "''", (string) $arg ) . "'";
-			$query       = preg_replace( '/%s/', $replacement, $query, 1 );
+			if ( ! preg_match( '/%[is]/', $query, $placeholder ) ) {
+				break;
+			}
+
+			$replacement = '%i' === $placeholder[0]
+				? '`' . str_replace( '`', '``', (string) $arg ) . '`'
+				: "'" . str_replace( "'", "''", (string) $arg ) . "'";
+			$query       = preg_replace( '/%[is]/', $replacement, $query, 1 );
 		}
 
 		return $query;

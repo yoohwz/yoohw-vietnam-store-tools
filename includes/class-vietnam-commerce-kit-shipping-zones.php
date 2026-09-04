@@ -91,7 +91,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			return;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in is_zone_editor_save_request().
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified above; only individually validated vck_ward values are consumed.
 		$changes = isset( $_POST['changes'] ) && is_array( $_POST['changes'] ) ? wp_unslash( $_POST['changes'] ) : [];
 
 		if ( ! array_key_exists( 'zone_locations', $changes ) ) {
@@ -166,11 +166,11 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			// A ward row may open the core OR group only when the zone has no
 			// country/state/continent row of its own. Mixed zones must first
 			// satisfy one of those native rows, then the exact ward condition below.
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- WooCommerce table name is derived from the trusted database prefix.
 			$ward_only_match = $wpdb->prepare(
-				"OR ( location_type = %s AND location_code = %s AND NOT EXISTS ( SELECT 1 FROM {$table} AS vck_native_locations WHERE vck_native_locations.zone_id = zones.zone_id AND vck_native_locations.location_type IN ( 'country', 'state', 'continent' ) ) )",
+				"OR ( location_type = %s AND location_code = %s AND NOT EXISTS ( SELECT 1 FROM %i AS vck_native_locations WHERE vck_native_locations.zone_id = zones.zone_id AND vck_native_locations.location_type IN ( 'country', 'state', 'continent' ) ) )",
 				self::LOCATION_TYPE,
-				$ward_code
+				$ward_code,
+				$table
 			);
 
 			foreach ( $criteria as $index => $criterion ) {
@@ -182,17 +182,18 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		}
 
 		if ( '' !== $ward_code ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- WooCommerce table name is derived from the trusted database prefix.
 			$criteria[] = $wpdb->prepare(
-				"AND ( zones.zone_id NOT IN ( SELECT zone_id FROM {$table} WHERE location_type = %s ) OR zones.zone_id IN ( SELECT zone_id FROM {$table} WHERE location_type = %s AND location_code = %s ) )",
+				"AND ( zones.zone_id NOT IN ( SELECT zone_id FROM %i WHERE location_type = %s ) OR zones.zone_id IN ( SELECT zone_id FROM %i WHERE location_type = %s AND location_code = %s ) )",
+				$table,
 				self::LOCATION_TYPE,
+				$table,
 				self::LOCATION_TYPE,
 				$ward_code
 			);
 		} else {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- WooCommerce table name is derived from the trusted database prefix.
 			$criteria[] = $wpdb->prepare(
-				"AND zones.zone_id NOT IN ( SELECT zone_id FROM {$table} WHERE location_type = %s )",
+				"AND zones.zone_id NOT IN ( SELECT zone_id FROM %i WHERE location_type = %s )",
+				$table,
 				self::LOCATION_TYPE
 			);
 		}
@@ -513,15 +514,17 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
 		$section = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : '';
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
 		if ( '' !== $section || isset( $_GET['instance_id'] ) ) {
 			return '';
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
 		if ( isset( $_GET['zone_id'] ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
-			$zone_id = wc_clean( wp_unslash( $_GET['zone_id'] ) );
+			$zone_id = absint( wp_unslash( $_GET['zone_id'] ) );
 
-			return 0 < absint( $zone_id ) ? 'editor' : '';
+			return 0 < $zone_id ? 'editor' : '';
 		}
 
 		return 'list';
