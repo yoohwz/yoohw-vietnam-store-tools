@@ -7,7 +7,6 @@ on:
   pull_request:
     types:
       - opened
-      - edited
       - synchronize
       - reopened
       - ready_for_review
@@ -46,8 +45,6 @@ jobs:
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
-          EVENT_ACTION: ${{ github.event.action || '' }}
-          PR_BASE_CHANGED: ${{ github.event.changes.base != null }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
           PR_DRAFT: ${{ github.event.pull_request.draft || false }}
         run: |
@@ -60,8 +57,6 @@ jobs:
 
           python3 scripts/ci_classify.py \
             --event-name "$EVENT_NAME" \
-            --event-action "$EVENT_ACTION" \
-            --base-changed "$PR_BASE_CHANGED" \
             --pr-draft "$PR_DRAFT" \
             "${changed_files[@]}" >> "$GITHUB_OUTPUT"
 

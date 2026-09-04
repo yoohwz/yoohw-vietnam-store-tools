@@ -53,23 +53,10 @@ def classify(
     event_name: str,
     pr_draft: bool,
     changed_paths: Iterable[str],
-    event_action: str = "",
-    base_changed: bool = False,
 ) -> Classification:
     """Return the minimum safe CI surface for the current change."""
     if event_name != "pull_request":
         return FULL
-
-    if event_action == "edited" and not base_changed:
-        # PR metadata edits must revalidate governance without duplicating the
-        # deep suite. ready_for_review remains the only deep-CI transition.
-        return Classification(
-            mode="governance-metadata",
-            run_php=False,
-            run_localization_quality=False,
-            run_localization_runtime=False,
-            run_plugin_check=False,
-        )
 
     paths = [path.strip() for path in changed_paths if path.strip()]
     if not paths:
@@ -207,8 +194,6 @@ def parse_bool(value: str) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--event-name", required=True)
-    parser.add_argument("--event-action", default="")
-    parser.add_argument("--base-changed", default="false")
     parser.add_argument("--pr-draft", default="false")
     parser.add_argument("paths", nargs="*")
     args = parser.parse_args()
@@ -217,8 +202,6 @@ def main() -> int:
         event_name=args.event_name,
         pr_draft=parse_bool(args.pr_draft),
         changed_paths=args.paths,
-        event_action=args.event_action,
-        base_changed=parse_bool(args.base_changed),
     )
     print(result.github_outputs())
     return 0

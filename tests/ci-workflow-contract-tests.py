@@ -53,36 +53,10 @@ def main() -> int:
     assert_flags(classifier.classify("pull_request", False, ["readme.txt", "changelog.txt"]), php=False, quality=False, runtime=False, plugin=True, mode="risk-matched")
     for full_path in (".github/workflows/ci.yml", "unexpected-root-surface.txt"):
         assert_flags(classifier.classify("pull_request", False, [full_path]), php=True, quality=True, runtime=True, plugin=True, mode="fail-safe-full")
-    assert_flags(
-        classifier.classify("pull_request", False, [".github/workflows/ci.yml"], "edited"),
-        php=False,
-        quality=False,
-        runtime=False,
-        plugin=False,
-        mode="governance-metadata",
-    )
-    assert_flags(
-        classifier.classify(
-            "pull_request",
-            False,
-            [".github/workflows/ci.yml"],
-            "edited",
-            True,
-        ),
-        php=True,
-        quality=True,
-        runtime=True,
-        plugin=True,
-        mode="fail-safe-full",
-    )
-
     for literal in (
-        "      - edited\n",
         "ready_for_review",
         "converted_to_draft",
         "python3 scripts/ci_classify.py",
-        "--event-action",
-        "--base-changed",
         "name: Workflow governance",
         "python3 scripts/workflow_governance.py",
         "python3 tests/workflow-governance-contract-tests.py",
@@ -94,7 +68,7 @@ def main() -> int:
         if literal not in workflow:
             raise AssertionError(f"CI workflow is missing required contract: {literal}")
 
-    for literal in ("PR_BODY:", "--pr-body"):
+    for literal in ("      - edited\n", "PR_BODY:", "--pr-body"):
         if literal in workflow:
             raise AssertionError(f"CI workflow contains duplicate-trigger contract: {literal!r}")
     if "TECHNICAL_REVIEW_REQUIRED" in classifier_source or "pr_body" in classifier_source:
