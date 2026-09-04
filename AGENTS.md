@@ -46,6 +46,34 @@ Use ChatGPT and Codex for different strengths instead of asking one agent to own
 
 Do not duplicate this record into a separate task-management or governance system unless the user explicitly needs one.
 
+### Role lock
+
+- ChatGPT must never implement repository changes directly. It must not create or modify implementation branches, working-tree files, commits, pushes, or implementation pull requests.
+- GitHub, shell, browser, connector, or filesystem write capability does not grant implementation authority. Tool capability and workflow authority are separate.
+- ChatGPT may write only the durable product/architecture/review artifacts assigned to its role, such as task briefs, plan-review results, technical-review findings, and review status comments.
+- Codex is the only AI role authorized to mutate the repository for implementation. It must still satisfy the task brief, risk lane, review gates, Git safety rules, and Human-owned boundaries.
+- ChatGPT must not review its own implementation. If a repository change was created through a ChatGPT execution path, treat it as reference material only and reroute the task to Codex before independent technical review.
+- If Codex execution is unavailable, ChatGPT must preserve or post the appropriate durable GitHub handoff and stop. It must not take over implementation to keep the task moving.
+- Shared GitHub account metadata cannot prove which conversational role created a change. CI validates durable workflow artifacts and transitions; it does not replace the role lock or independent review.
+
+### Pre-write routing gate
+
+Before any implementation branch, file, commit, push, or pull-request mutation, recover the task brief, risk lane, newest durable issue/PR status, and current PR head SHA. Determine the current owner from this table and stop if the active role is not that owner.
+
+| Durable state | Current owner | Permitted next action |
+| --- | --- | --- |
+| No complete task brief or unresolved product boundary | ChatGPT or Human | Define/decide scope; no repository implementation mutation |
+| Fast Lane task brief complete | Codex | Implement, validate, and create/update the draft PR |
+| Controlled Lane brief without a plan handoff | Codex | Perform read-only discovery and post `PLAN_REVIEW_REQUIRED`; no runtime implementation yet |
+| Controlled Lane has `PLAN_REVIEW_REQUIRED` without a current approval | ChatGPT | Review the persisted plan and post the result; no repository implementation mutation |
+| Controlled Lane plan has a current `PLAN REVIEW: APPROVED` result | Codex | Implement, validate, and create/update the draft PR |
+| Current head has `TECHNICAL_REVIEW_REQUIRED` | ChatGPT | Independently review that exact head; implementation is frozen |
+| Current head has `TECHNICAL_CHANGES_REQUIRED` | Codex | Return the PR to Draft, correct it, validate it, and post a new head-bound handoff |
+| Current head has `READY_FOR_HUMAN_MERGE` | Human | Decide whether to merge; AI roles do not add implementation commits |
+| `HUMAN_DECISION_REQUIRED` | Human | Resolve the recorded decision before routing resumes |
+
+A head SHA change immediately returns implementation ownership to Codex and invalidates all earlier technical handoffs and results. PR prose, a green CI run, or tool access must never be used to infer that another role owns the next step.
+
 ### Human command interface
 
 Keep Human commands short. Complexity belongs to ChatGPT and Codex, not to the Human operator.
@@ -153,8 +181,11 @@ Cross-agent handoffs must be recoverable from GitHub before the Human is expecte
 - ChatGPT must post the plan-review result back to the same issue. Use clear prose such as `PLAN REVIEW: APPROVED — implementation may proceed` or `PLAN REVIEW: CHANGES REQUIRED`, followed by any blocking findings. These are review results, not additional workflow statuses.
 - Do not claim in a pull request that plan review was completed unless a durable plan handoff and ChatGPT review result can be located in GitHub history.
 - After implementation, Codex must update the draft pull-request body with current scope/evidence and post `STATUS: TECHNICAL_REVIEW_REQUIRED` in the PR conversation with the current head SHA.
-- ChatGPT must persist the technical-review result in the same PR conversation as either `STATUS: TECHNICAL_CHANGES_REQUIRED` with blocking findings or `STATUS: READY_FOR_HUMAN_MERGE` with the review evidence. If GitHub prevents a formal review event because the authenticated user owns the PR, the PR conversation comment remains the authoritative handoff.
-- Any commit pushed after a `TECHNICAL_REVIEW_REQUIRED` handoff invalidates that technical-review target. After corrections and validation, Codex must post a new `TECHNICAL_REVIEW_REQUIRED` handoff for the new head SHA before ChatGPT treats the PR as ready for re-review.
+- ChatGPT must persist the technical-review result in the same PR conversation as either `STATUS: TECHNICAL_CHANGES_REQUIRED` with blocking findings or `STATUS: READY_FOR_HUMAN_MERGE` with the review evidence. Every technical status comment must include `Head SHA: <full 40-character SHA>`. If GitHub prevents a formal review event because the authenticated user owns the PR, the PR conversation comment remains the authoritative handoff.
+- Any commit pushed after a `TECHNICAL_REVIEW_REQUIRED`, `TECHNICAL_CHANGES_REQUIRED`, or `READY_FOR_HUMAN_MERGE` status invalidates that status and every earlier technical-review result. Before corrections, return the pull request to Draft. After corrections and validation, Codex must post a new `TECHNICAL_REVIEW_REQUIRED` handoff for the new head SHA and then mark the pull request ready before ChatGPT re-reviews it.
+- A technical handoff or result is current only when it is the newest technical status in the PR conversation and names the exact current head SHA. Never edit an old status to point at a new head; post a new status comment so the transition remains durable.
+- When an existing workflow artifact must remain as history but is no longer valid, edit that comment so its first substantive line is `WORKFLOW ARTIFACT: SUPERSEDED` or `WORKFLOW ARTIFACT: INVALIDATED`. The governance validator ignores the entire marked comment, including any historical status or approval text retained below it. The legacy first-line marker `SUPERSEDED / NOT A VALID WORKFLOW GATE` has the same meaning.
+- The `Workflow governance` CI check validates the declared implementation owner, exactly one risk lane, trusted-maintainer comments for the approved issue-anchored Controlled Lane plan gate, and a current head-bound technical status at the existing PR workflow transitions. The existing `VST Required Gate` consumes the check so governance failures are merge-blocking wherever that required gate is enforced. PR-body prose or edits never supersede the durable issue/PR comments and head SHA.
 - If the Human pastes a newer handoff directly into the current ChatGPT conversation, ChatGPT may use it immediately and verify the linked GitHub artifacts instead of forcing the Human to repost it. Missing persistence should be recorded as a workflow/process finding, not used to make the Human repeat information that is already available.
 
 When the Human says `Review`, ChatGPT must route the request in this order:
