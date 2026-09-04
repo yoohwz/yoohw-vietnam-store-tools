@@ -213,6 +213,9 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	/**
 	 * Enqueue the Shipping Zone ward editor and list enhancements.
 	 *
+	 * Reuses the Shipping Rules localized ward labels on this same settings
+	 * screen so the existing translation catalogs remain the single source.
+	 *
 	 * @return void
 	 */
 	public function enqueue_admin_assets() {
@@ -242,10 +245,6 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 				'provinces'    => Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_provinces(),
 				'wards'        => Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_wards(),
 				'zoneLabels'   => $this->get_zone_ward_labels(),
-				'i18n'         => [
-					'ward'    => __( 'Ward / Commune', 'yoohw-vietnam-store-tools' ),
-					'anyWard' => __( 'Any ward / commune', 'yoohw-vietnam-store-tools' ),
-				],
 			]
 		);
 	}
