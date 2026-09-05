@@ -37,7 +37,7 @@ Learn more about the plugin on the [official Vietnam Store Toolkit website](http
 
 * Two-tier addresses covering 34 provinces/cities and 3,321 wards/communes/special zones.
 * Province/city-dependent ward/commune lists in Classic Checkout, Cart, and Checkout Blocks.
-* Native WooCommerce Shipping Zone restrictions for one or more Vietnamese wards/communes.
+* Native WooCommerce Shipping Zone tree with wards/communes nested below their province/city.
 * VAT invoice requests and a provider-neutral electronic invoicing workflow.
 * VietQR for WooCommerce Direct bank transfer.
 * Vietnamese phone number normalization and validation.
@@ -61,7 +61,7 @@ VietQR is added to WooCommerce Direct bank transfer (`bacs`) and does not create
 
 = Shipping Fees and Order Tracking =
 
-Native WooCommerce Shipping Zones can be narrowed to one or more Vietnamese wards/communes. Ward restrictions apply to every shipping method in that zone and work together with the zone's country, province/city, and postcode regions. WooCommerce checks zones in their configured order, so place ward-specific zones above broader fallback zones.
+Native WooCommerce Shipping Zones can be narrowed to one or more Vietnamese wards/communes from the built-in Zone regions tree, where each ward/commune is a child of its province/city. Ward restrictions apply to every shipping method in that zone and work together with the zone's country, province/city, and postcode regions. WooCommerce checks zones in their configured order, so place ward-specific zones above broader fallback zones.
 
 Deactivating the plugin removes ward narrowing: mixed zones fall back to their native country, province/city, continent, and postcode regions, while ward-only zones stop matching until the plugin is active again. Toggling the separate Vietnamese address-field feature does not delete or disable saved ward restrictions.
 
@@ -122,7 +122,7 @@ No. VietQR is added to Direct bank transfer but does not connect to bank transac
 
 = Where do I configure shipping zones or fees at the ward/commune level? =
 
-Go to WooCommerce > Settings > Shipping and open a zone. Use the Ward / Commune selector to restrict every method in that zone. To calculate different fees with additional cart or product conditions, add “Shipping Fee Rules” to the zone.
+Go to WooCommerce > Settings > Shipping and open a zone. In the native Zone regions tree, expand Vietnam and a Province / City, then select one or more Ward / Commune children to restrict every method in that zone. To calculate different fees with additional cart or product conditions, add “Shipping Fee Rules” to the zone.
 
 = How do I create an order tracking page? =
 
@@ -140,7 +140,7 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 = 1.1.5 (In development) =
 
-* New: Added validated Ward / Commune restrictions to native WooCommerce Shipping Zones while preserving country, province/city, postcode, zone-order, and cache behavior.
+* New: Added validated Ward / Commune children to the native WooCommerce Shipping Zone regions tree while preserving country, province/city, postcode, zone-order, and cache behavior.
 * Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline, removed the temporary 1.1.4 waiver, and normal CI now checks the reviewed WordPress.org payload.
 * Quality: Added deterministic Vietnamese localization gates for source completeness, compiled catalog consistency, locale parity, visible JavaScript localization, and strict zero-warning release validation.
 * Compatibility: Preserved WordPress.org language-pack priority and bundled Vietnamese fallback translations across WordPress 6.3 and later without eager text-domain loading.

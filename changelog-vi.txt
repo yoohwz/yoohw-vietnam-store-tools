@@ -2,7 +2,7 @@
 
 = 1.1.5 (Đang phát triển) =
 
-* Bổ sung giới hạn Phường / Xã đã xác thực cho Shipping Zones gốc của WooCommerce, đồng thời duy trì hành vi quốc gia, tỉnh/thành, mã bưu chính, thứ tự zone và cache.
+* Bổ sung Phường / Xã đã xác thực làm node con của Tỉnh / Thành phố trong cây khu vực Shipping Zones gốc của WooCommerce, đồng thời duy trì hành vi quốc gia, tỉnh/thành, mã bưu chính, thứ tự zone và cache.
 * Chất lượng: Khôi phục WordPress Plugin Check nghiêm ngặt làm tiêu chuẩn CI chặn bản phát hành sau khi xử lý các phát hiện trong mã nguồn và gỡ bỏ ngoại lệ tạm thời của 1.1.4; CI thông thường hiện kiểm tra đúng gói WordPress.org đã được rà soát.
 * Chất lượng: Bổ sung gate bản địa hóa tiếng Việt xác định cho độ đầy đủ POT/PO, tính đồng nhất locale, tính nhất quán MO/PHP/JSON, hợp đồng bản địa hóa JavaScript hiển thị và Plugin Check nghiêm ngặt không cảnh báo trong cả CI lẫn quy trình kiểm tra trước khi phát hành WordPress.org.
 * Tương thích: Duy trì ưu tiên gói ngôn ngữ WordPress.org và bản dịch tiếng Việt dự phòng đi kèm trên WordPress 6.3 trở lên mà không tải text domain của plugin quá sớm.

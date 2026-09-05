@@ -21,6 +21,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 
 	public function __construct() {
 		add_filter( 'woocommerce_valid_location_types', [ $this, 'register_location_type' ] );
+		add_filter( 'woocommerce_states', [ $this, 'add_vietnam_shipping_zone_provinces' ], 20 );
 		add_action( 'woocommerce_before_shipping_zone_object_save', [ $this, 'sync_ward_locations_before_save' ], 10, 2 );
 		add_filter( 'woocommerce_get_zone_criteria', [ $this, 'add_ward_zone_criteria' ], 10, 3 );
 		add_filter( 'woocommerce_cart_shipping_packages', [ $this, 'invalidate_ward_zone_cache' ], 20 );
@@ -41,6 +42,27 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		}
 
 		return $types;
+	}
+
+	/**
+	 * Keep native Vietnamese state nodes available on Shipping settings screens.
+	 *
+	 * Shipping Zone ward restrictions are independent from the optional address
+	 * fields feature. Scoping this state list to Shipping settings preserves that
+	 * contract without enabling Vietnamese checkout fields when their feature is
+	 * disabled.
+	 *
+	 * @param array $states WooCommerce states keyed by country.
+	 * @return array
+	 */
+	public function add_vietnam_shipping_zone_provinces( $states ) {
+		if ( ! is_array( $states ) || ! $this->is_shipping_settings_request() ) {
+			return $states;
+		}
+
+		$states['VN'] = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_provinces();
+
+		return $states;
 	}
 
 	/**
@@ -252,7 +274,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 	}
 
 	/**
-	 * Enqueue the Shipping Zone ward editor and list enhancements.
+	 * Enqueue the Shipping Zone native-tree and list enhancements.
 	 *
 	 * Reuses the Shipping Rules localized address dataset on this same settings
 	 * screen instead of serializing all 3,321 wards a second time.
@@ -281,11 +303,11 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			);
 		}
 
-		$dependencies = [ 'jquery', 'yoohw-vietnam-store-tools-shipping-rules' ];
+		$dependencies = [ 'jquery' ];
 
 		if ( 'editor' === $screen_mode ) {
-			$dependencies[] = 'wc-enhanced-select';
-			$this->add_region_picker_ward_capture();
+			$dependencies[] = 'yoohw-vietnam-store-tools-shipping-rules';
+			$this->add_region_picker_ward_tree();
 		}
 
 		wp_enqueue_script(
@@ -300,31 +322,118 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			'yoohw-vietnam-store-tools-shipping-zones',
 			'yoohwVietnamStoreToolsShippingZones',
 			[
-				'locationType'  => self::LOCATION_TYPE,
+				'wardLabel'     => __( 'Ward / Commune', 'yoohw-vietnam-store-tools' ),
 				'zoneSummaries' => 'list' === $screen_mode ? $this->get_zone_ward_summaries() : [],
 			]
 		);
 	}
 
 	/**
-	 * Capture ward values after WooCommerce initializes its editor data but
-	 * before the dependent React region picker reads those locations.
+	 * Append ward options below WooCommerce's native Vietnamese state nodes.
 	 *
 	 * The plugin's main script intentionally does not depend on the core editor
 	 * handle. Enqueuing that dependency during admin_enqueue_scripts would print
-	 * WooCommerce's script before its settings screen localizes the handle.
+	 * WooCommerce's script before its settings screen localizes the handle. This
+	 * guarded inline mutation therefore runs after that localization but before
+	 * the dependent React region picker reads the tree and selected locations.
 	 *
 	 * @return void
 	 */
-	private function add_region_picker_ward_capture() {
-		$prefix = wp_json_encode( self::LOCATION_TYPE . ':' );
+	private function add_region_picker_ward_tree() {
+		$location_type = wp_json_encode( self::LOCATION_TYPE );
 		$script = "(function () {\n"
 			. "\tvar data = window.shippingZoneMethodsLocalizeScript;\n"
-			. "\tvar prefix = {$prefix};\n"
-			. "\twindow.yoohwVietnamStoreToolsShippingZoneInitialWards = [];\n"
-			. "\tif (!data || !Array.isArray(data.locations)) { return; }\n"
-			. "\twindow.yoohwVietnamStoreToolsShippingZoneInitialWards = data.locations.filter(function (location) { return String(location).indexOf(prefix) === 0; });\n"
-			. "\tdata.locations = data.locations.filter(function (location) { return String(location).indexOf(prefix) !== 0; });\n"
+			. "\tvar addressData = window.yoohwVietnamStoreToolsShippingRules;\n"
+			. "\tvar locationType = {$location_type};\n"
+			. "\tvar provinces;\n"
+			. "\tvar wards;\n"
+			. "\tvar provinceCodes;\n"
+			. "\tvar wardProvinceCodes;\n"
+			. "\tvar continent;\n"
+			. "\tvar country;\n"
+			. "\tvar plans = [];\n"
+			. "\tvar plannedValues = {};\n"
+			. "\tvar index;\n"
+			. "\n"
+			. "\tfunction isRecord(value) {\n"
+			. "\t\treturn null !== value && 'object' === typeof value && !Array.isArray(value);\n"
+			. "\t}\n"
+			. "\n"
+			. "\tfunction findChildren(options, value) {\n"
+			. "\t\treturn options.filter(function (option) {\n"
+			. "\t\t\treturn isRecord(option) && option.value === value;\n"
+			. "\t\t});\n"
+			. "\t}\n"
+			. "\n"
+			. "\tif (!data || !Array.isArray(data.region_options) || !addressData || !isRecord(addressData.provinces) || !isRecord(addressData.wards)) { return; }\n"
+			. "\n"
+			. "\tprovinces = addressData.provinces;\n"
+			. "\twards = addressData.wards;\n"
+			. "\tprovinceCodes = Object.keys(provinces);\n"
+			. "\twardProvinceCodes = Object.keys(wards);\n"
+			. "\n"
+			. "\tif (!provinceCodes.length || provinceCodes.length !== wardProvinceCodes.length) { return; }\n"
+			. "\n"
+			. "\tcontinent = findChildren(data.region_options, 'continent:AS');\n"
+			. "\tif (1 !== continent.length || !Array.isArray(continent[0].children)) { return; }\n"
+			. "\n"
+			. "\tcountry = findChildren(continent[0].children, 'country:VN');\n"
+			. "\tif (1 !== country.length || !Array.isArray(country[0].children)) { return; }\n"
+			. "\n"
+			. "\tfor (index = 0; index < wardProvinceCodes.length; index += 1) {\n"
+			. "\t\tif (!Object.prototype.hasOwnProperty.call(provinces, wardProvinceCodes[index])) { return; }\n"
+			. "\t}\n"
+			. "\n"
+			. "\tfor (index = 0; index < provinceCodes.length; index += 1) {\n"
+			. "\t\tvar provinceCode = provinceCodes[index];\n"
+			. "\t\tvar provinceName = provinces[provinceCode];\n"
+			. "\t\tvar provinceWards = wards[provinceCode];\n"
+			. "\t\tvar state;\n"
+			. "\t\tvar existingChildren;\n"
+			. "\t\tvar existingValues = {};\n"
+			. "\t\tvar additions = [];\n"
+			. "\t\tvar wardCodes;\n"
+			. "\t\tvar wardIndex;\n"
+			. "\n"
+			. "\t\tif (!/^\\d{2}$/.test(provinceCode) || 'string' !== typeof provinceName || '' === provinceName.trim() || !isRecord(provinceWards)) { return; }\n"
+			. "\n"
+			. "\t\tstate = findChildren(country[0].children, 'state:VN:' + provinceCode);\n"
+			. "\t\tif (1 !== state.length || ('undefined' !== typeof state[0].children && !Array.isArray(state[0].children))) { return; }\n"
+			. "\n"
+			. "\t\texistingChildren = Array.isArray(state[0].children) ? state[0].children : [];\n"
+			. "\t\texistingChildren.forEach(function (child) {\n"
+			. "\t\t\tif (isRecord(child) && 'string' === typeof child.value) {\n"
+			. "\t\t\t\texistingValues[child.value] = true;\n"
+			. "\t\t\t}\n"
+			. "\t\t});\n"
+			. "\n"
+			. "\t\twardCodes = Object.keys(provinceWards);\n"
+			. "\t\tif (!wardCodes.length) { return; }\n"
+			. "\n"
+			. "\t\tfor (wardIndex = 0; wardIndex < wardCodes.length; wardIndex += 1) {\n"
+			. "\t\t\tvar wardCode = wardCodes[wardIndex];\n"
+			. "\t\t\tvar wardName = provinceWards[wardCode];\n"
+			. "\t\t\tvar value = locationType + ':' + provinceCode + ':' + wardCode;\n"
+			. "\n"
+			. "\t\t\tif (!/^\\d{5}$/.test(wardCode) || 'string' !== typeof wardName || '' === wardName.trim() || plannedValues[value]) { return; }\n"
+			. "\n"
+			. "\t\t\tplannedValues[value] = true;\n"
+			. "\t\t\tif (!existingValues[value]) {\n"
+			. "\t\t\t\tadditions.push({ value: value, label: wardName.trim() + ', ' + provinceName.trim() });\n"
+			. "\t\t\t}\n"
+			. "\t\t}\n"
+			. "\n"
+			. "\t\tplans.push({ state: state[0], additions: additions });\n"
+			. "\t}\n"
+			. "\n"
+			. "\tif (plans.length !== provinceCodes.length) { return; }\n"
+			. "\n"
+			. "\tplans.forEach(function (plan) {\n"
+			. "\t\tif (!Array.isArray(plan.state.children)) {\n"
+			. "\t\t\tplan.state.children = [];\n"
+			. "\t\t}\n"
+			. "\t\tArray.prototype.push.apply(plan.state.children, plan.additions);\n"
+			. "\t});\n"
 			. '}());';
 
 		wp_add_inline_script( 'wc-shipping-zone-methods', $script, 'after' );
@@ -485,6 +594,25 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 		}
 
 		return is_array( $locations ) ? $locations : [];
+	}
+
+	/**
+	 * Check the request before WooCommerce may cache its filtered state list.
+	 *
+	 * @return bool
+	 */
+	private function is_shipping_settings_request() {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen routing.
+		$tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : '';
+
+		return 'wc-settings' === $page && 'shipping' === $tab;
 	}
 
 	/**
