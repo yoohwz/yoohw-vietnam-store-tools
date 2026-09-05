@@ -75,6 +75,7 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-order-management.php:416
 #: includes/class-vietnam-commerce-kit-order-management.php:761
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:111
+#: includes/class-vietnam-commerce-kit-shipping-zones.php:325
 msgid "Ward / Commune"
 msgstr ""
 
