@@ -33,6 +33,16 @@ These instructions apply to the entire `yoohw-vietnam-store-tools` repository.
 - Concurrent Codex tasks must use separate Git worktrees or separate clean checkouts. Do not let two tasks modify the same working directory.
 - Free-VST remains authoritative. Work from another Codex project must not commit or push this repository directly.
 
+### Post-merge branch lifecycle
+
+- Normal `agent/*` branches are disposable task branches. After a PR is successfully merged and no other open PR uses the same repository/head branch, delete that exact task branch.
+- Automatic cleanup applies only to merged, same-repository `agent/*` heads. Skip protected branches and branches whose current head no longer matches the merged PR head; do not reuse completed task branch names for new work.
+- `main` is never deleted or rewritten. All `release/*` branches are retained and excluded from automatic cleanup because the WordPress.org publish contract requires their heads to remain available and match release tags.
+- Keep the repository-wide `delete_branch_on_merge` setting disabled: it cannot distinguish disposable `agent/*` heads from retained `release/*` heads. Use the selective post-merge workflow instead.
+- Closed-but-unmerged or superseded task branches require evidence that their relevant commits/content are preserved on `main` or a retained `release/*` branch, or an explicit Human cleanup decision. For a branch without a usable PR association, verify that its head is reachable from a retained branch and its purpose is obsolete.
+- Re-audit stale branches and open PRs immediately before one-time cleanup, record the evidence on the linked issue, and surface `HUMAN_DECISION_REQUIRED` for any unresolved branch. Historical cleanup for issue #37 starts only after its policy/workflow PR is independently reviewed and Human-merged.
+- Branch cleanup does not delete Actions runs, CI logs, tags, releases, or artifacts, and never changes protection, required checks, or publication gates.
+
 ## AI-assisted delivery workflow
 
 Use ChatGPT and Codex for different strengths instead of asking one agent to own the complete development lifecycle.

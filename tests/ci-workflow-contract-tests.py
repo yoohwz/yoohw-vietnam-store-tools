@@ -61,6 +61,7 @@ def main() -> int:
         "python3 scripts/workflow_governance.py",
         "python3 tests/workflow-governance-contract-tests.py",
         "python3 tests/ci-workflow-contract-tests.py",
+        "node tests/branch-cleanup-contract-tests.js",
         "name: VST Required Gate",
         "scripts/localization-quality.sh check",
         "strict: true",
