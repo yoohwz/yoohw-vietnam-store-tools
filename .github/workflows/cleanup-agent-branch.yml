@@ -1,0 +1,89 @@
+name: Clean up merged agent branch
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  cleanup:
+    name: Selective task branch cleanup
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check eligibility and delete the exact merged head
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const skip = (reason) => core.info(`Skip branch cleanup: ${reason}`);
+            const event = context.payload;
+            const pr = event.pull_request;
+            if (context.eventName !== 'pull_request' || event.action !== 'closed' ||
+                pr?.merged !== true || pr.state !== 'closed') {
+              return skip('requires a closed, successfully merged pull request');
+            }
+
+            const { owner, repo } = context.repo;
+            const repository = event.repository;
+            const head = pr.head;
+            if (!Number.isInteger(repository?.id) || repository.id <= 0 ||
+                repository.full_name !== `${owner}/${repo}` ||
+                head?.repo?.id !== repository.id ||
+                head.repo.full_name !== repository.full_name) {
+              return skip('head must belong to this same repository; fork/missing heads are ineligible');
+            }
+
+            const ref = head.ref;
+            if (typeof ref !== 'string' || typeof repository.default_branch !== 'string') {
+              return skip('missing branch identity');
+            }
+            if (ref === 'main' || ref.startsWith('release/') || ref === repository.default_branch) {
+              return skip('main, release branches, and the default branch are retained');
+            }
+            // Fail closed on unexpected names; never interpret a ref as shell or source code.
+            if (!/^agent\/[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(ref) ||
+                ref.includes('..') || ref.endsWith('.') ||
+                ref.split('/').some((part) => !part || part.startsWith('.') || part.endsWith('.lock'))) {
+              return skip('only well-formed agent/ task branch names are eligible');
+            }
+            if (typeof head.sha !== 'string' || !/^[a-f0-9]{40}$/.test(head.sha)) {
+              return skip('missing or malformed merged head SHA');
+            }
+
+            // Read permission is needed to retain a branch still used by another open PR.
+            const openPulls = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: 'open', head: `${owner}:${ref}`, per_page: 100,
+            });
+            if (openPulls.length) {
+              return skip('another open pull request still references this head branch');
+            }
+
+            let branch;
+            try {
+              ({ data: branch } = await github.rest.repos.getBranch({ owner, repo, branch: ref }));
+            } catch (error) {
+              if (error.status === 404) return skip('branch is already absent');
+              throw error;
+            }
+            if (branch.name !== ref || branch.protected !== false || branch.commit?.sha !== head.sha) {
+              return skip('branch is protected, changed since merge, or has an unexpected identity');
+            }
+
+            try {
+              await github.rest.git.deleteRef({ owner, repo, ref: `heads/${ref}` });
+            } catch (error) {
+              // A concurrent cleanup can remove the branch between the read and delete.
+              if (error.status === 404 || error.status === 422) {
+                try {
+                  await github.rest.repos.getBranch({ owner, repo, branch: ref });
+                } catch (lookupError) {
+                  if (lookupError.status === 404) return skip('branch was already removed concurrently');
+                  throw lookupError;
+                }
+              }
+              throw error;
+            }
+            core.info(`Deleted merged task branch ${owner}/${repo}: heads/${ref} at ${head.sha}`);

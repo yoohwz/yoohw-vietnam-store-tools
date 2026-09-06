@@ -136,6 +136,9 @@ jobs:
       - name: Workflow governance contracts
         run: python3 tests/workflow-governance-contract-tests.py
 
+      - name: Branch cleanup contracts
+        run: node tests/branch-cleanup-contract-tests.js
+
       - name: Repository metadata contracts
         run: python3 tests/repository-contract-tests.py
 
