@@ -1,8 +1,13 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
-= 1.1.5 (In development) =
+= 1.2.0 (In development) =
 
 * New: Added validated Ward / Commune children to the native WooCommerce Shipping Zone regions tree while preserving country, province/city, postcode, zone-order, and cache behavior.
+* Quality: Added risk-aware staged CI and durable workflow ownership and review gates.
+* Developer: Reconciled published 1.1.5 metadata and history and opened the 1.2.0 development line.
+
+= 1.1.5 (August 30, 2026) =
+
 * Quality: Restored strict WordPress Plugin Check as a release-blocking CI baseline after resolving source findings and removing the temporary 1.1.4 waiver; normal CI now checks the reviewed WordPress.org payload.
 * Quality: Added deterministic Vietnamese localization gates for POT/PO completeness, locale parity, MO/PHP/JSON consistency, visible JavaScript localization contracts, and strict zero-warning Plugin Check in both CI and WordPress.org publish validation.
 * Compatibility: Preserved WordPress.org language-pack priority and bundled Vietnamese fallback translations across WordPress 6.3 and later without eagerly loading the plugin text domain.

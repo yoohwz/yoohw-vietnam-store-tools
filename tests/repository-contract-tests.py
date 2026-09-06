@@ -3,14 +3,25 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-# Update this with readme.txt only at the explicit Human Release gate.
-PUBLISHED_STABLE_VERSION = "1.1.4"
+# Update with readme.txt only at a Human-authorized release or GA reconciliation.
+PUBLISHED_STABLE_VERSION = "1.1.5"
+CHANGELOG_HISTORY_BASELINE = (
+    "1.1.5", "1.1.4", "1.1.3", "1.1.2", "1.1.1", "1.1.0", "1.0.2", "1.0.1", "1.0.0",
+)
+# SHA-256 of each stripped 1.1.5 section, including its heading/date, from
+# published tag 1.1.5 (761f9fe35184d3393072445bcf00f738369786f7).
+# These are immutable release-history fixtures, not current-version metadata.
+GA_115_SECTION_DIGESTS = {
+    "changelog.txt": "26f262ac32031ec742bbf07c792f3dd8989db191d9d2593149d0a172d790c0ed",
+    "changelog-vi.txt": "72bc8a636cfe980e4a35329e8529e820754a8557fc370de2d7b6108281f68c2e",
+}
 
 
 def read(path: str) -> str:
@@ -57,6 +68,133 @@ def require_stable_tag_rejection(
     except AssertionError:
         return
     raise AssertionError(f"Stable-tag contract unexpectedly accepted {stable_tag}")
+
+
+def changelog_sections(text: str) -> list[tuple[str, str, str]]:
+    """Return ordered (version, date/marker, complete section) entries."""
+    headings = list(re.finditer(
+        r"^= ([0-9]+\.[0-9]+\.[0-9]+) \(([^\n]+)\) =$", text, re.MULTILINE
+    ))
+    return [
+        (heading[1], heading[2], text[heading.start():end].strip())
+        for heading, end in zip(
+            headings, [match.start() for match in headings[1:]] + [len(text)]
+        )
+    ]
+
+
+def validate_changelog_history(
+    readme: str, changelog: str, changelog_vi: str,
+    development_version: str, stable_version: str,
+) -> None:
+    readme_parts = readme.split("== Changelog ==", 1)
+    if len(readme_parts) != 2:
+        raise AssertionError("readme.txt has no Changelog section")
+    readme_sections = changelog_sections(readme_parts[1])
+    if [section[0] for section in readme_sections] != [development_version]:
+        raise AssertionError("readme.txt must expose exactly the current changelog version")
+    if "See `changelog.txt` for the complete change history." not in readme_parts[1]:
+        raise AssertionError("readme.txt must link the complete changelog history")
+
+    english = changelog_sections(changelog)
+    vietnamese = changelog_sections(changelog_vi)
+    versions = [section[0] for section in english]
+    if versions != [section[0] for section in vietnamese]:
+        raise AssertionError("English and Vietnamese changelog version sequences differ")
+    if not versions or versions[0] != development_version:
+        raise AssertionError("Standalone changelogs must begin with the current version")
+    if len(versions) != len(set(versions)) or any(
+        parse_semver(earlier, "changelog version") <= parse_semver(later, "changelog version")
+        for earlier, later in zip(versions, versions[1:])
+    ):
+        raise AssertionError("Changelog versions must be unique and descending")
+    if any(version not in versions for version in (*CHANGELOG_HISTORY_BASELINE, stable_version)):
+        raise AssertionError("Standalone changelogs lost required published history")
+
+    developing = parse_semver(development_version, "development version") > parse_semver(
+        stable_version, "published stable version"
+    )
+    for sections, marker, label in (
+        (readme_sections, "In development", "readme.txt"),
+        (english, "In development", "changelog.txt"),
+        (vietnamese, "Đang phát triển", "changelog-vi.txt"),
+    ):
+        for index, (_, date, _) in enumerate(sections):
+            if index == 0 and developing:
+                if date != marker:
+                    raise AssertionError(f"{label} must mark the current version as {marker}")
+            elif not re.fullmatch(
+                r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}" if label == "changelog-vi.txt"
+                else r"[A-Z][a-z]+ [0-9]{1,2}, [0-9]{4}", date
+            ):
+                raise AssertionError(f"{label} published history must have a finalized date")
+
+    for label, sections in (("changelog.txt", english), ("changelog-vi.txt", vietnamese)):
+        ga_section = next(section[2] for section in sections if section[0] == "1.1.5")
+        if hashlib.sha256(ga_section.encode("utf-8")).hexdigest() != GA_115_SECTION_DIGESTS[label]:
+            raise AssertionError(f"{label} changed the immutable published 1.1.5 section")
+
+
+def exercise_history_contracts() -> None:
+    """Reject representative release-boundary regressions without changing files."""
+    def history(locale: str) -> str:
+        marker = "In development" if locale == "en" else "Đang phát triển"
+        path = "changelog.txt" if locale == "en" else "changelog-vi.txt"
+        ga = next(section[2] for section in changelog_sections(read(path)) if section[0] == "1.1.5")
+        date = "August 22, 2026" if locale == "en" else "22/08/2026"
+        return f"= 1.2.0 ({marker}) =\n\n* Ward shipping zones.\n\n{ga}\n\n" + "\n\n".join(
+            f"= {version} ({date}) =\n\n* Historical entry."
+            for version in CHANGELOG_HISTORY_BASELINE[1:]
+        )
+
+    readme = (
+        "== Changelog ==\n\n= 1.2.0 (In development) =\n\n* Ward shipping zones.\n\n"
+        "See `changelog.txt` for the complete change history."
+    )
+    english, vietnamese = history("en"), history("vi")
+    validate_changelog_history(readme, english, vietnamese, "1.2.0", "1.1.5")
+    # A future explicitly finalized release must also remain representable.
+    validate_changelog_history(
+        readme.replace("In development", "September 30, 2026"),
+        english.replace("In development", "September 30, 2026"),
+        vietnamese.replace("Đang phát triển", "30/09/2026"), "1.2.0", "1.2.0",
+    )
+    ga_en = next(section[2] for section in changelog_sections(english) if section[0] == "1.1.5")
+    ga_vi = next(section[2] for section in changelog_sections(vietnamese) if section[0] == "1.1.5")
+
+    def reorder(text: str) -> str:
+        return text.replace("= 1.1.4", "= SWAP").replace(
+            "= 1.1.3", "= 1.1.4"
+        ).replace("= SWAP", "= 1.1.3")
+
+    def drop_oldest(text: str) -> str:
+        return text.split("= 1.0.0", 1)[0]
+
+    mutations = [
+        ("older README entry", readme + "\n\n" + ga_en, english, vietnamese),
+        ("missing history link", readme.replace("See `changelog.txt`", "See history"), english, vietnamese),
+        ("lost GA", readme, english.replace(ga_en, ""), vietnamese.replace(ga_vi, "")),
+        ("duplicate GA", readme, english + "\n\n" + ga_en, vietnamese + "\n\n" + ga_vi),
+        ("lost older history", readme, drop_oldest(english), drop_oldest(vietnamese)),
+        ("reordered history", readme, reorder(english), reorder(vietnamese)),
+        ("locale mismatch", readme, english, vietnamese.replace("= 1.1.4", "= 1.1.6")),
+        ("redated GA", readme, english.replace("August 30, 2026", "August 31, 2026"), vietnamese),
+        ("unfinalized GA", readme, english.replace("August 30, 2026", "In development"), vietnamese),
+        ("contaminated GA", readme, english.replace(ga_en, ga_en + "\n* Ward shipping zones."), vietnamese),
+        ("contaminated Vietnamese GA", readme, english, vietnamese.replace(ga_vi, ga_vi + "\n* Phường / Xã.")),
+        ("unmarked development", readme, english.replace("In development", "September 30, 2026"), vietnamese),
+        ("unmarked Vietnamese development", readme, english, vietnamese.replace("Đang phát triển", "30/09/2026")),
+    ]
+    for label, candidate_readme, candidate_en, candidate_vi in mutations:
+        try:
+            validate_changelog_history(candidate_readme, candidate_en, candidate_vi, "1.2.0", "1.1.5")
+        except AssertionError:
+            continue
+        raise AssertionError(f"History contract unexpectedly accepted {label}")
+    validate_stable_tag("1.1.5", "1.2.0", "1.1.5")
+    require_stable_tag_rejection("1.1.4", "1.2.0", "1.1.5")
+    require_stable_tag_rejection("1.2.0", "1.2.0", "1.1.5")
+    require_stable_tag_rejection("1.2.1", "1.2.0", "1.2.1")
 
 
 def main() -> int:
@@ -151,6 +289,8 @@ def main() -> int:
         raise AssertionError(f"Development version sources are inconsistent: {details}")
 
     validate_stable_tag(stable_tag, plugin_version, PUBLISHED_STABLE_VERSION)
+    validate_changelog_history(readme, changelog, changelog_vi, plugin_version, stable_tag)
+    exercise_history_contracts()
     require_stable_tag_rejection("1.1", plugin_version, "1.1")
     plugin_parts = parse_semver(plugin_version, "development version")
     future_version = ".".join(
