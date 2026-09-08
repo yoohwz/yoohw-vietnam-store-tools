@@ -3,7 +3,7 @@
  * Plugin Name: Vietnam Store Toolkit for WooCommerce
  * Plugin URI: https://vietnamstore.org/
  * Description: WooCommerce Vietnam toolkit for address fields, checkout UX, VAT invoice requests, VietQR bank transfer, shipping, and phone normalization.
- * Version: 1.2.0
+ * Version: 1.1.6
  * Author: YoOhw Studio
  * Author URI: https://yoohw.com
  * License: GPL v2 or later
@@ -11,7 +11,7 @@
  * Requires at least: 6.3
  * Requires PHP: 7.4
  * WC requires at least: 8.9
- * WC tested up to: 11.0
+ * WC tested up to: 11.1
  * Text Domain: yoohw-vietnam-store-tools
  * Domain Path: /languages
  * Requires Plugins: woocommerce
@@ -35,7 +35,7 @@ final class Yoohw_Vietnam_Store_Tools {
 
 	private function __construct() {
 		$plugin_data    = get_file_data( __FILE__, [ 'Version' => 'Version' ], false );
-		$plugin_version = isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '1.2.0';
+		$plugin_version = isset( $plugin_data['Version'] ) ? $plugin_data['Version'] : '1.1.6';
 
 		if ( ! defined( 'YOOHW_VIETNAM_STORE_TOOLS_VERSION' ) ) {
 			define( 'YOOHW_VIETNAM_STORE_TOOLS_VERSION', $plugin_version );
