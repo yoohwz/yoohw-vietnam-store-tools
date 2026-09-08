@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 11.0
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,10 +138,9 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.2.0 (In development) =
+= 1.1.6 (September 8, 2026) =
 
 * New: Added validated Ward / Commune children to the native WooCommerce Shipping Zone regions tree while preserving country, province/city, postcode, zone-order, and cache behavior.
-* Quality: Added risk-aware staged CI and durable workflow ownership and review gates.
-* Developer: Reconciled published 1.1.5 metadata and history and opened the 1.2.0 development line.
+* Quality: Strengthened release validation with risk-aware staged CI and durable workflow ownership, review, and release gates.
 
 See `changelog.txt` for the complete change history.
