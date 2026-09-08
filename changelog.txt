@@ -1,10 +1,9 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
-= 1.2.0 (In development) =
+= 1.1.6 (September 8, 2026) =
 
 * New: Added validated Ward / Commune children to the native WooCommerce Shipping Zone regions tree while preserving country, province/city, postcode, zone-order, and cache behavior.
-* Quality: Added risk-aware staged CI and durable workflow ownership and review gates.
-* Developer: Reconciled published 1.1.5 metadata and history and opened the 1.2.0 development line.
+* Quality: Strengthened release validation with risk-aware staged CI and durable workflow ownership, review, and release gates.
 
 = 1.1.5 (August 30, 2026) =
 

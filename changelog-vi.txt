@@ -1,10 +1,9 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
-= 1.2.0 (Đang phát triển) =
+= 1.1.6 (08/09/2026) =
 
 * Bổ sung Phường / Xã đã xác thực làm node con của Tỉnh / Thành phố trong cây khu vực Shipping Zones gốc của WooCommerce, đồng thời duy trì hành vi quốc gia, tỉnh/thành, mã bưu chính, thứ tự zone và cache.
-* Chất lượng: Bổ sung CI theo giai đoạn và mức độ rủi ro, cùng gate bền vững cho vai trò triển khai và review.
-* Dành cho nhà phát triển: Đồng bộ metadata và lịch sử bản 1.1.5 đã phát hành, đồng thời mở nhánh phát triển 1.2.0.
+* Chất lượng: Tăng cường xác thực bản phát hành bằng CI theo giai đoạn và mức độ rủi ro, cùng các gate bền vững cho quyền sở hữu workflow, review và phát hành.
 
 = 1.1.5 (30/08/2026) =
 
