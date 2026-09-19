@@ -148,6 +148,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_USD_Refund_Processor extends Refund
 			$vnd_amount = number_format( $amount, 0, '.', '' );
 			$usd_cents  = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::calculate_refund_usd_cents( $snapshot, $refunds, $vnd_amount, $captured );
 		} catch ( \InvalidArgumentException $error ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( $error->getMessage() );
 		}
 

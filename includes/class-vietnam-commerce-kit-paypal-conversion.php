@@ -170,19 +170,23 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		}
 		$attempt = $this->get_or_refresh_attempt();
 		if ( is_wp_error( $attempt ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( $attempt->get_error_message() );
 		}
 		if ( 'quote' !== $attempt['state'] ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal order creation cannot be repeated for the active VND to USD payment attempt. Please start a new checkout attempt.', 'yoohw-vietnam-store-tools' ) );
 		}
 		try {
 			$converted = self::convert_purchase_units( $data, $attempt['rate'] );
 		} catch ( Throwable $error ) {
 			Yoohw_Vietnam_Store_Tools_Logger::log( 'warning', 'PayPal USD conversion refused an unsafe request.', array( 'reason' => $error->getMessage() ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal USD conversion could not safely prepare this order. Please use another payment method or contact the store.', 'yoohw-vietnam-store-tools' ) );
 		}
 		$usd_total = $this->get_payload_total( $converted );
 		if ( $usd_total !== $attempt['preview_usd_total'] ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'The PayPal USD amount changed during checkout. Please refresh the checkout and try again.', 'yoohw-vietnam-store-tools' ) );
 		}
 		$attempt['state']      = 'creating';
@@ -197,14 +201,17 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		$attempt = $this->get_attempt();
 		if ( ! self::is_valid_attempt( $attempt ) ) {
 			if ( self::is_active_configuration() ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 				throw new RuntimeException( __( 'PayPal USD conversion could not verify the active payment attempt before updating the order.', 'yoohw-vietnam-store-tools' ) );
 			}
 			return $patches;
 		}
 		if ( 'payment_created' !== $attempt['state'] || (int) $attempt['expires_at'] < time() || empty( $attempt['payload']['purchase_units'][0] ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal order updates cannot be safely associated with this VND to USD payment attempt. Please start a new checkout attempt.', 'yoohw-vietnam-store-tools' ) );
 		}
 		if ( ! is_array( $patches ) || 1 !== count( $patches ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal returned an unsupported order update for this converted payment.', 'yoohw-vietnam-store-tools' ) );
 		}
 
@@ -217,6 +224,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			|| ! is_array( $patch['value'] )
 			|| (string) ( $patch['value']['reference_id'] ?? '' ) !== (string) $path_matches[1]
 			|| (string) ( $attempt['payload']['purchase_units'][0]['reference_id'] ?? '' ) !== (string) $path_matches[1] ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal returned an unsupported order update for this converted payment.', 'yoohw-vietnam-store-tools' ) );
 		}
 
@@ -226,10 +234,12 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			$projection                   = self::financial_payload( $converted );
 			$frozen_financial_projection = $attempt['payload']['purchase_units'][0];
 		} catch ( Throwable $error ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal returned an unsafe monetary order update. Please start a new checkout attempt.', 'yoohw-vietnam-store-tools' ) );
 		}
 
 		if ( ! isset( $projection['purchase_units'][0] ) || $projection['purchase_units'][0] !== $frozen_financial_projection ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'The PayPal order amount changed after USD conversion was locked. Please start a new checkout attempt.', 'yoohw-vietnam-store-tools' ) );
 		}
 
@@ -245,6 +255,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
 		$paypal_order_id = (string) $paypal_order->id();
 		if ( '' === $paypal_order_id || ! $this->paypal_response_matches_attempt( $paypal_order, $attempt ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal returned an order that does not match the locked USD payment.', 'yoohw-vietnam-store-tools' ) );
 		}
 
@@ -263,6 +274,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			return;
 		}
 		if ( (string) $paypal_order->id() !== (string) ( $attempt['paypal_order_id'] ?? '' ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'The WooCommerce order could not be linked to the locked PayPal USD payment.', 'yoohw-vietnam-store-tools' ) );
 		}
 		$this->freeze_snapshot( $order, $attempt, true );
@@ -326,6 +338,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 				'amount'    => $attempt['preview_usd_total'],
 				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 				'nonce'     => wp_create_nonce( 'yoohw_paypal_usd_quote' ),
+				// translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
 				'i18n'      => array( 'label' => __( 'PayPal will charge %1$s USD (1 USD = %2$s VND).', 'yoohw-vietnam-store-tools' ) ),
 			)
 		);
@@ -419,15 +432,18 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			return false;
 		}
 		if ( ! $this->adapter_ready ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal USD conversion is unavailable because the installed integration is incompatible.', 'yoohw-vietnam-store-tools' ) );
 		}
 		$context        = is_array( $request_data ) ? (string) ( $request_data['context'] ?? '' ) : '';
 		$funding_source = is_array( $request_data ) ? (string) ( $request_data['funding_source'] ?? '' ) : '';
 		$payment_token  = is_array( $request_data ) ? (string) ( $request_data['wc-ppcp-gateway-payment-token'] ?? '' ) : '';
 		if ( '' !== $context || 'paypal' !== $funding_source || ( '' !== $payment_token && 'new' !== $payment_token ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'This PayPal payment flow is not supported by VND to USD conversion.', 'yoohw-vietnam-store-tools' ) );
 		}
 		if ( ! is_array( $data ) || 'CAPTURE' !== strtoupper( (string) ( $data['intent'] ?? '' ) ) || self::contains_key_recursive( $data, 'vault' ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal USD conversion supports one-time CAPTURE payments only.', 'yoohw-vietnam-store-tools' ) );
 		}
 		return true;
@@ -550,11 +566,13 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			'paypal_order_id' => $attempt['paypal_order_id'] ?? '',
 		);
 		if ( ! self::validate_snapshot( $snapshot ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'The WooCommerce order could not be linked to the locked PayPal USD payment.', 'yoohw-vietnam-store-tools' ) );
 		}
 		$existing = $order->get_meta( self::SNAPSHOT_META, true );
 		if ( is_array( $existing ) && ! empty( $existing ) ) {
 			if ( $existing !== $snapshot ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 				throw new RuntimeException( __( 'The WooCommerce order could not be linked to the locked PayPal USD payment.', 'yoohw-vietnam-store-tools' ) );
 			}
 			return;
@@ -843,6 +861,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			$normalized = preg_replace( '/\.\d+\./', '.*.', $path );
 			$allowed    = array( 'amount', 'amount.breakdown.item_total', 'amount.breakdown.shipping', 'amount.breakdown.handling', 'amount.breakdown.tax_total', 'amount.breakdown.insurance', 'amount.breakdown.shipping_discount', 'amount.breakdown.discount', 'items.*.unit_amount', 'items.*.tax', 'shipping.options.*.amount' );
 			if ( ! in_array( $normalized, $allowed, true ) ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 				throw new InvalidArgumentException( 'Unknown PayPal monetary node: ' . $path );
 			}
 		}
