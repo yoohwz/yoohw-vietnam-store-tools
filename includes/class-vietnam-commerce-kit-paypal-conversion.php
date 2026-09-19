@@ -21,6 +21,8 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	const ATTEMPT_KEY            = 'yoohw_vietnam_store_tools_paypal_usd_attempt';
 	const SNAPSHOT_META          = '_yoohw_vietnam_store_tools_paypal_usd_snapshot';
 	const REFUNDS_META           = '_yoohw_vietnam_store_tools_paypal_usd_refunds';
+	const CANCEL_NONCE_PARAM     = 'yoohw-paypal-usd-cancel';
+	const CANCEL_TOKEN_PARAM     = 'yoohw-paypal-usd-attempt';
 	const SCHEMA_VERSION         = 1;
 	const ATTEMPT_LIFETIME       = HOUR_IN_SECONDS;
 
@@ -181,6 +183,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		}
 		try {
 			$converted = self::convert_purchase_units( $data, $attempt['rate'] );
+			$converted = $this->add_attempt_cancel_url( $converted, $attempt );
 		} catch ( Throwable $error ) {
 			Yoohw_Vietnam_Store_Tools_Logger::log( 'warning', 'PayPal USD conversion refused an unsafe request.', array( 'reason' => $error->getMessage() ) );
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
@@ -295,19 +298,54 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	public function handle_cancelled_attempt() {
-		if ( ! isset( $_GET['ppcp-cancel'] ) || ! is_scalar( $_GET['ppcp-cancel'] ) ) {
-			return;
-		}
-		$nonce = sanitize_text_field( wp_unslash( $_GET['ppcp-cancel'] ) );
-		if ( ! wp_verify_nonce( $nonce, 'ppcp-cancel' ) ) {
-			return;
-		}
 		$attempt = $this->get_attempt();
-		if ( self::is_valid_attempt( $attempt )
-			&& in_array( $attempt['state'], array( 'payment_created', 'payment_rejected' ), true )
-			&& ! empty( $attempt['paypal_order_id'] ) ) {
-			$this->set_attempt( null );
+		if ( ! self::is_valid_attempt( $attempt )
+			|| ! in_array( $attempt['state'], array( 'payment_created', 'payment_rejected' ), true )
+			|| empty( $attempt['paypal_order_id'] ) ) {
+			return;
 		}
+
+		if ( isset( $_GET[ self::CANCEL_NONCE_PARAM ], $_GET[ self::CANCEL_TOKEN_PARAM ] )
+			&& is_scalar( $_GET[ self::CANCEL_NONCE_PARAM ] )
+			&& is_scalar( $_GET[ self::CANCEL_TOKEN_PARAM ] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_GET[ self::CANCEL_NONCE_PARAM ] ) );
+			$token = sanitize_text_field( wp_unslash( $_GET[ self::CANCEL_TOKEN_PARAM ] ) );
+			if ( hash_equals( (string) $attempt['token'], $token ) && wp_verify_nonce( $nonce, $this->cancel_nonce_action( $token ) ) ) {
+				$this->set_attempt( null );
+			}
+			return;
+		}
+
+		if ( isset( $_GET['ppcp-cancel'] ) && is_scalar( $_GET['ppcp-cancel'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_GET['ppcp-cancel'] ) );
+			if ( wp_verify_nonce( $nonce, 'ppcp-cancel' ) ) {
+				$this->set_attempt( null );
+			}
+		}
+	}
+
+	private function add_attempt_cancel_url( $data, $attempt ) {
+		$cancel_url = $data['payment_source']['paypal']['experience_context']['cancel_url'] ?? '';
+		if ( ! is_string( $cancel_url ) || '' === $cancel_url ) {
+			throw new InvalidArgumentException( 'Missing PayPal standard checkout cancel URL.' );
+		}
+		$token = (string) $attempt['token'];
+		$data['payment_source']['paypal']['experience_context']['cancel_url'] = add_query_arg(
+			array(
+				self::CANCEL_NONCE_PARAM => wp_create_nonce( $this->cancel_nonce_action( $token ) ),
+				self::CANCEL_TOKEN_PARAM => $token,
+			),
+			$cancel_url
+		);
+		return $data;
+	}
+
+	private function cancel_nonce_action( $token ) {
+		return 'yoohw_paypal_usd_cancel_' . (string) $token;
+	}
+
+	public static function should_suppress_ppcp_express() {
+		return self::is_active_configuration();
 	}
 
 	public function link_paypal_order( $order, $paypal_order ) {
@@ -486,18 +524,30 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
 	private function has_supported_ppcp_signatures() {
 		try {
-			$sdk_class          = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
-			$refund_class       = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor' );
-			$sdk_method         = $sdk_class->getMethod( 'script_data' );
-			$refund_method      = $refund_class->getMethod( 'refund' );
-			$sdk_constructor    = $sdk_class->getConstructor();
-			$refund_constructor = $refund_class->getConstructor();
+			$sdk_class                   = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
+			$refund_class                = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor' );
+			$sdk_method                  = $sdk_class->getMethod( 'script_data' );
+			$sdk_page_method             = $sdk_class->getMethod( 'should_load_on_current_page' );
+			$sdk_render_places_method    = $sdk_class->getMethod( 'determine_render_places' );
+			$sdk_card_wrapper_method     = $sdk_class->getMethod( 'render_card_button_wrapper' );
+			$refund_method               = $refund_class->getMethod( 'refund' );
+			$sdk_constructor             = $sdk_class->getConstructor();
+			$refund_constructor          = $refund_class->getConstructor();
 
 			return ! $sdk_class->isFinal()
 				&& ! $refund_class->isFinal()
 				&& $sdk_method->isPublic()
 				&& ! $sdk_method->isFinal()
 				&& 0 === $sdk_method->getNumberOfParameters()
+				&& $sdk_page_method->isPublic()
+				&& ! $sdk_page_method->isFinal()
+				&& 0 === $sdk_page_method->getNumberOfParameters()
+				&& $sdk_render_places_method->isPublic()
+				&& ! $sdk_render_places_method->isFinal()
+				&& 0 === $sdk_render_places_method->getNumberOfParameters()
+				&& $sdk_card_wrapper_method->isPublic()
+				&& ! $sdk_card_wrapper_method->isFinal()
+				&& 0 === $sdk_card_wrapper_method->getNumberOfParameters()
 				&& $refund_method->isPublic()
 				&& ! $refund_method->isFinal()
 				&& 4 === $refund_method->getNumberOfParameters()

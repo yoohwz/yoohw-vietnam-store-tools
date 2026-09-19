@@ -127,6 +127,17 @@ namespace WooCommerce\PayPalCommerce\SdkV6\Assets {
 			unset( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24 );
 		}
 		public function script_data(): array { return array( 'currency' => 'VND', 'amount' => '100000' ); }
+		public function should_load_on_current_page(): bool { return true; }
+		public function determine_render_places(): array {
+			return array(
+				'product'   => true,
+				'cart'      => true,
+				'checkout'  => true,
+				'pay-now'   => true,
+				'mini-cart' => true,
+			);
+		}
+		public function render_card_button_wrapper(): void { echo 'parent-card-wrapper'; }
 	}
 }
 
@@ -154,13 +165,14 @@ namespace {
 	function get_woocommerce_currency() { return 'VND'; }
 	$GLOBALS['vst_is_checkout'] = true;
 	$GLOBALS['vst_ppcp_version'] = '4.1.3';
+	$GLOBALS['vst_paypal_conversion_enabled'] = true;
 	function is_checkout() { return $GLOBALS['vst_is_checkout']; }
 	function is_order_received_page() { return false; }
 	function is_checkout_pay_page() { return false; }
 	function get_option( $key, $default = false ) {
 		if ( 'yoohw_vietnam_store_tools_paypal_conversion_settings' === $key ) {
 			return array(
-				'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled' => 'yes',
+				'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled' => $GLOBALS['vst_paypal_conversion_enabled'] ? 'yes' : 'no',
 				'yoohw_vietnam_store_tools_paypal_vnd_usd_rate' => '25000',
 			);
 		}
@@ -248,6 +260,33 @@ namespace {
 	$data      = $manager->script_data();
 	vst_assert_same( 'USD', $data['currency'], 'SDK v6 manager publishes USD without changing the store currency' );
 	vst_assert_same( '4.00', $data['amount'], 'SDK v6 manager publishes the server-owned quote amount' );
+	vst_assert_same( false, $manager->should_load_on_current_page(), 'Active conversion disables the SDK v6 payment surface' );
+	vst_assert_same(
+		array(
+			'product'   => false,
+			'cart'      => false,
+			'checkout'  => false,
+			'pay-now'   => false,
+			'mini-cart' => false,
+		),
+		$manager->determine_render_places(),
+		'Active conversion disables every SDK v6 express render location'
+	);
+	ob_start();
+	$manager->render_card_button_wrapper();
+	$card_wrapper = ob_get_clean();
+	vst_assert_same( '', $card_wrapper, 'Active conversion suppresses the SDK v6 card-button wrapper' );
+	vst_assert_same( true, $runtime->force_place_order_button( false ), 'Classic checkout retains the regular PPCP Place-order method' );
+	vst_assert_same( true, $runtime->force_blocks_place_order_method( false ), 'Blocks checkout retains the regular PPCP Place-order method' );
+
+	$GLOBALS['vst_paypal_conversion_enabled'] = false;
+	vst_assert_same( true, $manager->should_load_on_current_page(), 'Disabled conversion preserves the upstream SDK v6 page decision' );
+	vst_assert_same( true, $manager->determine_render_places()['checkout'], 'Disabled conversion preserves upstream SDK v6 render locations' );
+	ob_start();
+	$manager->render_card_button_wrapper();
+	$card_wrapper = ob_get_clean();
+	vst_assert_same( 'parent-card-wrapper', $card_wrapper, 'Disabled conversion preserves the upstream SDK v6 card-button wrapper' );
+	$GLOBALS['vst_paypal_conversion_enabled'] = true;
 	$GLOBALS['vst_is_checkout'] = false;
 	$non_checkout_data = $manager->script_data();
 	vst_assert_same( 'VND', $non_checkout_data['currency'], 'SDK v6 conversion data remains scoped to the normal checkout' );

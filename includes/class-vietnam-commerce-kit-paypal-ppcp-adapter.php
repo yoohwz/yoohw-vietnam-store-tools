@@ -94,6 +94,33 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_USD_SdkV6_Manager extends SdkV6Mana
 
 		return $data;
 	}
+
+	public function should_load_on_current_page(): bool {
+		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::should_suppress_ppcp_express() ) {
+			return false;
+		}
+		return parent::should_load_on_current_page();
+	}
+
+	public function determine_render_places(): array {
+		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::should_suppress_ppcp_express() ) {
+			return array(
+				'product'   => false,
+				'cart'      => false,
+				'checkout'  => false,
+				'pay-now'   => false,
+				'mini-cart' => false,
+			);
+		}
+		return parent::determine_render_places();
+	}
+
+	public function render_card_button_wrapper(): void {
+		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::should_suppress_ppcp_express() ) {
+			return;
+		}
+		parent::render_card_button_wrapper();
+	}
 }
 
 final class Yoohw_Vietnam_Store_Tools_PayPal_USD_Refund_Processor extends RefundProcessor {
