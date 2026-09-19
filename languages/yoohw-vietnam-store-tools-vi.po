@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-06T05:08:51+00:00\n"
+"POT-Creation-Date: 2026-09-19T12:58:44+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -1542,6 +1542,202 @@ msgstr "Trạng thái đơn hàng"
 #: includes/class-vietnam-commerce-kit-order-management.php:856
 msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:94
+msgid "PayPal USD conversion"
+msgstr "Chuyển đổi PayPal sang USD"
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:96
+msgid "Convert VND to USD for WooCommerce PayPal Payments"
+msgstr "Chuyển đổi VND sang USD cho WooCommerce PayPal Payments"
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:97
+msgid ""
+"Supports one-time CAPTURE payments on the normal checkout only. WooCommerce "
+"orders remain in VND."
+msgstr ""
+"Chỉ hỗ trợ thanh toán CAPTURE một lần tại trang thanh toán thông thường. Đơn "
+"hàng WooCommerce vẫn dùng VND."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:101
+msgid "Manual VND per USD rate"
+msgstr "Tỷ giá VND trên mỗi USD nhập thủ công"
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:103
+msgid ""
+"Enter how many VND equal 1 USD, for example 25000. The rate is locked for "
+"each payment attempt."
+msgstr ""
+"Nhập số VND tương đương 1 USD, ví dụ 25000. Tỷ giá được khóa cho từng lần "
+"thanh toán."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:118
+msgid ""
+"PayPal USD conversion was disabled because the manual VND per USD rate is "
+"invalid."
+msgstr ""
+"Chuyển đổi PayPal sang USD đã bị tắt vì tỷ giá VND trên mỗi USD nhập thủ "
+"công không hợp lệ."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:176
+msgid ""
+"PayPal order creation cannot be repeated for the active VND to USD payment "
+"attempt. Please start a new checkout attempt."
+msgstr ""
+"Không thể tạo lại đơn hàng PayPal cho lần thanh toán chuyển đổi từ VND sang "
+"USD đang hoạt động. Vui lòng bắt đầu một lần thanh toán mới."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:182
+msgid ""
+"PayPal USD conversion could not safely prepare this order. Please use "
+"another payment method or contact the store."
+msgstr ""
+"Không thể chuẩn bị đơn hàng này một cách an toàn để chuyển đổi PayPal sang "
+"USD. Vui lòng dùng phương thức thanh toán khác hoặc liên hệ cửa hàng."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:186
+msgid ""
+"The PayPal USD amount changed during checkout. Please refresh the checkout "
+"and try again."
+msgstr ""
+"Số tiền USD của PayPal đã thay đổi trong quá trình thanh toán. Vui lòng tải "
+"lại trang thanh toán và thử lại."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:200
+msgid ""
+"PayPal USD conversion could not verify the active payment attempt before "
+"updating the order."
+msgstr ""
+"Chuyển đổi PayPal sang USD không thể xác minh lần thanh toán đang hoạt động "
+"trước khi cập nhật đơn hàng."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:205
+msgid ""
+"PayPal order updates cannot be safely associated with this VND to USD "
+"payment attempt. Please start a new checkout attempt."
+msgstr ""
+"Không thể liên kết an toàn nội dung cập nhật đơn hàng PayPal với lần thanh "
+"toán chuyển đổi từ VND sang USD này. Vui lòng bắt đầu một lần thanh toán mới."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:208
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:220
+msgid "PayPal returned an unsupported order update for this converted payment."
+msgstr ""
+"PayPal trả về nội dung cập nhật đơn hàng không được hỗ trợ cho khoản thanh "
+"toán đã chuyển đổi này."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:229
+msgid ""
+"PayPal returned an unsafe monetary order update. Please start a new checkout "
+"attempt."
+msgstr ""
+"PayPal trả về nội dung cập nhật số tiền không an toàn. Vui lòng bắt đầu một "
+"lần thanh toán mới."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:233
+msgid ""
+"The PayPal order amount changed after USD conversion was locked. Please "
+"start a new checkout attempt."
+msgstr ""
+"Số tiền đơn hàng PayPal đã thay đổi sau khi phép chuyển đổi sang USD được "
+"khóa. Vui lòng bắt đầu một lần thanh toán mới."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:248
+msgid "PayPal returned an order that does not match the locked USD payment."
+msgstr "PayPal trả về đơn hàng không khớp với khoản thanh toán USD đã khóa."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:266
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:553
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:558
+msgid ""
+"The WooCommerce order could not be linked to the locked PayPal USD payment."
+msgstr ""
+"Không thể liên kết đơn hàng WooCommerce với khoản thanh toán PayPal USD đã "
+"khóa."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:294
+msgid ""
+"Saved PayPal payment methods are not supported by VND to USD conversion."
+msgstr ""
+"Phương thức thanh toán PayPal đã lưu không được hỗ trợ khi chuyển đổi từ VND "
+"sang USD."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:297
+msgid ""
+"Continuing an existing PayPal order is not supported by VND to USD "
+"conversion."
+msgstr ""
+"Không hỗ trợ tiếp tục đơn hàng PayPal hiện có khi chuyển đổi từ VND sang USD."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:329
+#, php-format
+msgid "PayPal will charge %1$s USD (1 USD = %2$s VND)."
+msgstr "PayPal sẽ thu %1$s USD (1 USD = %2$s VND)."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:337
+msgid "PayPal USD conversion is not available for this checkout."
+msgstr "Chuyển đổi PayPal sang USD không khả dụng cho lần thanh toán này."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:407
+msgid ""
+"PayPal USD conversion is inactive because its manual VND per USD rate is "
+"invalid."
+msgstr ""
+"Chuyển đổi PayPal sang USD không hoạt động vì tỷ giá VND trên mỗi USD nhập "
+"thủ công không hợp lệ."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:410
+msgid ""
+"PayPal USD conversion is inactive because the installed WooCommerce PayPal "
+"Payments version is incompatible."
+msgstr ""
+"Chuyển đổi PayPal sang USD không hoạt động vì phiên bản WooCommerce PayPal "
+"Payments đã cài đặt không tương thích."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:413
+msgid ""
+"PayPal USD conversion requires CAPTURE intent. PayPal is unavailable until "
+"WooCommerce PayPal Payments uses CAPTURE."
+msgstr ""
+"Chuyển đổi PayPal sang USD yêu cầu phương thức CAPTURE. PayPal sẽ không khả "
+"dụng cho đến khi WooCommerce PayPal Payments sử dụng CAPTURE."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:422
+msgid ""
+"PayPal USD conversion is unavailable because the installed integration is "
+"incompatible."
+msgstr ""
+"Chuyển đổi PayPal sang USD không khả dụng vì tích hợp đã cài đặt không tương "
+"thích."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:428
+msgid "This PayPal payment flow is not supported by VND to USD conversion."
+msgstr "Luồng thanh toán PayPal này không hỗ trợ chuyển đổi từ VND sang USD."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:431
+msgid "PayPal USD conversion supports one-time CAPTURE payments only."
+msgstr "Chuyển đổi PayPal sang USD chỉ hỗ trợ thanh toán CAPTURE một lần."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:461
+msgid ""
+"PayPal USD conversion is unavailable because its exchange rate or checkout "
+"session is invalid."
+msgstr ""
+"Chuyển đổi PayPal sang USD không khả dụng vì tỷ giá hoặc phiên thanh toán "
+"không hợp lệ."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:473
+msgid ""
+"The cart changed after PayPal conversion was locked. Please start a new "
+"checkout attempt."
+msgstr ""
+"Giỏ hàng đã thay đổi sau khi phép chuyển đổi PayPal được khóa. Vui lòng bắt "
+"đầu một lần thanh toán mới."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:491
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:511
+msgid "PayPal USD conversion could not verify the current VND total."
+msgstr "Chuyển đổi PayPal sang USD không thể xác minh tổng tiền VND hiện tại."
 
 #: includes/class-vietnam-commerce-kit-phone-normalization.php:113
 #: includes/class-vietnam-commerce-kit-phone-normalization.php:322

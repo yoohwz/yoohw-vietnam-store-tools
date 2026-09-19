@@ -130,6 +130,15 @@ jobs:
       - name: Architecture foundation contracts
         run: php tests/architecture-contract-tests.php
 
+      - name: PayPal VND/USD conversion contracts
+        run: php tests/paypal-vnd-usd-contract-tests.php
+
+      - name: PayPal PPCP adapter contracts
+        run: php tests/paypal-vnd-usd-adapter-contract-tests.php
+
+      - name: PayPal standard lifecycle contracts
+        run: php tests/paypal-vnd-usd-lifecycle-contract-tests.php
+
       - name: CI workflow contracts
         run: python3 tests/ci-workflow-contract-tests.py
 
