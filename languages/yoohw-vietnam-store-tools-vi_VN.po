@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-19T13:13:08+00:00\n"
+"POT-Creation-Date: 2026-09-19T13:42:21+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: yoohw-vietnam-store-tools.php
-#: includes/class-vietnam-commerce-kit-admin-menu.php:173
+#: includes/class-vietnam-commerce-kit-admin-menu.php:193
 msgid "Vietnam Store Toolkit for WooCommerce"
 msgstr "Vietnam Store Toolkit for WooCommerce"
 
@@ -146,7 +146,7 @@ msgstr "Bang / Hạt"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:40
 #: includes/class-vietnam-commerce-kit-admin-menu.php:41
-#: includes/class-vietnam-commerce-kit-admin-menu.php:174
+#: includes/class-vietnam-commerce-kit-admin-menu.php:194
 msgid "Vietnam store"
 msgstr "Vietnam store"
 
@@ -155,16 +155,24 @@ msgid "Settings"
 msgstr "Cài đặt"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:122
-#: includes/class-vietnam-commerce-kit-admin-menu.php:151
+#: includes/class-vietnam-commerce-kit-admin-menu.php:167
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:226
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr "Bạn không có quyền quản lý cài đặt WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:159
+#: includes/class-vietnam-commerce-kit-admin-menu.php:175
 msgid "Vietnam store feature settings saved."
 msgstr "Đã lưu cài đặt tính năng Vietnam store."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:175
+#: includes/class-vietnam-commerce-kit-admin-menu.php:179
+msgid ""
+"PayPal USD conversion was disabled because the manual VND per USD rate is "
+"invalid."
+msgstr ""
+"Chuyển đổi PayPal sang USD đã bị tắt vì tỷ giá VND trên mỗi USD nhập thủ "
+"công không hợp lệ."
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:195
 msgid ""
 "Manage the Vietnam-specific checkout, payments, invoices, shipping, and "
 "order tools used by your WooCommerce store."
@@ -173,16 +181,16 @@ msgstr ""
 "cho cửa hàng WooCommerce tại Việt Nam."
 
 #. translators: %s: plugin version.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:183
+#: includes/class-vietnam-commerce-kit-admin-menu.php:203
 #, php-format
 msgid "Version %s"
 msgstr "Phiên bản %s"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:215
+#: includes/class-vietnam-commerce-kit-admin-menu.php:237
 msgid "Core features"
 msgstr "Tính năng cốt lõi"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:216
+#: includes/class-vietnam-commerce-kit-admin-menu.php:238
 msgid ""
 "Enable only the Vietnam store enhancements that fit your workflow. Disabling "
 "a feature does not delete its existing data."
@@ -190,15 +198,51 @@ msgstr ""
 "Chỉ bật các cải tiến phù hợp với quy trình của cửa hàng. Việc tắt tính năng "
 "không xóa dữ liệu đã có."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:242
+#: includes/class-vietnam-commerce-kit-admin-menu.php:265
+msgid "PayPal USD conversion"
+msgstr "Chuyển đổi PayPal sang USD"
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:266
+msgid ""
+"Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal "
+"Payments 4.1.3. WooCommerce orders remain in VND."
+msgstr ""
+"Chuyển đổi VND sang USD cho các khoản thanh toán CAPTURE một lần qua "
+"WooCommerce PayPal Payments 4.1.3. Đơn hàng WooCommerce vẫn sử dụng VND."
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:270
+msgid "Enable PayPal USD conversion"
+msgstr "Bật chuyển đổi PayPal sang USD"
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:271
+msgid ""
+"PayPal is shown only on the normal Classic or Block checkout when this rate "
+"and CAPTURE intent are valid."
+msgstr ""
+"PayPal chỉ hiển thị trên trang thanh toán Classic hoặc Block thông thường "
+"khi tỷ giá này và ý định CAPTURE hợp lệ."
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:279
+msgid "Manual VND per USD rate"
+msgstr "Tỷ giá VND trên mỗi USD nhập thủ công"
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:281
+msgid ""
+"Enter how many VND equal 1 USD, for example 25000. The rate is locked for "
+"each payment attempt."
+msgstr ""
+"Nhập số VND tương đương 1 USD, ví dụ 25000. Tỷ giá được khóa cho từng lần "
+"thanh toán."
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:285
 msgid "Save feature settings"
 msgstr "Lưu cài đặt tính năng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:252
+#: includes/class-vietnam-commerce-kit-admin-menu.php:295
 msgid "Vietnam address fields"
 msgstr "Trường địa chỉ Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:253
+#: includes/class-vietnam-commerce-kit-admin-menu.php:296
 msgid ""
 "Use Vietnam provinces and wards, compact name fields, address normalization, "
 "and compatible Classic or Block checkout behavior."
@@ -206,11 +250,11 @@ msgstr ""
 "Sử dụng tỉnh thành, phường xã Việt Nam, trường họ tên gọn, chuẩn hóa địa chỉ "
 "và tương thích thanh toán Classic hoặc Block."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:256
+#: includes/class-vietnam-commerce-kit-admin-menu.php:299
 msgid "Vietnam phone validation and normalization"
 msgstr "Xác thực và chuẩn hóa số điện thoại Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:257
+#: includes/class-vietnam-commerce-kit-admin-menu.php:300
 msgid ""
 "Validate Vietnamese phone numbers and store them consistently across "
 "checkout, customer profiles, and orders."
@@ -218,11 +262,11 @@ msgstr ""
 "Xác thực số điện thoại Việt Nam và lưu nhất quán trong thanh toán, hồ sơ "
 "khách hàng và đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:260
+#: includes/class-vietnam-commerce-kit-admin-menu.php:303
 msgid "Customer shipment information"
 msgstr "Thông tin vận chuyển cho khách hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:261
+#: includes/class-vietnam-commerce-kit-admin-menu.php:304
 msgid ""
 "Show the carrier, tracking code, shipment status, and tracking timeline on "
 "order confirmation and My Account pages."
@@ -230,11 +274,11 @@ msgstr ""
 "Hiển thị đơn vị vận chuyển, mã vận đơn, trạng thái và hành trình vận chuyển "
 "trên trang xác nhận đơn và Tài khoản."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:264
+#: includes/class-vietnam-commerce-kit-admin-menu.php:307
 msgid "Vietnam order management tools"
 msgstr "Công cụ quản lý đơn hàng Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:265
+#: includes/class-vietnam-commerce-kit-admin-menu.php:308
 msgid ""
 "Add Vietnam-specific order information, filters, bulk actions, and CSV "
 "exports to the WooCommerce order list."
@@ -242,21 +286,21 @@ msgstr ""
 "Thêm thông tin đơn hàng, bộ lọc, thao tác hàng loạt và xuất CSV dành cho "
 "Việt Nam vào danh sách đơn WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:268
+#: includes/class-vietnam-commerce-kit-admin-menu.php:311
 msgid "Accept invoice requests at checkout"
 msgstr "Nhận yêu cầu hóa đơn tại trang thanh toán"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:269
+#: includes/class-vietnam-commerce-kit-admin-menu.php:312
 msgid "Allow customers to submit company and tax details for new orders."
 msgstr ""
 "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng "
 "mới."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:273
+#: includes/class-vietnam-commerce-kit-admin-menu.php:316
 msgid "Manage electronic invoice workflow"
 msgstr "Quản lý quy trình hóa đơn điện tử"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:274
+#: includes/class-vietnam-commerce-kit-admin-menu.php:317
 msgid ""
 "Allow staff to update invoice status, references, notes, PDF, and XML files. "
 "When disabled, existing invoice data remains read-only."
@@ -266,17 +310,17 @@ msgstr ""
 "chỉ đọc."
 
 #. translators: %d: number of enabled shipping services.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#: includes/class-vietnam-commerce-kit-admin-menu.php:364
 #, php-format
 msgid "%d service enabled"
 msgid_plural "%d services enabled"
 msgstr[0] "Đã bật %d dịch vụ"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:327
+#: includes/class-vietnam-commerce-kit-admin-menu.php:370
 msgid "Order management"
 msgstr "Quản lý đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:328
+#: includes/class-vietnam-commerce-kit-admin-menu.php:371
 msgid ""
 "Use Vietnam-specific order columns, filters, shipment actions, and invoice "
 "information from the order list."
@@ -284,31 +328,31 @@ msgstr ""
 "Sử dụng cột đơn hàng, bộ lọc, thao tác vận chuyển và thông tin hóa đơn dành "
 "cho Việt Nam trong danh sách đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:329
-#: includes/class-vietnam-commerce-kit-admin-menu.php:387
-#: includes/class-vietnam-commerce-kit-admin-menu.php:404
-#: includes/class-vietnam-commerce-kit-admin-menu.php:414
+#: includes/class-vietnam-commerce-kit-admin-menu.php:372
+#: includes/class-vietnam-commerce-kit-admin-menu.php:430
+#: includes/class-vietnam-commerce-kit-admin-menu.php:447
+#: includes/class-vietnam-commerce-kit-admin-menu.php:457
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:106
 msgid "Enabled"
 msgstr "Bật"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:329
-#: includes/class-vietnam-commerce-kit-admin-menu.php:387
-#: includes/class-vietnam-commerce-kit-admin-menu.php:405
-#: includes/class-vietnam-commerce-kit-admin-menu.php:414
-#: includes/class-vietnam-commerce-kit-admin-menu.php:425
+#: includes/class-vietnam-commerce-kit-admin-menu.php:372
+#: includes/class-vietnam-commerce-kit-admin-menu.php:430
+#: includes/class-vietnam-commerce-kit-admin-menu.php:448
+#: includes/class-vietnam-commerce-kit-admin-menu.php:457
+#: includes/class-vietnam-commerce-kit-admin-menu.php:468
 msgid "Disabled"
 msgstr "Đã tắt"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:333
+#: includes/class-vietnam-commerce-kit-admin-menu.php:376
 msgid "Manage orders"
 msgstr "Quản lý đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:339
+#: includes/class-vietnam-commerce-kit-admin-menu.php:382
 msgid "DevVN migration"
 msgstr "Di chuyển dữ liệu DevVN"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:340
+#: includes/class-vietnam-commerce-kit-admin-menu.php:383
 msgid ""
 "Inspect and migrate compatible address and order data using WooCommerce "
 "status tools."
@@ -316,30 +360,30 @@ msgstr ""
 "Kiểm tra và di chuyển dữ liệu địa chỉ, đơn hàng tương thích bằng công cụ "
 "trạng thái WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:341
+#: includes/class-vietnam-commerce-kit-admin-menu.php:384
 msgid "Manual tool"
 msgstr "Công cụ thủ công"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:345
+#: includes/class-vietnam-commerce-kit-admin-menu.php:388
 msgid "Open migration tools"
 msgstr "Mở công cụ di chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:352
+#: includes/class-vietnam-commerce-kit-admin-menu.php:395
 msgid "Shipping and delivery"
 msgstr "Vận chuyển và giao hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:353
+#: includes/class-vietnam-commerce-kit-admin-menu.php:396
 msgid ""
 "Connect carriers, define shipping rules, and control the tracking experience."
 msgstr ""
 "Kết nối đơn vị vận chuyển, thiết lập quy tắc giao hàng và quản lý trải "
 "nghiệm theo dõi vận chuyển."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:356
+#: includes/class-vietnam-commerce-kit-admin-menu.php:399
 msgid "Shipping services"
 msgstr "Dịch vụ vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:358
+#: includes/class-vietnam-commerce-kit-admin-menu.php:401
 msgid ""
 "Configure carrier accounts, pickup addresses, automatic synchronization, and "
 "shipment status mappings."
@@ -347,7 +391,7 @@ msgstr ""
 "Cấu hình tài khoản vận chuyển, địa chỉ lấy hàng, đồng bộ tự động và ánh xạ "
 "trạng thái vận đơn."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:359
+#: includes/class-vietnam-commerce-kit-admin-menu.php:402
 msgid ""
 "No shipping service connector is installed. Manual shipment management "
 "remains available on orders."
@@ -355,19 +399,19 @@ msgstr ""
 "Chưa cài đặt kết nối dịch vụ vận chuyển. Bạn vẫn có thể quản lý vận chuyển "
 "thủ công trên đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:360
+#: includes/class-vietnam-commerce-kit-admin-menu.php:403
 msgid "Manual only"
 msgstr "Chỉ thủ công"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:364
+#: includes/class-vietnam-commerce-kit-admin-menu.php:407
 msgid "Configure services"
 msgstr "Cấu hình dịch vụ"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:367
+#: includes/class-vietnam-commerce-kit-admin-menu.php:410
 msgid "Shipping zones and rules"
 msgstr "Khu vực và quy tắc vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:368
+#: includes/class-vietnam-commerce-kit-admin-menu.php:411
 msgid ""
 "Assign rates and the Vietnam shipping rules method to WooCommerce shipping "
 "zones."
@@ -375,19 +419,19 @@ msgstr ""
 "Gán mức phí và phương thức quy tắc vận chuyển Việt Nam cho các khu vực giao "
 "hàng WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:369
+#: includes/class-vietnam-commerce-kit-admin-menu.php:412
 msgid "WooCommerce settings"
 msgstr "Cài đặt WooCommerce"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:373
+#: includes/class-vietnam-commerce-kit-admin-menu.php:416
 msgid "Manage shipping zones"
 msgstr "Quản lý khu vực vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:376
+#: includes/class-vietnam-commerce-kit-admin-menu.php:419
 msgid "Shipment tracking"
 msgstr "Theo dõi vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:377
+#: includes/class-vietnam-commerce-kit-admin-menu.php:420
 msgid ""
 "Configure public order lookup, carrier tracking URL templates, and custom "
 "carriers."
@@ -395,23 +439,23 @@ msgstr ""
 "Cấu hình tra cứu đơn hàng công khai, mẫu URL theo dõi và đơn vị vận chuyển "
 "tùy chỉnh."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:378
+#: includes/class-vietnam-commerce-kit-admin-menu.php:421
 msgid "Public lookup enabled"
 msgstr "Đã bật tra cứu công khai"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:378
+#: includes/class-vietnam-commerce-kit-admin-menu.php:421
 msgid "Public lookup disabled"
 msgstr "Đã tắt tra cứu công khai"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:382
+#: includes/class-vietnam-commerce-kit-admin-menu.php:425
 msgid "Configure tracking"
 msgstr "Cấu hình theo dõi"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:385
+#: includes/class-vietnam-commerce-kit-admin-menu.php:428
 msgid "Shipping tracking email"
 msgstr "Email theo dõi vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:386
+#: includes/class-vietnam-commerce-kit-admin-menu.php:429
 msgid ""
 "Control the subject, heading, content, and email format for customer "
 "shipment updates."
@@ -419,25 +463,25 @@ msgstr ""
 "Thiết lập tiêu đề, nội dung và định dạng email cập nhật vận chuyển gửi cho "
 "khách hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:391
+#: includes/class-vietnam-commerce-kit-admin-menu.php:434
 msgid "Configure email"
 msgstr "Cấu hình email"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:397
+#: includes/class-vietnam-commerce-kit-admin-menu.php:440
 msgid "Checkout, payments, and invoices"
 msgstr "Thanh toán và hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:398
+#: includes/class-vietnam-commerce-kit-admin-menu.php:441
 msgid "Manage Vietnam checkout behavior and payment or invoice features."
 msgstr ""
 "Quản lý quy trình thanh toán và các tính năng thanh toán hoặc hóa đơn dành "
 "cho Việt Nam."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:401
+#: includes/class-vietnam-commerce-kit-admin-menu.php:444
 msgid "Vietnam address and phone fields"
 msgstr "Địa chỉ và số điện thoại Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:402
+#: includes/class-vietnam-commerce-kit-admin-menu.php:445
 msgid ""
 "Control Vietnam address formatting, checkout compatibility, phone "
 "validation, and normalization in Core features."
@@ -445,21 +489,21 @@ msgstr ""
 "Quản lý định dạng địa chỉ Việt Nam, tương thích thanh toán, xác thực và "
 "chuẩn hóa số điện thoại trong phần Tính năng cốt lõi."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:405
+#: includes/class-vietnam-commerce-kit-admin-menu.php:448
 msgid "Partially enabled"
 msgstr "Đã bật một phần"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:409
+#: includes/class-vietnam-commerce-kit-admin-menu.php:452
 msgid "Open store address settings"
 msgstr "Mở cài đặt địa chỉ cửa hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:412
+#: includes/class-vietnam-commerce-kit-admin-menu.php:455
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:292
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:319
 msgid "VietQR bank transfer"
 msgstr "Chuyển khoản VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:413
+#: includes/class-vietnam-commerce-kit-admin-menu.php:456
 msgid ""
 "Configure bank accounts, transfer content, QR layout, order amount, and "
 "customer email display."
@@ -467,15 +511,15 @@ msgstr ""
 "Cấu hình tài khoản ngân hàng, nội dung chuyển khoản, giao diện QR, số tiền "
 "đơn hàng và hiển thị trong email khách hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:418
+#: includes/class-vietnam-commerce-kit-admin-menu.php:461
 msgid "Configure VietQR"
 msgstr "Cấu hình VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:421
+#: includes/class-vietnam-commerce-kit-admin-menu.php:464
 msgid "Business invoices"
 msgstr "Hóa đơn doanh nghiệp"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:422
+#: includes/class-vietnam-commerce-kit-admin-menu.php:465
 msgid ""
 "Collect invoice requests at checkout and manage electronic invoice data on "
 "orders as two independent capabilities."
@@ -483,27 +527,27 @@ msgstr ""
 "Tiếp nhận yêu cầu hóa đơn tại trang thanh toán và quản lý dữ liệu hóa đơn "
 "điện tử trên đơn hàng như hai tính năng độc lập."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:424
+#: includes/class-vietnam-commerce-kit-admin-menu.php:467
 msgid "Requests and workflow enabled"
 msgstr "Đã bật yêu cầu và quy trình"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:425
+#: includes/class-vietnam-commerce-kit-admin-menu.php:468
 msgid "Checkout requests enabled"
 msgstr "Đã bật yêu cầu tại thanh toán"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:425
+#: includes/class-vietnam-commerce-kit-admin-menu.php:468
 msgid "Workflow enabled"
 msgstr "Đã bật quy trình"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:429
+#: includes/class-vietnam-commerce-kit-admin-menu.php:472
 msgid "Configure invoices"
 msgstr "Cấu hình hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:435
+#: includes/class-vietnam-commerce-kit-admin-menu.php:478
 msgid "Maintenance tools"
 msgstr "Công cụ bảo trì"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:436
+#: includes/class-vietnam-commerce-kit-admin-menu.php:479
 msgid ""
 "Review operational data and migrate compatible settings from legacy Vietnam "
 "checkout plugins."
@@ -1543,43 +1587,7 @@ msgstr "Trạng thái đơn hàng"
 msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:94
-msgid "PayPal USD conversion"
-msgstr "Chuyển đổi PayPal sang USD"
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:96
-msgid "Convert VND to USD for WooCommerce PayPal Payments"
-msgstr "Chuyển đổi VND sang USD cho WooCommerce PayPal Payments"
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:97
-msgid ""
-"Supports one-time CAPTURE payments on the normal checkout only. WooCommerce "
-"orders remain in VND."
-msgstr ""
-"Chỉ hỗ trợ thanh toán CAPTURE một lần tại trang thanh toán thông thường. Đơn "
-"hàng WooCommerce vẫn dùng VND."
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:101
-msgid "Manual VND per USD rate"
-msgstr "Tỷ giá VND trên mỗi USD nhập thủ công"
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:103
-msgid ""
-"Enter how many VND equal 1 USD, for example 25000. The rate is locked for "
-"each payment attempt."
-msgstr ""
-"Nhập số VND tương đương 1 USD, ví dụ 25000. Tỷ giá được khóa cho từng lần "
-"thanh toán."
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:118
-msgid ""
-"PayPal USD conversion was disabled because the manual VND per USD rate is "
-"invalid."
-msgstr ""
-"Chuyển đổi PayPal sang USD đã bị tắt vì tỷ giá VND trên mỗi USD nhập thủ "
-"công không hợp lệ."
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:178
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:180
 msgid ""
 "PayPal order creation cannot be repeated for the active VND to USD payment "
 "attempt. Please start a new checkout attempt."
@@ -1587,7 +1595,7 @@ msgstr ""
 "Không thể tạo lại đơn hàng PayPal cho lần thanh toán chuyển đổi từ VND sang "
 "USD đang hoạt động. Vui lòng bắt đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:185
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:187
 msgid ""
 "PayPal USD conversion could not safely prepare this order. Please use "
 "another payment method or contact the store."
@@ -1595,7 +1603,7 @@ msgstr ""
 "Không thể chuẩn bị đơn hàng này một cách an toàn để chuyển đổi PayPal sang "
 "USD. Vui lòng dùng phương thức thanh toán khác hoặc liên hệ cửa hàng."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:190
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:192
 msgid ""
 "The PayPal USD amount changed during checkout. Please refresh the checkout "
 "and try again."
@@ -1603,7 +1611,7 @@ msgstr ""
 "Số tiền USD của PayPal đã thay đổi trong quá trình thanh toán. Vui lòng tải "
 "lại trang thanh toán và thử lại."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:205
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:208
 msgid ""
 "PayPal USD conversion could not verify the active payment attempt before "
 "updating the order."
@@ -1611,7 +1619,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không thể xác minh lần thanh toán đang hoạt động "
 "trước khi cập nhật đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:211
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:214
 msgid ""
 "PayPal order updates cannot be safely associated with this VND to USD "
 "payment attempt. Please start a new checkout attempt."
@@ -1619,14 +1627,14 @@ msgstr ""
 "Không thể liên kết an toàn nội dung cập nhật đơn hàng PayPal với lần thanh "
 "toán chuyển đổi từ VND sang USD này. Vui lòng bắt đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:215
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:228
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:218
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:231
 msgid "PayPal returned an unsupported order update for this converted payment."
 msgstr ""
 "PayPal trả về nội dung cập nhật đơn hàng không được hỗ trợ cho khoản thanh "
 "toán đã chuyển đổi này."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:238
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:241
 msgid ""
 "PayPal returned an unsafe monetary order update. Please start a new checkout "
 "attempt."
@@ -1634,7 +1642,7 @@ msgstr ""
 "PayPal trả về nội dung cập nhật số tiền không an toàn. Vui lòng bắt đầu một "
 "lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:243
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:246
 msgid ""
 "The PayPal order amount changed after USD conversion was locked. Please "
 "start a new checkout attempt."
@@ -1642,27 +1650,28 @@ msgstr ""
 "Số tiền đơn hàng PayPal đã thay đổi sau khi phép chuyển đổi sang USD được "
 "khóa. Vui lòng bắt đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:259
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:262
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:271
 msgid "PayPal returned an order that does not match the locked USD payment."
 msgstr "PayPal trả về đơn hàng không khớp với khoản thanh toán USD đã khóa."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:278
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:570
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:576
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:323
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:672
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:678
 msgid ""
 "The WooCommerce order could not be linked to the locked PayPal USD payment."
 msgstr ""
 "Không thể liên kết đơn hàng WooCommerce với khoản thanh toán PayPal USD đã "
 "khóa."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:306
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:351
 msgid ""
 "Saved PayPal payment methods are not supported by VND to USD conversion."
 msgstr ""
 "Phương thức thanh toán PayPal đã lưu không được hỗ trợ khi chuyển đổi từ VND "
 "sang USD."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:309
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:354
 msgid ""
 "Continuing an existing PayPal order is not supported by VND to USD "
 "conversion."
@@ -1670,16 +1679,16 @@ msgstr ""
 "Không hỗ trợ tiếp tục đơn hàng PayPal hiện có khi chuyển đổi từ VND sang USD."
 
 #. translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:342
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:387
 #, php-format
 msgid "PayPal will charge %1$s USD (1 USD = %2$s VND)."
 msgstr "PayPal sẽ thu %1$s USD (1 USD = %2$s VND)."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:350
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:395
 msgid "PayPal USD conversion is not available for this checkout."
 msgstr "Chuyển đổi PayPal sang USD không khả dụng cho lần thanh toán này."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:420
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:518
 msgid ""
 "PayPal USD conversion is inactive because its manual VND per USD rate is "
 "invalid."
@@ -1687,7 +1696,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không hoạt động vì tỷ giá VND trên mỗi USD nhập "
 "thủ công không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:423
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:521
 msgid ""
 "PayPal USD conversion is inactive because the installed WooCommerce PayPal "
 "Payments version is incompatible."
@@ -1695,7 +1704,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không hoạt động vì phiên bản WooCommerce PayPal "
 "Payments đã cài đặt không tương thích."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:426
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:524
 msgid ""
 "PayPal USD conversion requires CAPTURE intent. PayPal is unavailable until "
 "WooCommerce PayPal Payments uses CAPTURE."
@@ -1703,7 +1712,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD yêu cầu phương thức CAPTURE. PayPal sẽ không khả "
 "dụng cho đến khi WooCommerce PayPal Payments sử dụng CAPTURE."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:436
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:534
 msgid ""
 "PayPal USD conversion is unavailable because the installed integration is "
 "incompatible."
@@ -1711,15 +1720,15 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không khả dụng vì tích hợp đã cài đặt không tương "
 "thích."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:443
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:541
 msgid "This PayPal payment flow is not supported by VND to USD conversion."
 msgstr "Luồng thanh toán PayPal này không hỗ trợ chuyển đổi từ VND sang USD."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:447
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:545
 msgid "PayPal USD conversion supports one-time CAPTURE payments only."
 msgstr "Chuyển đổi PayPal sang USD chỉ hỗ trợ thanh toán CAPTURE một lần."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:477
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:579
 msgid ""
 "PayPal USD conversion is unavailable because its exchange rate or checkout "
 "session is invalid."
@@ -1727,7 +1736,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không khả dụng vì tỷ giá hoặc phiên thanh toán "
 "không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:489
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:591
 msgid ""
 "The cart changed after PayPal conversion was locked. Please start a new "
 "checkout attempt."
@@ -1735,8 +1744,8 @@ msgstr ""
 "Giỏ hàng đã thay đổi sau khi phép chuyển đổi PayPal được khóa. Vui lòng bắt "
 "đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:507
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:527
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:609
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:629
 msgid "PayPal USD conversion could not verify the current VND total."
 msgstr "Chuyển đổi PayPal sang USD không thể xác minh tổng tiền VND hiện tại."
 

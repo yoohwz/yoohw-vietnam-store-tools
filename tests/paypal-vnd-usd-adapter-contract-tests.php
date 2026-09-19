@@ -5,7 +5,7 @@
  * Run with: php tests/paypal-vnd-usd-adapter-contract-tests.php
  */
 
-namespace Psr\Log {
+namespace WooCommerce\PayPalCommerce\Vendor\Psr\Log {
 	interface LoggerInterface {}
 	final class NullLogger implements LoggerInterface {}
 }
@@ -101,10 +101,10 @@ namespace WooCommerce\PayPalCommerce\WcGateway\Helper {
 }
 
 namespace WooCommerce\PayPalCommerce\WcGateway\Processor {
-	use Psr\Log\LoggerInterface;
 	use WooCommerce\PayPalCommerce\ApiClient\Endpoint\OrderEndpoint;
 	use WooCommerce\PayPalCommerce\ApiClient\Endpoint\PaymentsEndpoint;
 	use WooCommerce\PayPalCommerce\ApiClient\Entity\Order;
+	use WooCommerce\PayPalCommerce\Vendor\Psr\Log\LoggerInterface;
 	use WooCommerce\PayPalCommerce\WcGateway\Helper\RefundFeesUpdater;
 
 	class RefundProcessor {
@@ -123,7 +123,9 @@ namespace WooCommerce\PayPalCommerce\WcGateway\Processor {
 
 namespace WooCommerce\PayPalCommerce\SdkV6\Assets {
 	class SdkV6Manager {
-		public function __construct( ...$args ) { unset( $args ); }
+		public function __construct( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24 ) {
+			unset( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24 );
+		}
 		public function script_data(): array { return array( 'currency' => 'VND', 'amount' => '100000' ); }
 	}
 }
@@ -133,7 +135,6 @@ namespace WooCommerce\PayPalCommerce\SdkV6\Blocks {
 }
 
 namespace {
-	use Psr\Log\NullLogger;
 	use WooCommerce\PayPalCommerce\ApiClient\Endpoint\OrderEndpoint;
 	use WooCommerce\PayPalCommerce\ApiClient\Endpoint\PaymentsEndpoint;
 	use WooCommerce\PayPalCommerce\ApiClient\Entity\Amount;
@@ -142,6 +143,7 @@ namespace {
 	use WooCommerce\PayPalCommerce\ApiClient\Entity\Order;
 	use WooCommerce\PayPalCommerce\ApiClient\Entity\Payments;
 	use WooCommerce\PayPalCommerce\Vendor\Psr\Container\ContainerInterface;
+	use WooCommerce\PayPalCommerce\Vendor\Psr\Log\NullLogger;
 	use WooCommerce\PayPalCommerce\WcGateway\Helper\RefundFeesUpdater;
 
 	define( 'ABSPATH', __DIR__ . '/' );
@@ -151,19 +153,21 @@ namespace {
 	function __( $value ) { return $value; }
 	function get_woocommerce_currency() { return 'VND'; }
 	$GLOBALS['vst_is_checkout'] = true;
+	$GLOBALS['vst_ppcp_version'] = '4.1.3';
 	function is_checkout() { return $GLOBALS['vst_is_checkout']; }
 	function is_order_received_page() { return false; }
 	function is_checkout_pay_page() { return false; }
 	function get_option( $key, $default = false ) {
-		if ( 'woocommerce_ppcp-gateway_settings' === $key ) {
+		if ( 'yoohw_vietnam_store_tools_paypal_conversion_settings' === $key ) {
 			return array(
 				'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled' => 'yes',
 				'yoohw_vietnam_store_tools_paypal_vnd_usd_rate' => '25000',
 			);
 		}
-		if ( 'woocommerce-ppcp-settings' === $key ) {
+		if ( 'woocommerce-ppcp-data-settings' === $key ) {
 			return array( 'authorize_only' => false );
 		}
+		if ( 'woocommerce-ppcp-version' === $key ) { return $GLOBALS['vst_ppcp_version']; }
 		return $default;
 	}
 	function add_filter() {}
@@ -227,6 +231,13 @@ namespace {
 	$runtime    = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
 	$registered = $runtime->register_ppcp_module( array() );
 	vst_assert_same( 1, count( $registered ), 'Compatible PPCP types register exactly one lazy adapter module' );
+	$GLOBALS['vst_ppcp_version'] = '4.2.0';
+	$incompatible_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+	$incompatible_modules = $incompatible_runtime->register_ppcp_module( array( 'core-module' ) );
+	vst_assert_same( array( 'core-module' ), $incompatible_modules, 'An unverified PPCP version does not append the conversion adapter module' );
+	$incompatible_gateways = $incompatible_runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array(), 'bacs' => (object) array() ) );
+	vst_assert_true( isset( $incompatible_gateways['bacs'] ) && ! isset( $incompatible_gateways['ppcp-gateway'] ), 'Incompatible conversion fails closed without affecting non-PayPal checkout boot' );
+	$GLOBALS['vst_ppcp_version'] = '4.1.3';
 	$module     = $registered[0];
 	$extensions = $module->extensions();
 	vst_assert_true( isset( $extensions['wcgateway.processor.refunds'] ), 'Registers the PPCP 4.1.3 refund service extension' );

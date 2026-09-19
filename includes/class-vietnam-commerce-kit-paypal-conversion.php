@@ -11,23 +11,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
-	const GATEWAY_ID       = 'ppcp-gateway';
-	const SETTINGS_OPTION  = 'woocommerce_ppcp-gateway_settings';
-	const PPCP_OPTION      = 'woocommerce-ppcp-settings';
-	const SETTING_ENABLED  = 'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled';
-	const SETTING_RATE     = 'yoohw_vietnam_store_tools_paypal_vnd_usd_rate';
-	const ATTEMPT_KEY      = 'yoohw_vietnam_store_tools_paypal_usd_attempt';
-	const SNAPSHOT_META    = '_yoohw_vietnam_store_tools_paypal_usd_snapshot';
-	const REFUNDS_META     = '_yoohw_vietnam_store_tools_paypal_usd_refunds';
-	const SCHEMA_VERSION   = 1;
-	const ATTEMPT_LIFETIME = HOUR_IN_SECONDS;
+	const GATEWAY_ID             = 'ppcp-gateway';
+	const SETTINGS_OPTION        = 'yoohw_vietnam_store_tools_paypal_conversion_settings';
+	const PPCP_OPTION            = 'woocommerce-ppcp-data-settings';
+	const PPCP_LEGACY_OPTION     = 'woocommerce-ppcp-settings';
+	const SUPPORTED_PPCP_VERSION = '4.1.3';
+	const SETTING_ENABLED        = 'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled';
+	const SETTING_RATE           = 'yoohw_vietnam_store_tools_paypal_vnd_usd_rate';
+	const ATTEMPT_KEY            = 'yoohw_vietnam_store_tools_paypal_usd_attempt';
+	const SNAPSHOT_META          = '_yoohw_vietnam_store_tools_paypal_usd_snapshot';
+	const REFUNDS_META           = '_yoohw_vietnam_store_tools_paypal_usd_refunds';
+	const SCHEMA_VERSION         = 1;
+	const ATTEMPT_LIFETIME       = HOUR_IN_SECONDS;
 
-	private $adapter_incompatible = false;
-	private $adapter_ready        = false;
+	private $adapter_incompatible        = false;
+	private $adapter_ready               = false;
+	private $store_api_checkout_request = false;
+	private $create_guard_token          = '';
 
 	public function __construct() {
-		add_filter( 'woocommerce_settings_api_form_fields_' . self::GATEWAY_ID, array( $this, 'add_gateway_settings' ) );
-		add_filter( 'woocommerce_settings_api_sanitized_fields_' . self::GATEWAY_ID, array( $this, 'sanitize_gateway_settings' ) );
 		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'filter_available_gateways' ), 40 );
 		add_filter( 'woocommerce_paypal_payments_use_place_order_button', array( $this, 'force_place_order_button' ), 40 );
 		add_filter( 'woocommerce_paypal_payments_blocks_add_place_order_method', array( $this, 'force_blocks_place_order_method' ), 40 );
@@ -45,6 +47,10 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		add_action( 'wp_ajax_nopriv_yoohw_paypal_usd_quote', array( $this, 'ajax_quote' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_filter( 'woocommerce_paypal_payments_localized_script_data', array( $this, 'filter_v5_script_data' ), 30 );
+		add_filter( 'rest_request_before_callbacks', array( $this, 'mark_store_api_checkout_request' ), 10, 3 );
+		add_filter( 'rest_request_after_callbacks', array( $this, 'clear_store_api_checkout_request' ), PHP_INT_MAX, 3 );
+		add_action( 'woocommerce_init', array( $this, 'handle_cancelled_attempt' ), 20 );
+		add_action( 'shutdown', array( $this, 'recover_failed_create_attempt' ), 0 );
 
 		// PPCP invokes this only after its own autoloader has become available.
 		add_filter( 'woocommerce_paypal_payments_modules', array( $this, 'register_ppcp_module' ), 30 );
@@ -57,10 +63,14 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	public static function get_rate() {
+		$rate = self::get_configured_rate();
+		return self::is_valid_rate( $rate ) ? $rate : '';
+	}
+
+	public static function get_configured_rate() {
 		$settings = get_option( self::SETTINGS_OPTION, array() );
 		$settings = is_array( $settings ) ? $settings : array();
-		$rate     = isset( $settings[ self::SETTING_RATE ] ) ? trim( (string) $settings[ self::SETTING_RATE ] ) : '';
-		return self::is_valid_rate( $rate ) ? $rate : '';
+		return isset( $settings[ self::SETTING_RATE ] ) ? trim( (string) $settings[ self::SETTING_RATE ] ) : '';
 	}
 
 	public static function is_valid_rate( $rate ) {
@@ -86,39 +96,18 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		return self::is_valid_attempt( $attempt ) && (int) $attempt['expires_at'] >= time() && ! empty( $attempt['preview_usd_total'] ) ? $attempt : null;
 	}
 
-	public function add_gateway_settings( $fields ) {
-		if ( isset( $fields[ self::SETTING_ENABLED ] ) ) {
-			return $fields;
-		}
-		$fields[ self::SETTING_ENABLED ] = array(
-			'title'       => __( 'PayPal USD conversion', 'yoohw-vietnam-store-tools' ),
-			'type'        => 'checkbox',
-			'label'       => __( 'Convert VND to USD for WooCommerce PayPal Payments', 'yoohw-vietnam-store-tools' ),
-			'description' => __( 'Supports one-time CAPTURE payments on the normal checkout only. WooCommerce orders remain in VND.', 'yoohw-vietnam-store-tools' ),
-			'default'     => 'no',
-		);
-		$fields[ self::SETTING_RATE ]    = array(
-			'title'       => __( 'Manual VND per USD rate', 'yoohw-vietnam-store-tools' ),
-			'type'        => 'text',
-			'description' => __( 'Enter how many VND equal 1 USD, for example 25000. The rate is locked for each payment attempt.', 'yoohw-vietnam-store-tools' ),
-			'default'     => '',
-			'desc_tip'    => true,
-		);
-		return $fields;
-	}
-
-	public function sanitize_gateway_settings( $settings ) {
+	public static function sanitize_settings( $settings ) {
 		if ( ! is_array( $settings ) ) {
-			return $settings;
+			$settings = array();
 		}
-		$settings[ self::SETTING_RATE ] = trim( (string) ( $settings[ self::SETTING_RATE ] ?? '' ) );
-		if ( 'yes' === ( $settings[ self::SETTING_ENABLED ] ?? 'no' ) && ! self::is_valid_rate( $settings[ self::SETTING_RATE ] ) ) {
-			$settings[ self::SETTING_ENABLED ] = 'no';
-			if ( class_exists( 'WC_Admin_Settings' ) ) {
-				WC_Admin_Settings::add_error( __( 'PayPal USD conversion was disabled because the manual VND per USD rate is invalid.', 'yoohw-vietnam-store-tools' ) );
-			}
+		$sanitized = array(
+			self::SETTING_ENABLED => 'yes' === ( $settings[ self::SETTING_ENABLED ] ?? 'no' ) ? 'yes' : 'no',
+			self::SETTING_RATE    => trim( (string) ( $settings[ self::SETTING_RATE ] ?? '' ) ),
+		);
+		if ( 'yes' === $sanitized[ self::SETTING_ENABLED ] && ! self::is_valid_rate( $sanitized[ self::SETTING_RATE ] ) ) {
+			$sanitized[ self::SETTING_ENABLED ] = 'no';
 		}
-		return $settings;
+		return $sanitized;
 	}
 
 	public function filter_available_gateways( $gateways ) {
@@ -145,6 +134,19 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			$gateways[ self::GATEWAY_ID ]->supports = array_values( array_diff( $gateways[ self::GATEWAY_ID ]->supports, array( 'tokenization', 'subscriptions' ) ) );
 		}
 		return $gateways;
+	}
+
+	public function mark_store_api_checkout_request( $response, $handler, $request ) {
+		unset( $handler );
+		$route = is_object( $request ) && is_callable( array( $request, 'get_route' ) ) ? (string) $request->get_route() : '';
+		$this->store_api_checkout_request = 1 === preg_match( '#^/wc/store/v[0-9]+/checkout/?$#', $route );
+		return $response;
+	}
+
+	public function clear_store_api_checkout_request( $response, $handler, $request ) {
+		unset( $handler, $request );
+		$this->store_api_checkout_request = false;
+		return $response;
 	}
 
 	public function force_place_order_button( $use_place_order ) {
@@ -194,6 +196,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		$attempt['usd_total']  = $usd_total;
 		$attempt['created_at'] = gmdate( 'c' );
 		$this->set_attempt( $attempt );
+		$this->create_guard_token = (string) $attempt['token'];
 		return $converted;
 	}
 
@@ -254,7 +257,16 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		}
 
 		$paypal_order_id = (string) $paypal_order->id();
-		if ( '' === $paypal_order_id || ! $this->paypal_response_matches_attempt( $paypal_order, $attempt ) ) {
+		if ( '' === $paypal_order_id ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
+			throw new RuntimeException( __( 'PayPal returned an order that does not match the locked USD payment.', 'yoohw-vietnam-store-tools' ) );
+		}
+		if ( ! $this->paypal_response_matches_attempt( $paypal_order, $attempt ) ) {
+			$attempt['state']           = 'payment_rejected';
+			$attempt['paypal_order_id'] = $paypal_order_id;
+			$attempt['linked_at']       = gmdate( 'c' );
+			$this->set_attempt( $attempt );
+			$this->create_guard_token = '';
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'PayPal returned an order that does not match the locked USD payment.', 'yoohw-vietnam-store-tools' ) );
 		}
@@ -263,6 +275,39 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		$attempt['paypal_order_id'] = $paypal_order_id;
 		$attempt['linked_at']       = gmdate( 'c' );
 		$this->set_attempt( $attempt );
+		$this->create_guard_token = '';
+	}
+
+	public function recover_failed_create_attempt() {
+		if ( '' === $this->create_guard_token ) {
+			return;
+		}
+		$attempt = $this->get_attempt();
+		if ( self::is_valid_attempt( $attempt )
+			&& 'creating' === $attempt['state']
+			&& hash_equals( $this->create_guard_token, (string) $attempt['token'] )
+			&& empty( $attempt['paypal_order_id'] ) ) {
+			$attempt['state'] = 'quote';
+			unset( $attempt['payload'], $attempt['usd_total'], $attempt['created_at'] );
+			$this->set_attempt( $attempt );
+		}
+		$this->create_guard_token = '';
+	}
+
+	public function handle_cancelled_attempt() {
+		if ( ! isset( $_GET['ppcp-cancel'] ) || ! is_scalar( $_GET['ppcp-cancel'] ) ) {
+			return;
+		}
+		$nonce = sanitize_text_field( wp_unslash( $_GET['ppcp-cancel'] ) );
+		if ( ! wp_verify_nonce( $nonce, 'ppcp-cancel' ) ) {
+			return;
+		}
+		$attempt = $this->get_attempt();
+		if ( self::is_valid_attempt( $attempt )
+			&& in_array( $attempt['state'], array( 'payment_created', 'payment_rejected' ), true )
+			&& ! empty( $attempt['paypal_order_id'] ) ) {
+			$this->set_attempt( null );
+		}
 	}
 
 	public function link_paypal_order( $order, $paypal_order ) {
@@ -376,6 +421,10 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	public function register_ppcp_module( $modules ) {
+		if ( self::SUPPORTED_PPCP_VERSION !== $this->get_ppcp_version() ) {
+			$this->adapter_incompatible = true;
+			return $modules;
+		}
 		$required = array(
 			'WooCommerce\\PayPalCommerce\\Vendor\\Inpsyde\\Modularity\\Module\\ExtendingModule',
 			'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Container\\ContainerInterface',
@@ -390,13 +439,17 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Exception\\RuntimeException',
 			'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
 			'WooCommerce\\PayPalCommerce\\SdkV6\\Blocks\\V6PaymentMethod',
-			'Psr\\Log\\LoggerInterface',
+			'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
 		);
 		foreach ( $required as $class ) {
 			if ( ! class_exists( $class ) && ! interface_exists( $class ) ) {
 				$this->adapter_incompatible = true;
 				return $modules;
 			}
+		}
+		if ( ! $this->has_supported_ppcp_signatures() ) {
+			$this->adapter_incompatible = true;
+			return $modules;
 		}
 		$adapter = YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'includes/class-vietnam-commerce-kit-paypal-ppcp-adapter.php';
 		if ( ! is_readable( $adapter ) ) {
@@ -410,6 +463,51 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			$this->adapter_ready        = true;
 		}
 		return $modules;
+	}
+
+	private function get_ppcp_version() {
+		if ( class_exists( 'WooCommerce\\PayPalCommerce\\PPCP' ) && function_exists( 'get_file_data' ) ) {
+			try {
+				$reflection  = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\PPCP' );
+				$plugin_file = dirname( $reflection->getFileName(), 2 ) . '/woocommerce-paypal-payments.php';
+				if ( is_readable( $plugin_file ) ) {
+					$headers = get_file_data( $plugin_file, array( 'version' => 'Version' ) );
+					if ( is_string( $headers['version'] ?? null ) && '' !== $headers['version'] ) {
+						return $headers['version'];
+					}
+				}
+			} catch ( Throwable $error ) {
+				// Fall through to PPCP's persisted installed-version option.
+			}
+		}
+		$version = get_option( 'woocommerce-ppcp-version', '' );
+		return is_string( $version ) ? $version : '';
+	}
+
+	private function has_supported_ppcp_signatures() {
+		try {
+			$sdk_class          = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
+			$refund_class       = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor' );
+			$sdk_method         = $sdk_class->getMethod( 'script_data' );
+			$refund_method      = $refund_class->getMethod( 'refund' );
+			$sdk_constructor    = $sdk_class->getConstructor();
+			$refund_constructor = $refund_class->getConstructor();
+
+			return ! $sdk_class->isFinal()
+				&& ! $refund_class->isFinal()
+				&& $sdk_method->isPublic()
+				&& ! $sdk_method->isFinal()
+				&& 0 === $sdk_method->getNumberOfParameters()
+				&& $refund_method->isPublic()
+				&& ! $refund_method->isFinal()
+				&& 4 === $refund_method->getNumberOfParameters()
+				&& $sdk_constructor
+				&& 24 === $sdk_constructor->getNumberOfParameters()
+				&& $refund_constructor
+				&& 5 === $refund_constructor->getNumberOfParameters();
+		} catch ( Throwable $error ) {
+			return false;
+		}
 	}
 
 	public function admin_notices() {
@@ -450,7 +548,8 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	private function is_supported_checkout_context() {
-		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) || ( function_exists( 'is_checkout_pay_page' ) && is_checkout_pay_page() ) ) {
+		$is_checkout_page = function_exists( 'is_checkout' ) && is_checkout();
+		if ( ( ! $is_checkout_page && ! $this->store_api_checkout_request ) || ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) || ( function_exists( 'is_checkout_pay_page' ) && is_checkout_pay_page() ) ) {
 			return false;
 		}
 		return ! $this->cart_contains_subscription();
@@ -465,7 +564,10 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	private static function is_capture_mode() {
-		$settings       = get_option( self::PPCP_OPTION, array() );
+		$settings = get_option( self::PPCP_OPTION, false );
+		if ( ! is_array( $settings ) ) {
+			$settings = get_option( self::PPCP_LEGACY_OPTION, array() );
+		}
 		$settings       = is_array( $settings ) ? $settings : array();
 		$authorize_only = $settings['authorize_only'] ?? false;
 		return ! in_array( $authorize_only, array( true, 1, '1', 'yes', 'on' ), true );
@@ -484,7 +586,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		if ( self::is_valid_attempt( $attempt ) && (int) $attempt['expires_at'] < time() ) {
 			$attempt = null;
 		}
-		if ( self::is_valid_attempt( $attempt ) && in_array( $attempt['state'], array( 'creating', 'payment_created' ), true ) ) {
+		if ( self::is_valid_attempt( $attempt ) && in_array( $attempt['state'], array( 'creating', 'payment_created', 'payment_rejected' ), true ) ) {
 			if ( ! hash_equals( (string) $attempt['fingerprint'], $source['fingerprint'] ) ) {
 				return new WP_Error( 'paypal_usd_attempt_locked', __( 'The cart changed after PayPal conversion was locked. Please start a new checkout attempt.', 'yoohw-vietnam-store-tools' ) );
 			}

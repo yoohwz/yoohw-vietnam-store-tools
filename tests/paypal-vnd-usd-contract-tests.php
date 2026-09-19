@@ -9,7 +9,9 @@ define( 'ABSPATH', __DIR__ . '/' );
 define( 'HOUR_IN_SECONDS', 3600 );
 
 function __( $value ) { return $value; }
-function get_option( $key, $default = false ) { return $default; }
+function get_option( $key, $default = false ) {
+	return 'woocommerce-ppcp-version' === $key ? '4.1.3' : $default;
+}
 function get_woocommerce_currency() { return 'VND'; }
 function is_checkout() { return false; }
 function wp_generate_uuid4() { return '00000000-0000-4000-8000-000000000000'; }
@@ -30,14 +32,15 @@ require __DIR__ . '/support/assertions.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conversion.php';
 
 $unavailable_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
-vst_assert_same( array( 'core-module' ), $unavailable_runtime->register_ppcp_module( array( 'core-module' ) ), 'Lazy adapter callback returns safely before PPCP types are available' );
-$invalid_settings = $unavailable_runtime->sanitize_gateway_settings(
+vst_assert_same( array( 'core-module' ), $unavailable_runtime->register_ppcp_module( array( 'core-module' ) ), 'Compatible PPCP version without required services does not append the adapter module' );
+$invalid_settings = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::sanitize_settings(
 	array(
 		'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled' => 'yes',
 		'yoohw_vietnam_store_tools_paypal_vnd_usd_rate'    => '0',
 	)
 );
 vst_assert_same( 'no', $invalid_settings['yoohw_vietnam_store_tools_paypal_vnd_usd_enabled'], 'Invalid manual rate disables conversion during settings sanitization' );
+vst_assert_same( '0', $invalid_settings['yoohw_vietnam_store_tools_paypal_vnd_usd_rate'], 'Settings sanitization preserves the invalid rate for administrator correction' );
 
 vst_assert_true( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_valid_rate( '25000' ), 'Accepts an integer VND/USD rate' );
 vst_assert_true( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_valid_rate( '25000.125' ), 'Accepts a bounded decimal VND/USD rate' );
@@ -173,11 +176,16 @@ $root    = dirname( __DIR__ );
 $runtime = file_get_contents( $root . '/includes/class-vietnam-commerce-kit-paypal-conversion.php' );
 $adapter = file_get_contents( $root . '/includes/class-vietnam-commerce-kit-paypal-ppcp-adapter.php' );
 $script  = file_get_contents( $root . '/assets/js/frontend/paypal-vnd-usd.js' );
+$admin   = file_get_contents( $root . '/includes/class-vietnam-commerce-kit-admin-menu.php' );
 
 vst_assert_true( false !== strpos( $runtime, "'ppcp_patch_order_request_body_data'" ), 'Runtime guards the mandatory PPCP amount patch boundary' );
 vst_assert_true( false !== strpos( $runtime, "'woocommerce_paypal_payments_modules'" ), 'Runtime registers the lazy PPCP module filter' );
 vst_assert_true( false !== strpos( $runtime, "'woocommerce_paypal_payments_use_place_order_button'" ), 'Runtime constrains conversion to the normal place-order flow' );
 vst_assert_true( false !== strpos( $runtime, "'woocommerce_paypal_payments_buttons_disabled'" ), 'Runtime disables unsupported express button flows' );
+vst_assert_true( false !== strpos( $runtime, "'yoohw_vietnam_store_tools_paypal_conversion_settings'" ), 'Conversion settings are owned by Vietnam Store Toolkit' );
+vst_assert_same( false, false !== strpos( $runtime, 'woocommerce_settings_api_form_fields_ppcp-gateway' ), 'Runtime does not inject fields into the PPCP React settings screen' );
+vst_assert_true( false !== strpos( $runtime, "'woocommerce-ppcp-data-settings'" ), 'Runtime reads the authoritative PPCP data settings option' );
+vst_assert_true( false !== strpos( $admin, "paypal_conversion[rate]" ) && false !== strpos( $admin, 'sanitize_settings' ), 'Toolkit admin page renders and sanitizes its PayPal conversion settings' );
 vst_assert_same( false, false !== strpos( $runtime, "'woocommerce_checkout_create_order'" ), 'Snapshot persistence requires PayPal-order linkage rather than an unbound checkout hook' );
 vst_assert_true( false !== strpos( $runtime, "'wp_enqueue_scripts', array( \$this, 'prepare_checkout_attempt' ), 1" ), 'Server-owned quote is ready before PPCP enqueues SDK v6 data' );
 vst_assert_true( false !== strpos( $runtime, 'SdkV6\\\\Blocks\\\\V6PaymentMethod' ), 'Runtime capability-checks the PPCP 4.1.3 Blocks contract lazily' );

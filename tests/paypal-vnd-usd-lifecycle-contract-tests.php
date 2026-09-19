@@ -12,7 +12,8 @@ function __( $value ) { return $value; }
 function add_filter() {}
 function add_action() {}
 function get_woocommerce_currency() { return 'VND'; }
-function is_checkout() { return true; }
+$GLOBALS['vst_is_checkout'] = true;
+function is_checkout() { return $GLOBALS['vst_is_checkout']; }
 function is_order_received_page() { return false; }
 function is_checkout_pay_page() { return false; }
 function wp_generate_uuid4() { return '00000000-0000-4000-8000-000000000045'; }
@@ -20,19 +21,26 @@ function wc_format_decimal( $value ) { return (string) $value; }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
 
 $GLOBALS['vst_paypal_conversion_enabled'] = true;
+$GLOBALS['vst_ppcp_data_settings'] = array( 'authorize_only' => false );
 
 function get_option( $key, $default = false ) {
-	if ( 'woocommerce_ppcp-gateway_settings' === $key ) {
+	if ( 'yoohw_vietnam_store_tools_paypal_conversion_settings' === $key ) {
 		return array(
 			'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled' => $GLOBALS['vst_paypal_conversion_enabled'] ? 'yes' : 'no',
 			'yoohw_vietnam_store_tools_paypal_vnd_usd_rate'    => '25000',
 		);
 	}
+	if ( 'woocommerce-ppcp-data-settings' === $key ) {
+		return $GLOBALS['vst_ppcp_data_settings'];
+	}
 	if ( 'woocommerce-ppcp-settings' === $key ) {
-		return array( 'authorize_only' => false );
+		return array( 'authorize_only' => true );
 	}
 	return $default;
 }
+function wp_unslash( $value ) { return $value; }
+function sanitize_text_field( $value ) { return is_scalar( $value ) ? (string) $value : ''; }
+function wp_verify_nonce( $nonce, $action ) { return 'valid-cancel' === $nonce && 'ppcp-cancel' === $action; }
 
 class WP_Error {
 	private $message;
@@ -103,6 +111,12 @@ final class Fake_Checkout_Errors {
 	public function add( $code, $message ) { unset( $message ); $this->codes[] = $code; }
 }
 
+final class Fake_REST_Request {
+	private $route;
+	public function __construct( $route ) { $this->route = $route; }
+	public function get_route() { return $this->route; }
+}
+
 require __DIR__ . '/support/assertions.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conversion.php';
 
@@ -157,6 +171,29 @@ $available = $runtime->filter_available_gateways(
 vst_assert_true( isset( $available['ppcp-gateway'], $available['bacs'] ), 'Conversion preserves the target PayPal gateway and non-PayPal gateways' );
 vst_assert_same( false, isset( $available['ppcp-card-button-gateway'] ) || isset( $available['ppcp-googlepay'] ), 'Unsupported PPCP card and wallet gateways are unavailable' );
 vst_assert_same( array( 'products', 'refunds' ), $available['ppcp-gateway']->supports, 'Converted gateway removes tokenization and subscription support' );
+
+$GLOBALS['vst_is_checkout'] = false;
+$runtime->mark_store_api_checkout_request( null, null, new Fake_REST_Request( '/wc/store/v1/checkout' ) );
+$store_api_available = $runtime->filter_available_gateways(
+	array(
+		'ppcp-gateway' => (object) array(),
+		'bacs'         => (object) array(),
+	)
+);
+vst_assert_true( isset( $store_api_available['ppcp-gateway'] ), 'Store API checkout keeps the converted PayPal gateway before process_payment' );
+$runtime->clear_store_api_checkout_request( null, null, new Fake_REST_Request( '/wc/store/v1/checkout' ) );
+$cart_route_available = $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) );
+vst_assert_same( false, isset( $cart_route_available['ppcp-gateway'] ), 'Non-checkout requests do not expose converted PayPal' );
+$GLOBALS['vst_is_checkout'] = true;
+
+$GLOBALS['vst_ppcp_data_settings'] = array( 'authorize_only' => true );
+$authorize_only_available = $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) );
+vst_assert_same( false, isset( $authorize_only_available['ppcp-gateway'] ), 'Authoritative PPCP data option disables conversion for AUTHORIZE intent' );
+$GLOBALS['vst_ppcp_data_settings'] = false;
+$legacy_authorize_available = $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) );
+vst_assert_same( false, isset( $legacy_authorize_available['ppcp-gateway'] ), 'Legacy PPCP settings remain a fallback when the data option is unavailable' );
+$GLOBALS['vst_ppcp_data_settings'] = array( 'authorize_only' => false );
+
 $first_quote = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
 $runtime->prepare_checkout_attempt();
 $same_cart_quote = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
@@ -207,6 +244,14 @@ vst_assert_same( 'creating', $attempt['state'], 'Standard Place-order create fre
 vst_assert_same( 'USD', $converted['purchase_units'][0]['amount']['currency_code'], 'Standard Place-order create sends USD' );
 vst_assert_same( '5.40', $attempt['usd_total'], 'Frozen create amount matches the canonical frontend quote' );
 vst_assert_same( false, isset( $attempt['payload']['payment_source'] ), 'Frozen financial projection excludes payer/payment-source data' );
+
+$runtime->recover_failed_create_attempt();
+$recovered_attempt = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
+vst_assert_same( 'quote', $recovered_attempt['state'], 'A transient pre-response create failure restores the quote for retry' );
+vst_assert_same( false, isset( $recovered_attempt['payload'], $recovered_attempt['usd_total'] ), 'Create failure recovery removes the abandoned outbound payload' );
+$converted = $runtime->convert_create_order_payload( $payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
+$attempt   = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
+vst_assert_same( 'creating', $attempt['state'], 'Retry after a transient create failure locks a new outbound request' );
 
 try {
 	$runtime->convert_create_order_payload( $payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
@@ -346,6 +391,7 @@ try {
 } catch ( RuntimeException $error ) {
 	vst_assert_true( true, 'Mismatched PayPal response currency fails closed' );
 }
+vst_assert_same( 'payment_rejected', WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY )['state'], 'A known mismatched external order remains terminal until explicit cancellation' );
 WC()->session->set( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY, $attempt );
 
 $creating_attempt = $attempt;
@@ -358,6 +404,17 @@ try {
 } catch ( RuntimeException $error ) {
 	vst_assert_true( true, 'Mismatched PayPal response amount fails closed' );
 }
+$GLOBALS['_GET_before_paypal_cancel'] = $_GET ?? array();
+$_GET['ppcp-cancel'] = 'invalid-cancel';
+$runtime->handle_cancelled_attempt();
+vst_assert_same( 'payment_rejected', WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY )['state'], 'An invalid cancellation nonce cannot release a known external order' );
+$_GET['ppcp-cancel'] = 'valid-cancel';
+$runtime->handle_cancelled_attempt();
+vst_assert_same( null, WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY ), 'The nonce-protected PPCP cancel link releases a known abandoned external order' );
+$runtime->prepare_checkout_attempt();
+$cancel_retry = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
+vst_assert_same( 'quote', $cancel_retry['state'], 'Checkout can begin a fresh quote after customer cancellation' );
+$_GET = $GLOBALS['_GET_before_paypal_cancel'];
 WC()->session->set( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY, $attempt );
 
 $errors = new Fake_Checkout_Errors();
