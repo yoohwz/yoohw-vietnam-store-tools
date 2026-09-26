@@ -184,6 +184,8 @@ def validate_pull_request(
         errors.append(f"Unable to load canonical task Issue #{issue_number}.")
     elif "pull_request" in task_issue or task_issue.get("number") != issue_number:
         errors.append(f"Task identity must resolve to GitHub Issue #{issue_number}.")
+    elif task_issue.get("state") != "open":
+        errors.append(f"Canonical task Issue #{issue_number} must be open for an implementation PR.")
 
     if issue_number == 47:
         base = pull_request.get("base", {})

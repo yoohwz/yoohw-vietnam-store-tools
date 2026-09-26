@@ -70,7 +70,7 @@ def expect_pass(errors: list[str], case: str) -> None:
 
 def main() -> int:
     governance = load_governance()
-    issue_48 = {"number": 48}
+    issue_48 = {"number": 48, "state": "open"}
     unrelated_comments = [
         comment("STATUS: TECHNICAL_CHANGES_REQUIRED\nHead SHA: " + OLD_HEAD),
         comment("PLAN REVIEW: CHANGES REQUIRED"),
@@ -130,7 +130,10 @@ def main() -> int:
         ),
         "Unable to load canonical task Issue #48",
     )
-    for invalid_issue in ({"number": 49}, {"number": 48, "pull_request": {}}):
+    for invalid_issue in (
+        {"number": 49, "state": "open"},
+        {"number": 48, "state": "open", "pull_request": {}},
+    ):
         expect_error(
             governance.validate_pull_request(
                 pull_request(pr_body(fast=True), draft=True),
@@ -138,6 +141,24 @@ def main() -> int:
             ),
             "Task identity must resolve",
         )
+    for lane in ("Fast", "Controlled"):
+        expect_error(
+            governance.validate_pull_request(
+                pull_request(
+                    pr_body(fast=lane == "Fast", controlled=lane == "Controlled"),
+                    draft=False,
+                ),
+                task_issue={"number": 48, "state": "closed"},
+            ),
+            "must be open",
+        )
+
+    entrypoint = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    workflow = (ROOT / "docs/workflow.md").read_text(encoding="utf-8")
+    for name, source in (("AGENTS.md", entrypoint), ("docs/workflow.md", workflow)):
+        for clause in ("admitted base", "through Human merge", "cannot authorize, waive, downgrade, or redefine"):
+            if clause not in source:
+                raise AssertionError(f"{name} lost self-governance contract: {clause}")
 
     # General governance reads Issue identity but never fetches lifecycle comments.
     fetched = []
@@ -171,7 +192,7 @@ def main() -> int:
 
     # The admitted governance amendment continues under its old gate.
     vst_47 = pull_request(pr_body(task="VST-47", controlled=True), draft=True)
-    issue_47 = {"number": 47}
+    issue_47 = {"number": 47, "state": "open"}
     plan_handoff = comment("STATUS: PLAN_REVIEW_REQUIRED")
     plan_approved = comment("PLAN REVIEW: APPROVED — implementation may proceed")
     plan_changes = comment("PLAN REVIEW: CHANGES REQUIRED")

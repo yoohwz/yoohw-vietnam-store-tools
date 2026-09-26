@@ -7,7 +7,7 @@ These instructions apply to the entire `yoohw-vietnam-store-tools` repository. R
 - This repository is the official source of truth for Vietnam Store Toolkit for WooCommerce. Do not implement plugin changes in the Vietnam Store website project.
 - Human owns product decisions, unresolved trade-offs, Merge, version and release decisions, production actions, and WordPress.org publication.
 - Codex alone implements repository changes, validates them, maintains the PR, and orchestrates independent Technical Review.
-- ChatGPT frames tasks, reviews genuinely unresolved plans, and performs external Acceptance Review. ChatGPT must not mutate implementation branches, files, commits, pushes, or PRs, or review its own implementation.
+- ChatGPT frames tasks, reviews genuinely unresolved plans, performs a fresh standalone Technical Review when `Review VST-N` is the manual fallback, and performs separate external Acceptance Review. It may post durable Issue/PR review evidence, but must not mutate implementation branches, files, commits, pushes, or PR source/body/state as the implementer, or review its own implementation.
 - GitHub is the durable task and execution record. A tool's write capability does not change role ownership.
 - The public site is `https://vietnamstore.org/`; the plugin listing is `https://wordpress.org/plugins/yoohw-vietnam-store-tools/`. Publication requires an explicit Human release instruction.
 
@@ -23,6 +23,7 @@ These instructions apply to the entire `yoohw-vietnam-store-tools` repository. R
 
 - Canonical Human commands: `Create ...`, `Run VST-N`, `Continue VST-N`, `Plan Review VST-N`, `Review VST-N` (manual Technical Review fallback), `Acceptance Review VST-N`, `Merge VST-N`, and eligible `Finalize VST-N`. Short legacy aliases work only when one task is unambiguous.
 - Classify each task as Fast or Controlled. Controlled includes checkout/Store API, payment/VietQR/PayPal, shipping/tracking, e-invoice, order/customer data and HPOS, persistence/schema/migration, security/capabilities/uploads, public contracts/compatibility, release semantics, and cross-feature architecture. A Controlled plan review is needed only for a genuinely unresolved boundary; governance amendments always require Controlled review.
+- Every workflow-governance semantic amendment follows the workflow accepted on its admitted base through Human merge. Its unmerged candidate text cannot authorize, waive, downgrade, or redefine its own gates.
 - Use phase-based compute and the fresh independent Technical Reviewer described in [the workflow](docs/workflow.md). A candidate SHA change invalidates prior Technical Review and Acceptance.
 - Navigation status text guides the next command; it is not a state database. The Issue boundary, Git objects, PR/base/head, CI, exact-SHA review evidence, and explicit Human commands determine authority.
 
