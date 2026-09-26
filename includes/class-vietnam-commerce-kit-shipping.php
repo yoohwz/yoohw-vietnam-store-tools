@@ -340,11 +340,37 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		return true;
 	}
 
+	/** Update the legacy projection only when its expected shipment is still current. */
+	public static function update_order_shipping_data_for_shipment( $order, $provider, $data, $expected_shipment_id ) {
+		$order = self::get_order( $order );
+		if ( ! $order ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
+		}
+		$check = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::assert_current( $order, $expected_shipment_id );
+		if ( is_wp_error( $check ) ) {
+			return $check;
+		}
+		$id = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::ensure_current_id( $order );
+		if ( is_wp_error( $id ) ) {
+			return $id;
+		}
+		$result = self::update_order_shipping_data( $order, $provider, $data );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+		return $result;
+	}
+
 	private function update_order_manual_shipping_data( $order, $data ) {
 		$order = self::get_order( $order );
 
 		if ( ! $order ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
+		}
+		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
+		$current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+		if ( ! empty( $current['closed'] ) ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_closed_shipment', __( 'Shipment is no longer current.', 'yoohw-vietnam-store-tools' ) );
 		}
 
 		$previous_provider      = sanitize_key( $order->get_meta( self::META_PROVIDER, true ) );
@@ -475,6 +501,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return $data;
 		}
 
+		$before = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
 		$result = $this->call_provider( $provider, 'sync', $order );
 
 		if ( is_wp_error( $result ) ) {
@@ -482,7 +509,9 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			return $data;
 		}
 
-		$saved = self::update_order_shipping_data( $order, $provider, $result );
+		$saved = ! empty( $before['id'] )
+			? self::update_order_shipping_data_for_shipment( $order, $provider, $result, $before['id'] )
+			: self::update_order_shipping_data( $order, $provider, $result );
 
 		if ( is_wp_error( $saved ) ) {
 			do_action( 'yoohw_vietnam_store_tools_shipping_auto_sync_failed', $order, $provider, $saved );
@@ -706,6 +735,9 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		if ( ! $order ) {
 			$this->redirect_to_order( null, [ 'yoohw_vietnam_store_tools_shipping_error' => __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) ] );
 		}
+		if ( 'cancel' === $action && ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
+			wp_die( esc_html__( 'You do not have permission to manage shipments.', 'yoohw-vietnam-store-tools' ) );
+		}
 
 		$provider_id = sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'provider_id' ) );
 
@@ -723,6 +755,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			$this->redirect_to_order( $order, [ 'yoohw_vietnam_store_tools_shipping_error' => __( 'This provider does not support this action.', 'yoohw-vietnam-store-tools' ) ] );
 		}
 
+		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
+		$before = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+		if ( ! empty( $before['closed'] ) && 'create' !== $action ) {
+			$this->redirect_to_order( $order, [ 'yoohw_vietnam_store_tools_shipping_error' => __( 'Shipment is no longer current.', 'yoohw-vietnam-store-tools' ) ] );
+		}
+		if ( ! empty( $before['closed'] ) && ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
+			wp_die( esc_html__( 'You do not have permission to manage shipments.', 'yoohw-vietnam-store-tools' ) );
+		}
 		$result = $this->call_provider( $provider, $action, $order );
 
 		if ( is_wp_error( $result ) ) {
@@ -738,15 +778,41 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 			);
 		}
 
-		$saved = self::update_order_shipping_data( $order, $provider, $result );
+		$saved = $this->persist_shipment_action_result( $order, $provider, $result, $action, $before );
 
 		if ( is_wp_error( $saved ) ) {
 			$this->redirect_to_order( $order, [ 'yoohw_vietnam_store_tools_shipping_error' => $saved->get_error_message() ] );
+		}
+		if ( 'cancel' === $action && ! empty( $before['id'] ) ) {
+			$current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+			$exception = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::record_exception( $order, [ 'type' => 'cancelled', 'expected_shipment_id' => $current['id'] ] );
+			if ( is_wp_error( $exception ) ) {
+				$this->redirect_to_order( $order, [ 'yoohw_vietnam_store_tools_shipping_error' => $exception->get_error_message() ] );
+			}
 		}
 
 		do_action( 'yoohw_vietnam_store_tools_shipping_shipment_' . $this->get_action_past_tense( $action ), $order, $provider, $result );
 
 		$this->redirect_to_order( $order, [ 'yoohw_vietnam_store_tools_shipping_notice' => $this->get_action_notice_key( $action ) ] );
+	}
+
+	private function persist_shipment_action_result( $order, $provider, $result, $action, $before ) {
+		if ( ! empty( $before['closed'] ) ) {
+			if ( 'create' !== $action ) {
+				return new WP_Error( 'yoohw_vietnam_store_tools_shipping_closed_shipment', __( 'Shipment is no longer current.', 'yoohw-vietnam-store-tools' ) );
+			}
+			return Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::replace_shipment( $order, $provider, $result, [ 'expected_shipment_id' => $before['id'] ] );
+		}
+		if ( empty( $before['id'] ) ) {
+			Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
+			$current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+			if ( ! empty( $current['id'] ) ) {
+				return new WP_Error( 'yoohw_vietnam_store_tools_shipping_stale_shipment', __( 'Shipment is no longer current.', 'yoohw-vietnam-store-tools' ) );
+			}
+		}
+		return ! empty( $before['id'] )
+			? self::update_order_shipping_data_for_shipment( $order, $provider, $result, $before['id'] )
+			: self::update_order_shipping_data( $order, $provider, $result );
 	}
 
 	private function render_admin_shipping_data( $order, $data, $provider = null ) {

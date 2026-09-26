@@ -92,6 +92,7 @@ class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-electronic-invoice.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipping.php';
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-fulfillment-exceptions.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipment-tracking.php';
 
 $failures  = [];
