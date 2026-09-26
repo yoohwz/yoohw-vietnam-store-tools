@@ -7,6 +7,7 @@ $test_filters = [];
 $test_actor_allowed = true;
 $test_uuid = 0;
 $test_orders = [];
+$test_persisted = [];
 function __( $value ) { return $value; }
 function sanitize_key( $value ) { return strtolower( preg_replace( '/[^a-z0-9_-]/', '', (string) $value ) ); }
 function sanitize_text_field( $value ) { return trim( (string) $value ); }
@@ -51,7 +52,8 @@ class WC_Order {
 	public function get_meta( $key ) { return isset( $this->meta[ $key ] ) ? $this->meta[ $key ] : ''; }
 	public function update_meta_data( $key, $value ) { $this->meta[ $key ] = $value; }
 	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); }
-	public function save() { global $test_orders; ++$this->saves; $test_orders[ $this->id ] = $this; }
+	public function read_meta_data( $force = false ) { global $test_persisted; if ( $force && isset( $test_persisted[ $this->id ] ) ) { $this->meta = $test_persisted[ $this->id ]; } }
+	public function save() { global $test_orders, $test_persisted; ++$this->saves; $test_persisted[ $this->id ] = $this->meta; $test_orders[ $this->id ] = $this; }
 }
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipping.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-fulfillment-exceptions.php';
@@ -131,7 +133,6 @@ vst_assert_true( is_wp_error( $tracking::add_timeline_event( $shipment, [ 'statu
 vst_assert_same( 'cancelled', $shipment->get_meta( $shipping::META_STATUS_ID ), 'Cancellation remains current projection' );
 $manual_shipping = ( new ReflectionClass( $shipping ) )->newInstanceWithoutConstructor();
 $manual_update = new ReflectionMethod( $shipping, 'update_order_manual_shipping_data' );
-$manual_update->setAccessible( true );
 vst_assert_true( is_wp_error( $manual_update->invoke( $manual_shipping, $shipment, [ 'tracking_code' => 'OLD-AGAIN', 'status_id' => 'manual' ] ) ), 'Manual shipping save rejects closed shipment' );
 vst_assert_same( 'NEW', $shipment->get_meta( $shipping::META_TRACKING_CODE ), 'Rejected manual save preserves tracking code' );
 vst_assert_same( 'cancelled', $shipment->get_meta( $shipping::META_STATUS_ID ), 'Rejected manual save preserves cancellation status' );
@@ -141,9 +142,29 @@ vst_assert_same( 'cancelled', $shipment->get_meta( $shipping::META_STATUS_ID ), 
 $legacy_timeline_order = new WC_Order();
 $shipping::update_order_shipping_data( $legacy_timeline_order, 'carrier', [ 'tracking_code' => 'PRE-UPGRADE', 'status_id' => 'delivered' ] );
 $legacy_timeline_order->update_meta_data( $tracking::META_TIMELINE, [ [ 'id' => 'old-event', 'status' => 'delivered', 'location' => '', 'note' => '', 'occurred_at' => '2026-09-01T00:00:00+00:00', 'created_at' => '2026-09-01T00:00:00+00:00', 'user_id' => 0 ] ] );
+$legacy_timeline_order->save();
 $legacy_id = $exceptions::get_current_shipment( $legacy_timeline_order )['id'];
 $exceptions::replace_shipment( $legacy_timeline_order, 'carrier', [ 'tracking_code' => 'POST-UPGRADE', 'status_id' => 'created' ], [ 'expected_shipment_id' => $legacy_id ] );
 $tracking::delete_timeline_event( $legacy_timeline_order, 'old-event' );
 vst_assert_same( 'created', $legacy_timeline_order->get_meta( $shipping::META_STATUS_ID ), 'Unbound legacy event cannot restore predecessor after replacement' );
+
+$stale_order = new WC_Order( 80 );
+$shipping::update_order_shipping_data( $stale_order, 'carrier', [ 'tracking_code' => 'FIRST', 'status_id' => 'in_transit' ] );
+$old_identity = $exceptions::get_current_shipment( $stale_order )['id'];
+$fresh_order = new WC_Order( 80 );
+$fresh_order->read_meta_data( true );
+$new_identity = $exceptions::replace_shipment( $fresh_order, 'carrier', [ 'tracking_code' => 'SECOND', 'status_id' => 'created' ], [ 'expected_shipment_id' => $old_identity ] )['id'];
+vst_assert_true( is_wp_error( $shipping::update_order_shipping_data_for_shipment( $stale_order, 'carrier', [ 'status_id' => 'delivered' ], $old_identity ) ), 'Stale order object cannot update replaced shipment' );
+vst_assert_true( is_wp_error( $tracking::add_timeline_event( $stale_order, [ 'status' => 'delivered', 'expected_shipment_id' => $old_identity ] ) ), 'Stale order object cannot append predecessor event' );
+vst_assert_true( is_wp_error( $exceptions::record_exception( $stale_order, [ 'type' => 'cancelled', 'expected_shipment_id' => $old_identity ] ) ), 'Stale order object cannot cancel predecessor' );
+vst_assert_same( 'created', $test_persisted[80][ $shipping::META_STATUS_ID ], 'Stale writes preserve persisted successor status' );
+$exceptions::record_exception( $fresh_order, [ 'type' => 'cancelled', 'expected_shipment_id' => $new_identity ] );
+$stale_order->read_meta_data( true );
+$before_create = $exceptions::get_current_shipment( $stale_order );
+$create_action = new ReflectionMethod( $shipping, 'persist_shipment_action_result' );
+$recreated = $create_action->invoke( $manual_shipping, $stale_order, 'carrier', [ 'tracking_code' => 'THIRD', 'status_id' => 'created' ], 'create', $before_create );
+vst_assert_true( ! is_wp_error( $recreated ), 'Create after cancellation persists through replacement' );
+vst_assert_same( $new_identity, $recreated['parent_id'], 'Create after cancellation links closed predecessor' );
+vst_assert_same( 'THIRD', $test_persisted[80][ $shipping::META_TRACKING_CODE ], 'Replacement stores new provider tracking code' );
 
 vst_finish_contract_suite( 'VST-50 domain' );

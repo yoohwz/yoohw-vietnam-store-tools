@@ -317,6 +317,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		if ( ! isset( $statuses[ $status ] ) ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_invalid_tracking_status', __( 'Select a valid shipment status.', 'yoohw-vietnam-store-tools' ) );
 		}
+		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
 		$current_shipment = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
 		$expected_id = isset( $event_data['expected_shipment_id'] ) ? sanitize_text_field( $event_data['expected_shipment_id'] ) : $current_shipment['id'];
 		if ( ! empty( $current_shipment['id'] ) ) {
@@ -378,6 +379,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		if ( ! $order instanceof WC_Order || '' === $event_id ) {
 			return false;
 		}
+		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
 		$deleted_event_was_current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::timeline_event_is_current( $order, $event_id );
 
 		$events = array_values(

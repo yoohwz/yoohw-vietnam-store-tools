@@ -63,6 +63,7 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		if ( ! $order || ! is_array( $data ) ) {
 			return self::error( 'invalid_order' );
 		}
+		self::refresh_order( $order );
 		$type = isset( $data['type'] ) ? sanitize_key( $data['type'] ) : '';
 		if ( ! in_array( $type, self::get_exception_types(), true ) || 'replaced' === $type ) {
 			return self::error( 'invalid_type' );
@@ -94,6 +95,7 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		if ( ! $order || ! is_array( $new_data ) ) {
 			return self::error( 'invalid_order' );
 		}
+		self::refresh_order( $order );
 		$check = self::authorize( $order, $context, [ 'provider' => $new_provider, 'data' => $new_data, 'type' => 'replaced' ] );
 		if ( is_wp_error( $check ) ) {
 			return $check;
@@ -128,6 +130,11 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 	}
 
 	public static function assert_current( $order, $expected_id ) {
+		$order = self::order( $order );
+		if ( ! $order ) {
+			return self::error( 'invalid_order' );
+		}
+		self::refresh_order( $order );
 		$current = self::get_current_shipment( $order );
 		return ! empty( $current ) && '' !== (string) $expected_id && $expected_id === $current['id'] && ! $current['closed'] ? true : self::error( 'stale_shipment' );
 	}
@@ -219,6 +226,13 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		}
 		$order = wc_get_order( $order );
 		return $order instanceof WC_Order ? $order : false;
+	}
+
+	/** Discard cached order meta before checking a persisted shipment identity. */
+	public static function refresh_order( $order ) {
+		if ( $order instanceof WC_Order && method_exists( $order, 'read_meta_data' ) ) {
+			$order->read_meta_data( true );
+		}
 	}
 
 	private static function error( $code ) {
