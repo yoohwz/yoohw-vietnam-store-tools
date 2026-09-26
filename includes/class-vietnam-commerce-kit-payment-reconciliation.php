@@ -148,11 +148,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 		$transaction_key = self::transaction_meta_key( $source_id, $transaction_id );
 		$owners = wc_get_orders(
 			[
-				'type'       => 'shop_order',
-				'status'     => 'any',
-				'limit'      => 2,
-				'return'     => 'ids',
-				'meta_query' => [ [ 'key' => $transaction_key, 'compare' => 'EXISTS' ] ], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				'type'         => 'shop_order',
+				'status'       => 'any',
+				'limit'        => 2,
+				'return'       => 'ids',
+				'meta_key'     => $transaction_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_compare' => 'EXISTS',
 			]
 		);
 		if ( ! is_array( $owners ) ) {

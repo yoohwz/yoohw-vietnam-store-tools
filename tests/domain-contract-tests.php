@@ -8,6 +8,7 @@ $test_actor_allowed = true;
 $test_uuid = 0;
 $test_orders = [];
 $test_persisted = [];
+$test_order_storage_mode = 'legacy';
 function __( $value ) { return $value; }
 function sanitize_key( $value ) { return strtolower( preg_replace( '/[^a-z0-9_-]/', '', (string) $value ) ); }
 function sanitize_text_field( $value ) { return trim( (string) $value ); }
@@ -26,8 +27,12 @@ function wc_format_decimal( $value, $decimals = 0 ) { return number_format( (flo
 function wc_get_price_decimals() { return 0; }
 function wc_get_order( $value ) { global $test_orders; return $value instanceof WC_Order ? $value : ( isset( $test_orders[ $value ] ) ? $test_orders[ $value ] : false ); }
 function wc_get_orders( $args ) {
-	global $test_orders;
-	$key = $args['meta_query'][0]['key'];
+	global $test_orders, $test_order_storage_mode;
+	// CPT ignores HPOS-only meta_query; both stores support the meta_* shortcut.
+	if ( ! isset( $args['meta_key'], $args['meta_compare'] ) || 'EXISTS' !== $args['meta_compare'] ) {
+		return 'legacy' === $test_order_storage_mode ? [] : false;
+	}
+	$key = $args['meta_key'];
 	$found = [];
 	foreach ( $test_orders as $id => $order ) {
 		if ( array_key_exists( $key, $order->meta ) ) {
@@ -94,7 +99,11 @@ vst_assert_true( is_wp_error( $reader::record_verified_evidence( $payment, 'manu
 $verified = $reader::record_verified_evidence( $payment, 'bank', $proof );
 vst_assert_same( 'external_verified', $reader::get_order_data( $payment )['trust'], 'Registered proof yields external trust' );
 $other_payment = new WC_Order( 51 );
-vst_assert_true( is_wp_error( $reader::record_verified_evidence( $other_payment, 'bank', $proof ) ), 'One source transaction cannot verify a second order' );
+vst_assert_true( is_wp_error( $reader::record_verified_evidence( $other_payment, 'bank', $proof ) ), 'Legacy storage rejects cross-order transaction reuse' );
+$test_order_storage_mode = 'hpos';
+$third_payment = new WC_Order( 52 );
+vst_assert_true( is_wp_error( $reader::record_verified_evidence( $third_payment, 'bank', $proof ) ), 'HPOS rejects cross-order transaction reuse' );
+$test_order_storage_mode = 'legacy';
 vst_assert_same( $verified['id'], $reader::record_verified_evidence( $payment, 'bank', $proof )['id'], 'Identical transaction is idempotent' );
 $conflict = $proof;
 $conflict['observed_at'] = '2026-09-26T01:00:00Z';

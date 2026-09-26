@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-26T09:05:07+00:00\n"
+"POT-Creation-Date: 2026-09-26T09:09:54+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -1609,7 +1609,7 @@ msgstr "Trạng thái đơn hàng"
 msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:280
+#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:281
 msgid "Payment evidence could not be recorded."
 msgstr "Không thể ghi nhận bằng chứng thanh toán."
 
