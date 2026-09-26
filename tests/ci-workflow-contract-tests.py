@@ -139,7 +139,12 @@ def main() -> int:
     if "name: PHP ${{ matrix.php }} syntax" in workflow or "name: WordPress ${{ matrix.label }} translation runtime" in workflow:
         raise AssertionError("Conditional deep checks must use explicit job names so skipped runs preserve legacy contexts")
 
-    print("CI workflow contracts PASS: head-bound governance, single ready-for-review transition, explicit skipped check contexts, fail-safe routing, and quick-before-deep staging.")
+    if workflow.count("      - ready_for_review\n") != 1:
+        raise AssertionError("Deep CI must have exactly one ready_for_review transition")
+    if "name: Repository contracts" not in workflow:
+        raise AssertionError("Repository contracts check name must remain stable")
+
+    print("CI workflow contracts PASS: stable governance/required contexts, single ready-for-review transition, explicit skipped check contexts, fail-safe routing, and quick-before-deep staging.")
     return 0
 
 

@@ -41,7 +41,9 @@ assert.ok(!script.includes('${{'), 'untrusted expressions must not be interpolat
 const compiled = new vm.Script(`(async () => {\n${script}\n})()`);
 const ci = fs.readFileSync(path.join(root, '.github/workflows/ci.yml'), 'utf8');
 assert.ok(ci.includes('run: node tests/branch-cleanup-contract-tests.js'), 'required CI must run this suite');
-const policy = fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8');
+const entrypoint = fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8');
+assert.ok(entrypoint.includes('docs/workflow.md'), 'AGENTS.md must link the canonical workflow');
+const policy = fs.readFileSync(path.join(root, 'docs/workflow.md'), 'utf8');
 for (const rule of ['disposable task branches', 'All `release/*` branches are retained',
   '`delete_branch_on_merge` setting disabled', 'Closed-but-unmerged', 'HUMAN_DECISION_REQUIRED']) {
   assert.ok(policy.includes(rule), `missing lifecycle policy: ${rule}`);

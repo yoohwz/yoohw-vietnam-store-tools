@@ -13,15 +13,12 @@
 - [ ] Fast
 - [ ] Controlled
 
-## Workflow handoff
+## Task identity
 
-- Task / issue:
+- Task / issue: VST-
 - Implementation owner: Codex
-- Current status:
-- Plan review evidence:
-- Current head SHA:
 
-<!-- Controlled Lane: Task / issue must link the durable GitHub planning issue and Plan review evidence must link its approved result. Do not write that plan review was completed unless that artifact exists. Implementation owner remains Codex for repository changes. Keep Current status and Current head SHA aligned with the newest PR-conversation status. Draft PRs stay on the quick CI gate. When implementation is complete, persist the TECHNICAL_REVIEW_REQUIRED handoff with the full current head SHA, then mark the PR ready for review; that ready_for_review transition is the single trigger for risk-matched deep CI. Any later commit makes previous technical handoffs/results stale. -->
+<!-- Every governed implementation PR must identify one readable, open canonical Issue. Issue #N is task VST-N. Add a same-Issue closing line such as Closes #N with the actual Issue number. After the authorized merge succeeds, verify the Issue is closed as completed and close it explicitly if needed before reporting FINALIZED; do not rely solely on auto-close for release branches. Keep the risk lane and Codex implementation owner accurate. Draft PRs stay on quick CI; ready_for_review triggers risk-matched deep CI. PR prose does not authorize Plan Review, Technical Review, Acceptance, Merge, or release. VST-47 itself remains governed by its admitted current workflow through Human merge. -->
 
 ## Changes
 
