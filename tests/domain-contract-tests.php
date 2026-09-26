@@ -167,4 +167,15 @@ vst_assert_true( ! is_wp_error( $recreated ), 'Create after cancellation persist
 vst_assert_same( $new_identity, $recreated['parent_id'], 'Create after cancellation links closed predecessor' );
 vst_assert_same( 'THIRD', $test_persisted[80][ $shipping::META_TRACKING_CODE ], 'Replacement stores new provider tracking code' );
 
+$legacy_cancel = new WC_Order( 81 );
+$shipping::update_order_shipping_data( $legacy_cancel, 'carrier', [ 'tracking_code' => 'TO-CANCEL', 'status_id' => 'in_transit' ] );
+$legacy_cancel_id = $exceptions::get_current_shipment( $legacy_cancel )['id'];
+$cancel_saved = $shipping::update_order_shipping_data_for_shipment( $legacy_cancel, 'carrier', [ 'tracking_code' => '', 'status_id' => 'cancelled' ], $legacy_cancel_id );
+vst_assert_true( ! is_wp_error( $cancel_saved ), 'Legacy cancellation can clear the tracking code' );
+$materialized_id = $exceptions::get_current_shipment( $legacy_cancel )['id'];
+vst_assert_true( '' !== $materialized_id && $legacy_cancel_id !== $materialized_id, 'Legacy identity is materialized before clearing its tracking code' );
+$cancel_exception = $exceptions::record_exception( $legacy_cancel, [ 'type' => 'cancelled', 'expected_shipment_id' => $materialized_id ] );
+vst_assert_true( ! is_wp_error( $cancel_exception ), 'Cleared legacy tracking code still records cancellation exception' );
+vst_assert_same( 'cancelled', $exceptions::get_exceptions( $legacy_cancel )[0]['type'], 'Cancellation ledger retains the closed shipment' );
+
 vst_finish_contract_suite( 'VST-50 domain' );

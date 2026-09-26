@@ -350,11 +350,14 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		if ( is_wp_error( $check ) ) {
 			return $check;
 		}
+		$id = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::ensure_current_id( $order );
+		if ( is_wp_error( $id ) ) {
+			return $id;
+		}
 		$result = self::update_order_shipping_data( $order, $provider, $data );
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
-		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::ensure_current_id( $order );
 		return $result;
 	}
 
