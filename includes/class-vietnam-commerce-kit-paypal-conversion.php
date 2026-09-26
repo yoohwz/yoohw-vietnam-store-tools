@@ -485,6 +485,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Amount',
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Money',
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Order',
+			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Payments',
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\RefundCapture',
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Exception\\RuntimeException',
 			'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
@@ -517,10 +518,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
 	private function has_required_ppcp_services( $modules ) {
 		$service_module = 'WooCommerce\\PayPalCommerce\\Vendor\\Inpsyde\\Modularity\\Module\\ServiceModule';
-		$required       = array(
-			'wcgateway.processor.refunds' => 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor',
-			'sdk-v6.manager'               => 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
-		);
+		$required       = $this->required_ppcp_service_types();
 		$found          = array_fill_keys( array_keys( $required ), false );
 
 		foreach ( $modules as $module ) {
@@ -552,6 +550,40 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		return ! in_array( false, $found, true );
 	}
 
+	private function required_ppcp_service_types() {
+		// save-payment-methods.eligible is intentionally optional; the adapter
+		// checks ContainerInterface::has() and falls back to disabled vaulting.
+		return array(
+			'api.endpoint.order'                            => 'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\OrderEndpoint',
+			'api.endpoint.payments'                         => 'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\PaymentsEndpoint',
+			'api.prefix'                                    => 'string',
+			'button.helper.context'                         => 'WooCommerce\\PayPalCommerce\\Button\\Helper\\Context',
+			'button.subscriptions-mode'                     => 'callable',
+			'ppcp.asset-version'                            => 'string',
+			'sdk-v6.apple-pay-config'                       => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ApplePayConfig',
+			'sdk-v6.asset-getter'                           => 'WooCommerce\\PayPalCommerce\\Assets\\AssetGetter',
+			'sdk-v6.button-style-mapper'                    => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ButtonStyleMapper',
+			'sdk-v6.card-field-styles'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\CardFieldStyles',
+			'sdk-v6.fastlane-config'                        => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\FastlaneConfig',
+			'sdk-v6.google-pay-config'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\GooglePayConfig',
+			'wcgateway.processor.refunds'                    => 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor',
+			'sdk-v6.manager'                                  => 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
+			'sdk-v6.message-style-mapper'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessageStyleMapper',
+			'sdk-v6.messages-eligibility'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessagesEligibility',
+			'session.cancellation.view'                        => 'WooCommerce\\PayPalCommerce\\Session\\Cancellation\\CancelView',
+			'session.handler'                                  => 'WooCommerce\\PayPalCommerce\\Session\\SessionHandler',
+			'settings.environment'                             => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\Environment',
+			'settings.settings-provider'                       => 'WooCommerce\\PayPalCommerce\\Settings\\Data\\SettingsProvider',
+			'wc-subscriptions.free-trial-subscription-helper' => 'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\FreeTrialSubscriptionHelper',
+			'wc-subscriptions.helper'                          => 'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\SubscriptionHelper',
+			'wcgateway.configuration.card-configuration'      => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\CardPaymentsConfiguration',
+			'wcgateway.credit-card-icons'                      => 'array',
+			'wcgateway.helper.refund-fees-updater'             => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\RefundFeesUpdater',
+			'wcgateway.settings.status'                        => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\SettingsStatus',
+			'woocommerce.logger.woocommerce'                   => 'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
+		);
+	}
+
 	private function callable_returns_type( $factory, $expected_type ) {
 		if ( ! $factory instanceof Closure ) {
 			return false;
@@ -572,11 +604,13 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		try {
 			$sdk_class                   = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
 			$refund_class                = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor' );
+			$settings_class              = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\Settings\\Data\\SettingsProvider' );
 			$sdk_method                  = $sdk_class->getMethod( 'script_data' );
 			$sdk_page_method             = $sdk_class->getMethod( 'should_load_on_current_page' );
 			$sdk_render_places_method    = $sdk_class->getMethod( 'determine_render_places' );
 			$sdk_card_wrapper_method     = $sdk_class->getMethod( 'render_card_button_wrapper' );
 			$refund_method               = $refund_class->getMethod( 'refund' );
+			$refund_payments_method      = $refund_class->getMethod( 'get_payments' );
 			$sdk_constructor             = $sdk_class->getConstructor();
 			$refund_constructor          = $refund_class->getConstructor();
 
@@ -616,6 +650,11 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
 			return ! $sdk_class->isFinal()
 				&& ! $refund_class->isFinal()
+				&& $this->callable_method_matches( $settings_class->getMethod( 'enable_pay_now' ), array(), 'bool' )
+				&& $this->callable_method_matches( $settings_class->getMethod( 'save_paypal_and_venmo' ), array(), 'bool' )
+				&& $this->callable_method_matches( $settings_class->getMethod( 'save_card_details' ), array(), 'bool' )
+				&& $this->callable_method_matches( $settings_class->getMethod( 'three_d_secure_enum' ), array(), 'string' )
+				&& $this->callable_method_matches( $settings_class->getMethod( 'merchant_country' ), array(), 'string' )
 				&& $this->method_matches( $sdk_method, array(), 'array' )
 				&& $this->method_matches( $sdk_page_method, array(), 'bool' )
 				&& $this->method_matches( $sdk_render_places_method, array(), 'array' )
@@ -629,6 +668,12 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 						'string',
 					),
 					'string'
+				)
+				&& ( $refund_payments_method->isProtected() || $refund_payments_method->isPublic() )
+				&& $this->method_signature_matches(
+					$refund_payments_method,
+					array( 'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Order' ),
+					'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Payments'
 				)
 				&& $this->constructor_matches( $sdk_constructor, $sdk_constructor_types )
 				&& $this->constructor_matches( $refund_constructor, $refund_constructor_types );
@@ -650,6 +695,22 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	private function method_matches( $method, $parameter_types, $return_type ) {
 		if ( ! $method->isPublic()
 			|| $method->isFinal()
+			|| ! $this->callable_method_matches( $method, $parameter_types, $return_type ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private function callable_method_matches( $method, $parameter_types, $return_type ) {
+		return $method instanceof ReflectionMethod
+			&& $method->isPublic()
+			&& $this->method_signature_matches( $method, $parameter_types, $return_type );
+	}
+
+	private function method_signature_matches( $method, $parameter_types, $return_type ) {
+		if ( ! $method instanceof ReflectionMethod
+			|| $method->isStatic()
 			|| count( $parameter_types ) !== $method->getNumberOfParameters()
 			|| ! $this->parameters_match( $method->getParameters(), $parameter_types ) ) {
 			return false;
@@ -658,7 +719,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		$type = $method->getReturnType();
 		return $type instanceof ReflectionNamedType
 			&& ! $type->allowsNull()
-			&& $type->getName() === $return_type;
+			&& ltrim( $type->getName(), '\\' ) === ltrim( $return_type, '\\' );
 	}
 
 	private function parameters_match( $parameters, $expected_types ) {

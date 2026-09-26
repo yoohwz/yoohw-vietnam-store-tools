@@ -119,10 +119,11 @@ namespace WooCommerce\PayPalCommerce\WcGateway\Processor {
 	use WooCommerce\PayPalCommerce\ApiClient\Endpoint\OrderEndpoint;
 	use WooCommerce\PayPalCommerce\ApiClient\Endpoint\PaymentsEndpoint;
 	use WooCommerce\PayPalCommerce\ApiClient\Entity\Order;
+	use WooCommerce\PayPalCommerce\ApiClient\Entity\Payments;
 	use WooCommerce\PayPalCommerce\Vendor\Psr\Log\LoggerInterface;
 	use WooCommerce\PayPalCommerce\WcGateway\Helper\RefundFeesUpdater;
 
-	class RefundProcessor {
+	trait FakeRefundProcessorMethods {
 		public function __construct( OrderEndpoint $orders, PaymentsEndpoint $payments, RefundFeesUpdater $fees, string $prefix, LoggerInterface $logger, $future_optional_dependency = null ) {
 			unset( $orders, $payments, $fees, $prefix, $logger, $future_optional_dependency );
 		}
@@ -130,8 +131,41 @@ namespace WooCommerce\PayPalCommerce\WcGateway\Processor {
 			unset( $order, $wc_order, $amount, $reason );
 			return 'parent-refund';
 		}
-		protected function get_payments( Order $order ) {
-			return $order->test_payments();
+	}
+
+	if ( 'incompatible-refund-helper' === getenv( 'VST_PPCP_TEST_SCENARIO' ) ) {
+		class RefundProcessor {
+			use FakeRefundProcessorMethods;
+			private function get_payments( Order $order ): Payments {
+				return $order->test_payments();
+			}
+		}
+	} else {
+		class RefundProcessor {
+			use FakeRefundProcessorMethods;
+			protected function get_payments( Order $order ): Payments {
+				return $order->test_payments();
+			}
+		}
+	}
+}
+
+namespace WooCommerce\PayPalCommerce\Settings\Data {
+	trait FakeSettingsProviderMethods {
+		public function enable_pay_now(): bool { return false; }
+		public function save_paypal_and_venmo(): bool { return false; }
+		public function save_card_details(): bool { return false; }
+		public function three_d_secure_enum(): string { return 'no-3d-secure'; }
+	}
+
+	if ( 'incompatible-settings-method' === getenv( 'VST_PPCP_TEST_SCENARIO' ) ) {
+		class SettingsProvider {
+			use FakeSettingsProviderMethods;
+		}
+	} else {
+		class SettingsProvider {
+			use FakeSettingsProviderMethods;
+			public function merchant_country(): string { return 'VN'; }
 		}
 	}
 }
@@ -214,6 +248,7 @@ namespace {
 	use WooCommerce\PayPalCommerce\WcGateway\Helper\RefundFeesUpdater;
 	use WooCommerce\PayPalCommerce\WcGateway\Processor\RefundProcessor;
 	use WooCommerce\PayPalCommerce\SdkV6\Assets\SdkV6Manager;
+	use WooCommerce\PayPalCommerce\Settings\Data\SettingsProvider;
 
 	define( 'ABSPATH', __DIR__ . '/' );
 	define( 'HOUR_IN_SECONDS', 3600 );
@@ -270,13 +305,7 @@ namespace {
 		public function get_order_number(): string { return '1001'; }
 	}
 
-	final class Fake_PPCP_Settings {
-		public function enable_pay_now() { return false; }
-		public function save_paypal_and_venmo() { return false; }
-		public function save_card_details() { return false; }
-		public function three_d_secure_enum() { return 'no-3d-secure'; }
-		public function merchant_country() { return 'VN'; }
-	}
+	final class Fake_PPCP_Settings extends SettingsProvider {}
 
 	final class Fake_PPCP_Container implements ContainerInterface {
 		public $payments;
@@ -320,12 +349,81 @@ namespace {
 
 	function vst_ppcp_service_definitions(): array {
 		return array(
+			'api.endpoint.order' => static function (): OrderEndpoint {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'api.endpoint.payments' => static function (): PaymentsEndpoint {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'api.prefix' => static function (): string { return 'TEST-'; },
+			'button.helper.context' => static function (): \WooCommerce\PayPalCommerce\Button\Helper\Context {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'button.subscriptions-mode' => static function (): callable {
+				return static function () { return 'vaulting_api'; };
+			},
+			'ppcp.asset-version' => static function (): string { return '4.1.3'; },
+			'sdk-v6.apple-pay-config' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\ApplePayConfig {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'sdk-v6.asset-getter' => static function (): \WooCommerce\PayPalCommerce\Assets\AssetGetter {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'sdk-v6.button-style-mapper' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\ButtonStyleMapper {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'sdk-v6.card-field-styles' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\CardFieldStyles {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'sdk-v6.fastlane-config' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\FastlaneConfig {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'sdk-v6.google-pay-config' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\GooglePayConfig {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
 			'wcgateway.processor.refunds' => static function ( ContainerInterface $container ): RefundProcessor {
 				return new RefundProcessor( $container->get( 'api.endpoint.order' ), $container->get( 'api.endpoint.payments' ), $container->get( 'wcgateway.helper.refund-fees-updater' ), $container->get( 'api.prefix' ), $container->get( 'woocommerce.logger.woocommerce' ) );
 			},
 			'sdk-v6.manager' => static function ( ContainerInterface $container ): SdkV6Manager {
 				unset( $container );
 				throw new \RuntimeException( 'Factory is inspected but not resolved by the compatibility gate.' );
+			},
+			'sdk-v6.message-style-mapper' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\MessageStyleMapper {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'sdk-v6.messages-eligibility' => static function (): \WooCommerce\PayPalCommerce\SdkV6\Helper\MessagesEligibility {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'session.cancellation.view' => static function (): \WooCommerce\PayPalCommerce\Session\Cancellation\CancelView {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'session.handler' => static function (): \WooCommerce\PayPalCommerce\Session\SessionHandler {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'settings.environment' => static function (): \WooCommerce\PayPalCommerce\WcGateway\Helper\Environment {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'settings.settings-provider' => static function (): SettingsProvider {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'wc-subscriptions.free-trial-subscription-helper' => static function (): \WooCommerce\PayPalCommerce\WcSubscriptions\Helper\FreeTrialSubscriptionHelper {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'wc-subscriptions.helper' => static function (): \WooCommerce\PayPalCommerce\WcSubscriptions\Helper\SubscriptionHelper {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'wcgateway.configuration.card-configuration' => static function (): \WooCommerce\PayPalCommerce\WcGateway\Helper\CardPaymentsConfiguration {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'wcgateway.credit-card-icons' => static function (): array { return array(); },
+			'wcgateway.helper.refund-fees-updater' => static function (): RefundFeesUpdater {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'wcgateway.settings.status' => static function (): \WooCommerce\PayPalCommerce\WcGateway\Helper\SettingsStatus {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
+			},
+			'woocommerce.logger.woocommerce' => static function (): \WooCommerce\PayPalCommerce\Vendor\Psr\Log\LoggerInterface {
+				throw new \RuntimeException( 'Compatibility-only service definition.' );
 			},
 		);
 	}
@@ -334,24 +432,54 @@ namespace {
 	require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conversion.php';
 
 	$service_definitions = vst_ppcp_service_definitions();
-	if ( 'incompatible-constructor' === getenv( 'VST_PPCP_TEST_SCENARIO' ) ) {
+	$probe_scenario      = getenv( 'VST_PPCP_TEST_SCENARIO' );
+	if ( in_array( $probe_scenario, array( 'incompatible-constructor', 'incompatible-settings-method', 'incompatible-refund-helper' ), true ) ) {
 		$runtime      = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
 		$core_modules = array( new Fake_PPCP_Service_Module( $service_definitions ) );
-		vst_assert_same( $core_modules, $runtime->register_ppcp_module( $core_modules ), 'Same constructor arity with incompatible type order leaves PPCP modules unchanged' );
-		vst_assert_same( false, $runtime->force_place_order_button( false ), 'Incompatible constructor types fail closed without adapter readiness' );
-		vst_finish_contract_suite( 'PayPal PPCP incompatible-constructor probe' );
+		vst_assert_same( $core_modules, $runtime->register_ppcp_module( $core_modules ), 'Incompatible ' . $probe_scenario . ' contract leaves PPCP modules unchanged' );
+		vst_assert_same( false, $runtime->force_place_order_button( false ), 'Incompatible ' . $probe_scenario . ' contract fails closed without adapter readiness' );
+		vst_finish_contract_suite( 'PayPal PPCP ' . $probe_scenario . ' probe' );
 		exit;
 	}
 
+	$runtime_reflection      = new \ReflectionClass( 'Yoohw_Vietnam_Store_Tools_PayPal_Conversion' );
+	$service_contract_method = $runtime_reflection->getMethod( 'required_ppcp_service_types' );
+	$service_contract_method->setAccessible( true );
+	$service_contract = $service_contract_method->invoke( $runtime_reflection->newInstanceWithoutConstructor() );
+	$adapter_source   = file_get_contents( dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-ppcp-adapter.php' );
+	preg_match_all( "/\\\$container->get\\( '([^']+)' \\)/", $adapter_source, $adapter_service_matches );
+	$direct_adapter_dependencies = array_values( array_unique( $adapter_service_matches[1] ) );
+	$unchecked_dependencies      = array_diff( $direct_adapter_dependencies, array_keys( $service_contract ), array( 'save-payment-methods.eligible' ) );
+	vst_assert_same( array(), array_values( $unchecked_dependencies ), 'Every direct adapter dependency service ID is covered by the compatibility preflight' );
+	vst_assert_same( array(), array_values( array_diff( array_keys( $service_contract ), array_keys( $service_definitions ) ) ), 'Verified PPCP fixture defines every required replacement dependency service' );
+
+	$missing_sdk_services = $service_definitions;
+	unset( $missing_sdk_services['sdk-v6.manager'] );
 	$missing_sdk_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
-	$missing_sdk_modules = array( new Fake_PPCP_Service_Module( array( 'wcgateway.processor.refunds' => $service_definitions['wcgateway.processor.refunds'] ) ) );
+	$missing_sdk_modules = array( new Fake_PPCP_Service_Module( $missing_sdk_services ) );
 	vst_assert_same( $missing_sdk_modules, $missing_sdk_runtime->register_ppcp_module( $missing_sdk_modules ), 'Missing sdk-v6.manager leaves PPCP modules unchanged and boots without the adapter' );
 	vst_assert_same( false, $missing_sdk_runtime->force_place_order_button( false ), 'Missing sdk-v6.manager keeps conversion unavailable' );
 
+	$missing_refund_services = $service_definitions;
+	unset( $missing_refund_services['wcgateway.processor.refunds'] );
 	$missing_refund_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
-	$missing_refund_modules = array( new Fake_PPCP_Service_Module( array( 'sdk-v6.manager' => $service_definitions['sdk-v6.manager'] ) ) );
+	$missing_refund_modules = array( new Fake_PPCP_Service_Module( $missing_refund_services ) );
 	vst_assert_same( $missing_refund_modules, $missing_refund_runtime->register_ppcp_module( $missing_refund_modules ), 'Missing wcgateway.processor.refunds leaves PPCP modules unchanged and boots without the adapter' );
 	vst_assert_same( false, $missing_refund_runtime->force_place_order_button( false ), 'Missing wcgateway.processor.refunds keeps conversion unavailable' );
+
+	$missing_sdk_dependency_services = $service_definitions;
+	unset( $missing_sdk_dependency_services['sdk-v6.asset-getter'] );
+	$missing_sdk_dependency_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+	$missing_sdk_dependency_modules = array( new Fake_PPCP_Service_Module( $missing_sdk_dependency_services ) );
+	vst_assert_same( $missing_sdk_dependency_modules, $missing_sdk_dependency_runtime->register_ppcp_module( $missing_sdk_dependency_modules ), 'Missing SDK constructor dependency leaves PPCP modules unchanged and boots without the adapter' );
+	vst_assert_same( false, $missing_sdk_dependency_runtime->force_place_order_button( false ), 'Missing SDK constructor dependency keeps conversion unavailable' );
+
+	$missing_refund_dependency_services = $service_definitions;
+	unset( $missing_refund_dependency_services['api.endpoint.payments'] );
+	$missing_refund_dependency_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+	$missing_refund_dependency_modules = array( new Fake_PPCP_Service_Module( $missing_refund_dependency_services ) );
+	vst_assert_same( $missing_refund_dependency_modules, $missing_refund_dependency_runtime->register_ppcp_module( $missing_refund_dependency_modules ), 'Missing refund constructor dependency leaves PPCP modules unchanged and boots without the adapter' );
+	vst_assert_same( false, $missing_refund_dependency_runtime->force_place_order_button( false ), 'Missing refund constructor dependency keeps conversion unavailable' );
 
 	$runtime      = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
 	$core_modules = array( new Fake_PPCP_Service_Module( $service_definitions ) );
@@ -440,9 +568,13 @@ namespace {
 	$normal_order = new WC_Order();
 	vst_assert_same( 'parent-refund', $refunds->refund( $order, $normal_order, 1.0 ), 'Normal PayPal orders retain upstream refund behavior' );
 
-	$probe_command = 'VST_PPCP_TEST_SCENARIO=incompatible-constructor ' . escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( __FILE__ ) . ' 2>&1';
-	exec( $probe_command, $probe_output, $probe_status );
-	vst_assert_same( 0, $probe_status, 'Incompatible same-arity constructor probe exits without a fatal error: ' . implode( "\n", $probe_output ) );
+	foreach ( array( 'incompatible-constructor', 'incompatible-settings-method', 'incompatible-refund-helper' ) as $scenario ) {
+		$probe_command = 'VST_PPCP_TEST_SCENARIO=' . escapeshellarg( $scenario ) . ' ' . escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( __FILE__ ) . ' 2>&1';
+		$probe_output  = array();
+		$probe_status  = 0;
+		exec( $probe_command, $probe_output, $probe_status );
+		vst_assert_same( 0, $probe_status, $scenario . ' probe exits without a fatal error: ' . implode( "\n", $probe_output ) );
+	}
 
 	vst_finish_contract_suite( 'PayPal PPCP adapter' );
 }
