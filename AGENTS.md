@@ -26,6 +26,7 @@ These instructions apply to the entire `yoohw-vietnam-store-tools` repository. R
 - Every workflow-governance semantic amendment follows the workflow accepted on its admitted base through Human merge. Its unmerged candidate text cannot authorize, waive, downgrade, or redefine its own gates.
 - Use phase-based compute and the fresh independent Technical Reviewer described in [the workflow](docs/workflow.md). A candidate SHA change invalidates prior Technical Review and Acceptance.
 - Navigation status text guides the next command; it is not a state database. The Issue boundary, Git objects, PR/base/head, CI, exact-SHA review evidence, and explicit Human commands determine authority.
+- After a Human-authorized merge is observed, verify the canonical Issue is closed as completed; close it explicitly if needed before reporting `FINALIZED`. Never close it before the merge succeeds.
 
 ## Validation and release boundary
 

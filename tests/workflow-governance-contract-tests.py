@@ -155,10 +155,21 @@ def main() -> int:
 
     entrypoint = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     workflow = (ROOT / "docs/workflow.md").read_text(encoding="utf-8")
+    template = (ROOT / ".github/pull_request_template.md").read_text(encoding="utf-8")
     for name, source in (("AGENTS.md", entrypoint), ("docs/workflow.md", workflow)):
         for clause in ("admitted base", "through Human merge", "cannot authorize, waive, downgrade, or redefine"):
             if clause not in source:
                 raise AssertionError(f"{name} lost self-governance contract: {clause}")
+    for name, source in (
+        ("AGENTS.md", entrypoint),
+        ("docs/workflow.md", workflow),
+        (".github/pull_request_template.md", template),
+    ):
+        for clause in ("merge", "Issue", "closed as completed", "FINALIZED"):
+            if clause not in source:
+                raise AssertionError(f"{name} lost task-completion contract: {clause}")
+    if "Closes #N" not in workflow or "Closes #N" not in template:
+        raise AssertionError("Governed PRs must be directed to link the same Issue for closure")
 
     # General governance reads Issue identity but never fetches lifecycle comments.
     fetched = []
