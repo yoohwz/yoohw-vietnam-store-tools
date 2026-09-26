@@ -6,6 +6,7 @@ require __DIR__ . '/support/assertions.php';
 $test_filters = [];
 $test_actor_allowed = true;
 $test_uuid = 0;
+$test_orders = [];
 function __( $value ) { return $value; }
 function sanitize_key( $value ) { return strtolower( preg_replace( '/[^a-z0-9_-]/', '', (string) $value ) ); }
 function sanitize_text_field( $value ) { return trim( (string) $value ); }
@@ -22,7 +23,18 @@ function get_current_user_id() { return 7; }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
 function wc_format_decimal( $value, $decimals = 0 ) { return number_format( (float) $value, $decimals, '.', '' ); }
 function wc_get_price_decimals() { return 0; }
-function wc_get_order( $value ) { return $value instanceof WC_Order ? $value : false; }
+function wc_get_order( $value ) { global $test_orders; return $value instanceof WC_Order ? $value : ( isset( $test_orders[ $value ] ) ? $test_orders[ $value ] : false ); }
+function wc_get_orders( $args ) {
+	global $test_orders;
+	$key = $args['meta_query'][0]['key'];
+	$found = [];
+	foreach ( $test_orders as $id => $order ) {
+		if ( array_key_exists( $key, $order->meta ) ) {
+			$found[] = $id;
+		}
+	}
+	return $found;
+}
 class WP_Error {
 	private $code;
 	public function __construct( $code ) { $this->code = $code; }
@@ -31,13 +43,15 @@ class WP_Error {
 class WC_Order {
 	public $meta = [];
 	public $saves = 0;
-	public function get_id() { return 50; }
+	private $id;
+	public function __construct( $id = 50 ) { $this->id = $id; }
+	public function get_id() { return $this->id; }
 	public function get_total() { return '100000'; }
 	public function get_currency() { return 'VND'; }
 	public function get_meta( $key ) { return isset( $this->meta[ $key ] ) ? $this->meta[ $key ] : ''; }
 	public function update_meta_data( $key, $value ) { $this->meta[ $key ] = $value; }
 	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); }
-	public function save() { ++$this->saves; }
+	public function save() { global $test_orders; ++$this->saves; $test_orders[ $this->id ] = $this; }
 }
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipping.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-fulfillment-exceptions.php';
@@ -59,6 +73,7 @@ vst_assert_same( 'recorded', $reader::get_order_data( $payment )['state'], 'Reve
 $partial = $reader::record_manual_observation( $payment, [ 'amount' => '50000', 'currency' => 'VND' ] );
 vst_assert_true( is_wp_error( $reader::match_manual_observation( $payment, $partial['id'] ) ), 'Partial observation cannot reconcile' );
 vst_assert_true( is_wp_error( $reader::record_manual_observation( $payment, [ 'amount' => '100000.49', 'currency' => 'VND' ] ) ), 'Excess precision cannot be rounded into a manual match' );
+vst_assert_true( is_wp_error( $reader::record_manual_observation( $payment, [ 'amount' => '100000', 'currency' => 'VND', 'observed_at' => '2026-02-31T00:00:00Z' ] ) ), 'Invalid calendar timestamp cannot be normalized into evidence' );
 $wrong_currency = $reader::record_manual_observation( $payment, [ 'amount' => '100000', 'currency' => 'USD' ] );
 vst_assert_true( is_wp_error( $reader::match_manual_observation( $payment, $wrong_currency['id'] ) ), 'Currency mismatch cannot reconcile' );
 $correction = $reader::record_manual_observation( $payment, [ 'amount' => '100000', 'currency' => 'VND' ], [ 'supersedes' => $partial['id'] ] );
@@ -76,6 +91,8 @@ vst_assert_true( is_wp_error( $reader::record_verified_evidence( $payment, 'bank
 vst_assert_true( is_wp_error( $reader::record_verified_evidence( $payment, 'manual', $proof ) ), 'Reserved manual source cannot produce external trust' );
 $verified = $reader::record_verified_evidence( $payment, 'bank', $proof );
 vst_assert_same( 'external_verified', $reader::get_order_data( $payment )['trust'], 'Registered proof yields external trust' );
+$other_payment = new WC_Order( 51 );
+vst_assert_true( is_wp_error( $reader::record_verified_evidence( $other_payment, 'bank', $proof ) ), 'One source transaction cannot verify a second order' );
 vst_assert_same( $verified['id'], $reader::record_verified_evidence( $payment, 'bank', $proof )['id'], 'Identical transaction is idempotent' );
 $conflict = $proof;
 $conflict['observed_at'] = '2026-09-26T01:00:00Z';
@@ -100,9 +117,10 @@ $tracking::add_timeline_event( $shipment, [ 'status' => 'in_transit' ] );
 $old_event = $tracking::get_timeline( $shipment )[0];
 vst_assert_same( [ 'id', 'status', 'location', 'note', 'occurred_at', 'created_at', 'user_id' ], array_keys( $old_event ), 'Timeline event shape remains unchanged' );
 $old_id = $exceptions::get_current_shipment( $shipment )['id'];
-$replacement = $exceptions::replace_shipment( $shipment, 'carrier', [ 'tracking_code' => 'NEW', 'status_id' => 'created' ], [ 'expected_shipment_id' => $old_id ] );
+$replacement = $exceptions::replace_shipment( $shipment, 'carrier', [ 'provider' => 'bogus', 'provider_name' => 'Spoof', 'tracking_code' => 'NEW', 'status_id' => 'created' ], [ 'expected_shipment_id' => $old_id ] );
 vst_assert_true( ! is_wp_error( $replacement ), 'Explicit replacement succeeds' );
 vst_assert_true( $replacement['id'] !== $old_id, 'Replacement advances identity' );
+vst_assert_same( 'carrier', $shipment->get_meta( $shipping::META_PROVIDER ), 'Replacement uses registered provider' );
 vst_assert_same( $old_id, $exceptions::get_exceptions( $shipment )[0]['parent_shipment_id'], 'Replacement records predecessor identity' );
 vst_assert_true( is_wp_error( $shipping::update_order_shipping_data_for_shipment( $shipment, 'carrier', [ 'status_id' => 'delivered' ], $old_id ) ), 'Stale identity-aware shipping update fails' );
 vst_assert_true( is_wp_error( $tracking::add_timeline_event( $shipment, [ 'status' => 'delivered', 'expected_shipment_id' => $old_id ] ) ), 'Stale timeline update fails' );

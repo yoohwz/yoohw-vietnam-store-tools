@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	const META_HISTORY = '_yoohw_vietnam_store_tools_payment_reconciliation_history';
+	const META_TRANSACTION_PREFIX = '_yoohw_vietnam_store_tools_payment_transaction_';
 	const STATE_UNRECONCILED = 'unreconciled';
 	const STATE_RECORDED     = 'recorded';
 	const STATE_RECONCILED   = 'reconciled';
@@ -141,6 +142,25 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 			}
 			return self::error( 'conflicting_transaction' );
 		}
+		if ( ! function_exists( 'wc_get_orders' ) ) {
+			return self::error( 'unavailable_transaction_lookup' );
+		}
+		$transaction_key = self::transaction_meta_key( $source_id, $transaction_id );
+		$owners = wc_get_orders(
+			[
+				'type'       => 'shop_order',
+				'status'     => 'any',
+				'limit'      => 2,
+				'return'     => 'ids',
+				'meta_query' => [ [ 'key' => $transaction_key, 'compare' => 'EXISTS' ] ], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			]
+		);
+		if ( ! is_array( $owners ) ) {
+			return self::error( 'unavailable_transaction_lookup' );
+		}
+		if ( $owners ) {
+			return self::error( 'conflicting_transaction' );
+		}
 		$normalized['kind'] = 'verified';
 		$normalized['trust'] = self::TRUST_EXTERNAL;
 		$normalized['source_id'] = $source_id;
@@ -170,6 +190,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 		$history = self::get_history( $order );
 		$history[] = $entry;
 		$order->update_meta_data( self::META_HISTORY, $history );
+		if ( 'verified' === $entry['kind'] ) {
+			$order->update_meta_data( self::transaction_meta_key( $entry['source_id'], $entry['transaction_id'] ), $entry['id'] );
+		}
 		$order->save();
 		do_action( 'yoohw_vietnam_store_tools_payment_reconciliation_updated', $order, self::get_order_data( $order ), $entry );
 		return $entry;
@@ -204,10 +227,15 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 			return $amount;
 		}
 		$observed_at = isset( $data['observed_at'] ) ? trim( (string) $data['observed_at'] ) : gmdate( 'c' );
-		if ( ! preg_match( '/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\+00:00|Z)$/', $observed_at ) || false === strtotime( $observed_at ) ) {
+		if ( ! preg_match( '/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\+00:00|Z)$/', $observed_at ) ) {
 			return self::error( 'invalid_evidence' );
 		}
-		return [ 'reference' => isset( $data['reference'] ) ? sanitize_text_field( $data['reference'] ) : '', 'amount' => $amount, 'currency' => $currency, 'observed_at' => gmdate( 'c', strtotime( $observed_at ) ) ];
+		$date = DateTimeImmutable::createFromFormat( '!Y-m-d\TH:i:sP', str_replace( 'Z', '+00:00', $observed_at ) );
+		$date_errors = DateTimeImmutable::getLastErrors();
+		if ( ! $date || ( is_array( $date_errors ) && ( $date_errors['warning_count'] || $date_errors['error_count'] ) ) ) {
+			return self::error( 'invalid_evidence' );
+		}
+		return [ 'reference' => isset( $data['reference'] ) ? sanitize_text_field( $data['reference'] ) : '', 'amount' => $amount, 'currency' => $currency, 'observed_at' => gmdate( 'c', $date->getTimestamp() ) ];
 	}
 
 	private static function exact_order_amount( $order, $entry ) {
@@ -234,6 +262,10 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 			return self::error( 'invalid_evidence' );
 		}
 		return $expected;
+	}
+
+	private static function transaction_meta_key( $source_id, $transaction_id ) {
+		return self::META_TRANSACTION_PREFIX . hash( 'sha256', $source_id . "\0" . $transaction_id );
 	}
 
 	private static function order( $order ) {

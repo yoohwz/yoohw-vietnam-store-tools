@@ -110,6 +110,7 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		}
 		$previous_id = 0 === strpos( $current['id'], 'legacy:' ) ? wp_generate_uuid4() : $current['id'];
 		$new_id = wp_generate_uuid4();
+		unset( $new_data['provider'], $new_data['provider_name'] );
 		$new_data = array_merge( [ 'tracking_code' => '', 'label_id' => '', 'tracking_id' => '', 'status_id' => '', 'status' => '', 'tracking_url' => '', 'raw_response' => [] ], $new_data );
 		$result = Yoohw_Vietnam_Store_Tools_Shipping::update_order_shipping_data( $order, $registered_provider, $new_data );
 		if ( is_wp_error( $result ) ) {

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-26T08:45:02+00:00\n"
+"POT-Creation-Date: 2026-09-26T08:51:50+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -1284,7 +1284,7 @@ msgstr "%1$s: %2$s → %3$s"
 msgid "Cancelled"
 msgstr "Đã hủy"
 
-#: includes/class-vietnam-commerce-kit-fulfillment-exceptions.php:224
+#: includes/class-vietnam-commerce-kit-fulfillment-exceptions.php:225
 msgid "Shipment exception could not be recorded."
 msgstr "Không thể ghi nhận ngoại lệ vận chuyển."
 
@@ -1609,7 +1609,7 @@ msgstr "Trạng thái đơn hàng"
 msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:248
+#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:280
 msgid "Payment evidence could not be recorded."
 msgstr "Không thể ghi nhận bằng chứng thanh toán."
 
