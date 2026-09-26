@@ -196,12 +196,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 		}
 		$raw_amount = trim( (string) $data['amount'] );
 		$currency = strtoupper( trim( (string) $data['currency'] ) );
-		if ( ! preg_match( '/^\d+(?:\.\d+)?$/', $raw_amount ) || ! preg_match( '/^[A-Z]{3}$/', $currency ) ) {
+		if ( ! preg_match( '/^[A-Z]{3}$/', $currency ) ) {
 			return self::error( 'invalid_evidence' );
 		}
-		$amount = wc_format_decimal( $raw_amount, wc_get_price_decimals() );
-		if ( ! is_numeric( $amount ) || ! preg_match( '/[1-9]/', str_replace( '.', '', $amount ) ) ) {
-			return self::error( 'invalid_evidence' );
+		$amount = self::normalize_amount( $raw_amount );
+		if ( is_wp_error( $amount ) ) {
+			return $amount;
 		}
 		$observed_at = isset( $data['observed_at'] ) ? trim( (string) $data['observed_at'] ) : gmdate( 'c' );
 		if ( ! preg_match( '/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\+00:00|Z)$/', $observed_at ) || false === strtotime( $observed_at ) ) {
@@ -211,7 +211,29 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	}
 
 	private static function exact_order_amount( $order, $entry ) {
-		return strtoupper( $order->get_currency() ) === $entry['currency'] && wc_format_decimal( $order->get_total(), wc_get_price_decimals() ) === $entry['amount'];
+		$amount = self::normalize_amount( $order->get_total() );
+		return ! is_wp_error( $amount ) && strtoupper( $order->get_currency() ) === $entry['currency'] && $amount === $entry['amount'];
+	}
+
+	private static function normalize_amount( $value ) {
+		$raw = trim( (string) $value );
+		if ( ! preg_match( '/^\d+(?:\.\d+)?$/', $raw ) ) {
+			return self::error( 'invalid_evidence' );
+		}
+		$parts = explode( '.', $raw, 2 );
+		$whole = ltrim( $parts[0], '0' );
+		$whole = '' === $whole ? '0' : $whole;
+		$fraction = isset( $parts[1] ) ? $parts[1] : '';
+		$decimals = (int) wc_get_price_decimals();
+		if ( $decimals < 0 || ( strlen( $fraction ) > $decimals && preg_match( '/[1-9]/', substr( $fraction, $decimals ) ) ) ) {
+			return self::error( 'invalid_evidence' );
+		}
+		$expected = $whole . ( $decimals ? '.' . str_pad( substr( $fraction, 0, $decimals ), $decimals, '0' ) : '' );
+		$formatted = wc_format_decimal( $raw, $decimals );
+		if ( $expected !== $formatted || ! preg_match( '/[1-9]/', $expected ) ) {
+			return self::error( 'invalid_evidence' );
+		}
+		return $expected;
 	}
 
 	private static function order( $order ) {

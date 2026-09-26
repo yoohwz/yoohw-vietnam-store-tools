@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T08:39:49+00:00\n"
+"POT-Creation-Date: 2026-09-26T08:45:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -634,7 +634,7 @@ msgid "QR code"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
-#: includes/class-vietnam-commerce-kit-shipping.php:1988
+#: includes/class-vietnam-commerce-kit-shipping.php:1992
 msgid "Copied"
 msgstr ""
 
@@ -718,9 +718,9 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:446
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:516
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:529
-#: includes/class-vietnam-commerce-kit-shipping.php:585
-#: includes/class-vietnam-commerce-kit-shipping.php:652
-#: includes/class-vietnam-commerce-kit-shipping.php:722
+#: includes/class-vietnam-commerce-kit-shipping.php:589
+#: includes/class-vietnam-commerce-kit-shipping.php:656
+#: includes/class-vietnam-commerce-kit-shipping.php:726
 msgid "Security check failed. Please reload the page and try again."
 msgstr ""
 
@@ -849,9 +849,9 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-shipping.php:258
 #: includes/class-vietnam-commerce-kit-shipping.php:347
 #: includes/class-vietnam-commerce-kit-shipping.php:365
-#: includes/class-vietnam-commerce-kit-shipping.php:591
-#: includes/class-vietnam-commerce-kit-shipping.php:658
-#: includes/class-vietnam-commerce-kit-shipping.php:728
+#: includes/class-vietnam-commerce-kit-shipping.php:595
+#: includes/class-vietnam-commerce-kit-shipping.php:662
+#: includes/class-vietnam-commerce-kit-shipping.php:732
 msgid "Could not load order."
 msgstr ""
 
@@ -980,7 +980,7 @@ msgid "Send invoice email to customer"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:430
-#: includes/class-vietnam-commerce-kit-shipping.php:1251
+#: includes/class-vietnam-commerce-kit-shipping.php:1255
 msgid "Email settings"
 msgstr ""
 
@@ -990,7 +990,7 @@ msgid "You do not have permission to edit this order."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:530
-#: includes/class-vietnam-commerce-kit-shipping.php:1254
+#: includes/class-vietnam-commerce-kit-shipping.php:1258
 msgid "The customer billing email is missing."
 msgstr ""
 
@@ -1140,8 +1140,8 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-order-management.php:763
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:848
 #: includes/class-vietnam-commerce-kit-shipping.php:70
-#: includes/class-vietnam-commerce-kit-shipping.php:815
-#: includes/class-vietnam-commerce-kit-shipping.php:1241
+#: includes/class-vietnam-commerce-kit-shipping.php:819
+#: includes/class-vietnam-commerce-kit-shipping.php:1245
 #: templates/emails/customer-shipping-tracking.php:70
 #: templates/emails/plain/customer-shipping-tracking.php:43
 msgid "Tracking code"
@@ -1388,7 +1388,7 @@ msgstr ""
 msgid "Could not create the CSV export."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:226
+#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:248
 msgid "Payment evidence could not be recorded."
 msgstr ""
 
@@ -1563,6 +1563,7 @@ msgid "Select a valid shipment status."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:328
+#: includes/class-vietnam-commerce-kit-shipping.php:369
 msgid "Shipment is no longer current."
 msgstr ""
 
@@ -1613,10 +1614,10 @@ msgid "The timeline event could not be deleted."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:523
-#: includes/class-vietnam-commerce-kit-shipping.php:579
-#: includes/class-vietnam-commerce-kit-shipping.php:646
-#: includes/class-vietnam-commerce-kit-shipping.php:716
-#: includes/class-vietnam-commerce-kit-shipping.php:731
+#: includes/class-vietnam-commerce-kit-shipping.php:583
+#: includes/class-vietnam-commerce-kit-shipping.php:650
+#: includes/class-vietnam-commerce-kit-shipping.php:720
+#: includes/class-vietnam-commerce-kit-shipping.php:735
 msgid "You do not have permission to manage shipments."
 msgstr ""
 
@@ -1714,7 +1715,7 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:49
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:106
-#: includes/class-vietnam-commerce-kit-shipping.php:447
+#: includes/class-vietnam-commerce-kit-shipping.php:451
 msgid "Vietnam shipping"
 msgstr ""
 
@@ -1856,7 +1857,7 @@ msgid "Products without a shipping class"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:119
-#: includes/class-vietnam-commerce-kit-shipping.php:838
+#: includes/class-vietnam-commerce-kit-shipping.php:842
 msgid "Shipping fee"
 msgstr ""
 
@@ -1909,19 +1910,19 @@ msgid "New shipping rule"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:68
-#: includes/class-vietnam-commerce-kit-shipping.php:811
-#: includes/class-vietnam-commerce-kit-shipping.php:1233
-#: includes/class-vietnam-commerce-kit-shipping.php:1434
+#: includes/class-vietnam-commerce-kit-shipping.php:815
+#: includes/class-vietnam-commerce-kit-shipping.php:1237
+#: includes/class-vietnam-commerce-kit-shipping.php:1438
 msgid "Provider"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:69
-#: includes/class-vietnam-commerce-kit-shipping.php:830
+#: includes/class-vietnam-commerce-kit-shipping.php:834
 msgid "Service"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:71
-#: includes/class-vietnam-commerce-kit-shipping.php:819
+#: includes/class-vietnam-commerce-kit-shipping.php:823
 msgid "Status"
 msgstr ""
 
@@ -1930,133 +1931,133 @@ msgid "Shipping information"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:266
-#: includes/class-vietnam-commerce-kit-shipping.php:599
-#: includes/class-vietnam-commerce-kit-shipping.php:669
-#: includes/class-vietnam-commerce-kit-shipping.php:743
+#: includes/class-vietnam-commerce-kit-shipping.php:603
+#: includes/class-vietnam-commerce-kit-shipping.php:673
+#: includes/class-vietnam-commerce-kit-shipping.php:747
 msgid "Shipping provider is not available."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:529
+#: includes/class-vietnam-commerce-kit-shipping.php:533
 msgid "Shipment created."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:533
+#: includes/class-vietnam-commerce-kit-shipping.php:537
 msgid "Shipment synced."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:537
+#: includes/class-vietnam-commerce-kit-shipping.php:541
 msgid "Shipment cancelled."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:541
+#: includes/class-vietnam-commerce-kit-shipping.php:545
 msgid "Manual shipment details saved."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:545
+#: includes/class-vietnam-commerce-kit-shipping.php:549
 msgid "Manual shipment details saved and tracking email sent to the customer."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:549
+#: includes/class-vietnam-commerce-kit-shipping.php:553
 msgid "Manual shipment details saved, but the tracking email could not be sent."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:603
-#: includes/class-vietnam-commerce-kit-shipping.php:747
+#: includes/class-vietnam-commerce-kit-shipping.php:607
+#: includes/class-vietnam-commerce-kit-shipping.php:751
 msgid "This provider does not support this action."
 msgstr ""
 
 #. translators: %s: error message.
-#: includes/class-vietnam-commerce-kit-shipping.php:622
-#: includes/class-vietnam-commerce-kit-shipping.php:759
+#: includes/class-vietnam-commerce-kit-shipping.php:626
+#: includes/class-vietnam-commerce-kit-shipping.php:763
 #, php-format
 msgid "Shipping action failed: %s"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:630
-#: includes/class-vietnam-commerce-kit-shipping.php:1736
+#: includes/class-vietnam-commerce-kit-shipping.php:634
+#: includes/class-vietnam-commerce-kit-shipping.php:1740
 msgid "Shipping provider returned an invalid response."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:673
+#: includes/class-vietnam-commerce-kit-shipping.php:677
 msgid "Tracking code is required."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:834
+#: includes/class-vietnam-commerce-kit-shipping.php:838
 msgid "Label ID"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:842
+#: includes/class-vietnam-commerce-kit-shipping.php:846
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:209
 msgid "COD amount"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:846
+#: includes/class-vietnam-commerce-kit-shipping.php:850
 msgid "Last synced"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:863
+#: includes/class-vietnam-commerce-kit-shipping.php:867
 msgid "No shipment data has been saved for this order."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:913
+#: includes/class-vietnam-commerce-kit-shipping.php:917
 msgid "Sync shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:925
+#: includes/class-vietnam-commerce-kit-shipping.php:929
 msgid "Print label"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:937
+#: includes/class-vietnam-commerce-kit-shipping.php:941
 msgid "Cancel shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1201
+#: includes/class-vietnam-commerce-kit-shipping.php:1205
 msgid "The saved shipment provider is not available."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1222
+#: includes/class-vietnam-commerce-kit-shipping.php:1226
 msgid "Save tracking code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1223
 #: includes/class-vietnam-commerce-kit-shipping.php:1227
+#: includes/class-vietnam-commerce-kit-shipping.php:1231
 msgid "Update tracking code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1243
+#: includes/class-vietnam-commerce-kit-shipping.php:1247
 msgid "Tracking URL"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1245
+#: includes/class-vietnam-commerce-kit-shipping.php:1249
 msgid "Leave blank to create the link from the carrier tracking URL template."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1245
+#: includes/class-vietnam-commerce-kit-shipping.php:1249
 msgid "Tracking settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1249
+#: includes/class-vietnam-commerce-kit-shipping.php:1253
 msgid "Email tracking details to the customer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1306
+#: includes/class-vietnam-commerce-kit-shipping.php:1310
 msgid "Other carrier"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1430
-#: includes/class-vietnam-commerce-kit-shipping.php:1443
+#: includes/class-vietnam-commerce-kit-shipping.php:1434
+#: includes/class-vietnam-commerce-kit-shipping.php:1447
 msgid "Create shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1893
+#: includes/class-vietnam-commerce-kit-shipping.php:1897
 msgid "Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the carrier template."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1961
+#: includes/class-vietnam-commerce-kit-shipping.php:1965
 msgid "Manually entered"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1988
+#: includes/class-vietnam-commerce-kit-shipping.php:1992
 msgid "Copy tracking code"
 msgstr ""
 

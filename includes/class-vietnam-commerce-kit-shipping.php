@@ -364,6 +364,10 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 		if ( ! $order ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
 		}
+		$current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+		if ( ! empty( $current['closed'] ) ) {
+			return new WP_Error( 'yoohw_vietnam_store_tools_shipping_closed_shipment', __( 'Shipment is no longer current.', 'yoohw-vietnam-store-tools' ) );
+		}
 
 		$previous_provider      = sanitize_key( $order->get_meta( self::META_PROVIDER, true ) );
 		$previous_tracking_code = trim( (string) $order->get_meta( self::META_TRACKING_CODE, true ) );

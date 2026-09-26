@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-26T08:39:49+00:00\n"
+"POT-Creation-Date: 2026-09-26T08:45:02+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -758,7 +758,7 @@ msgid "QR code"
 msgstr "Mã QR"
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
-#: includes/class-vietnam-commerce-kit-shipping.php:1988
+#: includes/class-vietnam-commerce-kit-shipping.php:1992
 msgid "Copied"
 msgstr "Đã sao chép"
 
@@ -870,9 +870,9 @@ msgstr "đơn hàng có vận đơn"
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:446
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:516
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:529
-#: includes/class-vietnam-commerce-kit-shipping.php:585
-#: includes/class-vietnam-commerce-kit-shipping.php:652
-#: includes/class-vietnam-commerce-kit-shipping.php:722
+#: includes/class-vietnam-commerce-kit-shipping.php:589
+#: includes/class-vietnam-commerce-kit-shipping.php:656
+#: includes/class-vietnam-commerce-kit-shipping.php:726
 msgid "Security check failed. Please reload the page and try again."
 msgstr "Kiểm tra bảo mật thất bại. Vui lòng tải lại trang và thử lại."
 
@@ -1043,9 +1043,9 @@ msgstr "Đã thay thế"
 #: includes/class-vietnam-commerce-kit-shipping.php:258
 #: includes/class-vietnam-commerce-kit-shipping.php:347
 #: includes/class-vietnam-commerce-kit-shipping.php:365
-#: includes/class-vietnam-commerce-kit-shipping.php:591
-#: includes/class-vietnam-commerce-kit-shipping.php:658
-#: includes/class-vietnam-commerce-kit-shipping.php:728
+#: includes/class-vietnam-commerce-kit-shipping.php:595
+#: includes/class-vietnam-commerce-kit-shipping.php:662
+#: includes/class-vietnam-commerce-kit-shipping.php:732
 msgid "Could not load order."
 msgstr "Không thể tải đơn hàng."
 
@@ -1182,7 +1182,7 @@ msgid "Send invoice email to customer"
 msgstr "Gửi email hóa đơn cho khách hàng"
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:430
-#: includes/class-vietnam-commerce-kit-shipping.php:1251
+#: includes/class-vietnam-commerce-kit-shipping.php:1255
 msgid "Email settings"
 msgstr "Cài đặt email"
 
@@ -1192,7 +1192,7 @@ msgid "You do not have permission to edit this order."
 msgstr "Bạn không có quyền chỉnh sửa đơn hàng này."
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:530
-#: includes/class-vietnam-commerce-kit-shipping.php:1254
+#: includes/class-vietnam-commerce-kit-shipping.php:1258
 msgid "The customer billing email is missing."
 msgstr "Đơn hàng chưa có email thanh toán của khách hàng."
 
@@ -1361,8 +1361,8 @@ msgstr "%1$s: đã cập nhật %2$d đơn hàng, bỏ qua %3$d đơn hàng."
 #: includes/class-vietnam-commerce-kit-order-management.php:763
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:848
 #: includes/class-vietnam-commerce-kit-shipping.php:70
-#: includes/class-vietnam-commerce-kit-shipping.php:815
-#: includes/class-vietnam-commerce-kit-shipping.php:1241
+#: includes/class-vietnam-commerce-kit-shipping.php:819
+#: includes/class-vietnam-commerce-kit-shipping.php:1245
 #: templates/emails/customer-shipping-tracking.php:70
 #: templates/emails/plain/customer-shipping-tracking.php:43
 msgid "Tracking code"
@@ -1609,7 +1609,7 @@ msgstr "Trạng thái đơn hàng"
 msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:226
+#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:248
 msgid "Payment evidence could not be recorded."
 msgstr "Không thể ghi nhận bằng chứng thanh toán."
 
@@ -1863,6 +1863,7 @@ msgid "Select a valid shipment status."
 msgstr "Hãy chọn trạng thái vận chuyển hợp lệ."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:328
+#: includes/class-vietnam-commerce-kit-shipping.php:369
 msgid "Shipment is no longer current."
 msgstr "Đơn vận chuyển này không còn hiệu lực."
 
@@ -1913,10 +1914,10 @@ msgid "The timeline event could not be deleted."
 msgstr "Không thể xóa sự kiện hành trình."
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:523
-#: includes/class-vietnam-commerce-kit-shipping.php:579
-#: includes/class-vietnam-commerce-kit-shipping.php:646
-#: includes/class-vietnam-commerce-kit-shipping.php:716
-#: includes/class-vietnam-commerce-kit-shipping.php:731
+#: includes/class-vietnam-commerce-kit-shipping.php:583
+#: includes/class-vietnam-commerce-kit-shipping.php:650
+#: includes/class-vietnam-commerce-kit-shipping.php:720
+#: includes/class-vietnam-commerce-kit-shipping.php:735
 msgid "You do not have permission to manage shipments."
 msgstr "Bạn không có quyền quản lý vận đơn."
 
@@ -2029,7 +2030,7 @@ msgstr "Hiển thị cho khách hàng trong quá trình thanh toán."
 
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:49
 #: includes/class-vietnam-commerce-kit-shipping-rules-method.php:106
-#: includes/class-vietnam-commerce-kit-shipping.php:447
+#: includes/class-vietnam-commerce-kit-shipping.php:451
 msgid "Vietnam shipping"
 msgstr "Vận chuyển"
 
@@ -2183,7 +2184,7 @@ msgid "Products without a shipping class"
 msgstr "Sản phẩm không có mức phân loại vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:119
-#: includes/class-vietnam-commerce-kit-shipping.php:838
+#: includes/class-vietnam-commerce-kit-shipping.php:842
 msgid "Shipping fee"
 msgstr "Phí vận chuyển"
 
@@ -2239,19 +2240,19 @@ msgid "New shipping rule"
 msgstr "Quy tắc vận chuyển mới"
 
 #: includes/class-vietnam-commerce-kit-shipping.php:68
-#: includes/class-vietnam-commerce-kit-shipping.php:811
-#: includes/class-vietnam-commerce-kit-shipping.php:1233
-#: includes/class-vietnam-commerce-kit-shipping.php:1434
+#: includes/class-vietnam-commerce-kit-shipping.php:815
+#: includes/class-vietnam-commerce-kit-shipping.php:1237
+#: includes/class-vietnam-commerce-kit-shipping.php:1438
 msgid "Provider"
 msgstr "Nhà cung cấp"
 
 #: includes/class-vietnam-commerce-kit-shipping.php:69
-#: includes/class-vietnam-commerce-kit-shipping.php:830
+#: includes/class-vietnam-commerce-kit-shipping.php:834
 msgid "Service"
 msgstr "Dịch vụ"
 
 #: includes/class-vietnam-commerce-kit-shipping.php:71
-#: includes/class-vietnam-commerce-kit-shipping.php:819
+#: includes/class-vietnam-commerce-kit-shipping.php:823
 msgid "Status"
 msgstr "Trạng thái"
 
@@ -2260,128 +2261,128 @@ msgid "Shipping information"
 msgstr "Thông tin vận chuyển"
 
 #: includes/class-vietnam-commerce-kit-shipping.php:266
-#: includes/class-vietnam-commerce-kit-shipping.php:599
-#: includes/class-vietnam-commerce-kit-shipping.php:669
-#: includes/class-vietnam-commerce-kit-shipping.php:743
+#: includes/class-vietnam-commerce-kit-shipping.php:603
+#: includes/class-vietnam-commerce-kit-shipping.php:673
+#: includes/class-vietnam-commerce-kit-shipping.php:747
 msgid "Shipping provider is not available."
 msgstr "Nhà cung cấp vận chuyển không khả dụng."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:529
+#: includes/class-vietnam-commerce-kit-shipping.php:533
 msgid "Shipment created."
 msgstr "Đã tạo vận đơn."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:533
+#: includes/class-vietnam-commerce-kit-shipping.php:537
 msgid "Shipment synced."
 msgstr "Đã đồng bộ vận đơn."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:537
+#: includes/class-vietnam-commerce-kit-shipping.php:541
 msgid "Shipment cancelled."
 msgstr "Đã hủy vận đơn."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:541
+#: includes/class-vietnam-commerce-kit-shipping.php:545
 msgid "Manual shipment details saved."
 msgstr "Đã lưu thông tin vận đơn thủ công."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:545
+#: includes/class-vietnam-commerce-kit-shipping.php:549
 msgid "Manual shipment details saved and tracking email sent to the customer."
 msgstr ""
 "Đã lưu thông tin vận đơn thủ công và gửi email mã vận đơn cho khách hàng."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:549
+#: includes/class-vietnam-commerce-kit-shipping.php:553
 msgid ""
 "Manual shipment details saved, but the tracking email could not be sent."
 msgstr ""
 "Đã lưu thông tin vận đơn thủ công, nhưng không thể gửi email mã vận đơn."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:603
-#: includes/class-vietnam-commerce-kit-shipping.php:747
+#: includes/class-vietnam-commerce-kit-shipping.php:607
+#: includes/class-vietnam-commerce-kit-shipping.php:751
 msgid "This provider does not support this action."
 msgstr "Nhà cung cấp này không hỗ trợ thao tác này."
 
 #. translators: %s: error message.
-#: includes/class-vietnam-commerce-kit-shipping.php:622
-#: includes/class-vietnam-commerce-kit-shipping.php:759
+#: includes/class-vietnam-commerce-kit-shipping.php:626
+#: includes/class-vietnam-commerce-kit-shipping.php:763
 #, php-format
 msgid "Shipping action failed: %s"
 msgstr "Thao tác vận chuyển thất bại: %s"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:630
-#: includes/class-vietnam-commerce-kit-shipping.php:1736
+#: includes/class-vietnam-commerce-kit-shipping.php:634
+#: includes/class-vietnam-commerce-kit-shipping.php:1740
 msgid "Shipping provider returned an invalid response."
 msgstr "Nhà cung cấp vận chuyển trả về phản hồi không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:673
+#: includes/class-vietnam-commerce-kit-shipping.php:677
 msgid "Tracking code is required."
 msgstr "Mã vận đơn là bắt buộc."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:834
+#: includes/class-vietnam-commerce-kit-shipping.php:838
 msgid "Label ID"
 msgstr "Mã phiếu gửi"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:842
+#: includes/class-vietnam-commerce-kit-shipping.php:846
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:209
 msgid "COD amount"
 msgstr "Số tiền COD"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:846
+#: includes/class-vietnam-commerce-kit-shipping.php:850
 msgid "Last synced"
 msgstr "Đồng bộ lần cuối"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:863
+#: includes/class-vietnam-commerce-kit-shipping.php:867
 msgid "No shipment data has been saved for this order."
 msgstr "Đơn hàng này chưa có dữ liệu vận đơn."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:913
+#: includes/class-vietnam-commerce-kit-shipping.php:917
 msgid "Sync shipment"
 msgstr "Đồng bộ vận đơn"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:925
+#: includes/class-vietnam-commerce-kit-shipping.php:929
 msgid "Print label"
 msgstr "In nhãn vận đơn"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:937
+#: includes/class-vietnam-commerce-kit-shipping.php:941
 msgid "Cancel shipment"
 msgstr "Hủy vận đơn"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1201
+#: includes/class-vietnam-commerce-kit-shipping.php:1205
 msgid "The saved shipment provider is not available."
 msgstr "Nhà vận chuyển đã lưu hiện không khả dụng."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1222
+#: includes/class-vietnam-commerce-kit-shipping.php:1226
 msgid "Save tracking code"
 msgstr "Lưu mã vận đơn"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1223
 #: includes/class-vietnam-commerce-kit-shipping.php:1227
+#: includes/class-vietnam-commerce-kit-shipping.php:1231
 msgid "Update tracking code"
 msgstr "Cập nhật mã vận đơn"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1243
+#: includes/class-vietnam-commerce-kit-shipping.php:1247
 msgid "Tracking URL"
 msgstr "Liên kết theo dõi"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1245
+#: includes/class-vietnam-commerce-kit-shipping.php:1249
 msgid "Leave blank to create the link from the carrier tracking URL template."
 msgstr "Để trống để tự tạo liên kết từ mẫu URL theo dõi của hãng vận chuyển."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1245
+#: includes/class-vietnam-commerce-kit-shipping.php:1249
 msgid "Tracking settings"
 msgstr "Cài đặt theo dõi"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1249
+#: includes/class-vietnam-commerce-kit-shipping.php:1253
 msgid "Email tracking details to the customer"
 msgstr "Gửi email thông tin vận chuyển tới khách hàng"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1306
+#: includes/class-vietnam-commerce-kit-shipping.php:1310
 msgid "Other carrier"
 msgstr "Nhà vận chuyển khác"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1430
-#: includes/class-vietnam-commerce-kit-shipping.php:1443
+#: includes/class-vietnam-commerce-kit-shipping.php:1434
+#: includes/class-vietnam-commerce-kit-shipping.php:1447
 msgid "Create shipment"
 msgstr "Tạo vận đơn"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1893
+#: includes/class-vietnam-commerce-kit-shipping.php:1897
 msgid ""
 "Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the "
 "carrier template."
@@ -2389,11 +2390,11 @@ msgstr ""
 "Nhập URL theo dõi HTTP hoặc HTTPS hợp lệ, hoặc để trống để sử dụng mẫu của "
 "đơn vị vận chuyển."
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1961
+#: includes/class-vietnam-commerce-kit-shipping.php:1965
 msgid "Manually entered"
 msgstr "Nhập thủ công"
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1988
+#: includes/class-vietnam-commerce-kit-shipping.php:1992
 msgid "Copy tracking code"
 msgstr "Sao chép mã vận đơn"
 
