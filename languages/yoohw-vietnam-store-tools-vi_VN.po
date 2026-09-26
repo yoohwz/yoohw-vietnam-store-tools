@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-26T10:08:11+00:00\n"
+"POT-Creation-Date: 2026-09-26T10:12:54+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -1615,7 +1615,7 @@ msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
 #: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:30
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:309
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:342
 msgid "Externally verified"
 msgstr "Đã xác minh bên ngoài"
 
@@ -1635,85 +1635,103 @@ msgstr "Chưa đối soát"
 msgid "Payment reconciliation"
 msgstr "Đối soát thanh toán"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:71
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:75
 msgid "Source ID"
 msgstr "Mã nguồn"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:72
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:76
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:135
 msgid "Transfer reference"
 msgstr "Mã tham chiếu chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:73
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:77
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:136
 msgid "Amount and currency"
 msgstr "Số tiền và đơn vị tiền tệ"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:74
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:98
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:78
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:115
 msgid "Observed time"
 msgstr "Thời điểm quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:75
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:79
 msgid "Recorded time"
 msgstr "Thời điểm ghi nhận"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:76
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:80
 msgid "Recorded by"
 msgstr "Người ghi nhận"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:81
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:84
+msgid "Select an observation"
+msgstr "Chọn một bản ghi quan sát"
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:90
+msgid "Selected"
+msgstr "Đã chọn"
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:98
 msgid "Externally verified evidence is read only here."
 msgstr "Bằng chứng được xác minh bên ngoài chỉ có thể xem tại đây."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:84
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:101
 msgid "Reconciliation history"
 msgstr "Lịch sử đối soát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:100
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:117
 msgid "Supersedes:"
 msgstr "Thay thế:"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:114
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:133
+msgid "Selected observation"
+msgstr "Bản ghi quan sát đã chọn"
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:134
+msgid "Record ID"
+msgstr "Mã bản ghi"
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:138
 msgid "Correct observation"
 msgstr "Sửa thông tin quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:114
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:138
 msgid "Record transfer observation"
 msgstr "Ghi nhận thông tin chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:116
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:140
 msgid ""
 "A correction appends a new record and keeps the previous record in history."
 msgstr "Việc sửa sẽ thêm bản ghi mới và giữ bản ghi trước trong lịch sử."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:119
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:143
 msgid "Observed amount"
 msgstr "Số tiền quan sát được"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:120
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:144
 msgid "Order currency"
 msgstr "Đơn vị tiền tệ của đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:121
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:145
 msgid "Transfer reference (optional)"
 msgstr "Mã tham chiếu chuyển khoản (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:122
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:146
 msgid "Observed time (store time)"
 msgstr "Thời điểm quan sát (giờ cửa hàng)"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:123
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:147
 msgid "Note (optional)"
 msgstr "Ghi chú (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:124
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:148
 msgid "Save correction"
 msgstr "Lưu bản sửa"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:124
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:148
 msgid "Record observation"
 msgstr "Ghi nhận quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:126
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:150
 msgid ""
 "Confirm that you compared this transfer with the order. This records a "
 "manual reconciliation and does not confirm the bank transaction "
@@ -1722,11 +1740,11 @@ msgstr ""
 "Xác nhận bạn đã so sánh khoản chuyển với đơn hàng. Thao tác này ghi nhận đối "
 "soát thủ công và không tự động xác nhận giao dịch ngân hàng."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:128
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:152
 msgid "Mark manually reconciled"
 msgstr "Đánh dấu đã đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:131
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:155
 msgid ""
 "Reverse this manual match. The status will be recalculated from the "
 "remaining history."
@@ -1734,32 +1752,32 @@ msgstr ""
 "Đảo lượt đối soát thủ công này. Trạng thái sẽ được tính lại từ lịch sử còn "
 "lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:133
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:157
 msgid "Reverse manual reconciliation"
 msgstr "Đảo đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:152
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:176
 msgid "You cannot edit this order."
 msgstr "Bạn không thể sửa đơn hàng này."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:156
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:180
 msgid "Invalid payment reconciliation request."
 msgstr "Yêu cầu đối soát thanh toán không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:203
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:230
 msgid "Payment reconciliation record saved."
 msgstr "Đã lưu bản ghi đối soát thanh toán."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:204
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:231
 msgid "Enter a valid observed date and time."
 msgstr "Nhập ngày giờ quan sát hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:232
 msgid ""
 "The reconciliation history changed. Review the current record and try again."
 msgstr "Lịch sử đối soát đã thay đổi. Hãy xem bản ghi hiện tại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:206
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:233
 msgid ""
 "Manual reconciliation is unavailable for this payment method or externally "
 "verified order."
@@ -1767,11 +1785,11 @@ msgstr ""
 "Không thể đối soát thủ công cho phương thức thanh toán này hoặc đơn hàng đã "
 "được xác minh bên ngoài."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:207
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:234
 msgid "Enter a valid positive amount with the correct currency precision."
 msgstr "Nhập số tiền dương hợp lệ với số chữ số thập phân đúng."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:208
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:235
 msgid ""
 "The observed amount and currency must exactly match the order before manual "
 "reconciliation."
@@ -1779,36 +1797,36 @@ msgstr ""
 "Số tiền và đơn vị tiền tệ quan sát được phải khớp chính xác với đơn hàng "
 "trước khi đối soát thủ công."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:209
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:236
 msgid "The observation has changed. Review the current history and try again."
 msgstr "Thông tin quan sát đã thay đổi. Hãy xem lịch sử hiện tại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:211
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:238
 msgid ""
 "Payment reconciliation was not saved. Review the current order and try again."
 msgstr "Chưa lưu đối soát thanh toán. Hãy xem đơn hàng hiện tại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:307
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:340
 msgid "Manual"
 msgstr "Thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:309
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:342
 msgid "No evidence"
 msgstr "Chưa có bằng chứng"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:314
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:347
 msgid "Observation"
 msgstr "Quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:315
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:348
 msgid "Manual match"
 msgstr "Đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:316
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:349
 msgid "External verification"
 msgstr "Xác minh bên ngoài"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:317
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:350
 msgid "Reversal"
 msgstr "Đảo đối soát"
 

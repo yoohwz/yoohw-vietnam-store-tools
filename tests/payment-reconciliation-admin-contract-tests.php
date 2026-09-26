@@ -5,6 +5,8 @@ require __DIR__ . '/domain-contract-tests.php';
 function esc_html( $value ) { return htmlspecialchars( (string) $value, ENT_QUOTES, 'UTF-8' ); }
 function esc_attr( $value ) { return esc_html( $value ); }
 function esc_html__( $value ) { return esc_html( $value ); }
+function esc_url( $value ) { return esc_html( $value ); }
+function add_query_arg( $key, $value, $url ) { return $url . '?' . rawurlencode( $key ) . '=' . rawurlencode( $value ); }
 function wp_date( $format, $timestamp = null ) { return gmdate( $format, null === $timestamp ? time() : $timestamp ); }
 function get_option( $key ) { return 'date_format' === $key ? 'Y-m-d' : 'H:i'; }
 function get_userdata( $id ) { return (object) [ 'display_name' => 'Operator ' . $id ]; }
@@ -62,6 +64,16 @@ $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'BANK-90' ), 'Projection still displays the first active observation' );
 vst_assert_true( false !== strpos( $html, 'name="vck_payment_supersedes" form="vck-payment-reconciliation-form" value="' . $observation['id'] . '"' ), 'Correction targets the projected observation when multiple observations are active' );
 vst_assert_true( false === strpos( $html, 'name="vck_payment_supersedes" form="vck-payment-reconciliation-form" value="' . $second['id'] . '"' ), 'Correction does not silently target a different observation' );
+vst_assert_true( false !== strpos( $html, 'Select an observation' ) && false !== strpos( $html, 'vck_payment_observation=' . $second['id'] ), 'Operator can explicitly select another active observation' );
+$third = $domain::record_manual_observation( $order, [ 'amount' => '100000', 'currency' => 'VND', 'reference' => 'CORRECTED' ], [ 'supersedes' => $observation['id'] ] );
+vst_assert_same( $second['id'], $domain::get_order_data( $order )['entry_id'], 'Projection may move to another active observation after correction' );
+$_GET['vck_payment_observation'] = $third['id'];
+ob_start();
+$admin->render_metabox( $order );
+$html = ob_get_clean();
+vst_assert_true( false !== strpos( $html, 'name="vck_payment_selected_observation" form="vck-payment-reconciliation-form" value="' . $third['id'] . '"' ), 'Corrected observation remains selected through redirect' );
+vst_assert_true( false !== strpos( $html, 'name="vck_payment_expected_observation" form="vck-payment-reconciliation-form" value="' . $third['id'] . '"' ), 'Corrected observation can be manually matched despite another active observation' );
+unset( $_GET['vck_payment_observation'] );
 
 $external = new VST_Admin_Order( 91 );
 $test_filters['yoohw_vietnam_store_tools_payment_evidence_sources'] = [ 'verified_bank' => static function ( $order, $proof ) { return $proof; } ];

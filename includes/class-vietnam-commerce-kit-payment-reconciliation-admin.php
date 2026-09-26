@@ -61,8 +61,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		$entry = isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
 		$manual = 'bacs' === $order->get_payment_method() && 'external_verified' !== $data['trust'] && current_user_can( 'edit_shop_order', $order->get_id() );
 		$match = 'reconciled' === $data['state'] && 'manual' === $data['trust'] && isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
-		$observation = $this->projected_observation( $data, $active, $match );
+		$observations = $this->active_observations( $active );
+		$selected_id = isset( $_GET['vck_payment_observation'] ) ? sanitize_text_field( wp_unslash( $_GET['vck_payment_observation'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only observation selection.
+		$observation = $selected_id && isset( $observations[ $selected_id ] ) ? $observations[ $selected_id ] : $this->projected_observation( $data, $active, $match );
 		if ( ! $match ) {
+			$match = $this->latest_active_match( $active, $observation );
+		} elseif ( $observation && $match['evidence_id'] !== $observation['id'] ) {
 			$match = $this->latest_active_match( $active, $observation );
 		}
 		echo '<div class="vck-payment-reconciliation">';
@@ -76,6 +80,19 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			$this->detail( __( 'Recorded by', 'yoohw-vietnam-store-tools' ), $this->actor_name( $entry ) );
 		}
 		if ( $manual ) {
+			if ( count( $observations ) > 1 ) {
+				echo '<h4>' . esc_html__( 'Select an observation', 'yoohw-vietnam-store-tools' ) . '</h4><ul>';
+				foreach ( $observations as $candidate ) {
+					$url = add_query_arg( 'vck_payment_observation', $candidate['id'], $order->get_edit_order_url() ) . '#yoohw-vietnam-store-tools-payment-reconciliation';
+					$label = '' !== $candidate['reference'] ? $candidate['reference'] : $candidate['id'];
+					echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $label . ' · ' . $candidate['amount'] . ' ' . $candidate['currency'] ) . '</a>';
+					if ( $observation && $candidate['id'] === $observation['id'] ) {
+						echo ' <strong>' . esc_html__( 'Selected', 'yoohw-vietnam-store-tools' ) . '</strong>';
+					}
+					echo '</li>';
+				}
+				echo '</ul>';
+			}
 			$this->render_manual_controls( $order, $observation, $match );
 		} elseif ( 'external_verified' === $data['trust'] ) {
 			echo '<p>' . esc_html__( 'Externally verified evidence is read only here.', 'yoohw-vietnam-store-tools' ) . '</p>';
@@ -111,6 +128,13 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 
 	private function render_manual_controls( $order, $observation, $match ) {
 		$form = self::FORM_ID;
+		echo '<input type="hidden" name="vck_payment_selected_observation" form="' . esc_attr( $form ) . '" value="' . esc_attr( $observation ? $observation['id'] : '' ) . '">';
+		if ( $observation ) {
+			echo '<h4>' . esc_html__( 'Selected observation', 'yoohw-vietnam-store-tools' ) . '</h4>';
+			$this->detail( __( 'Record ID', 'yoohw-vietnam-store-tools' ), $observation['id'] );
+			$this->detail( __( 'Transfer reference', 'yoohw-vietnam-store-tools' ), $observation['reference'] );
+			$this->detail( __( 'Amount and currency', 'yoohw-vietnam-store-tools' ), $observation['amount'] . ' ' . $observation['currency'] );
+		}
 		echo '<h4>' . esc_html( $observation ? __( 'Correct observation', 'yoohw-vietnam-store-tools' ) : __( 'Record transfer observation', 'yoohw-vietnam-store-tools' ) ) . '</h4>';
 		if ( $observation ) {
 			echo '<p>' . esc_html__( 'A correction appends a new record and keeps the previous record in history.', 'yoohw-vietnam-store-tools' ) . '</p>';
@@ -163,10 +187,13 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		}
 		$active = $this->active_entries( $history );
 		$match = 'reconciled' === $data['state'] && 'manual' === $data['trust'] && isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
-		$observation = $this->projected_observation( $data, $active, $match );
-		if ( ! $match ) {
-			$match = $this->latest_active_match( $active, $observation );
+		$observations = $this->active_observations( $active );
+		$selected_id = $this->post( 'vck_payment_selected_observation' );
+		if ( ( '' !== $selected_id && ! isset( $observations[ $selected_id ] ) ) || ( '' === $selected_id && $observations ) ) {
+			$this->redirect( $order, 'stale' );
 		}
+		$observation = '' !== $selected_id ? $observations[ $selected_id ] : null;
+		$match = $this->latest_active_match( $active, $observation );
 		$operation = sanitize_key( $this->post( 'vck_payment_operation' ) );
 		$result = null;
 		if ( 'observe' === $operation ) {
@@ -191,7 +218,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		} else {
 			$this->redirect( $order, 'stale' );
 		}
-		$this->redirect( $order, is_wp_error( $result ) ? $result->get_error_code() : 'saved' );
+		$this->redirect( $order, is_wp_error( $result ) ? $result->get_error_code() : 'saved', is_wp_error( $result ) ? $selected_id : ( 'observe' === $operation ? $result['id'] : $selected_id ) );
 	}
 
 	public function render_notice() {
@@ -251,6 +278,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			}
 		}
 		return null;
+	}
+
+	private function active_observations( $active ) {
+		return array_filter( $active, static function ( $entry ) {
+			return 'observation' === $entry['kind'];
+		} );
 	}
 
 	private function projected_observation( $data, $active, $match ) {
@@ -327,8 +360,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		echo '<p><label for="' . esc_attr( $name ) . '"><strong>' . esc_html( $label ) . '</strong></label><br><input class="regular-text" type="' . esc_attr( $type ) . '" id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" form="' . esc_attr( self::FORM_ID ) . '" value="' . esc_attr( $value ) . '"></p>';
 	}
 
-	private function redirect( $order, $code ) {
-		wp_safe_redirect( add_query_arg( 'vck_payment_notice', sanitize_key( $code ), $order->get_edit_order_url() ) . '#yoohw-vietnam-store-tools-payment-reconciliation' );
+	private function redirect( $order, $code, $selected_id = '' ) {
+		$args = [ 'vck_payment_notice' => sanitize_key( $code ) ];
+		if ( '' !== $selected_id ) {
+			$args['vck_payment_observation'] = sanitize_text_field( $selected_id );
+		}
+		wp_safe_redirect( add_query_arg( $args, $order->get_edit_order_url() ) . '#yoohw-vietnam-store-tools-payment-reconciliation' );
 		exit;
 	}
 }
