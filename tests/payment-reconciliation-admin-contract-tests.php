@@ -55,6 +55,13 @@ vst_assert_true( false === strpos( $html, 'name="vck_payment_operation"' ), 'Cha
 $order->payment_method = 'bacs';
 $domain::reverse_entry( $order, $match['id'] );
 vst_assert_same( 'recorded', $domain::get_order_data( $order )['state'], 'Manual reversal returns to recorded' );
+$second = $domain::record_manual_observation( $order, [ 'amount' => '100000', 'currency' => 'VND', 'reference' => 'SECOND' ] );
+ob_start();
+$admin->render_metabox( $order );
+$html = ob_get_clean();
+vst_assert_true( false !== strpos( $html, 'BANK-90' ), 'Projection still displays the first active observation' );
+vst_assert_true( false !== strpos( $html, 'name="vck_payment_supersedes" form="vck-payment-reconciliation-form" value="' . $observation['id'] . '"' ), 'Correction targets the projected observation when multiple observations are active' );
+vst_assert_true( false === strpos( $html, 'name="vck_payment_supersedes" form="vck-payment-reconciliation-form" value="' . $second['id'] . '"' ), 'Correction does not silently target a different observation' );
 
 $external = new VST_Admin_Order( 91 );
 $test_filters['yoohw_vietnam_store_tools_payment_evidence_sources'] = [ 'verified_bank' => static function ( $order, $proof ) { return $proof; } ];

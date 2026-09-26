@@ -61,7 +61,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		$entry = isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
 		$manual = 'bacs' === $order->get_payment_method() && 'external_verified' !== $data['trust'] && current_user_can( 'edit_shop_order', $order->get_id() );
 		$match = 'reconciled' === $data['state'] && 'manual' === $data['trust'] && isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
-		$observation = $match && isset( $active[ $match['evidence_id'] ] ) ? $active[ $match['evidence_id'] ] : $this->latest_active_observation( $active );
+		$observation = $this->projected_observation( $data, $active, $match );
 		if ( ! $match ) {
 			$match = $this->latest_active_match( $active, $observation );
 		}
@@ -163,7 +163,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		}
 		$active = $this->active_entries( $history );
 		$match = 'reconciled' === $data['state'] && 'manual' === $data['trust'] && isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
-		$observation = $match && isset( $active[ $match['evidence_id'] ] ) ? $active[ $match['evidence_id'] ] : $this->latest_active_observation( $active );
+		$observation = $this->projected_observation( $data, $active, $match );
 		if ( ! $match ) {
 			$match = $this->latest_active_match( $active, $observation );
 		}
@@ -251,6 +251,16 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			}
 		}
 		return null;
+	}
+
+	private function projected_observation( $data, $active, $match ) {
+		if ( $match && isset( $active[ $match['evidence_id'] ] ) ) {
+			return $active[ $match['evidence_id'] ];
+		}
+		if ( 'recorded' === $data['state'] && isset( $active[ $data['entry_id'] ] ) && 'observation' === $active[ $data['entry_id'] ]['kind'] ) {
+			return $active[ $data['entry_id'] ];
+		}
+		return $this->latest_active_observation( $active );
 	}
 
 	private function latest_active_match( $active, $observation ) {
