@@ -240,6 +240,7 @@
 }
 
 .yoohw-vietnam-store__paypal-settings .yoohw-vietnam-store__section-heading {
+	margin: 0;
 	padding: 18px 22px;
 	border-bottom: 1px solid var(--yoohw-border);
 }
@@ -251,19 +252,31 @@
 
 .yoohw-vietnam-store__paypal-rate {
 	display: grid;
-	grid-template-columns: minmax(180px, 1fr) minmax(180px, 320px);
+	grid-template-areas:
+		"label input"
+		"description input";
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: center;
-	gap: 8px 24px;
+	gap: 5px 24px;
 	padding: 18px 22px;
 }
 
+.yoohw-vietnam-store__paypal-rate > strong {
+	grid-area: label;
+	font-size: 14px;
+}
+
 .yoohw-vietnam-store__paypal-rate input {
-	width: 100%;
+	grid-area: input;
+	width: 160px;
+	max-width: 100%;
+	justify-self: end;
 }
 
 .yoohw-vietnam-store__paypal-rate > span {
-	grid-column: 1 / -1;
+	grid-area: description;
 	color: var(--yoohw-muted);
+	line-height: 1.45;
 }
 
 .yoohw-vietnam-store__card {
@@ -368,11 +381,16 @@
 	}
 
 	.yoohw-vietnam-store__paypal-rate {
+		grid-template-areas:
+			"label"
+			"description"
+			"input";
 		grid-template-columns: 1fr;
 	}
 
-	.yoohw-vietnam-store__paypal-rate > span {
-		grid-column: auto;
+	.yoohw-vietnam-store__paypal-rate input {
+		margin-top: 3px;
+		justify-self: start;
 	}
 }
 
