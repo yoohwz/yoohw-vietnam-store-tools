@@ -148,6 +148,7 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		$bindings = is_array( $bindings ) ? $bindings : [];
 		$bindings[ $event_id ] = $shipment_id;
 		$order->update_meta_data( self::META_EVENT_BINDINGS, $bindings );
+		$order->save();
 	}
 
 	public static function timeline_event_is_current( $order, $event_id ) {

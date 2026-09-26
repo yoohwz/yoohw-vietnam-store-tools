@@ -10,6 +10,7 @@ $test_orders = [];
 $test_persisted = [];
 $test_order_storage_mode = 'legacy';
 $test_trashed_orders = [];
+$test_factory_clones = false;
 function __( $value ) { return $value; }
 function sanitize_key( $value ) { return strtolower( preg_replace( '/[^a-z0-9_-]/', '', (string) $value ) ); }
 function sanitize_text_field( $value ) { return trim( (string) $value ); }
@@ -23,12 +24,23 @@ function apply_filters( $hook, $value ) { global $test_filters; return isset( $t
 function do_action() {}
 function current_user_can() { global $test_actor_allowed; return $test_actor_allowed; }
 function get_current_user_id() { return 7; }
+function wp_timezone() { return new DateTimeZone( 'UTC' ); }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
 function wc_format_decimal( $value, $decimals = 0 ) { return number_format( (float) $value, $decimals, '.', '' ); }
 function wc_get_price_decimals() { return 0; }
 function wc_get_order_statuses() { return [ 'wc-pending' => 'Pending', 'wc-completed' => 'Completed' ]; }
 function get_post_stati() { return [ 'trash' => new stdClass(), 'auto-draft' => new stdClass() ]; }
-function wc_get_order( $value ) { global $test_orders; return $value instanceof WC_Order ? $value : ( isset( $test_orders[ $value ] ) ? $test_orders[ $value ] : false ); }
+function wc_get_order( $value ) {
+	global $test_orders, $test_persisted, $test_factory_clones;
+	$id = $value instanceof WC_Order ? $value->get_id() : $value;
+	if ( $test_factory_clones ) {
+		if ( ! isset( $test_persisted[ $id ] ) ) { return false; }
+		$order = new WC_Order( $id );
+		$order->read_meta_data( true );
+		return $order;
+	}
+	return $value instanceof WC_Order ? $value : ( isset( $test_orders[ $id ] ) ? $test_orders[ $id ] : false );
+}
 function wc_get_orders( $args ) {
 	global $test_orders, $test_order_storage_mode, $test_trashed_orders;
 	// CPT ignores HPOS-only meta_query; both stores support the meta_* shortcut.
@@ -55,16 +67,29 @@ class WP_Error {
 class WC_Order {
 	public $meta = [];
 	public $saves = 0;
+	private $pending = [];
 	private $id;
 	public function __construct( $id = 50 ) { $this->id = $id; }
 	public function get_id() { return $this->id; }
 	public function get_total() { return '100000'; }
 	public function get_currency() { return 'VND'; }
 	public function get_meta( $key ) { return isset( $this->meta[ $key ] ) ? $this->meta[ $key ] : ''; }
-	public function update_meta_data( $key, $value ) { $this->meta[ $key ] = $value; }
-	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); }
-	public function read_meta_data( $force = false ) { global $test_persisted; if ( $force && isset( $test_persisted[ $this->id ] ) ) { $this->meta = $test_persisted[ $this->id ]; } }
-	public function save() { global $test_orders, $test_persisted; ++$this->saves; $test_persisted[ $this->id ] = $this->meta; $test_orders[ $this->id ] = $this; }
+	public function update_meta_data( $key, $value ) { $this->meta[ $key ] = $value; $this->pending[ $key ] = true; }
+	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); $this->pending[ $key ] = false; }
+	public function read_meta_data( $force = false ) { global $test_persisted; if ( $force && isset( $test_persisted[ $this->id ] ) ) { $this->meta = $test_persisted[ $this->id ]; $this->pending = []; } }
+	public function save() {
+		global $test_orders, $test_persisted;
+		++$this->saves;
+		$persisted = isset( $test_persisted[ $this->id ] ) ? $test_persisted[ $this->id ] : [];
+		foreach ( $this->pending as $key => $updated ) {
+			if ( $updated ) { $persisted[ $key ] = $this->meta[ $key ]; }
+			else { unset( $persisted[ $key ] ); }
+		}
+		$test_persisted[ $this->id ] = $persisted;
+		$this->meta = $persisted;
+		$this->pending = [];
+		$test_orders[ $this->id ] = $this;
+	}
 }
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-shipping.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-fulfillment-exceptions.php';
@@ -197,5 +222,20 @@ vst_assert_true( '' !== $materialized_id && $legacy_cancel_id !== $materialized_
 $cancel_exception = $exceptions::record_exception( $legacy_cancel, [ 'type' => 'cancelled', 'expected_shipment_id' => $materialized_id ] );
 vst_assert_true( ! is_wp_error( $cancel_exception ), 'Cleared legacy tracking code still records cancellation exception' );
 vst_assert_same( 'cancelled', $exceptions::get_exceptions( $legacy_cancel )[0]['type'], 'Cancellation ledger retains the closed shipment' );
+
+$factory_order = new WC_Order( 82 );
+$factory_order->save();
+$test_factory_clones = true;
+$shipping::update_order_shipping_data( 82, 'carrier', [ 'tracking_code' => 'FACTORY-OLD', 'status_id' => 'created' ] );
+$factory_old_id = $exceptions::get_current_shipment( 82 )['id'];
+$factory_replacement = $exceptions::replace_shipment( 82, 'carrier', [ 'tracking_code' => 'FACTORY-NEW', 'status_id' => 'created' ], [ 'expected_shipment_id' => $factory_old_id ] );
+$tracking::add_timeline_event( 82, [ 'status' => 'in_transit', 'occurred_at' => '2026-09-25T00:00' ] );
+$tracking::add_timeline_event( 82, [ 'status' => 'delivered', 'occurred_at' => '2026-09-26T00:00' ] );
+$factory_events = $test_persisted[82][ $tracking::META_TIMELINE ];
+$factory_bindings = $test_persisted[82][ $exceptions::META_EVENT_BINDINGS ];
+vst_assert_same( $factory_replacement['id'], $factory_bindings[ $factory_events[1]['id'] ], 'Fresh Woo order instances persist timeline shipment binding' );
+$tracking::delete_timeline_event( 82, $factory_events[1]['id'] );
+vst_assert_same( 'in_transit', $test_persisted[82][ $shipping::META_STATUS_ID ], 'Deleting latest bound event restores current shipment status' );
+$test_factory_clones = false;
 
 vst_finish_contract_suite( 'VST-50 domain' );
