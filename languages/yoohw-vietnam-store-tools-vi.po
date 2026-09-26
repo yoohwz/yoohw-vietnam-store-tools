@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-26T09:55:19+00:00\n"
+"POT-Creation-Date: 2026-09-26T10:03:44+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -1615,7 +1615,7 @@ msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
 #: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:30
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:290
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:299
 msgid "Externally verified"
 msgstr "Đã xác minh bên ngoài"
 
@@ -1722,59 +1722,93 @@ msgstr ""
 "Xác nhận bạn đã so sánh khoản chuyển với đơn hàng. Thao tác này ghi nhận đối "
 "soát thủ công và không tự động xác nhận giao dịch ngân hàng."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:127
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:128
 msgid "Mark manually reconciled"
 msgstr "Đánh dấu đã đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:130
-msgid "Reverse the manual match and return this order to recorded state."
-msgstr "Đảo lượt đối soát thủ công và đưa đơn hàng về trạng thái đã ghi nhận."
-
 #: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:131
+msgid ""
+"Reverse this manual match. The status will be recalculated from the "
+"remaining history."
+msgstr ""
+"Đảo lượt đối soát thủ công này. Trạng thái sẽ được tính lại từ lịch sử còn "
+"lại."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:133
 msgid "Reverse manual reconciliation"
 msgstr "Đảo đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:150
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:152
 msgid "You cannot edit this order."
 msgstr "Bạn không thể sửa đơn hàng này."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:154
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:156
 msgid "Invalid payment reconciliation request."
 msgstr "Yêu cầu đối soát thanh toán không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:201
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:203
 msgid "Payment reconciliation record saved."
 msgstr "Đã lưu bản ghi đối soát thanh toán."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:202
-msgid ""
-"Payment reconciliation was not saved. Check the amount, observed time, and "
-"current order history, then try again."
-msgstr ""
-"Chưa lưu đối soát thanh toán. Hãy kiểm tra số tiền, thời điểm quan sát và "
-"lịch sử đơn hàng hiện tại, rồi thử lại."
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:204
+msgid "Enter a valid observed date and time."
+msgstr "Nhập ngày giờ quan sát hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:288
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
+msgid ""
+"The reconciliation history changed. Review the current record and try again."
+msgstr "Lịch sử đối soát đã thay đổi. Hãy xem bản ghi hiện tại và thử lại."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:206
+msgid ""
+"Manual reconciliation is unavailable for this payment method or externally "
+"verified order."
+msgstr ""
+"Không thể đối soát thủ công cho phương thức thanh toán này hoặc đơn hàng đã "
+"được xác minh bên ngoài."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:207
+msgid "Enter a valid positive amount with the correct currency precision."
+msgstr "Nhập số tiền dương hợp lệ với số chữ số thập phân đúng."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:208
+msgid ""
+"The observed amount and currency must exactly match the order before manual "
+"reconciliation."
+msgstr ""
+"Số tiền và đơn vị tiền tệ quan sát được phải khớp chính xác với đơn hàng "
+"trước khi đối soát thủ công."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:209
+msgid "The observation has changed. Review the current history and try again."
+msgstr "Thông tin quan sát đã thay đổi. Hãy xem lịch sử hiện tại và thử lại."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:211
+msgid ""
+"Payment reconciliation was not saved. Review the current order and try again."
+msgstr "Chưa lưu đối soát thanh toán. Hãy xem đơn hàng hiện tại và thử lại."
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:297
 msgid "Manual"
 msgstr "Thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:290
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:299
 msgid "No evidence"
 msgstr "Chưa có bằng chứng"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:295
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:304
 msgid "Observation"
 msgstr "Quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:296
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:305
 msgid "Manual match"
 msgstr "Đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:297
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:306
 msgid "External verification"
 msgstr "Xác minh bên ngoài"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:298
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:307
 msgid "Reversal"
 msgstr "Đảo đối soát"
 

@@ -124,10 +124,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		echo '<p><button type="submit" form="' . esc_attr( $form ) . '" name="vck_payment_operation" value="observe" class="button button-primary">' . esc_html( $observation ? __( 'Save correction', 'yoohw-vietnam-store-tools' ) : __( 'Record observation', 'yoohw-vietnam-store-tools' ) ) . '</button></p>';
 		if ( $observation && ! $match ) {
 			echo '<p>' . esc_html__( 'Confirm that you compared this transfer with the order. This records a manual reconciliation and does not confirm the bank transaction automatically.', 'yoohw-vietnam-store-tools' ) . '</p>';
+			echo '<input type="hidden" name="vck_payment_expected_observation" form="' . esc_attr( $form ) . '" value="' . esc_attr( $observation['id'] ) . '">';
 			echo '<button type="submit" form="' . esc_attr( $form ) . '" name="vck_payment_operation" value="match" class="button">' . esc_html__( 'Mark manually reconciled', 'yoohw-vietnam-store-tools' ) . '</button>';
 		}
 		if ( $match ) {
-			echo '<p>' . esc_html__( 'Reverse the manual match and return this order to recorded state.', 'yoohw-vietnam-store-tools' ) . '</p>';
+			echo '<p>' . esc_html__( 'Reverse this manual match. The status will be recalculated from the remaining history.', 'yoohw-vietnam-store-tools' ) . '</p>';
+			echo '<input type="hidden" name="vck_payment_expected_match" form="' . esc_attr( $form ) . '" value="' . esc_attr( $match['id'] ) . '">';
 			echo '<button type="submit" form="' . esc_attr( $form ) . '" name="vck_payment_operation" value="reverse" class="button">' . esc_html__( 'Reverse manual reconciliation', 'yoohw-vietnam-store-tools' ) . '</button>';
 		}
 	}
@@ -182,9 +184,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 				'reference' => $this->post( 'vck_payment_reference' ),
 				'observed_at' => $observed_at,
 			], [ 'supersedes' => $supersedes, 'note' => $this->post( 'vck_payment_note' ) ] );
-		} elseif ( 'match' === $operation && $observation && ! $match ) {
+		} elseif ( 'match' === $operation && $observation && ! $match && $observation['id'] === $this->post( 'vck_payment_expected_observation' ) ) {
 			$result = $domain::match_manual_observation( $order, $observation['id'] );
-		} elseif ( 'reverse' === $operation && $match ) {
+		} elseif ( 'reverse' === $operation && $match && $match['id'] === $this->post( 'vck_payment_expected_match' ) ) {
 			$result = $domain::reverse_entry( $order, $match['id'] );
 		} else {
 			$this->redirect( $order, 'stale' );
@@ -197,9 +199,16 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		if ( ! $code ) {
 			return;
 		}
-		$message = 'saved' === $code
-			? __( 'Payment reconciliation record saved.', 'yoohw-vietnam-store-tools' )
-			: __( 'Payment reconciliation was not saved. Check the amount, observed time, and current order history, then try again.', 'yoohw-vietnam-store-tools' );
+		$messages = [
+			'saved' => __( 'Payment reconciliation record saved.', 'yoohw-vietnam-store-tools' ),
+			'date' => __( 'Enter a valid observed date and time.', 'yoohw-vietnam-store-tools' ),
+			'stale' => __( 'The reconciliation history changed. Review the current record and try again.', 'yoohw-vietnam-store-tools' ),
+			'unavailable' => __( 'Manual reconciliation is unavailable for this payment method or externally verified order.', 'yoohw-vietnam-store-tools' ),
+			'yoohw_vietnam_store_tools_payment_invalid_evidence' => __( 'Enter a valid positive amount with the correct currency precision.', 'yoohw-vietnam-store-tools' ),
+			'yoohw_vietnam_store_tools_payment_unmatched_amount' => __( 'The observed amount and currency must exactly match the order before manual reconciliation.', 'yoohw-vietnam-store-tools' ),
+			'yoohw_vietnam_store_tools_payment_invalid_superseded_entry' => __( 'The observation has changed. Review the current history and try again.', 'yoohw-vietnam-store-tools' ),
+		];
+		$message = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Payment reconciliation was not saved. Review the current order and try again.', 'yoohw-vietnam-store-tools' );
 		echo '<div class="notice ' . esc_attr( 'saved' === $code ? 'notice-success' : 'notice-error' ) . ' is-dismissible"><p>' . esc_html( $message ) . '</p></div>';
 	}
 

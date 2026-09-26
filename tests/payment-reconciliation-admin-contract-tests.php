@@ -8,6 +8,7 @@ function esc_html__( $value ) { return esc_html( $value ); }
 function wp_date( $format, $timestamp = null ) { return gmdate( $format, null === $timestamp ? time() : $timestamp ); }
 function get_option( $key ) { return 'date_format' === $key ? 'Y-m-d' : 'H:i'; }
 function get_userdata( $id ) { return (object) [ 'display_name' => 'Operator ' . $id ]; }
+function wp_unslash( $value ) { return $value; }
 
 class VST_Admin_Order extends WC_Order {
 	public $payment_method = 'bacs';
@@ -35,6 +36,7 @@ $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'Recorded' ) && false !== strpos( $html, 'Save correction' ), 'Manual observation is inspectable and correctable' );
 vst_assert_true( false !== strpos( $html, 'does not confirm the bank transaction automatically' ), 'Manual match confirmation states the trust boundary' );
 vst_assert_true( false !== strpos( $html, 'vck_payment_supersedes' ), 'Correction submits superseded observation identity' );
+vst_assert_true( false !== strpos( $html, 'name="vck_payment_expected_observation"' ) && false !== strpos( $html, $observation['id'] ), 'Match binds to the observation shown to the operator' );
 
 $match = $domain::match_manual_observation( $order, $observation['id'] );
 ob_start();
@@ -42,6 +44,7 @@ $admin->render_metabox( $order );
 $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'Reconciled manually' ) && false !== strpos( $html, 'Reverse manual reconciliation' ), 'Manual match offers bounded reversal' );
 vst_assert_true( false !== strpos( $html, 'Operator 7' ), 'History displays server actor' );
+vst_assert_true( false !== strpos( $html, 'name="vck_payment_expected_match"' ) && false !== strpos( $html, $match['id'] ), 'Reversal binds to the match shown to the operator' );
 
 $order->payment_method = 'cod';
 ob_start();
@@ -70,5 +73,12 @@ vst_assert_true( ! $panel::is_relevant( $other ), 'Unrelated order has no reconc
 $utc = new ReflectionMethod( $panel, 'utc_time' );
 vst_assert_same( '', $utc->invoke( $admin, '2026-02-31T12:00' ), 'Invalid observed calendar time is rejected before write' );
 vst_assert_same( '2026-09-26T12:00:00+00:00', $utc->invoke( $admin, '2026-09-26T12:00' ), 'Observed store time is persisted as UTC' );
+
+$_GET['vck_payment_notice'] = 'yoohw_vietnam_store_tools_payment_unmatched_amount';
+ob_start();
+$admin->render_notice();
+$html = ob_get_clean();
+vst_assert_true( false !== strpos( $html, 'must exactly match' ), 'Amount mismatch has actionable validation feedback' );
+unset( $_GET['vck_payment_notice'] );
 
 vst_finish_contract_suite( 'VST-52 payment admin' );
