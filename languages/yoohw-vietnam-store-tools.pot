@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T04:35:01+00:00\n"
+"POT-Creation-Date: 2026-09-26T05:00:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -185,11 +185,11 @@ msgid "PayPal USD conversion"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:267
-msgid "Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments 4.1.3+. Other versions are enabled when their integration contract is compatible. WooCommerce orders remain in VND."
+msgid "Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments. Version 4.1.3 is the verified baseline; other versions require a compatible integration contract. WooCommerce orders remain in VND."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:269
-msgid "Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active. Activate the plugin to configure VND to USD conversion."
+msgid "Available only when WooCommerce PayPal Payments is installed and active. Version 4.1.3 is the verified baseline; other versions require a compatible integration contract."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:279
@@ -1418,8 +1418,8 @@ msgid "PayPal returned an order that does not match the locked USD payment."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-paypal-conversion.php:376
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:716
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:722
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:839
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:845
 msgid "The WooCommerce order could not be linked to the locked PayPal USD payment."
 msgstr ""
 
@@ -1441,40 +1441,40 @@ msgstr ""
 msgid "PayPal USD conversion is not available for this checkout."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:562
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:685
 msgid "PayPal USD conversion is inactive because its manual VND per USD rate is invalid."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:565
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:688
 msgid "PayPal USD conversion is inactive because the installed WooCommerce PayPal Payments integration contract is incompatible."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:568
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:691
 msgid "PayPal USD conversion requires CAPTURE intent. PayPal is unavailable until WooCommerce PayPal Payments uses CAPTURE."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:578
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:701
 msgid "PayPal USD conversion is unavailable because the installed integration is incompatible."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:585
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:708
 msgid "This PayPal payment flow is not supported by VND to USD conversion."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:589
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:712
 msgid "PayPal USD conversion supports one-time CAPTURE payments only."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:623
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:746
 msgid "PayPal USD conversion is unavailable because its exchange rate or checkout session is invalid."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:635
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:758
 msgid "The cart changed after PayPal conversion was locked. Please start a new checkout attempt."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:653
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:673
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:776
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:796
 msgid "PayPal USD conversion could not verify the current VND total."
 msgstr ""
 

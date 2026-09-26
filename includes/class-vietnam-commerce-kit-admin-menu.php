@@ -264,9 +264,9 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 					<div class="yoohw-vietnam-store__section-heading">
 						<h3><?php esc_html_e( 'PayPal USD conversion', 'yoohw-vietnam-store-tools' ); ?></h3>
 						<?php if ( $paypal_active ) : ?>
-							<p><?php esc_html_e( 'Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments 4.1.3+. Other versions are enabled when their integration contract is compatible. WooCommerce orders remain in VND.', 'yoohw-vietnam-store-tools' ); ?></p>
+							<p><?php esc_html_e( 'Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments. Version 4.1.3 is the verified baseline; other versions require a compatible integration contract. WooCommerce orders remain in VND.', 'yoohw-vietnam-store-tools' ); ?></p>
 						<?php else : ?>
-							<p><?php esc_html_e( 'Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active. Activate the plugin to configure VND to USD conversion.', 'yoohw-vietnam-store-tools' ); ?></p>
+							<p><?php esc_html_e( 'Available only when WooCommerce PayPal Payments is installed and active. Version 4.1.3 is the verified baseline; other versions require a compatible integration contract.', 'yoohw-vietnam-store-tools' ); ?></p>
 						<?php endif; ?>
 					</div>
 					<?php if ( $paypal_active ) : ?>

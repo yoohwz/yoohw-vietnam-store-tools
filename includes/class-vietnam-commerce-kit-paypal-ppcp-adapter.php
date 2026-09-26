@@ -1,6 +1,6 @@
 <?php
 /**
- * Lazily loaded PPCP 4.1.3+ adapter.
+ * Lazily loaded PPCP adapter verified against the 4.1.3 integration contract.
  *
  * This file is included only inside PPCP's module filter, after its autoloader
  * has registered the interfaces and classes referenced below.

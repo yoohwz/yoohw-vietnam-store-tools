@@ -476,6 +476,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	public function register_ppcp_module( $modules ) {
 		$required = array(
 			'WooCommerce\\PayPalCommerce\\Vendor\\Inpsyde\\Modularity\\Module\\ExtendingModule',
+			'WooCommerce\\PayPalCommerce\\Vendor\\Inpsyde\\Modularity\\Module\\ServiceModule',
 			'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Container\\ContainerInterface',
 			'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor',
 			'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\RefundFeesUpdater',
@@ -496,7 +497,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 				return $modules;
 			}
 		}
-		if ( ! $this->has_supported_ppcp_signatures() ) {
+		if ( ! is_array( $modules ) || ! $this->has_required_ppcp_services( $modules ) || ! $this->has_supported_ppcp_signatures() ) {
 			$this->adapter_incompatible = true;
 			return $modules;
 		}
@@ -514,6 +515,59 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		return $modules;
 	}
 
+	private function has_required_ppcp_services( $modules ) {
+		$service_module = 'WooCommerce\\PayPalCommerce\\Vendor\\Inpsyde\\Modularity\\Module\\ServiceModule';
+		$required       = array(
+			'wcgateway.processor.refunds' => 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor',
+			'sdk-v6.manager'               => 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
+		);
+		$found          = array_fill_keys( array_keys( $required ), false );
+
+		foreach ( $modules as $module ) {
+			if ( ! is_object( $module ) || ! $module instanceof $service_module ) {
+				continue;
+			}
+
+			try {
+				$services = $module->services();
+			} catch ( Throwable $error ) {
+				return false;
+			}
+
+			if ( ! is_array( $services ) ) {
+				return false;
+			}
+
+			foreach ( $required as $service_id => $service_class ) {
+				if ( ! array_key_exists( $service_id, $services ) ) {
+					continue;
+				}
+				if ( ! $this->callable_returns_type( $services[ $service_id ], $service_class ) ) {
+					return false;
+				}
+				$found[ $service_id ] = true;
+			}
+		}
+
+		return ! in_array( false, $found, true );
+	}
+
+	private function callable_returns_type( $factory, $expected_type ) {
+		if ( ! $factory instanceof Closure ) {
+			return false;
+		}
+
+		try {
+			$return_type = ( new ReflectionFunction( $factory ) )->getReturnType();
+		} catch ( Throwable $error ) {
+			return false;
+		}
+
+		return $return_type instanceof ReflectionNamedType
+			&& ! $return_type->allowsNull()
+			&& ltrim( $return_type->getName(), '\\' ) === ltrim( $expected_type, '\\' );
+	}
+
 	private function has_supported_ppcp_signatures() {
 		try {
 			$sdk_class                   = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
@@ -526,32 +580,101 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			$sdk_constructor             = $sdk_class->getConstructor();
 			$refund_constructor          = $refund_class->getConstructor();
 
+			$sdk_constructor_types = array(
+				'WooCommerce\\PayPalCommerce\\Assets\\AssetGetter',
+				'string',
+				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\Environment',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ButtonStyleMapper',
+				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\SettingsStatus',
+				'WooCommerce\\PayPalCommerce\\Button\\Helper\\Context',
+				'WooCommerce\\PayPalCommerce\\Session\\SessionHandler',
+				'WooCommerce\\PayPalCommerce\\Session\\Cancellation\\CancelView',
+				'bool',
+				'bool',
+				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\CardPaymentsConfiguration',
+				'bool',
+				'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\SubscriptionHelper',
+				'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\FreeTrialSubscriptionHelper',
+				'callable',
+				'string',
+				'array',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessageStyleMapper',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessagesEligibility',
+				'string',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\GooglePayConfig',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ApplePayConfig',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\FastlaneConfig',
+				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\CardFieldStyles',
+			);
+			$refund_constructor_types = array(
+				'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\OrderEndpoint',
+				'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\PaymentsEndpoint',
+				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\RefundFeesUpdater',
+				'string',
+				'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
+			);
+
 			return ! $sdk_class->isFinal()
 				&& ! $refund_class->isFinal()
-				&& $sdk_method->isPublic()
-				&& ! $sdk_method->isFinal()
-				&& 0 === $sdk_method->getNumberOfParameters()
-				&& $sdk_page_method->isPublic()
-				&& ! $sdk_page_method->isFinal()
-				&& 0 === $sdk_page_method->getNumberOfParameters()
-				&& $sdk_render_places_method->isPublic()
-				&& ! $sdk_render_places_method->isFinal()
-				&& 0 === $sdk_render_places_method->getNumberOfParameters()
-				&& $sdk_card_wrapper_method->isPublic()
-				&& ! $sdk_card_wrapper_method->isFinal()
-				&& 0 === $sdk_card_wrapper_method->getNumberOfParameters()
-				&& $refund_method->isPublic()
-				&& ! $refund_method->isFinal()
-				&& 4 === $refund_method->getNumberOfParameters()
-				&& $sdk_constructor
-				&& $sdk_constructor->getNumberOfRequiredParameters() <= 24
-				&& $sdk_constructor->getNumberOfParameters() >= 24
-				&& $refund_constructor
-				&& $refund_constructor->getNumberOfRequiredParameters() <= 5
-				&& $refund_constructor->getNumberOfParameters() >= 5;
+				&& $this->method_matches( $sdk_method, array(), 'array' )
+				&& $this->method_matches( $sdk_page_method, array(), 'bool' )
+				&& $this->method_matches( $sdk_render_places_method, array(), 'array' )
+				&& $this->method_matches( $sdk_card_wrapper_method, array(), 'void' )
+				&& $this->method_matches(
+					$refund_method,
+					array(
+						'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Order',
+						'WC_Order',
+						'float',
+						'string',
+					),
+					'string'
+				)
+				&& $this->constructor_matches( $sdk_constructor, $sdk_constructor_types )
+				&& $this->constructor_matches( $refund_constructor, $refund_constructor_types );
 		} catch ( Throwable $error ) {
 			return false;
 		}
+	}
+
+	private function constructor_matches( $constructor, $expected_types ) {
+		if ( ! $constructor instanceof ReflectionMethod
+			|| $constructor->getNumberOfRequiredParameters() > count( $expected_types )
+			|| $constructor->getNumberOfParameters() < count( $expected_types ) ) {
+			return false;
+		}
+
+		return $this->parameters_match( array_slice( $constructor->getParameters(), 0, count( $expected_types ) ), $expected_types );
+	}
+
+	private function method_matches( $method, $parameter_types, $return_type ) {
+		if ( ! $method->isPublic()
+			|| $method->isFinal()
+			|| count( $parameter_types ) !== $method->getNumberOfParameters()
+			|| ! $this->parameters_match( $method->getParameters(), $parameter_types ) ) {
+			return false;
+		}
+
+		$type = $method->getReturnType();
+		return $type instanceof ReflectionNamedType
+			&& ! $type->allowsNull()
+			&& $type->getName() === $return_type;
+	}
+
+	private function parameters_match( $parameters, $expected_types ) {
+		foreach ( $expected_types as $index => $expected_type ) {
+			if ( ! isset( $parameters[ $index ] ) || $parameters[ $index ]->isVariadic() || $parameters[ $index ]->isPassedByReference() ) {
+				return false;
+			}
+			$type = $parameters[ $index ]->getType();
+			if ( ! $type instanceof ReflectionNamedType
+				|| $type->allowsNull()
+				|| ltrim( $type->getName(), '\\' ) !== ltrim( $expected_type, '\\' ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public function admin_notices() {

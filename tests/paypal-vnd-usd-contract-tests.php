@@ -209,10 +209,12 @@ vst_assert_same( false, false !== strpos( $runtime, 'SUPPORTED_PPCP_VERSION' ) |
 vst_assert_same( false, false !== strpos( $runtime, 'woocommerce_settings_api_form_fields_ppcp-gateway' ), 'Runtime does not inject fields into the PPCP React settings screen' );
 vst_assert_true( false !== strpos( $runtime, "'woocommerce-ppcp-data-settings'" ), 'Runtime reads the authoritative PPCP data settings option' );
 vst_assert_true( false !== strpos( $admin, "paypal_conversion[rate]" ) && false !== strpos( $admin, 'sanitize_settings' ), 'Toolkit admin page renders and sanitizes its PayPal conversion settings' );
-vst_assert_true( false !== strpos( $admin, 'is_ppcp_plugin_active()' ) && false !== strpos( $admin, 'Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active.' ), 'Toolkit hides PayPal controls and explains the dependency when PPCP is inactive' );
+vst_assert_true( false !== strpos( $admin, 'is_ppcp_plugin_active()' ) && false !== strpos( $admin, 'Available only when WooCommerce PayPal Payments is installed and active.' ), 'Toolkit hides PayPal controls and explains the dependency when PPCP is inactive' );
 vst_assert_same( false, false !== strpos( $runtime, "'woocommerce_checkout_create_order'" ), 'Snapshot persistence requires PayPal-order linkage rather than an unbound checkout hook' );
 vst_assert_true( false !== strpos( $runtime, "'wp_enqueue_scripts', array( \$this, 'prepare_checkout_attempt' ), 1" ), 'Server-owned quote is ready before PPCP enqueues SDK v6 data' );
 vst_assert_true( false !== strpos( $runtime, 'SdkV6\\\\Blocks\\\\V6PaymentMethod' ), 'Runtime capability-checks the PPCP 4.1.3+ Blocks contract lazily' );
+vst_assert_true( false !== strpos( $runtime, 'has_required_ppcp_services' ) && false !== strpos( $runtime, 'callable_returns_type' ), 'Runtime verifies the PPCP service extension seams before reporting adapter readiness' );
+vst_assert_true( false !== strpos( $runtime, 'constructor_matches' ) && false !== strpos( $runtime, 'parameters_match' ), 'Runtime verifies constructor parameter types and order instead of arity alone' );
 vst_assert_true( false !== strpos( $adapter, "'wcgateway.processor.refunds'" ), 'Adapter replaces only PPCP refund processing service' );
 vst_assert_true( false !== strpos( $adapter, "'sdk-v6.manager'" ), 'Adapter synchronizes PPCP SDK v6 data through its manager service' );
 vst_assert_true( false !== strpos( $script, 'gatewayId' ) && false !== strpos( $script, 'payment_method' ) && false !== strpos( $script, 'paymentStore' ), 'Frontend disclosure is scoped through Classic and Blocks payment selection' );
@@ -230,7 +232,7 @@ ob_start();
 $render_settings->invoke( $admin_instance );
 $inactive_settings = ob_get_clean();
 vst_assert_true( false !== strpos( $inactive_settings, 'PayPal USD conversion' ), 'Inactive PPCP still renders the PayPal conversion heading' );
-vst_assert_true( false !== strpos( $inactive_settings, 'Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active.' ), 'Inactive PPCP renders the dependency description' );
+vst_assert_true( false !== strpos( $inactive_settings, 'Available only when WooCommerce PayPal Payments is installed and active.' ), 'Inactive PPCP renders the dependency description' );
 vst_assert_true( false !== strpos( $inactive_settings, 'yoohw-vietnam-store__paypal-settings is-unavailable' ), 'Inactive PPCP renders the compact unavailable card state' );
 vst_assert_same( false, false !== strpos( $inactive_settings, 'name="paypal_conversion[enabled]"' ) || false !== strpos( $inactive_settings, 'name="paypal_conversion[rate]"' ), 'Inactive PPCP hides every PayPal conversion option' );
 
@@ -239,6 +241,6 @@ ob_start();
 $render_settings->invoke( $admin_instance );
 $active_settings = ob_get_clean();
 vst_assert_true( false !== strpos( $active_settings, 'name="paypal_conversion[enabled]"' ) && false !== strpos( $active_settings, 'name="paypal_conversion[rate]"' ), 'Active PPCP renders both PayPal conversion options' );
-vst_assert_true( false !== strpos( $active_settings, 'WooCommerce PayPal Payments 4.1.3+' ), 'Active PPCP renders the verified-version guidance' );
+vst_assert_true( false !== strpos( $active_settings, 'Version 4.1.3 is the verified baseline; other versions require a compatible integration contract.' ), 'Active PPCP renders contract-based compatibility guidance' );
 
 vst_finish_contract_suite( 'PayPal VND/USD conversion' );
