@@ -15,7 +15,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	const SETTINGS_OPTION        = 'yoohw_vietnam_store_tools_paypal_conversion_settings';
 	const PPCP_OPTION            = 'woocommerce-ppcp-data-settings';
 	const PPCP_LEGACY_OPTION     = 'woocommerce-ppcp-settings';
-	const SUPPORTED_PPCP_VERSION = '4.1.3';
+	const PPCP_PLUGIN_BASENAME   = 'woocommerce-paypal-payments/woocommerce-paypal-payments.php';
 	const SETTING_ENABLED        = 'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled';
 	const SETTING_RATE           = 'yoohw_vietnam_store_tools_paypal_vnd_usd_rate';
 	const ATTEMPT_KEY            = 'yoohw_vietnam_store_tools_paypal_usd_attempt';
@@ -62,6 +62,21 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		$settings = get_option( self::SETTINGS_OPTION, array() );
 		$settings = is_array( $settings ) ? $settings : array();
 		return 'yes' === ( $settings[ self::SETTING_ENABLED ] ?? 'no' );
+	}
+
+	public static function is_ppcp_plugin_active() {
+		if ( class_exists( 'WooCommerce\\PayPalCommerce\\PPCP' ) ) {
+			return true;
+		}
+
+		$active_plugins = get_option( 'active_plugins', array() );
+		$active_plugins = is_array( $active_plugins ) ? $active_plugins : array();
+		if ( in_array( self::PPCP_PLUGIN_BASENAME, $active_plugins, true ) ) {
+			return true;
+		}
+
+		$network_plugins = function_exists( 'get_site_option' ) ? get_site_option( 'active_sitewide_plugins', array() ) : array();
+		return is_array( $network_plugins ) && isset( $network_plugins[ self::PPCP_PLUGIN_BASENAME ] );
 	}
 
 	public static function get_rate() {
@@ -459,10 +474,6 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	public function register_ppcp_module( $modules ) {
-		if ( self::SUPPORTED_PPCP_VERSION !== $this->get_ppcp_version() ) {
-			$this->adapter_incompatible = true;
-			return $modules;
-		}
 		$required = array(
 			'WooCommerce\\PayPalCommerce\\Vendor\\Inpsyde\\Modularity\\Module\\ExtendingModule',
 			'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Container\\ContainerInterface',
@@ -503,25 +514,6 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		return $modules;
 	}
 
-	private function get_ppcp_version() {
-		if ( class_exists( 'WooCommerce\\PayPalCommerce\\PPCP' ) && function_exists( 'get_file_data' ) ) {
-			try {
-				$reflection  = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\PPCP' );
-				$plugin_file = dirname( $reflection->getFileName(), 2 ) . '/woocommerce-paypal-payments.php';
-				if ( is_readable( $plugin_file ) ) {
-					$headers = get_file_data( $plugin_file, array( 'version' => 'Version' ) );
-					if ( is_string( $headers['version'] ?? null ) && '' !== $headers['version'] ) {
-						return $headers['version'];
-					}
-				}
-			} catch ( Throwable $error ) {
-				// Fall through to PPCP's persisted installed-version option.
-			}
-		}
-		$version = get_option( 'woocommerce-ppcp-version', '' );
-		return is_string( $version ) ? $version : '';
-	}
-
 	private function has_supported_ppcp_signatures() {
 		try {
 			$sdk_class                   = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
@@ -552,9 +544,11 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 				&& ! $refund_method->isFinal()
 				&& 4 === $refund_method->getNumberOfParameters()
 				&& $sdk_constructor
-				&& 24 === $sdk_constructor->getNumberOfParameters()
+				&& $sdk_constructor->getNumberOfRequiredParameters() <= 24
+				&& $sdk_constructor->getNumberOfParameters() >= 24
 				&& $refund_constructor
-				&& 5 === $refund_constructor->getNumberOfParameters();
+				&& $refund_constructor->getNumberOfRequiredParameters() <= 5
+				&& $refund_constructor->getNumberOfParameters() >= 5;
 		} catch ( Throwable $error ) {
 			return false;
 		}
@@ -568,7 +562,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'PayPal USD conversion is inactive because its manual VND per USD rate is invalid.', 'yoohw-vietnam-store-tools' ) . '</p></div>';
 		}
 		if ( self::is_enabled() && ( $this->adapter_incompatible || ! $this->adapter_ready ) ) {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'PayPal USD conversion is inactive because the installed WooCommerce PayPal Payments version is incompatible.', 'yoohw-vietnam-store-tools' ) . '</p></div>';
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'PayPal USD conversion is inactive because the installed WooCommerce PayPal Payments integration contract is incompatible.', 'yoohw-vietnam-store-tools' ) . '</p></div>';
 		}
 		if ( self::is_enabled() && ! self::is_capture_mode() ) {
 			echo '<div class="notice notice-warning"><p>' . esc_html__( 'PayPal USD conversion requires CAPTURE intent. PayPal is unavailable until WooCommerce PayPal Payments uses CAPTURE.', 'yoohw-vietnam-store-tools' ) . '</p></div>';

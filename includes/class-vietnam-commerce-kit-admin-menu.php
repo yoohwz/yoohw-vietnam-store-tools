@@ -134,20 +134,21 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 			update_option( $option_id, $value, false );
 		}
 
-		$paypal_submitted = isset( $_POST['paypal_conversion'] ) && is_array( $_POST['paypal_conversion'] )
+		$paypal_invalid = false;
+		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active() && isset( $_POST['paypal_conversion'] ) && is_array( $_POST['paypal_conversion'] ) ) {
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each setting is sanitized and allowlisted below.
-			? wp_unslash( $_POST['paypal_conversion'] )
-			: array();
-		$paypal_enabled  = isset( $paypal_submitted['enabled'] ) && 'yes' === sanitize_text_field( $paypal_submitted['enabled'] );
-		$paypal_rate     = isset( $paypal_submitted['rate'] ) && is_scalar( $paypal_submitted['rate'] ) ? sanitize_text_field( (string) $paypal_submitted['rate'] ) : '';
-		$paypal_invalid  = $paypal_enabled && ! Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_valid_rate( $paypal_rate );
-		$paypal_settings = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::sanitize_settings(
-			array(
-				Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTING_ENABLED => $paypal_enabled ? 'yes' : 'no',
-				Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTING_RATE    => $paypal_rate,
-			)
-		);
-		update_option( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTINGS_OPTION, $paypal_settings, false );
+			$paypal_submitted = wp_unslash( $_POST['paypal_conversion'] );
+			$paypal_enabled   = isset( $paypal_submitted['enabled'] ) && 'yes' === sanitize_text_field( $paypal_submitted['enabled'] );
+			$paypal_rate      = isset( $paypal_submitted['rate'] ) && is_scalar( $paypal_submitted['rate'] ) ? sanitize_text_field( (string) $paypal_submitted['rate'] ) : '';
+			$paypal_invalid   = $paypal_enabled && ! Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_valid_rate( $paypal_rate );
+			$paypal_settings  = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::sanitize_settings(
+				array(
+					Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTING_ENABLED => $paypal_enabled ? 'yes' : 'no',
+					Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTING_RATE    => $paypal_rate,
+				)
+			);
+			update_option( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTINGS_OPTION, $paypal_settings, false );
+		}
 
 		wp_safe_redirect(
 			add_query_arg(
@@ -228,9 +229,8 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 	}
 
 	private function render_feature_settings() {
-		$features       = $this->get_feature_options();
-		$paypal_enabled = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_enabled();
-		$paypal_rate    = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::get_configured_rate();
+		$features      = $this->get_feature_options();
+		$paypal_active = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active();
 		?>
 		<section class="yoohw-vietnam-store__section" aria-labelledby="yoohw-vietnam-store-features">
 			<div class="yoohw-vietnam-store__section-heading">
@@ -260,26 +260,36 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 						</label>
 					<?php endforeach; ?>
 				</div>
-				<div class="yoohw-vietnam-store__paypal-settings">
+				<div class="<?php echo esc_attr( 'yoohw-vietnam-store__paypal-settings' . ( $paypal_active ? '' : ' is-unavailable' ) ); ?>">
 					<div class="yoohw-vietnam-store__section-heading">
 						<h3><?php esc_html_e( 'PayPal USD conversion', 'yoohw-vietnam-store-tools' ); ?></h3>
-						<p><?php esc_html_e( 'Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments 4.1.3. WooCommerce orders remain in VND.', 'yoohw-vietnam-store-tools' ); ?></p>
+						<?php if ( $paypal_active ) : ?>
+							<p><?php esc_html_e( 'Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments 4.1.3+. Other versions are enabled when their integration contract is compatible. WooCommerce orders remain in VND.', 'yoohw-vietnam-store-tools' ); ?></p>
+						<?php else : ?>
+							<p><?php esc_html_e( 'Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active. Activate the plugin to configure VND to USD conversion.', 'yoohw-vietnam-store-tools' ); ?></p>
+						<?php endif; ?>
 					</div>
-					<label class="yoohw-vietnam-store__feature" for="yoohw-paypal-conversion-enabled">
-						<span class="yoohw-vietnam-store__feature-content">
-							<strong><?php esc_html_e( 'Enable PayPal USD conversion', 'yoohw-vietnam-store-tools' ); ?></strong>
-							<span><?php esc_html_e( 'PayPal is shown only on the normal Classic or Block checkout when this rate and CAPTURE intent are valid.', 'yoohw-vietnam-store-tools' ); ?></span>
-						</span>
-						<span class="yoohw-vietnam-store__switch">
-							<input id="yoohw-paypal-conversion-enabled" name="paypal_conversion[enabled]" type="checkbox" value="yes" <?php checked( $paypal_enabled ); ?>>
-							<span aria-hidden="true"></span>
-						</span>
-					</label>
-					<label class="yoohw-vietnam-store__paypal-rate" for="yoohw-paypal-conversion-rate">
-						<strong><?php esc_html_e( 'Manual VND per USD rate', 'yoohw-vietnam-store-tools' ); ?></strong>
-						<input id="yoohw-paypal-conversion-rate" name="paypal_conversion[rate]" type="text" inputmode="decimal" value="<?php echo esc_attr( $paypal_rate ); ?>" placeholder="25000" autocomplete="off">
-						<span><?php esc_html_e( 'Enter how many VND equal 1 USD, for example 25000. The rate is locked for each payment attempt.', 'yoohw-vietnam-store-tools' ); ?></span>
-					</label>
+					<?php if ( $paypal_active ) : ?>
+						<?php
+						$paypal_enabled = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_enabled();
+						$paypal_rate    = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::get_configured_rate();
+						?>
+						<label class="yoohw-vietnam-store__feature" for="yoohw-paypal-conversion-enabled">
+							<span class="yoohw-vietnam-store__feature-content">
+								<strong><?php esc_html_e( 'Enable PayPal USD conversion', 'yoohw-vietnam-store-tools' ); ?></strong>
+								<span><?php esc_html_e( 'PayPal is shown only on the normal Classic or Block checkout when this rate and CAPTURE intent are valid.', 'yoohw-vietnam-store-tools' ); ?></span>
+							</span>
+							<span class="yoohw-vietnam-store__switch">
+								<input id="yoohw-paypal-conversion-enabled" name="paypal_conversion[enabled]" type="checkbox" value="yes" <?php checked( $paypal_enabled ); ?>>
+								<span aria-hidden="true"></span>
+							</span>
+						</label>
+						<label class="yoohw-vietnam-store__paypal-rate" for="yoohw-paypal-conversion-rate">
+							<strong><?php esc_html_e( 'Manual VND per USD rate', 'yoohw-vietnam-store-tools' ); ?></strong>
+							<input id="yoohw-paypal-conversion-rate" name="paypal_conversion[rate]" type="text" inputmode="decimal" value="<?php echo esc_attr( $paypal_rate ); ?>" placeholder="25000" autocomplete="off">
+							<span><?php esc_html_e( 'Enter how many VND equal 1 USD, for example 25000. The rate is locked for each payment attempt.', 'yoohw-vietnam-store-tools' ); ?></span>
+						</label>
+					<?php endif; ?>
 				</div>
 				<p class="submit">
 					<button type="submit" class="button button-primary"><?php esc_html_e( 'Save feature settings', 'yoohw-vietnam-store-tools' ); ?></button>

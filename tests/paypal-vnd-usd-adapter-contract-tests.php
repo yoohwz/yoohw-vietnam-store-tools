@@ -1,6 +1,6 @@
 <?php
 /**
- * PPCP 4.1.3 service-extension contracts for PayPal VND/USD conversion.
+ * PPCP 4.1.3+ service-extension contracts for PayPal VND/USD conversion.
  *
  * Run with: php tests/paypal-vnd-usd-adapter-contract-tests.php
  */
@@ -108,8 +108,8 @@ namespace WooCommerce\PayPalCommerce\WcGateway\Processor {
 	use WooCommerce\PayPalCommerce\WcGateway\Helper\RefundFeesUpdater;
 
 	class RefundProcessor {
-		public function __construct( OrderEndpoint $orders, PaymentsEndpoint $payments, RefundFeesUpdater $fees, string $prefix, LoggerInterface $logger ) {
-			unset( $orders, $payments, $fees, $prefix, $logger );
+		public function __construct( OrderEndpoint $orders, PaymentsEndpoint $payments, RefundFeesUpdater $fees, string $prefix, LoggerInterface $logger, $future_optional_dependency = null ) {
+			unset( $orders, $payments, $fees, $prefix, $logger, $future_optional_dependency );
 		}
 		public function refund( Order $order, \WC_Order $wc_order, float $amount, string $reason = '' ): string {
 			unset( $order, $wc_order, $amount, $reason );
@@ -123,8 +123,8 @@ namespace WooCommerce\PayPalCommerce\WcGateway\Processor {
 
 namespace WooCommerce\PayPalCommerce\SdkV6\Assets {
 	class SdkV6Manager {
-		public function __construct( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24 ) {
-			unset( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24 );
+		public function __construct( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24, $future_optional_dependency = null ) {
+			unset( $a01, $a02, $a03, $a04, $a05, $a06, $a07, $a08, $a09, $a10, $a11, $a12, $a13, $a14, $a15, $a16, $a17, $a18, $a19, $a20, $a21, $a22, $a23, $a24, $future_optional_dependency );
 		}
 		public function script_data(): array { return array( 'currency' => 'VND', 'amount' => '100000' ); }
 		public function should_load_on_current_page(): bool { return true; }
@@ -244,16 +244,18 @@ namespace {
 	$registered = $runtime->register_ppcp_module( array() );
 	vst_assert_same( 1, count( $registered ), 'Compatible PPCP types register exactly one lazy adapter module' );
 	$GLOBALS['vst_ppcp_version'] = '4.2.0';
-	$incompatible_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
-	$incompatible_modules = $incompatible_runtime->register_ppcp_module( array( 'core-module' ) );
-	vst_assert_same( array( 'core-module' ), $incompatible_modules, 'An unverified PPCP version does not append the conversion adapter module' );
-	$incompatible_gateways = $incompatible_runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array(), 'bacs' => (object) array() ) );
-	vst_assert_true( isset( $incompatible_gateways['bacs'] ) && ! isset( $incompatible_gateways['ppcp-gateway'] ), 'Incompatible conversion fails closed without affecting non-PayPal checkout boot' );
+	$newer_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+	$newer_modules = $newer_runtime->register_ppcp_module( array( 'core-module' ) );
+	vst_assert_same( 2, count( $newer_modules ), 'A newer PPCP version with the verified capability contract registers the adapter module' );
+	$GLOBALS['vst_ppcp_version'] = '4.1.2';
+	$older_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+	$older_modules = $older_runtime->register_ppcp_module( array( 'core-module' ) );
+	vst_assert_same( 2, count( $older_modules ), 'An older PPCP version with the verified capability contract may register the adapter module' );
 	$GLOBALS['vst_ppcp_version'] = '4.1.3';
 	$module     = $registered[0];
 	$extensions = $module->extensions();
-	vst_assert_true( isset( $extensions['wcgateway.processor.refunds'] ), 'Registers the PPCP 4.1.3 refund service extension' );
-	vst_assert_true( isset( $extensions['sdk-v6.manager'] ), 'Registers the PPCP 4.1.3 SDK v6 manager extension' );
+	vst_assert_true( isset( $extensions['wcgateway.processor.refunds'] ), 'Registers the PPCP 4.1.3+ refund service extension' );
+	vst_assert_true( isset( $extensions['sdk-v6.manager'] ), 'Registers the PPCP 4.1.3+ SDK v6 manager extension' );
 
 	$container = new Fake_PPCP_Container();
 	$manager   = $extensions['sdk-v6.manager']( null, $container );

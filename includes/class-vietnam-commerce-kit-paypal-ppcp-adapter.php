@@ -1,6 +1,6 @@
 <?php
 /**
- * Lazily loaded PPCP 4.1.3 adapter.
+ * Lazily loaded PPCP 4.1.3+ adapter.
  *
  * This file is included only inside PPCP's module filter, after its autoloader
  * has registered the interfaces and classes referenced below.
@@ -41,7 +41,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_PPCP_Module implements ExtendingMod
 				);
 			},
 			'sdk-v6.manager'                => static function ( $service, ContainerInterface $container ) {
-				// The constructor mirrors the capability contract pinned to PPCP 4.1.3.
+				// The constructor mirrors the capability contract introduced in PPCP 4.1.3.
 				unset( $service );
 				$settings = $container->get( 'settings.settings-provider' );
 				return new Yoohw_Vietnam_Store_Tools_PayPal_USD_SdkV6_Manager(

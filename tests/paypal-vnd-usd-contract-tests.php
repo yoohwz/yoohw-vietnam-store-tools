@@ -10,7 +10,10 @@ define( 'HOUR_IN_SECONDS', 3600 );
 
 function __( $value ) { return $value; }
 function get_option( $key, $default = false ) {
-	return 'woocommerce-ppcp-version' === $key ? '4.1.3' : $default;
+	if ( 'active_plugins' === $key ) {
+		return $GLOBALS['vst_active_plugins'] ?? array();
+	}
+	return $default;
 }
 function get_woocommerce_currency() { return 'VND'; }
 function is_checkout() { return false; }
@@ -22,10 +25,26 @@ function is_wp_error( $value ) { return false; }
 function wp_enqueue_script() {}
 function wp_localize_script() {}
 function wc_clean( $value ) { return $value; }
+function esc_html_e( $value ) { echo $value; }
+function esc_html( $value ) { return $value; }
+function esc_attr( $value ) { return $value; }
+function esc_url( $value ) { return $value; }
+function admin_url( $path = '' ) { return 'https://store.test/wp-admin/' . $path; }
+function wp_nonce_field() {}
+function checked( $value, $expected = true ) {
+	if ( $value === $expected ) {
+		echo 'checked';
+	}
+}
 
 class WP_Error {
 	public function __construct( $code = '', $message = '' ) {}
 	public function get_error_message() { return ''; }
+}
+
+final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
+	const OPTION_ID = 'tax_invoice';
+	public static function accepts_new_requests() { return true; }
 }
 
 require __DIR__ . '/support/assertions.php';
@@ -33,6 +52,9 @@ require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conver
 
 $unavailable_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
 vst_assert_same( array( 'core-module' ), $unavailable_runtime->register_ppcp_module( array( 'core-module' ) ), 'Compatible PPCP version without required services does not append the adapter module' );
+vst_assert_same( false, Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active(), 'Inactive PPCP plugin is detected for conditional settings rendering' );
+$GLOBALS['vst_active_plugins'] = array( 'woocommerce-paypal-payments/woocommerce-paypal-payments.php' );
+vst_assert_true( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active(), 'Active PPCP plugin is detected for conditional settings rendering' );
 $invalid_settings = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::sanitize_settings(
 	array(
 		'yoohw_vietnam_store_tools_paypal_vnd_usd_enabled' => 'yes',
@@ -183,16 +205,40 @@ vst_assert_true( false !== strpos( $runtime, "'woocommerce_paypal_payments_modul
 vst_assert_true( false !== strpos( $runtime, "'woocommerce_paypal_payments_use_place_order_button'" ), 'Runtime constrains conversion to the normal place-order flow' );
 vst_assert_true( false !== strpos( $runtime, "'woocommerce_paypal_payments_buttons_disabled'" ), 'Runtime disables unsupported express button flows' );
 vst_assert_true( false !== strpos( $runtime, "'yoohw_vietnam_store_tools_paypal_conversion_settings'" ), 'Conversion settings are owned by Vietnam Store Toolkit' );
+vst_assert_same( false, false !== strpos( $runtime, 'SUPPORTED_PPCP_VERSION' ) || false !== strpos( $runtime, 'MINIMUM_PPCP_VERSION' ), 'Runtime compatibility is capability-based rather than version-locked' );
 vst_assert_same( false, false !== strpos( $runtime, 'woocommerce_settings_api_form_fields_ppcp-gateway' ), 'Runtime does not inject fields into the PPCP React settings screen' );
 vst_assert_true( false !== strpos( $runtime, "'woocommerce-ppcp-data-settings'" ), 'Runtime reads the authoritative PPCP data settings option' );
 vst_assert_true( false !== strpos( $admin, "paypal_conversion[rate]" ) && false !== strpos( $admin, 'sanitize_settings' ), 'Toolkit admin page renders and sanitizes its PayPal conversion settings' );
+vst_assert_true( false !== strpos( $admin, 'is_ppcp_plugin_active()' ) && false !== strpos( $admin, 'Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active.' ), 'Toolkit hides PayPal controls and explains the dependency when PPCP is inactive' );
 vst_assert_same( false, false !== strpos( $runtime, "'woocommerce_checkout_create_order'" ), 'Snapshot persistence requires PayPal-order linkage rather than an unbound checkout hook' );
 vst_assert_true( false !== strpos( $runtime, "'wp_enqueue_scripts', array( \$this, 'prepare_checkout_attempt' ), 1" ), 'Server-owned quote is ready before PPCP enqueues SDK v6 data' );
-vst_assert_true( false !== strpos( $runtime, 'SdkV6\\\\Blocks\\\\V6PaymentMethod' ), 'Runtime capability-checks the PPCP 4.1.3 Blocks contract lazily' );
+vst_assert_true( false !== strpos( $runtime, 'SdkV6\\\\Blocks\\\\V6PaymentMethod' ), 'Runtime capability-checks the PPCP 4.1.3+ Blocks contract lazily' );
 vst_assert_true( false !== strpos( $adapter, "'wcgateway.processor.refunds'" ), 'Adapter replaces only PPCP refund processing service' );
 vst_assert_true( false !== strpos( $adapter, "'sdk-v6.manager'" ), 'Adapter synchronizes PPCP SDK v6 data through its manager service' );
 vst_assert_true( false !== strpos( $script, 'gatewayId' ) && false !== strpos( $script, 'payment_method' ) && false !== strpos( $script, 'paymentStore' ), 'Frontend disclosure is scoped through Classic and Blocks payment selection' );
 vst_assert_true( false !== strpos( $script, 'yoohw_paypal_usd_quote' ), 'Frontend refreshes its server-owned quote after cart total changes' );
 vst_assert_true( false !== strpos( $script, 'checkout_place_order_' ) && false !== strpos( $script, 'wc-block-components-checkout-place-order-button' ), 'Classic and Blocks place-order controls wait for a current server quote' );
+
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-admin-menu.php';
+$admin_reflection = new ReflectionClass( 'Yoohw_Vietnam_Store_Tools_Admin_Menu' );
+$admin_instance   = $admin_reflection->newInstanceWithoutConstructor();
+$render_settings  = $admin_reflection->getMethod( 'render_feature_settings' );
+$render_settings->setAccessible( true );
+
+$GLOBALS['vst_active_plugins'] = array();
+ob_start();
+$render_settings->invoke( $admin_instance );
+$inactive_settings = ob_get_clean();
+vst_assert_true( false !== strpos( $inactive_settings, 'PayPal USD conversion' ), 'Inactive PPCP still renders the PayPal conversion heading' );
+vst_assert_true( false !== strpos( $inactive_settings, 'Available only when WooCommerce PayPal Payments 4.1.3+ is installed and active.' ), 'Inactive PPCP renders the dependency description' );
+vst_assert_true( false !== strpos( $inactive_settings, 'yoohw-vietnam-store__paypal-settings is-unavailable' ), 'Inactive PPCP renders the compact unavailable card state' );
+vst_assert_same( false, false !== strpos( $inactive_settings, 'name="paypal_conversion[enabled]"' ) || false !== strpos( $inactive_settings, 'name="paypal_conversion[rate]"' ), 'Inactive PPCP hides every PayPal conversion option' );
+
+$GLOBALS['vst_active_plugins'] = array( 'woocommerce-paypal-payments/woocommerce-paypal-payments.php' );
+ob_start();
+$render_settings->invoke( $admin_instance );
+$active_settings = ob_get_clean();
+vst_assert_true( false !== strpos( $active_settings, 'name="paypal_conversion[enabled]"' ) && false !== strpos( $active_settings, 'name="paypal_conversion[rate]"' ), 'Active PPCP renders both PayPal conversion options' );
+vst_assert_true( false !== strpos( $active_settings, 'WooCommerce PayPal Payments 4.1.3+' ), 'Active PPCP renders the verified-version guidance' );
 
 vst_finish_contract_suite( 'PayPal VND/USD conversion' );

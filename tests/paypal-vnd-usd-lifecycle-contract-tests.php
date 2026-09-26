@@ -1,6 +1,6 @@
 <?php
 /**
- * PPCP 4.1.3 standard Place-order lifecycle contracts.
+ * PPCP 4.1.3+ standard Place-order lifecycle contracts.
  *
  * Run with: php tests/paypal-vnd-usd-lifecycle-contract-tests.php
  */

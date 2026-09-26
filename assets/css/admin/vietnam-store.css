@@ -245,6 +245,10 @@
 	border-bottom: 1px solid var(--yoohw-border);
 }
 
+.yoohw-vietnam-store__paypal-settings.is-unavailable .yoohw-vietnam-store__section-heading {
+	border-bottom: 0;
+}
+
 .yoohw-vietnam-store__paypal-settings h3 {
 	margin: 0 0 6px;
 	font-size: 15px;
