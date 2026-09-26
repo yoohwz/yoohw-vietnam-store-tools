@@ -9,6 +9,7 @@ $test_uuid = 0;
 $test_orders = [];
 $test_persisted = [];
 $test_order_storage_mode = 'legacy';
+$test_trashed_orders = [];
 function __( $value ) { return $value; }
 function sanitize_key( $value ) { return strtolower( preg_replace( '/[^a-z0-9_-]/', '', (string) $value ) ); }
 function sanitize_text_field( $value ) { return trim( (string) $value ); }
@@ -25,9 +26,11 @@ function get_current_user_id() { return 7; }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
 function wc_format_decimal( $value, $decimals = 0 ) { return number_format( (float) $value, $decimals, '.', '' ); }
 function wc_get_price_decimals() { return 0; }
+function wc_get_order_statuses() { return [ 'wc-pending' => 'Pending', 'wc-completed' => 'Completed' ]; }
+function get_post_stati() { return [ 'trash' => new stdClass(), 'auto-draft' => new stdClass() ]; }
 function wc_get_order( $value ) { global $test_orders; return $value instanceof WC_Order ? $value : ( isset( $test_orders[ $value ] ) ? $test_orders[ $value ] : false ); }
 function wc_get_orders( $args ) {
-	global $test_orders, $test_order_storage_mode;
+	global $test_orders, $test_order_storage_mode, $test_trashed_orders;
 	// CPT ignores HPOS-only meta_query; both stores support the meta_* shortcut.
 	if ( ! isset( $args['meta_key'], $args['meta_compare'] ) || 'EXISTS' !== $args['meta_compare'] ) {
 		return 'legacy' === $test_order_storage_mode ? [] : false;
@@ -35,6 +38,9 @@ function wc_get_orders( $args ) {
 	$key = $args['meta_key'];
 	$found = [];
 	foreach ( $test_orders as $id => $order ) {
+		if ( isset( $test_trashed_orders[ $id ] ) && ( ! is_array( $args['status'] ) || ! in_array( 'trash', $args['status'], true ) ) ) {
+			continue;
+		}
 		if ( array_key_exists( $key, $order->meta ) ) {
 			$found[] = $id;
 		}
@@ -100,9 +106,14 @@ $verified = $reader::record_verified_evidence( $payment, 'bank', $proof );
 vst_assert_same( 'external_verified', $reader::get_order_data( $payment )['trust'], 'Registered proof yields external trust' );
 $other_payment = new WC_Order( 51 );
 vst_assert_true( is_wp_error( $reader::record_verified_evidence( $other_payment, 'bank', $proof ) ), 'Legacy storage rejects cross-order transaction reuse' );
+$test_trashed_orders[ $payment->get_id() ] = true;
+$trashed_conflict = new WC_Order( 53 );
+vst_assert_true( is_wp_error( $reader::record_verified_evidence( $trashed_conflict, 'bank', $proof ) ), 'Legacy storage retains transaction ownership in Trash' );
 $test_order_storage_mode = 'hpos';
 $third_payment = new WC_Order( 52 );
 vst_assert_true( is_wp_error( $reader::record_verified_evidence( $third_payment, 'bank', $proof ) ), 'HPOS rejects cross-order transaction reuse' );
+$hpos_trashed_conflict = new WC_Order( 54 );
+vst_assert_true( is_wp_error( $reader::record_verified_evidence( $hpos_trashed_conflict, 'bank', $proof ) ), 'HPOS retains transaction ownership in Trash' );
 $test_order_storage_mode = 'legacy';
 vst_assert_same( $verified['id'], $reader::record_verified_evidence( $payment, 'bank', $proof )['id'], 'Identical transaction is idempotent' );
 $conflict = $proof;

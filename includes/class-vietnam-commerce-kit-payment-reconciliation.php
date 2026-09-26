@@ -146,10 +146,12 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 			return self::error( 'unavailable_transaction_lookup' );
 		}
 		$transaction_key = self::transaction_meta_key( $source_id, $transaction_id );
+		// "any" excludes Trash in both WordPress and HPOS; retained orders still own their transactions.
+		$statuses = array_values( array_unique( array_merge( array_keys( wc_get_order_statuses() ), array_keys( get_post_stati() ), [ 'trash', 'auto-draft', 'checkout-draft' ] ) ) );
 		$owners = wc_get_orders(
 			[
 				'type'         => 'shop_order',
-				'status'       => 'any',
+				'status'       => $statuses,
 				'limit'        => 2,
 				'return'       => 'ids',
 				'meta_key'     => $transaction_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
