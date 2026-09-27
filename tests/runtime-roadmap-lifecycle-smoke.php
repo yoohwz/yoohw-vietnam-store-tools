@@ -45,9 +45,8 @@ if ( 'prepare' === $phase ) {
 	vst_assert_true( ! is_wp_error( $identity ), 'Shipment identity prepared' );
 	$order->update_meta_data( '_yoohw_vietnam_store_tools_shipment_exception_history', [ [ 'id' => 'historical' ] ] );
 	$order->save();
-	$item_id = (int) array_key_first( $order->get_items( 'line_item' ) );
-	$return = Yoohw_Vietnam_Store_Tools_Returns_Lite::create( $order, [ $item_id => 1 ], [ 'reason' => 'Lifecycle fixture' ], 0 );
-	vst_assert_true( ! is_wp_error( $return ), 'Return history prepared' );
+	$order->update_meta_data( '_yoohw_vietnam_store_tools_returns_lite', [ [ 'id' => 'historical-staging-return', 'revision' => 2 ] ] );
+	$order->save();
 	$invoice = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::update_order_data( $order, [ 'status' => 'verified' ], [ 'source' => 'fixture' ] );
 	vst_assert_same( true, $invoice, 'Invoice history prepared' );
 	$wards = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_wards_for_province( '01' );
@@ -88,7 +87,7 @@ if ( 'prepare' === $phase ) {
 		vst_assert_same( true, is_plugin_active( 'yoohw-vietnam-store-tools/yoohw-vietnam-store-tools.php' ), 'Plugin is active again' );
 		vst_assert_same( 1, count( Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_history( $order ) ), 'Payment history readable after activation' );
 		vst_assert_same( $fixture['snapshot']['_yoohw_vietnam_store_tools_current_shipment_id'], Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order )['id'], 'Shipment identity readable after activation' );
-		vst_assert_same( 1, count( Yoohw_Vietnam_Store_Tools_Returns_Lite::get_returns( $order ) ), 'Return history readable after activation' );
+		vst_assert_same( $fixture['snapshot']['_yoohw_vietnam_store_tools_returns_lite'], $order->get_meta( '_yoohw_vietnam_store_tools_returns_lite', true ), 'Historical Returns Lite meta remains inert after activation' );
 		vst_assert_same( 'verified', Yoohw_Vietnam_Store_Tools_Electronic_Invoice::get_order_data( $order )['status'], 'Invoice projection readable after activation' );
 		$shipment_option = Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY;
 		$old_shipment_option = get_option( $shipment_option, false );

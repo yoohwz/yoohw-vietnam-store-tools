@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T11:37:42+00:00\n"
+"POT-Creation-Date: 2026-09-27T12:11:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -156,7 +156,7 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:130
 #: includes/class-vietnam-commerce-kit-admin-menu.php:176
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:227
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:226
 #: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr ""
@@ -433,8 +433,8 @@ msgid "Open store address settings"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:472
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:293
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:434
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:292
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:319
 #: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr ""
@@ -481,279 +481,187 @@ msgstr ""
 msgid "Review operational data and migrate compatible settings from legacy Vietnam checkout plugins."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:40
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:192
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:39
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:191
 msgid "Bank BIN"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:52
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:51
 msgid "VietQR"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:54
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:53
 msgid "Choose a bank in each bank transfer account to generate VietQR payment QR codes for Vietnamese bank transfers. Existing legacy Bank BIN and Sort code values are still supported."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:58
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:57
 msgid "VietQR payment QR"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:60
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:59
 msgid "Show VietQR code for direct bank transfer orders"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:64
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:202
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:63
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:201
 msgid "Transfer content template"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:66
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:203
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:65
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:202
 msgid "Available placeholders: {order_id}, {order_number}, {site_name}."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:71
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:452
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:469
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:500
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:70
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:337
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:354
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:385
 msgid "Amount"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:73
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:72
 msgid "Include the order amount in the QR code when the order currency is VND"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:77
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:76
 msgid "QR template"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:81
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:80
 msgid "Compact with VietQR logo"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:82
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:81
 msgid "Compact"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:83
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:82
 msgid "QR only"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:87
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:86
 msgid "Email display"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:89
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:88
 msgid "Show VietQR code in customer bank transfer emails"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:193
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:192
 msgid "Enter the VietQR/NAPAS bank BIN for this Vietnam bank account, for example 970436."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:194
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:193
 msgid "Bank BIN is required to generate VietQR codes."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:195
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:194
 msgid "Choose the receiving bank. The VietQR bank BIN will be filled automatically."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:196
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:449
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:472
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:503
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:195
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:334
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:357
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
 msgid "Bank"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:197
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:196
 msgid "Please select a bank to generate VietQR codes."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:198
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:197
 msgid "Vietnam Store Toolkit for WooCommerce uses Vietnam bank transfer accounts for VietQR."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:199
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:198
 msgid "Country"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:200
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:199
 msgid "Vietnam"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:201
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:200
 msgid "Select a bank"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:204
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:203
 msgid "Could not save the VietQR transfer content template."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:205
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:204
 msgid "Account Name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:206
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:205
 msgid "Account Number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:207
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:206
 msgid "Bank Name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:208
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:207
 msgid "BIC / SWIFT"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:209
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:208
 msgid "IBAN"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:317
-msgid "Payment link and instructions"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:322
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:382
+msgid "Pay by bank transfer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:341
-msgid "Order status:"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:332
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:350
+msgid "VietQR payment QR code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:344
-msgid "Native payment link available now"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:335
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:356
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
+msgid "Account number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:345
-msgid "Native payment link"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:335
+msgid "Copy account number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:346
-msgid "Copy payment link"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:336
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
+msgid "Account name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:347
-msgid "Open payment page"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:338
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:386
+msgid "Transfer content"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:348
-msgid "Anyone with this link can reach WooCommerce's payment flow for this order. WooCommerce checks the recipient, order, stock and available payment methods when opened. Login or billing-email verification may be required. The link can stop working after order changes; opening it as an administrator may not match the recipient experience."
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:338
+msgid "Copy transfer content"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:357
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:355
+msgid "Transfer note"
+msgstr ""
+
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:358
-msgid "Bank transfer instructions"
+msgid "Account holder"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:359
-msgid "Copy payment instructions"
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
+msgid "QR code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:360
-msgid "These instructions do not confirm that payment has been received."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:362
-msgid "No usable bank transfer account is configured."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:524
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
 #: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copied"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:374
-msgid "Save this order before creating a payment link."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:377
-msgid "This order has no WooCommerce order key."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:380
-msgid "WooCommerce did not provide a usable payment link for this order."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:383
-msgid "This order is already paid."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:386
-msgid "This order has no amount to pay."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
-msgid "WooCommerce does not currently require or allow payment for this order."
-msgstr ""
-
-#. translators: %s: WooCommerce order number.
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:403
-#, php-format
-msgid "Order: %s"
-msgstr ""
-
-#. translators: 1: Formatted order amount, 2: currency code.
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:405
-#, php-format
-msgid "Amount: %1$s %2$s"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:451
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:504
-msgid "Account name"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:450
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:471
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:502
-msgid "Account number"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:453
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:501
-msgid "Transfer content"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:417
-msgid "Payment link:"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:437
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:497
-msgid "Pay by bank transfer"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:447
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:465
-msgid "VietQR payment QR code"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:450
-msgid "Copy account number"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:453
-msgid "Copy transfer content"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:470
-msgid "Transfer note"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:473
-msgid "Account holder"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:505
-msgid "QR code"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:584
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:469
 msgid "Not included in QR code"
 msgstr ""
 
@@ -2015,205 +1923,6 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-phone-normalization.php:322
 #: includes/class-vietnam-commerce-kit-phone-normalization.php:386
 msgid "Please enter a valid Vietnamese phone number."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:33
-msgid "Returns Lite"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:57
-msgid "No returns recorded for this order."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:62
-msgid "Create manual return"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:63
-msgid "Choose product items and whole-unit quantities. This does not create a refund or restock products."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:67
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:135
-msgid "Reason"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:68
-msgid "Operator note (optional)"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:69
-msgid "Create return"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
-msgid "Open"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
-msgid "Goods received"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
-msgid "Closed"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
-msgid "Return voided"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:83
-msgid "Order item changed or missing"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:91
-msgid "Original shipment"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:93
-msgid "historical reference"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:98
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:137
-msgid "Reverse shipment reference"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:107
-msgid "Linked refund"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:109
-msgid "missing refund"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:113
-msgid "Unlink refund"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
-msgid "Link existing refund"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:131
-msgid "Save return items"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:136
-msgid "Operator note"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:138
-msgid "Save return correction"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:145
-msgid "Transition note (optional)"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:146
-msgid "Void this return"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:150
-msgid "Audit history"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:153
-msgid "Actor"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:174
-msgid "ordered"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:230
-msgid "Unknown return action."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:245
-msgid "Security check failed or order access denied."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:263
-msgid "Order operation saved."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:52
-msgid "You cannot edit returns for this order."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:62
-msgid "Order could not be reloaded."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:69
-msgid "Return history format is unsupported. No changes were saved."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:98
-msgid "Return edit lock expired. Reload and retry."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:129
-#: includes/class-vietnam-commerce-kit-returns-lite.php:177
-msgid "Enter a return reason."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:157
-msgid "This return state change is not allowed."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:165
-msgid "Items cannot be changed after this return leaves open state."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:184
-msgid "No return changes were submitted."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:189
-msgid "Choose a WooCommerce refund."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:194
-msgid "Refund is already linked to this return."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:203
-msgid "Refund does not belong to this order."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:207
-msgid "Refund is not linked to this return."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:214
-msgid "Unknown return operation."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:219
-msgid "Choose at least one product item."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:235
-msgid "Return items or quantities are invalid."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:240
-msgid "Return quantity exceeds the current order item quantity."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:266
-msgid "Return edit lock could not be created. Retry later."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:281
-msgid "Another operator is editing returns for this order. Reload and retry."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:302
-msgid "This return changed since the page loaded. Reload and retry."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-identity.php:77

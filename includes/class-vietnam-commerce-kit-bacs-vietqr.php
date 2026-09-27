@@ -33,7 +33,6 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		add_action( 'woocommerce_view_order', [ $this, 'render_view_order_vietqr' ], 9 );
 		add_action( 'woocommerce_email_before_order_table', [ $this, 'render_email_vietqr' ], 20, 3 );
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
-		add_action( 'add_meta_boxes', [ $this, 'add_payment_link_metabox' ] );
 	}
 
 	public function add_vietnam_bacs_locale( $locale ) {
@@ -305,120 +304,6 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		$this->render_vietqr_payment_details( $order, 'admin' );
 	}
 
-	public function add_payment_link_metabox() {
-		$order = $this->get_current_admin_order();
-		if ( ! $order instanceof WC_Order || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
-			return;
-		}
-
-		foreach ( $this->get_order_admin_screen_ids() as $screen_id ) {
-			add_meta_box(
-				'yoohw-vietnam-store-tools-payment-link',
-				__( 'Payment link and instructions', 'yoohw-vietnam-store-tools' ),
-				[ $this, 'render_payment_link_metabox' ],
-				$screen_id,
-				'side',
-				'default'
-			);
-		}
-	}
-
-	public function render_payment_link_metabox( $post_or_order_object ) {
-		$order = $this->get_admin_order_from_object( $post_or_order_object );
-		if ( ! $order instanceof WC_Order || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
-			return;
-		}
-
-		$link = '';
-		if ( $order->get_id() && $order->get_order_key() && $order->needs_payment() ) {
-			$candidate = $order->get_checkout_payment_url();
-			if ( is_string( $candidate ) && in_array( strtolower( (string) wp_parse_url( $candidate, PHP_URL_SCHEME ) ), [ 'http', 'https' ], true ) ) {
-				$link = esc_url_raw( $candidate );
-			}
-		}
-
-		echo '<div class="vck-payment-link">';
-		echo '<p>' . esc_html__( 'Order status:', 'yoohw-vietnam-store-tools' ) . ' <strong>' . esc_html( wc_get_order_status_name( $order->get_status() ) ) . '</strong></p>';
-
-		if ( $link ) {
-			echo '<p><strong>' . esc_html__( 'Native payment link available now', 'yoohw-vietnam-store-tools' ) . '</strong></p>';
-			echo '<p><input type="text" class="widefat" readonly value="' . esc_attr( $link ) . '" aria-label="' . esc_attr__( 'Native payment link', 'yoohw-vietnam-store-tools' ) . '"></p>';
-			$this->render_payment_copy_button( __( 'Copy payment link', 'yoohw-vietnam-store-tools' ), $link );
-			echo ' <a href="' . esc_url( $link ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Open payment page', 'yoohw-vietnam-store-tools' ) . '</a>';
-			echo '<p class="description">' . esc_html__( 'Anyone with this link can reach WooCommerce\'s payment flow for this order. WooCommerce checks the recipient, order, stock and available payment methods when opened. Login or billing-email verification may be required. The link can stop working after order changes; opening it as an administrator may not match the recipient experience.', 'yoohw-vietnam-store-tools' ) . '</p>';
-		} else {
-			echo '<p>' . esc_html( $this->payment_link_unavailable_reason( $order ) ) . '</p>';
-		}
-
-		if ( $this->can_copy_bacs_instructions( $order ) ) {
-			$accounts = $this->prepare_bacs_payment_accounts( $order );
-			if ( $accounts ) {
-				$instructions = $this->format_bacs_instructions( $order, $accounts, $link );
-				echo '<p><strong>' . esc_html__( 'Bank transfer instructions', 'yoohw-vietnam-store-tools' ) . '</strong></p>';
-				echo '<p><textarea class="widefat" rows="7" readonly aria-label="' . esc_attr__( 'Bank transfer instructions', 'yoohw-vietnam-store-tools' ) . '">' . esc_textarea( $instructions ) . '</textarea></p>';
-				$this->render_payment_copy_button( __( 'Copy payment instructions', 'yoohw-vietnam-store-tools' ), $instructions );
-				echo '<p class="description">' . esc_html__( 'These instructions do not confirm that payment has been received.', 'yoohw-vietnam-store-tools' ) . '</p>';
-			} else {
-				echo '<p>' . esc_html__( 'No usable bank transfer account is configured.', 'yoohw-vietnam-store-tools' ) . '</p>';
-			}
-		}
-		echo '</div>';
-	}
-
-	private function render_payment_copy_button( $label, $value ) {
-		echo '<button type="button" class="button vck-payment-copy" data-vck-copy="' . esc_attr( $value ) . '" data-vck-copy-label="' . esc_attr( $label ) . '" data-vck-copied-label="' . esc_attr__( 'Copied', 'yoohw-vietnam-store-tools' ) . '" aria-label="' . esc_attr( $label ) . '">' . esc_html( $label ) . '</button>';
-	}
-
-	private function payment_link_unavailable_reason( $order ) {
-		if ( ! $order->get_id() ) {
-			return __( 'Save this order before creating a payment link.', 'yoohw-vietnam-store-tools' );
-		}
-		if ( ! $order->get_order_key() ) {
-			return __( 'This order has no WooCommerce order key.', 'yoohw-vietnam-store-tools' );
-		}
-		if ( $order->needs_payment() ) {
-			return __( 'WooCommerce did not provide a usable payment link for this order.', 'yoohw-vietnam-store-tools' );
-		}
-		if ( $order->is_paid() ) {
-			return __( 'This order is already paid.', 'yoohw-vietnam-store-tools' );
-		}
-		if ( (float) $order->get_total() <= 0 ) {
-			return __( 'This order has no amount to pay.', 'yoohw-vietnam-store-tools' );
-		}
-		return __( 'WooCommerce does not currently require or allow payment for this order.', 'yoohw-vietnam-store-tools' );
-	}
-
-	private function can_copy_bacs_instructions( $order ) {
-		if ( self::GATEWAY_ID !== $order->get_payment_method() || (float) $order->get_total() <= 0 ) {
-			return false;
-		}
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- This is WooCommerce's BACS instruction status filter.
-		$instructions_status = apply_filters( 'woocommerce_bacs_email_instructions_order_status', 'on-hold', $order );
-		return $order->needs_payment() || $order->has_status( $instructions_status );
-	}
-
-	private function format_bacs_instructions( $order, $accounts, $link ) {
-		$lines = [
-			/* translators: %s: WooCommerce order number. */
-			sprintf( __( 'Order: %s', 'yoohw-vietnam-store-tools' ), $order->get_order_number() ),
-			/* translators: 1: Formatted order amount, 2: currency code. */
-			sprintf( __( 'Amount: %1$s %2$s', 'yoohw-vietnam-store-tools' ), html_entity_decode( wp_strip_all_tags( wc_price( (float) $order->get_total(), [ 'currency' => $order->get_currency() ] ) ), ENT_QUOTES, 'UTF-8' ), $order->get_currency() ),
-		];
-		foreach ( $accounts as $account ) {
-			$lines[] = '';
-			foreach ( [ 'bank_name' => __( 'Bank', 'yoohw-vietnam-store-tools' ), 'account_name' => __( 'Account name', 'yoohw-vietnam-store-tools' ), 'account_number' => __( 'Account number', 'yoohw-vietnam-store-tools' ), 'iban' => __( 'IBAN', 'yoohw-vietnam-store-tools' ), 'bic' => __( 'BIC / SWIFT', 'yoohw-vietnam-store-tools' ), 'transfer_content' => __( 'Transfer content', 'yoohw-vietnam-store-tools' ) ] as $key => $label ) {
-				if ( '' !== $account[ $key ] ) {
-					$lines[] = $label . ': ' . $account[ $key ];
-				}
-			}
-		}
-		if ( $link ) {
-			$lines[] = '';
-			$lines[] = __( 'Payment link:', 'yoohw-vietnam-store-tools' ) . ' ' . $link;
-		}
-		return implode( "\n", $lines );
-	}
-
 	private function render_vietqr_payment_details( $order, $context ) {
 		$accounts = $this->get_vietqr_payment_accounts( $order );
 
@@ -535,7 +420,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		} ) );
 	}
 
-	/** Read-only account preparation shared by VietQR renderers and admin instructions. */
+	/** Read-only account preparation for VietQR renderers. */
 	private function prepare_bacs_payment_accounts( $order ) {
 		if ( ! $order instanceof WC_Order || self::GATEWAY_ID !== $order->get_payment_method() ) {
 			return [];

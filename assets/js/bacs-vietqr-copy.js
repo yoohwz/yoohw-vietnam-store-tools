@@ -43,7 +43,6 @@
 		var originalLabel = button.getAttribute( 'data-vck-copy-label' ) || button.getAttribute( 'aria-label' ) || '';
 		var originalTitle = button.getAttribute( 'data-vck-copy-title' );
 		var copiedLabel = button.getAttribute( 'data-vck-copied-label' ) || originalLabel;
-		var isTextButton = button.classList.contains( 'vck-payment-copy' );
 
 		if ( originalTitle === null ) {
 			originalTitle = button.getAttribute( 'title' ) || '';
@@ -53,17 +52,11 @@
 		button.classList.add( 'is-copied' );
 		button.setAttribute( 'aria-label', copiedLabel );
 		button.removeAttribute( 'title' );
-		if ( isTextButton ) {
-			button.textContent = copiedLabel;
-		}
 
 		window.clearTimeout( button.yoohwVietnamStoreToolsCopyTimer );
 		button.yoohwVietnamStoreToolsCopyTimer = window.setTimeout( function() {
 			button.classList.remove( 'is-copied' );
 			button.setAttribute( 'aria-label', originalLabel );
-			if ( isTextButton ) {
-				button.textContent = originalLabel;
-			}
 			if ( originalTitle ) {
 				button.setAttribute( 'title', originalTitle );
 			} else {
@@ -73,7 +66,7 @@
 	}
 
 	document.addEventListener( 'click', function( event ) {
-		var button = event.target.closest( '.vck-vietqr-copy, .vck-payment-copy' );
+		var button = event.target.closest( '.vck-vietqr-copy' );
 		var value;
 
 		if ( ! button ) {

@@ -133,19 +133,16 @@ jobs:
       - name: Payment and shipment domain contracts
         run: php tests/domain-contract-tests.php
 
-      - name: Returns Lite contracts
-        run: php tests/returns-lite-contract-tests.php
-
       - name: Electronic invoice v2 contracts
         run: php tests/electronic-invoice-v2-contract-tests.php
 
       - name: Payment reconciliation admin contracts
         run: php tests/payment-reconciliation-admin-contract-tests.php
 
-      - name: Native payment link contracts
+      - name: BACS/VietQR contracts
         run: |
-          php tests/payment-link-contract-tests.php
-          node tests/payment-link-copy-tests.js
+          php tests/bacs-vietqr-contract-tests.php
+          node tests/bacs-vietqr-copy-tests.js
 
       - name: Store health contracts
         run: |
@@ -472,8 +469,8 @@ jobs:
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
 
-  returns-runtime:
-    name: WooCommerce returns runtime
+  roadmap-runtime:
+    name: WooCommerce roadmap runtime
     needs:
       - changes
       - repository-contracts
@@ -514,7 +511,6 @@ jobs:
           set -euo pipefail
           wp_env=(npx --yes @wordpress/env@11.13.0)
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled no
-          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE legacy --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE legacy --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN legacy save --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN legacy document --user=1
@@ -533,7 +529,6 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
-          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN hpos save --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN hpos document --user=1
@@ -626,7 +621,7 @@ jobs:
       - localization-runtime-63
       - localization-runtime-67
       - localization-runtime-latest
-      - returns-runtime
+      - roadmap-runtime
       - plugin-check
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -649,7 +644,7 @@ jobs:
           LOCALIZATION_RUNTIME_63_RESULT: ${{ needs.localization-runtime-63.result }}
           LOCALIZATION_RUNTIME_67_RESULT: ${{ needs.localization-runtime-67.result }}
           LOCALIZATION_RUNTIME_LATEST_RESULT: ${{ needs.localization-runtime-latest.result }}
-          RETURNS_RUNTIME_RESULT: ${{ needs.returns-runtime.result }}
+          ROADMAP_RUNTIME_RESULT: ${{ needs.roadmap-runtime.result }}
           PLUGIN_CHECK_EXPECTED: ${{ needs.changes.outputs.run_plugin_check }}
           PLUGIN_CHECK_RESULT: ${{ needs.plugin-check.result }}
         run: |
@@ -681,7 +676,7 @@ jobs:
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_63_RESULT" "WordPress 6.3 translation runtime"
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_67_RESULT" "WordPress 6.7 translation runtime"
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_LATEST_RESULT" "WordPress latest translation runtime"
-          require_success "$PHP_EXPECTED" "$RETURNS_RUNTIME_RESULT" "WooCommerce returns runtime"
+          require_success "$PHP_EXPECTED" "$ROADMAP_RUNTIME_RESULT" "WooCommerce roadmap runtime"
           require_success "$PLUGIN_CHECK_EXPECTED" "$PLUGIN_CHECK_RESULT" "WordPress Plugin Check"
           {
             echo "### VST CI gate"
@@ -692,6 +687,6 @@ jobs:
             echo "- PHP 7.4 / 8.2 / 8.4: $PHP_74_RESULT / $PHP_82_RESULT / $PHP_84_RESULT"
             echo "- Localization quality: $LOCALIZATION_QUALITY_RESULT"
             echo "- Localization runtime 6.3 / 6.7 / latest: $LOCALIZATION_RUNTIME_63_RESULT / $LOCALIZATION_RUNTIME_67_RESULT / $LOCALIZATION_RUNTIME_LATEST_RESULT"
-            echo "- WooCommerce returns runtime: $RETURNS_RUNTIME_RESULT"
+            echo "- WooCommerce roadmap runtime: $ROADMAP_RUNTIME_RESULT"
             echo "- WordPress Plugin Check: $PLUGIN_CHECK_RESULT"
           } >> "$GITHUB_STEP_SUMMARY"

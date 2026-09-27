@@ -1,8 +1,8 @@
 # VST-62 combined roadmap review
 
-This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b45d14849ff3f` (PRs #51, #53, #55, #57, #59, #61). It records shipped behavior and the limits of the combined validation. It does not select a version or prepare a release. The binding public extension surface is [extension-contracts.md](extension-contracts.md); this dossier is a product review, not an additional API promise.
+This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b45d14849ff3f` (PRs #51, #53, #55, #57, #59, #61). It records the roadmap candidate and the limits of its combined validation. VST-72 later removed two unreleased features before publication. It does not select a version or prepare a release. The binding public extension surface is [extension-contracts.md](extension-contracts.md); this dossier is a product review, not an additional API promise.
 
-## What actually shipped
+## Roadmap candidate and current product
 
 ### Phase 1 — Domain contract foundation (#50 / PR #51)
 
@@ -23,11 +23,10 @@ This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b
 - The assistant exposes the existing DevVN/current address and legacy shipment engine. Explicitly confirmed migration uses bounded 200-row batches, separate order/customer/shipment progress, backup of original fields and a final rescan. Only exact-safe rows are written; ambiguous rows remain for Human review. WooCommerce Status Tools callbacks remain available.
 - It does not schedule scanning, broaden classification rules, rewrite review rows, or resolve ambiguous legacy addresses. An explicit full-corpus scan can be slow on a large store.
 
-### Phase 4 — Shipment identity and Returns Lite (#56 / PR #57; revised by VST-70)
+### Phase 4 — Shipment identity (#56 / PR #57; revised by VST-70 and VST-72)
 
 - Tracking timeline remains the place for delivery progress and failure. Cancellation closes an identity; replacement starts a successor. Tracking-code correction remains a correction. The unreleased manual exception UI and ledger writes were removed by VST-70.
-- Returns Lite adds a manual order-item event ledger with quantity allocation and revision checks. Operators can create, correct, receive, close and cancel records. Item snapshots, reason, actor/time, optional refund reference and reverse shipment reference are retained. Cancellation releases allocation; stale writes and over-allocation are rejected.
-- Refund/shipment references are informational. Returns Lite never issues a refund, adjusts stock, changes WooCommerce order status, sends a customer email, or creates a carrier/RMA workflow. The optional order-list indicator was omitted.
+- The unreleased Returns Lite ledger, actions and order metabox were removed by VST-72. Historical development/staging order meta remains inert and untouched.
 
 ### Phase 5 — Electronic Invoice Handoff v2 (#58 / PR #59)
 
@@ -36,23 +35,22 @@ This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b
 - A separate selected-order handoff CSV has fixed machine headers and Woo order ID. Bulk mark-ready works on complete eligible orders. Current PDF/XML/customer email behavior remains; snapshots preserve historical attachment references but active downloads need a live readable file. Recording a document does not email the customer.
 - CSV import, provider issuance/sync, credentials, legal verification and automatic provider status changes remain outside Core.
 
-### Phase 6 — Native Payment Link (#60 / PR #61)
+### Phase 6 — Native Payment Link (#60 / PR #61; removed by VST-72)
 
-- A capability-guarded order-admin metabox renders WooCommerce's current native order-pay URL only for a persisted keyed order that `needs_payment()`. WooCommerce retains recipient/session, order-key, stock, gateway and payment checks. The URL is rendered on demand, not stored in VST metadata, logs, lists or exports.
-- BACS instructions can be copied independently for payable BACS and WooCommerce's BACS instruction status, including accounts without a usable QR BIN or with VietQR disabled. BACS text and existing VietQR output share internal account/reference normalization. VND can include the QR amount; non-VND QR omits it. Copy/link use is never reconciliation evidence.
-- No custom checkout route/token, social API, source/provenance metadata, payment tracking or provider integration was added. Source attribution was explicitly deferred.
+- The unreleased VST order-admin payment-link and copyable BACS instructions metabox was removed by VST-72. WooCommerce's native order-pay flow remains available through WooCommerce itself.
+- BACS gateway behavior and the VietQR account normalization, QR display, and detail copy controls remain part of the product. Payment-link and instruction copying never formed payment reconciliation evidence.
 
 ## Cross-phase product impact
 
 | Area | Shipped impact and boundary |
 | --- | --- |
-| Customer | Existing Vietnam address/phone, Classic and Blocks checkout, shipping fee/ward zones, tracking, VAT request, invoice email/data and BACS/VietQR surfaces remain. Phase 6 gives a merchant a native WooCommerce order-pay URL to share; no new VST customer route exists. |
-| Merchant | Order admin now includes payment evidence, returns, invoice documents/handoff, payment-link/BACS copy and Store Health/migration. Manual operations work without connectors. |
-| Persisted order data | Additive payment evidence, shipment identity, tracking-event identity binding, Returns Lite ledger, invoice handoff fields/revision/document ledger. WooCommerce order CRUD/meta is used for legacy and HPOS. The payment URL/key is not duplicated in VST metadata. |
+| Customer | Existing Vietnam address/phone, Classic and Blocks checkout, shipping fee/ward zones, tracking, VAT request, invoice email/data and BACS/VietQR surfaces remain. WooCommerce retains its native order-pay route; VST adds no customer route. |
+| Merchant | Order admin now includes payment evidence, invoice documents/handoff, VietQR details and Store Health/migration. Manual operations work without connectors. |
+| Persisted order data | Additive payment evidence, shipment identity, tracking-event identity binding, invoice handoff fields/revision/document ledger. WooCommerce order CRUD/meta is used for legacy and HPOS. The payment URL/key is not duplicated in VST metadata. |
 | Public extension contracts | Shipping provider registry and callbacks, shipping projection and identity-aware method, timeline methods/events, payment evidence source registry, electronic-invoice legacy and v2 APIs/hooks. See `docs/extension-contracts.md` for exact signatures and meanings. |
-| Internal only | Store Health UI helpers, BACS/VietQR account preparation, return ledger/locks, invoice ledger/locks and admin render details are implementation details. Public PHP visibility alone does not turn them into stable extension APIs. |
-| Concurrency | Shipment expected ID, Returns Lite ledger/return revisions and lock, invoice workflow revision/current-document ID and lock reject stale writes. Payment admin actions validate active entry IDs. Legacy shipping projection and invoice APIs preserve their documented compatibility limits. |
-| Security/privacy | Admin actions require capabilities and nonces; order-level mutations require `edit_shop_order`. Tracking lookup retains rate/privacy checks. Payment URL remains a sensitive on-demand admin value. Share text excludes customer PII. Attachments require validation/readability for active download. |
+| Internal only | Store Health UI helpers, BACS/VietQR account preparation, invoice ledger/locks and admin render details are implementation details. Public PHP visibility alone does not turn them into stable extension APIs. |
+| Concurrency | Shipment expected ID, invoice workflow revision/current-document ID and lock reject stale writes. Payment admin actions validate active entry IDs. Legacy shipping projection and invoice APIs preserve their documented compatibility limits. |
+| Security/privacy | Admin actions require capabilities and nonces; order-level mutations require `edit_shop_order`. Tracking lookup retains rate/privacy checks. Attachments require validation/readability for active download. |
 | Localization | New strings from all phases were added to POT and both Vietnamese catalogs/compiled files; deterministic localization and translation runtime gates remain required. |
 
 ## Explicitly deferred and known limits
@@ -64,8 +62,8 @@ This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b
 
 ## Validation map for the candidate
 
-The exact candidate SHA, deep CI run and any remaining gaps must be recorded on Issue #62 before Technical Review. The new CI smoke runs the existing Returns Lite and invoice tests, the combined order workflow, Store Health scan/migration, a cross-process deactivation/reactivation check, and HTTP Classic/Blocks/Store API/native order-pay/My Account paths in both legacy and HPOS storage. The combined order checks that payment, shipment, return and invoice histories coexist and do not change WooCommerce payment/order/refund state. The lifecycle check compares stored metadata before, during and after plugin deactivation and verifies reads do not rewrite it. HTTP checkout verifies province, ward, phone, VAT request, BACS status and customer BACS output. The native order-pay test uses a disposable customer and WooCommerce's own form, nonce and BACS gateway; the same customer's order view and address editor exercise tracking and province/ward output.
+For the historical VST-62 review, the exact candidate SHA, deep CI run and remaining gaps were recorded on Issue #62 before Technical Review. Its CI smoke ran the then-existing Returns Lite and invoice tests, the combined order workflow, Store Health scan/migration, a cross-process deactivation/reactivation check, and HTTP Classic/Blocks/Store API/native order-pay/My Account paths in both legacy and HPOS storage. The current combined order smoke checks that payment, shipment and invoice histories coexist, historical Returns Lite meta remains inert, and these operations do not change WooCommerce payment/order/refund state. The lifecycle check compares stored metadata before, during and after plugin deactivation and verifies reads do not rewrite it. HTTP checkout verifies province, ward, phone, VAT request, BACS status and customer BACS output. The native order-pay test uses a disposable customer and WooCommerce's own form, nonce and BACS gateway; the same customer's order view and address editor exercise tracking and province/ward output.
 
 The repository contract suites cover Classic/Blocks address and phone integration, VAT Store API fields, shipping zones, payment/QR rules, admin capability/nonce paths, tracking privacy, upload/attachment checks, public hooks and legacy methods. Exact-SHA CI separately checks governance, classification, repository contracts, PHP 7.4/8.2/8.4 syntax, localization quality, WordPress 6.3/6.7/latest translation runtime, strict Plugin Check and `VST Required Gate`.
 
-Runtime tests exercise real HTTP endpoints but do not run a JavaScript browser or every checkout/payment state on every WordPress/WooCommerce version. The merged child PRs contain additional HTTP/browser evidence for selected surfaces; this dossier distinguishes that earlier evidence from the exact candidate CI. Exact-candidate HTTP coverage does not include public tracking lookup, invoice email delivery, or live provider callbacks; their repository and runtime contract checks remain separate. There are no provider credentials in Core, so external bank, carrier, invoice and online gateway callbacks are intentionally unavailable. A Human may want to revisit the amount of text shown in the payment-link metabox, the manual workflow density on the order screen, full-settlement-only reconciliation, and migration scan cost before any future release decision.
+Runtime tests exercise real HTTP endpoints but do not run a JavaScript browser or every checkout/payment state on every WordPress/WooCommerce version. The merged child PRs contain additional HTTP/browser evidence for selected surfaces; this dossier distinguishes that earlier evidence from the exact candidate CI. Exact-candidate HTTP coverage does not include public tracking lookup, invoice email delivery, or live provider callbacks; their repository and runtime contract checks remain separate. There are no provider credentials in Core, so external bank, carrier, invoice and online gateway callbacks are intentionally unavailable. A Human may want to revisit full-settlement-only reconciliation and migration scan cost before any future release decision.
