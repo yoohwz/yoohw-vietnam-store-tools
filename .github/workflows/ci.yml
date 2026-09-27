@@ -139,8 +139,10 @@ jobs:
       - name: Payment reconciliation admin contracts
         run: php tests/payment-reconciliation-admin-contract-tests.php
 
-      - name: VietQR clipboard contracts
-        run: node tests/bacs-vietqr-copy-tests.js
+      - name: BACS/VietQR contracts
+        run: |
+          php tests/bacs-vietqr-contract-tests.php
+          node tests/bacs-vietqr-copy-tests.js
 
       - name: Store health contracts
         run: |

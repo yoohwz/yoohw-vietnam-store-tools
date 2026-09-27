@@ -420,7 +420,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		} ) );
 	}
 
-	/** Read-only account preparation shared by VietQR renderers and admin instructions. */
+	/** Read-only account preparation for VietQR renderers. */
 	private function prepare_bacs_payment_accounts( $order ) {
 		if ( ! $order instanceof WC_Order || self::GATEWAY_ID !== $order->get_payment_method() ) {
 			return [];
