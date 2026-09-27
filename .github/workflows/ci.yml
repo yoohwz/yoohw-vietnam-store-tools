@@ -136,6 +136,9 @@ jobs:
       - name: Returns Lite contracts
         run: php tests/returns-lite-contract-tests.php
 
+      - name: Electronic invoice v2 contracts
+        run: php tests/electronic-invoice-v2-contract-tests.php
+
       - name: Payment reconciliation admin contracts
         run: php tests/payment-reconciliation-admin-contract-tests.php
 
@@ -491,8 +494,10 @@ jobs:
           wp_env=(npx --yes @wordpress/env@11.13.0)
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled no
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE legacy --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE legacy --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE hpos --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE hpos --user=1
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop

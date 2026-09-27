@@ -65,7 +65,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email );
 	<p><a href="<?php echo esc_url( $invoice_data['lookup_url'] ); ?>"><?php esc_html_e( 'Look up electronic invoice', 'yoohw-vietnam-store-tools' ); ?></a></p>
 <?php endif; ?>
 
-<?php if ( ! empty( $invoice_data['pdf_attachment_id'] ) || ! empty( $invoice_data['xml_attachment_id'] ) ) : ?>
+<?php if ( ! empty( $has_invoice_attachments ) ) : ?>
 	<p><?php esc_html_e( 'Available invoice files are attached to this email.', 'yoohw-vietnam-store-tools' ); ?></p>
 <?php endif; ?>
 

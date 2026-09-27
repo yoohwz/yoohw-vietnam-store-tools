@@ -104,6 +104,7 @@ if ( ! class_exists( 'Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Emai
 				[
 					'order'              => $this->object,
 					'invoice_data'       => $this->invoice_data,
+					'has_invoice_attachments' => ! empty( $this->invoice_attachments ),
 					'email_heading'      => $this->get_heading(),
 					'additional_content' => $this->get_additional_content(),
 					'sent_to_admin'      => false,
@@ -121,6 +122,7 @@ if ( ! class_exists( 'Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Emai
 				[
 					'order'              => $this->object,
 					'invoice_data'       => $this->invoice_data,
+					'has_invoice_attachments' => ! empty( $this->invoice_attachments ),
 					'email_heading'      => $this->get_heading(),
 					'additional_content' => $this->get_additional_content(),
 					'sent_to_admin'      => false,

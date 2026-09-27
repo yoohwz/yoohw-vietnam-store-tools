@@ -52,7 +52,7 @@ if ( ! empty( $invoice_data['lookup_url'] ) ) {
 	echo esc_html__( 'Invoice lookup URL', 'yoohw-vietnam-store-tools' ) . ': ' . esc_url( $invoice_data['lookup_url'] ) . "\n";
 }
 
-if ( ! empty( $invoice_data['pdf_attachment_id'] ) || ! empty( $invoice_data['xml_attachment_id'] ) ) {
+if ( ! empty( $has_invoice_attachments ) ) {
 	echo "\n" . esc_html__( 'Available invoice files are attached to this email.', 'yoohw-vietnam-store-tools' ) . "\n";
 }
 

@@ -4,7 +4,7 @@
 	var settings = window.yoohwVietnamStoreToolsElectronicInvoice || {};
 
 	document.addEventListener( 'click', function ( event ) {
-		var button = event.target.closest( '[data-vck-einvoice-save]' );
+		var button = event.target.closest( '[data-vck-einvoice-save], [data-vck-einvoice-document]' );
 
 		if ( ! button ) {
 			return;
@@ -39,7 +39,7 @@
 			form.appendChild( input );
 		}
 
-		appendValue( 'action', settings.action || '' );
+		appendValue( 'action', button.hasAttribute( 'data-vck-einvoice-document' ) ? settings.documentAction || '' : settings.action || '' );
 		appendValue( 'order_id', button.getAttribute( 'data-order-id' ) || '' );
 		appendValue( 'yoohw_vietnam_store_tools_einvoice_nonce', button.getAttribute( 'data-nonce' ) || '' );
 
