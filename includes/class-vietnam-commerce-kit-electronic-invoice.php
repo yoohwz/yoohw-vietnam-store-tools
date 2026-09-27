@@ -205,6 +205,9 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		$context = is_array( $context ) ? $context : [];
 		$strict = ! empty( $context['v2_strict'] );
 		$conditional = array_key_exists( 'expected_revision', $context ) && array_key_exists( 'expected_current_document_id', $context );
+		if ( ! $resolved->get_id() && ! $strict && ! $conditional ) {
+			return self::update_order_data_unlocked( $resolved, $data, $context );
+		}
 		$token = self::acquire_lock( $resolved->get_id() );
 		if ( is_wp_error( $token ) ) {
 			return $token;
@@ -238,8 +241,10 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			if ( ! self::owns_lock( $fresh->get_id(), $token ) ) {
 				return self::lock_error();
 			}
-			$context['advance_revision'] = $strict || $conditional || '' !== (string) $fresh->get_meta( self::META_REVISION, true );
-			return self::update_order_data_unlocked( $fresh, $data, $context );
+			$has_v2 = '' !== (string) $fresh->get_meta( self::META_REVISION, true ) || '' !== (string) $fresh->get_meta( self::META_CURRENT_DOCUMENT_ID, true ) || (bool) $fresh->get_meta( self::META_DOCUMENTS, true );
+			$context['advance_revision'] = $strict || $conditional || $has_v2;
+			$write_order = ! $has_v2 && ! $strict && ! $conditional && $order instanceof WC_Order ? $resolved : $fresh;
+			return self::update_order_data_unlocked( $write_order, $data, $context );
 		} finally {
 			self::release_lock( $resolved->get_id(), $token );
 		}
