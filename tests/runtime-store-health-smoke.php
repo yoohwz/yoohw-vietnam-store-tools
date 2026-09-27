@@ -1,13 +1,15 @@
 <?php
 /**
  * DB-backed migration smoke for an isolated disposable WordPress installation.
- * Run once per order storage mode: VST_STORE_HEALTH_SMOKE=1 wp eval-file ... --user=1
+ * Run once per order storage mode with the VST-54-SMOKE sentinel.
  * Never run against a merchant database. Fixtures are removed in finally.
  */
-if ( '1' !== getenv( 'VST_STORE_HEALTH_SMOKE' ) || ! defined( 'WP_CLI' ) || ! WP_CLI || '127.0.0.1' !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
+if ( ! defined( 'WP_CLI' ) || ! WP_CLI || ! isset( $args[0] ) || 'VST-54-SMOKE' !== $args[0] || ! in_array( wp_parse_url( home_url(), PHP_URL_HOST ), [ 'localhost', '127.0.0.1' ], true ) ) {
 	throw new RuntimeException( 'This smoke requires an explicitly enabled disposable localhost WordPress installation.' );
 }
 require __DIR__ . '/support/assertions.php';
+$expected_hpos = isset( $args[1] ) && 'hpos' === $args[1];
+vst_assert_same( $expected_hpos, \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled(), 'Expected WooCommerce order storage mode is active' );
 $engine = new Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools();
 $call = static function ( $method, ...$args ) use ( $engine ) {
 	$reflection = new ReflectionMethod( $engine, $method );
