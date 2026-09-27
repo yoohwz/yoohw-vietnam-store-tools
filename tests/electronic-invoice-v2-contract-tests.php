@@ -1,0 +1,271 @@
+<?php
+/** Standalone VST-58 document lineage and legacy compatibility contracts. */
+define( 'ABSPATH', __DIR__ . '/' );
+require __DIR__ . '/support/assertions.php';
+$orders = [];
+$uuid_counter = 0;
+$hooks = [];
+$attachments = [];
+function __( $text ) { return $text; }
+function add_action() {}
+function add_filter() {}
+function do_action( $name, ...$args ) { global $hooks; $hooks[] = [ $name, $args ]; }
+function sanitize_key( $value ) { return strtolower( preg_replace( '/[^a-z0-9_-]/', '', (string) $value ) ); }
+function sanitize_text_field( $value ) { return trim( (string) $value ); }
+function sanitize_textarea_field( $value ) { return trim( (string) $value ); }
+function sanitize_file_name( $value ) { return basename( (string) $value ); }
+function wc_clean( $value ) { return (string) $value; }
+function absint( $value ) { return abs( (int) $value ); }
+function wp_parse_args( $args, $defaults ) { return array_merge( $defaults, $args ); }
+function get_current_user_id() { return 4; }
+function get_userdata( $id ) { return (object) [ 'display_name' => 'Operator ' . $id ]; }
+function wp_generate_uuid4() { global $uuid_counter; return sprintf( '00000000-0000-4000-8000-%012d', ++$uuid_counter ); }
+function wp_timezone() { return new DateTimeZone( 'UTC' ); }
+function is_email( $email ) { return filter_var( $email, FILTER_VALIDATE_EMAIL ); }
+function is_wp_error( $value ) { return $value instanceof WP_Error; }
+function esc_url_raw( $url, $protocols ) { $scheme = parse_url( $url, PHP_URL_SCHEME ); return '' === $url || in_array( $scheme, $protocols, true ) ? $url : ''; }
+function wp_http_validate_url( $url ) { return (bool) filter_var( $url, FILTER_VALIDATE_URL ); }
+function wp_get_attachment_url( $id ) { global $attachments; return $attachments[$id]['url'] ?? ''; }
+function get_attached_file( $id ) { global $attachments; return $attachments[$id]['path'] ?? ''; }
+function get_the_title( $id ) { global $attachments; return $attachments[$id]['title'] ?? ''; }
+function get_post_type( $id ) { global $attachments; return $attachments[$id]['type'] ?? ''; }
+function get_post_meta( $id ) { global $attachments; return $attachments[$id]['order_id'] ?? ''; }
+function get_post_mime_type( $id ) { global $attachments; return $attachments[$id]['mime'] ?? ''; }
+class WP_Error {
+	private $code;
+	private $message;
+	public function __construct( $code, $message ) { $this->code = $code; $this->message = $message; }
+	public function get_error_code() { return $this->code; }
+	public function get_error_message() { return $this->message; }
+}
+class WC_Meta_Data {
+	public $id = 0;
+	public $key;
+	public $value;
+	public function __construct( $key, $value, $id = 0 ) { $this->key = $key; $this->value = $value; $this->id = $id; }
+	public function get_changes() { return [ 'value' => $this->value ]; }
+}
+class WC_Order {
+	private $id;
+	public $meta = [];
+	public $notes = [];
+	public $pending_meta = [];
+	protected $meta_data = [];
+	public function __construct( $id ) { $this->id = $id; }
+	public function get_id() { return $this->id; }
+	public function get_meta( $key ) { return $this->meta[ $key ] ?? ''; }
+	public function get_meta_data() {
+		$result = [];
+		foreach ( $this->pending_meta as $key => $value ) { if ( null !== $value ) { $result[] = new WC_Meta_Data( $key, $value ); } }
+		return $result;
+	}
+	public function read_meta_data() { global $orders; $this->meta = $orders[ $this->id ]->meta; $this->pending_meta = []; $this->meta_data = []; }
+	public function update_meta_data( $key, $value, $meta_id = 0 ) {
+		global $wpdb, $steal_invoice_lock_on_revision;
+		$this->meta[ $key ] = $value;
+		$this->pending_meta[ $key ] = $value;
+		if ( $steal_invoice_lock_on_revision && '_yoohw_vietnam_store_tools_einvoice_revision' === $key ) {
+			$wpdb->rows[ '_yoohw_vst_einvoice_lock_' . $this->id ] = 'new-writer|' . ( time() + 20 );
+			$steal_invoice_lock_on_revision = false;
+		}
+	}
+	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); $this->pending_meta[ $key ] = null; $this->meta_data[] = new WC_Meta_Data( $key, null, 1 ); }
+	public function add_order_note( $note ) { $this->notes[] = $note; }
+	public function save() { global $orders; $this->pending_meta = []; $orders[ $this->id ] = clone $this; }
+}
+function wc_get_order( $id ) { global $orders; $id = $id instanceof WC_Order ? $id->get_id() : (int) $id; return isset( $orders[ $id ] ) ? clone $orders[ $id ] : false; }
+class Yoohw_Vietnam_Store_Tools_Admin_Menu {
+	const OPTION_ELECTRONIC_INVOICE = 'electronic_invoice';
+	public static function is_feature_enabled() { return true; }
+}
+class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
+	const META_REQUESTED = '_yoohw_vietnam_store_tools_tax_invoice_requested';
+}
+class VST_Test_WPDB {
+	public $options = 'wp_options';
+	public $rows = [];
+	public function prepare( $sql, ...$values ) {
+		foreach ( $values as $value ) { $sql = preg_replace( '/%s/', "'" . str_replace( "'", "''", $value ) . "'", $sql, 1 ); }
+		return $sql;
+	}
+	public function query( $sql ) {
+		if ( preg_match( "/INSERT IGNORE.*VALUES \\('([^']+)', '([^']+)', 'off'\\)/", $sql, $m ) ) {
+			if ( isset( $this->rows[ $m[1] ] ) ) { return 0; }
+			$this->rows[ $m[1] ] = $m[2]; return 1;
+		}
+		if ( preg_match( "/UPDATE .*SET option_value = '([^']+)' WHERE option_name = '([^']+)' AND option_value = '([^']+)'/", $sql, $m ) ) {
+			if ( ( $this->rows[ $m[2] ] ?? null ) !== $m[3] ) { return 0; }
+			$this->rows[ $m[2] ] = $m[1]; return 1;
+		}
+		if ( preg_match( "/DELETE .*WHERE option_name = '([^']+)' AND option_value = '([^']+)'/", $sql, $m ) ) {
+			if ( ( $this->rows[ $m[1] ] ?? null ) !== $m[2] ) { return 0; }
+			unset( $this->rows[ $m[1] ] ); return 1;
+		}
+		throw new Exception( $sql );
+	}
+	public function get_var( $sql ) {
+		if ( ! preg_match( "/WHERE option_name = '([^']+)'/", $sql, $m ) ) { throw new Exception( $sql ); }
+		return $this->rows[ $m[1] ] ?? null;
+	}
+}
+$wpdb = new VST_Test_WPDB();
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-electronic-invoice.php';
+$api = 'Yoohw_Vietnam_Store_Tools_Electronic_Invoice';
+$field_labels_method = new ReflectionMethod( $api, 'get_field_labels' );
+if ( PHP_VERSION_ID < 80100 ) { $field_labels_method->setAccessible( true ); }
+$field_labels = $field_labels_method->invoke( null );
+foreach ( [ 'provider_document_id' => 'Provider document ID', 'handoff_reference' => 'Handoff reference', 'provider_status_text' => 'Provider status text', 'handed_off_at' => 'Handed off at', 'confirmed_at' => 'Confirmed at' ] as $field => $label ) {
+	vst_assert_same( $label, $field_labels[ $field ] ?? null, 'Handoff history field has a localized label: ' . $field );
+}
+$unsaved = new WC_Order( 0 );
+$unsaved->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+vst_assert_same( true, $api::update_order_data( $unsaved, [ 'status' => 'replaced' ], [ 'source' => 'old_connector' ] ), 'Legacy connector may update an unsaved order object' );
+vst_assert_same( 'replaced', $unsaved->get_meta( $api::META_STATUS ), 'Unsaved legacy object receives the workflow update' );
+vst_assert_same( '', $unsaved->get_meta( $api::META_REVISION ), 'Unsaved legacy object does not opt in to v2' );
+vst_assert_true( ! isset( $wpdb->rows['_yoohw_vst_einvoice_lock_0'] ), 'Unsaved order cannot hold a persisted per-order lock' );
+$pending_order = new WC_Order( 61 );
+$orders[61] = clone $pending_order;
+$pending_order->update_meta_data( Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED, 'yes' );
+vst_assert_same( true, $api::update_order_data( $pending_order, [ 'status' => 'adjusted' ], [ 'source' => 'old_connector' ] ), 'Legacy persisted order object retains unsaved VAT request metadata' );
+vst_assert_same( 'yes', $orders[61]->get_meta( Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ), 'Legacy save persists pending request metadata' );
+vst_assert_same( 'adjusted', $api::get_order_data( 61 )['status'], 'Legacy save persists workflow status with pending request' );
+vst_assert_same( '', $orders[61]->get_meta( $api::META_REVISION ), 'Pending legacy object does not create v2 revision' );
+$lock_loss_order = new WC_Order( 62 );
+$lock_loss_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$lock_loss_order->meta[ $api::META_REVISION ] = 1;
+$orders[62] = clone $lock_loss_order;
+$steal_invoice_lock_on_revision = true;
+vst_assert_true( is_wp_error( $api::update_order_data( 62, [ 'status' => 'verified' ], [ 'source' => 'old_connector' ] ) ), 'Writer losing lock before save fails closed' );
+vst_assert_same( 'requested', $api::get_order_data( 62 )['status'], 'Lost-lock writer does not persist projection' );
+vst_assert_same( 1, $api::get_order_data( 62 )['workflow_revision'], 'Lost-lock writer does not persist revision' );
+vst_assert_same( [], $orders[62]->notes, 'Lost-lock writer creates no order note' );
+unset( $wpdb->rows['_yoohw_vst_einvoice_lock_62'] );
+$lost_document_order = new WC_Order( 63 );
+$lost_document_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$lost_document_order->meta[ $api::META_STATUS ] = 'ready';
+$lost_document_order->meta[ $api::META_REVISION ] = 1;
+foreach ( [ 'company_name' => 'Acme', 'tax_code' => '0123456789', 'company_address' => 'Ha Noi', 'email' => 'invoice@example.test' ] as $key => $value ) {
+	$lost_document_order->meta[ '_yoohw_vietnam_store_tools_tax_invoice_' . $key ] = $value;
+}
+$orders[63] = clone $lost_document_order;
+$steal_invoice_lock_on_revision = true;
+$lost_document = $api::record_order_document( 63, [ 'kind' => 'original', 'provider' => 'N', 'number' => '63', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 1 ] );
+vst_assert_true( is_wp_error( $lost_document ), 'Document write losing lock before save fails closed' );
+vst_assert_same( [], $api::get_order_documents( 63 ), 'Lost-lock document does not persist a snapshot' );
+vst_assert_same( 'ready', $api::get_order_data( 63 )['status'], 'Lost-lock document does not change current projection' );
+vst_assert_same( [], $orders[63]->notes, 'Lost-lock document creates no order note' );
+unset( $wpdb->rows['_yoohw_vst_einvoice_lock_63'] );
+$order = new WC_Order( 58 );
+$order->meta[ $api::META_STATUS ] = 'adjusted';
+$order->meta[ $api::META_NUMBER ] = 'OLD-1';
+$order->meta['_connector_to_delete'] = 'old';
+$order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$orders[58] = clone $order;
+$before = $orders[58]->meta;
+$read = $api::get_order_data( 58 );
+vst_assert_same( 0, $read['workflow_revision'], 'Legacy revision defaults to zero' );
+vst_assert_same( '', $read['current_document_id'], 'Legacy current document defaults to empty' );
+vst_assert_same( [], $api::get_order_documents( 58 ), 'Legacy read does not invent document' );
+vst_assert_same( $before, $orders[58]->meta, 'Legacy read makes no write' );
+$first_lock = '_yoohw_vst_einvoice_lock_58';
+$wpdb->rows[ $first_lock ] = 'first-v2-writer|' . ( time() + 20 );
+$blocked_legacy = $api::update_order_data( 58, [ 'status' => 'replaced', 'number' => 'RACING-1' ], [ 'source' => 'old_connector' ] );
+vst_assert_true( is_wp_error( $blocked_legacy ), 'Legacy writer cannot bypass first v2 writer lock before revision exists' );
+vst_assert_same( $before, $orders[58]->meta, 'Blocked legacy writer leaves projection and history unchanged' );
+unset( $wpdb->rows[ $first_lock ] );
+$legacy = $api::update_order_data( 58, [ 'status' => 'replaced' ], [ 'source' => 'old_connector' ] );
+vst_assert_same( true, $legacy, 'Legacy status-only replacement remains accepted' );
+vst_assert_same( '', $orders[58]->get_meta( $api::META_REVISION ), 'Legacy writer before v2 does not create a revision' );
+vst_assert_same( [], $api::get_order_documents( 58 ), 'Legacy replacement does not fabricate lineage' );
+$invalid = $api::update_order_data( 58, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 0 ] );
+vst_assert_true( is_wp_error( $invalid ), 'Strict ready requires invoice request fields' );
+foreach ( [ 'company_name' => 'Acme', 'tax_code' => '0123456789', 'company_address' => 'Ha Noi', 'email' => 'invoice@example.test' ] as $key => $value ) {
+	$orders[58]->meta[ '_yoohw_vietnam_store_tools_tax_invoice_' . $key ] = $value;
+}
+$captured = $api::record_order_document( 58, [ 'kind' => 'legacy' ], [ 'expected_revision' => 0, 'source' => 'admin' ] );
+vst_assert_same( true, $captured, 'Legacy document captured explicitly' );
+$data = $api::get_order_data( 58 );
+vst_assert_same( 1, $data['workflow_revision'], 'Capture advances revision' );
+vst_assert_same( 1, count( $api::get_order_documents( 58 ) ), 'Exactly one legacy snapshot' );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'legacy' ], [ 'expected_revision' => 1 ] ) ), 'Legacy snapshot cannot be repeated' );
+$prior = $data['current_document_id'];
+$doc = [ 'kind' => 'replacement', 'prior_document_id' => $prior, 'provider' => 'Neutral provider', 'number' => 'NEW-2', 'symbol' => 'SER-2', 'issued_at' => '2026-09-27T10:00:00Z' ];
+$result = $api::record_order_document( 58, $doc, [ 'expected_revision' => 1, 'expected_current_document_id' => $prior, 'source' => 'admin' ] );
+vst_assert_same( true, $result, 'Replacement document recorded' );
+$documents = $api::get_order_documents( 58 );
+vst_assert_same( $prior, $documents[1]['prior_document_id'], 'Replacement has exact prior link' );
+vst_assert_same( 'OLD-1', $documents[0]['number'], 'Legacy snapshot retains old number' );
+$new_data = $api::get_order_data( 58 );
+vst_assert_same( 'replaced', $new_data['status'], 'Current projection reflects replacement' );
+vst_assert_same( 2, $new_data['workflow_revision'], 'Document advances revision' );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, $doc, [ 'expected_revision' => 1, 'expected_current_document_id' => $prior ] ) ), 'Stale document write fails' );
+$order->update_meta_data( '_connector_pending', 'preserved' );
+$order->delete_meta_data( '_connector_to_delete' );
+$legacy_after = $api::update_order_data( $order, [ 'status' => 'adjusted', 'number' => 'LEGACY-EDIT' ], [ 'source' => 'old_connector' ] );
+vst_assert_same( true, $legacy_after, 'Old connector adjustment from stale object remains accepted after v2 opt-in' );
+vst_assert_same( 3, $api::get_order_data( 58 )['workflow_revision'], 'Legacy update advances v2 revision' );
+vst_assert_same( 3, $api::get_order_data( $order )['workflow_revision'], 'Caller order object reflects the completed v2 revision' );
+vst_assert_same( 'LEGACY-EDIT', $api::get_order_data( $order )['number'], 'Caller order object reflects the completed projection' );
+vst_assert_same( count( $api::get_order_history( 58 ) ), count( $api::get_order_history( $order ) ), 'Caller order object reflects current history' );
+vst_assert_same( 'preserved', $orders[58]->get_meta( '_connector_pending' ), 'Connector pending non-invoice metadata survives v2 save' );
+vst_assert_same( '', $orders[58]->get_meta( '_connector_to_delete' ), 'Connector pending non-invoice metadata deletion survives v2 save' );
+vst_assert_same( 'NEW-2', $api::get_order_documents( 58 )[1]['number'], 'Later projection edit cannot rewrite document snapshot' );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'adjustment', 'prior_document_id' => $new_data['current_document_id'] ], [ 'expected_revision' => 2, 'expected_current_document_id' => $new_data['current_document_id'] ] ) ), 'Legacy update invalidates stale v2 tab' );
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 3, 'allowed_current_statuses' => [ 'requested', 'verified', 'ready' ] ] ) ), 'Bulk ready guard rejects issued or adjusted current state' );
+$ready_order = new WC_Order( 59 );
+$ready_order->meta[ $api::META_STATUS ] = 'ready';
+$ready_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$orders[59] = clone $ready_order;
+vst_assert_true( is_wp_error( $api::update_order_data( 59, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 0, 'allowed_current_statuses' => [ 'requested', 'verified' ] ] ) ), 'Bulk ready skips an already ready order' );
+$email_order = new WC_Order( 60 );
+$email_order->meta[ $api::META_STATUS ] = 'issued';
+$email_order->meta[ $api::META_REVISION ] = 1;
+$email_order->meta[ $api::META_CURRENT_DOCUMENT_ID ] = 'document-x';
+$email_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$orders[60] = clone $email_order;
+$emailed_projection = $api::get_order_data( 60 );
+$orders[60]->meta[ $api::META_CURRENT_DOCUMENT_ID ] = 'document-y';
+vst_assert_true( is_wp_error( $api::update_order_data( 60, [ 'status' => 'sent' ], [ 'source' => 'customer_email', 'expected_revision' => 1, 'expected_current_document_id' => 'document-x', 'expected_projection' => $emailed_projection ] ) ), 'Email for an old document cannot mark a new document sent' );
+vst_assert_same( 'issued', $api::get_order_data( 60 )['status'], 'Concurrent document retains its own status' );
+$orders[60]->meta[ $api::META_CURRENT_DOCUMENT_ID ] = 'document-x';
+vst_assert_same( true, $api::update_order_data( 60, [ 'status' => 'sent' ], [ 'source' => 'customer_email', 'expected_revision' => 1, 'expected_current_document_id' => 'document-x', 'expected_projection' => $emailed_projection ] ), 'Email status update succeeds for unchanged document' );
+$fresh = $api::get_order_data( 58 );
+$adjustment = [ 'kind' => 'adjustment', 'prior_document_id' => $fresh['current_document_id'], 'provider' => 'Neutral provider', 'number' => 'ADJ-3', 'symbol' => 'SER-3', 'issued_at' => '2026-09-27T11:00:00Z' ];
+$adjusted = $api::record_order_document( 58, $adjustment, [ 'expected_revision' => 3, 'expected_current_document_id' => $fresh['current_document_id'], 'source' => 'integration' ] );
+vst_assert_same( true, $adjusted, 'Adjustment document recorded after legacy edit' );
+vst_assert_same( 'adjustment', $api::get_order_documents( 58 )[2]['kind'], 'Adjustment kind is explicit' );
+vst_assert_same( $fresh['current_document_id'], $api::get_order_documents( 58 )[2]['prior_document_id'], 'Adjustment links exact predecessor' );
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'issued_at' => '2026-02-31T10:00:00Z' ], [ 'v2_strict' => true, 'expected_revision' => 4 ] ) ), 'Invalid calendar date rejected' );
+$after = $api::get_order_data( 58 );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'replacement', 'prior_document_id' => $after['current_document_id'], 'provider' => "Bad\nprovider", 'number' => '5', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 4, 'expected_current_document_id' => $after['current_document_id'] ] ) ), 'Document identity control character rejected before sanitization' );
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'provider' => "Bad\tprovider" ], [ 'v2_strict' => true, 'expected_revision' => 4 ] ) ), 'Strict update identity control character rejected before sanitization' );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'replacement', 'prior_document_id' => 'other-order', 'provider' => 'N', 'number' => '5', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 4, 'expected_current_document_id' => $after['current_document_id'] ] ) ), 'Foreign predecessor rejected' );
+$lock_name = '_yoohw_vst_einvoice_lock_58';
+$wpdb->rows[ $lock_name ] = 'active|' . ( time() + 20 );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, $adjustment, [ 'expected_revision' => 4, 'expected_current_document_id' => $after['current_document_id'] ] ) ), 'Active lock blocks second writer' );
+$wpdb->rows[ $lock_name ] = 'expired|' . ( time() - 1 );
+$retry = $api::update_order_data( 58, [ 'handoff_reference' => 'R-1' ], [ 'source' => 'old_connector' ] );
+vst_assert_same( true, $retry, 'Expired lock is taken over via CAS' );
+vst_assert_same( 5, $api::get_order_data( 58 )['workflow_revision'], 'Handoff update advances revision' );
+$pdf_path = tempnam( sys_get_temp_dir(), 'vst58' ) . '.pdf';
+file_put_contents( $pdf_path, '%PDF-1.4 test' );
+$attachments[81] = [ 'type' => 'attachment', 'path' => $pdf_path, 'mime' => 'application/pdf', 'order_id' => 999, 'url' => 'https://example.test/test.pdf', 'title' => 'test.pdf' ];
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'pdf_attachment_id' => 81 ], [ 'v2_strict' => true, 'expected_revision' => 5 ] ) ), 'Strict v2 rejects foreign attachment' );
+$attachments[81]['order_id'] = 58;
+$attachments[81]['mime'] = 'image/jpeg';
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'pdf_attachment_id' => 81 ], [ 'v2_strict' => true, 'expected_revision' => 5 ] ) ), 'Strict v2 rejects wrong MIME' );
+$attachments[81]['mime'] = 'application/pdf';
+vst_assert_same( true, $api::update_order_data( 58, [ 'pdf_attachment_id' => 81 ], [ 'v2_strict' => true, 'expected_revision' => 5 ] ), 'Strict v2 accepts same-order readable PDF' );
+vst_assert_same( 6, $api::get_order_data( 58 )['workflow_revision'], 'Attachment write advances revision' );
+$attachments[82] = [ 'type' => 'attachment', 'path' => '/missing/invoice.pdf', 'mime' => 'application/pdf', 'order_id' => 58, 'url' => '', 'title' => 'missing.pdf' ];
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'pdf_attachment_id' => 82 ], [ 'v2_strict' => true, 'expected_revision' => 6 ] ) ), 'Strict v2 rejects missing file' );
+$attachments[82]['order_id'] = 999;
+vst_assert_same( true, $api::update_order_data( 58, [ 'pdf_attachment_id' => 82 ], [ 'source' => 'old_connector' ] ), 'Legacy attachment semantics remain permissive' );
+vst_assert_same( 7, $api::get_order_data( 58 )['workflow_revision'], 'Legacy attachment update advances revision' );
+unlink( $pdf_path );
+$before_cap = $api::get_order_documents( 58 );
+$orders[58]->meta[ $api::META_DOCUMENTS ] = array_fill( 0, 50, $before_cap[0] );
+$cap_result = $api::record_order_document( 58, [ 'kind' => 'adjustment', 'prior_document_id' => $after['current_document_id'], 'provider' => 'N', 'number' => '6', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 7, 'expected_current_document_id' => $after['current_document_id'] ] );
+vst_assert_true( is_wp_error( $cap_result ), 'Document cap fails closed' );
+vst_assert_same( 50, count( $api::get_order_documents( 58 ) ), 'Cap never evicts old documents' );
+vst_finish_contract_suite( 'VST-58 electronic invoice' );

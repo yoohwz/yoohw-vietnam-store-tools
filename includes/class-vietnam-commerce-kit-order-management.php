@@ -17,6 +17,8 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 	const ACTION_UPDATE_CARRIER        = 'vck_update_carrier';
 	const ACTION_EXPORT_SHIPPING       = 'vck_export_shipping_csv';
 	const ACTION_EXPORT_INVOICE        = 'vck_export_invoice_csv';
+	const ACTION_EXPORT_INVOICE_HANDOFF = 'vck_export_invoice_handoff_csv';
+	const ACTION_MARK_INVOICE_READY = 'vck_mark_invoice_ready';
 	const ACTION_MARK_PREPARED         = 'vck_mark_prepared';
 	const ACTION_MARK_AWAITING         = 'vck_mark_awaiting_handover';
 	const ACTION_MARK_HANDED_OVER      = 'vck_mark_handed_over';
@@ -157,6 +159,9 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 		if ( self::ACTION_EXPORT_INVOICE === $action ) {
 			$this->stream_invoice_csv( array_filter( $orders, [ $this, 'order_has_invoice_request' ] ) );
 		}
+		if ( self::ACTION_EXPORT_INVOICE_HANDOFF === $action ) {
+			$this->stream_invoice_handoff_csv( array_filter( $orders, [ $this, 'order_has_invoice_request' ] ) );
+		}
 
 		$carrier_options = $this->get_carrier_options();
 		$carrier_id      = self::ACTION_UPDATE_CARRIER === $action ? $this->get_requested_bulk_carrier() : '';
@@ -176,6 +181,14 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 
 				if ( $result ) {
 					$order->add_order_note( __( 'Tracking email resent from the orders list.', 'yoohw-vietnam-store-tools' ) );
+				}
+			} elseif ( self::ACTION_MARK_INVOICE_READY === $action ) {
+				if ( $this->order_has_invoice_request( $order ) ) {
+					$current = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::get_order_data( $order );
+					if ( in_array( $current['status'], [ 'requested', 'verified' ], true ) ) {
+						$result = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::update_order_data( $order, [ 'status' => 'ready' ], [ 'source' => 'admin', 'actor_id' => get_current_user_id(), 'v2_strict' => true, 'expected_revision' => $current['workflow_revision'], 'allowed_current_statuses' => [ 'requested', 'verified' ] ] );
+						$result = ! is_wp_error( $result );
+					}
 				}
 			} elseif ( self::ACTION_UPDATE_CARRIER === $action ) {
 				$result = $this->update_order_carrier( $order, $carrier_id, $carrier_options[ $carrier_id ] );
@@ -640,6 +653,10 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 
 		if ( $this->is_invoice_feature_enabled() ) {
 			$labels[ self::ACTION_EXPORT_INVOICE ] = __( 'Export VAT invoice CSV', 'yoohw-vietnam-store-tools' );
+			$labels[ self::ACTION_EXPORT_INVOICE_HANDOFF ] = __( 'Export invoice handoff CSV', 'yoohw-vietnam-store-tools' );
+			if ( Yoohw_Vietnam_Store_Tools_Electronic_Invoice::is_workflow_enabled() ) {
+				$labels[ self::ACTION_MARK_INVOICE_READY ] = __( 'Mark invoice ready', 'yoohw-vietnam-store-tools' );
+			}
 		}
 
 		$labels[ self::ACTION_MARK_PREPARED ]    = __( 'Mark as prepared', 'yoohw-vietnam-store-tools' );
@@ -845,6 +862,36 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 		}
 
 		$this->stream_csv( 'vietnam-vat-invoice-orders-' . gmdate( 'Y-m-d' ) . '.csv', $headers, $rows );
+	}
+
+	private function stream_invoice_handoff_csv( $orders ) {
+		$headers = [ 'order_id', 'order_number', 'workflow_revision', 'request_company_name', 'request_tax_code', 'request_company_address', 'request_email', 'status', 'provider', 'number', 'symbol', 'issued_at', 'lookup_url', 'current_document_id', 'provider_document_id', 'handoff_reference', 'provider_status_text', 'handed_off_at', 'confirmed_at' ];
+		$rows = [];
+		foreach ( $orders as $order ) {
+			$data = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::get_order_data( $order );
+			$rows[] = [
+				$order->get_id(),
+				$order->get_order_number(),
+				$data['workflow_revision'],
+				$this->get_invoice_meta( $order, Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_COMPANY_NAME ),
+				$this->get_invoice_meta( $order, Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_TAX_CODE ),
+				$this->get_invoice_meta( $order, Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_COMPANY_ADDRESS ),
+				$this->get_invoice_meta( $order, Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_EMAIL ),
+				$data['status'],
+				$data['provider'],
+				$data['number'],
+				$data['symbol'],
+				$data['issued_at'],
+				$data['lookup_url'],
+				$data['current_document_id'],
+				$data['provider_document_id'],
+				$data['handoff_reference'],
+				$data['provider_status_text'],
+				$data['handed_off_at'],
+				$data['confirmed_at'],
+			];
+		}
+		$this->stream_csv( 'vietnam-invoice-handoff-' . gmdate( 'Y-m-d' ) . '.csv', $headers, $rows );
 	}
 
 	private function stream_csv( $filename, $headers, $rows ) {
