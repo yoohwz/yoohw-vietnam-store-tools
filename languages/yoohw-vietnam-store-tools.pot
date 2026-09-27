@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T03:39:35+00:00\n"
+"POT-Creation-Date: 2026-09-27T04:14:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -1728,6 +1728,271 @@ msgstr ""
 msgid "Please enter a valid Vietnamese phone number."
 msgstr ""
 
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:31
+msgid "Fulfillment exceptions"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:34
+msgid "Current shipment"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:36
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+msgid "Closed"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:36
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+msgid "Open"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:42
+msgid "Shipment"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:44
+msgid "Predecessor / replacement"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:46
+msgid "Source / actor"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:60
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:65
+msgid "Record exception"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:64
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:115
+msgid "Operator note (optional)"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:80
+msgid "Returns Lite"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:104
+msgid "No returns recorded for this order."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:109
+msgid "Create manual return"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:110
+msgid "Choose product items and whole-unit quantities. This does not create a refund or restock products."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:114
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:189
+msgid "Reason"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:116
+msgid "Create return"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+msgid "Goods received"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+msgid "Return voided"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:130
+msgid "Order item changed or missing"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:138
+msgid "Original shipment"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:140
+msgid "historical reference"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:145
+msgid "Return-to-sender exception"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:151
+msgid "missing reference"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:156
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:191
+msgid "Reverse shipment reference"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:165
+msgid "Linked refund"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:166
+msgid "missing refund"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:170
+msgid "Unlink refund"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:182
+msgid "Link existing refund"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:190
+msgid "Operator note"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:192
+msgid "Return-to-sender exception ID (optional)"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:193
+msgid "Save return correction"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:200
+msgid "Transition note (optional)"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:201
+msgid "Void this return"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:205
+msgid "Audit history"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:208
+msgid "Actor"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:227
+msgid "ordered"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:246
+msgid "Invalid manual exception type."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:271
+msgid "Unknown return action."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:282
+msgid "Security check failed or order access denied."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:300
+msgid "Order operation saved."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:305
+msgid "Failed handoff"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:306
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php:263
+msgid "Delivery failed"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:307
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php:264
+msgid "Returned to sender"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:308
+msgid "Shipment cancelled"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:309
+msgid "Shipment replaced"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:52
+msgid "You cannot edit returns for this order."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:62
+msgid "Order could not be reloaded."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:69
+msgid "Return history format is unsupported. No changes were saved."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:98
+msgid "Return edit lock expired. Reload and retry."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:129
+#: includes/class-vietnam-commerce-kit-returns-lite.php:178
+msgid "Enter a return reason."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:158
+msgid "This return state change is not allowed."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:166
+msgid "Items cannot be changed after this return leaves open state."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:188
+msgid "Return-to-sender exception does not belong to this shipment."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:192
+msgid "No return changes were submitted."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:197
+msgid "Choose a WooCommerce refund."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:202
+msgid "Refund is already linked to this return."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:211
+msgid "Refund does not belong to this order."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:215
+msgid "Refund is not linked to this return."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:222
+msgid "Unknown return operation."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:227
+msgid "Choose at least one product item."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:243
+msgid "Return items or quantities are invalid."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:248
+msgid "Return quantity exceeds the current order item quantity."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:285
+msgid "Return edit lock could not be created. Retry later."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:300
+msgid "Another operator is editing returns for this order. Reload and retry."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite.php:321
+msgid "This return changed since the page loaded. Reload and retry."
+msgstr ""
+
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:44
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:56
 msgid "Vietnam shipment tracking"
@@ -1780,14 +2045,6 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:262
 msgid "Delivered"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-shipment-tracking.php:263
-msgid "Delivery failed"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-shipment-tracking.php:264
-msgid "Returned to sender"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:318

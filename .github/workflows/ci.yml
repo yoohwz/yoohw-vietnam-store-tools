@@ -133,6 +133,9 @@ jobs:
       - name: Payment and shipment domain contracts
         run: php tests/domain-contract-tests.php
 
+      - name: Returns Lite contracts
+        run: php tests/returns-lite-contract-tests.php
+
       - name: Payment reconciliation admin contracts
         run: php tests/payment-reconciliation-admin-contract-tests.php
 
@@ -445,6 +448,55 @@ jobs:
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
 
+  returns-runtime:
+    name: WooCommerce returns runtime
+    needs:
+      - changes
+      - repository-contracts
+    if: ${{ needs.changes.outputs.run_php == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - name: Set up Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - name: Start disposable WordPress and WooCommerce
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > .wp-env.json <<'JSON'
+          {
+            "mappings": {
+              "wp-content/plugins/yoohw-vietnam-store-tools": "."
+            },
+            "config": {
+              "WP_DEBUG": true,
+              "WP_DEBUG_LOG": true
+            }
+          }
+          JSON
+          npx --yes @wordpress/env@11.13.0 start --update
+          wp_env=(npx --yes @wordpress/env@11.13.0)
+          "${wp_env[@]}" run cli wp plugin install woocommerce --version=11.1.2 --activate
+          "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools
+      - name: Verify legacy and HPOS order storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          wp_env=(npx --yes @wordpress/env@11.13.0)
+          "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled no
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE legacy --user=1
+          "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE hpos --user=1
+      - name: Stop wp-env
+        if: ${{ always() }}
+        run: npx --yes @wordpress/env@11.13.0 stop
+
   plugin-check:
     name: WordPress Plugin Check
     needs:
@@ -516,6 +568,7 @@ jobs:
       - localization-runtime-63
       - localization-runtime-67
       - localization-runtime-latest
+      - returns-runtime
       - plugin-check
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -538,6 +591,7 @@ jobs:
           LOCALIZATION_RUNTIME_63_RESULT: ${{ needs.localization-runtime-63.result }}
           LOCALIZATION_RUNTIME_67_RESULT: ${{ needs.localization-runtime-67.result }}
           LOCALIZATION_RUNTIME_LATEST_RESULT: ${{ needs.localization-runtime-latest.result }}
+          RETURNS_RUNTIME_RESULT: ${{ needs.returns-runtime.result }}
           PLUGIN_CHECK_EXPECTED: ${{ needs.changes.outputs.run_plugin_check }}
           PLUGIN_CHECK_RESULT: ${{ needs.plugin-check.result }}
         run: |
@@ -569,6 +623,7 @@ jobs:
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_63_RESULT" "WordPress 6.3 translation runtime"
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_67_RESULT" "WordPress 6.7 translation runtime"
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_LATEST_RESULT" "WordPress latest translation runtime"
+          require_success "$PHP_EXPECTED" "$RETURNS_RUNTIME_RESULT" "WooCommerce returns runtime"
           require_success "$PLUGIN_CHECK_EXPECTED" "$PLUGIN_CHECK_RESULT" "WordPress Plugin Check"
           {
             echo "### VST CI gate"
@@ -579,5 +634,6 @@ jobs:
             echo "- PHP 7.4 / 8.2 / 8.4: $PHP_74_RESULT / $PHP_82_RESULT / $PHP_84_RESULT"
             echo "- Localization quality: $LOCALIZATION_QUALITY_RESULT"
             echo "- Localization runtime 6.3 / 6.7 / latest: $LOCALIZATION_RUNTIME_63_RESULT / $LOCALIZATION_RUNTIME_67_RESULT / $LOCALIZATION_RUNTIME_LATEST_RESULT"
+            echo "- WooCommerce returns runtime: $RETURNS_RUNTIME_RESULT"
             echo "- WordPress Plugin Check: $PLUGIN_CHECK_RESULT"
           } >> "$GITHUB_STEP_SUMMARY"

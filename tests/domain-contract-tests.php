@@ -238,4 +238,24 @@ $tracking::delete_timeline_event( 82, $factory_events[1]['id'] );
 vst_assert_same( 'in_transit', $test_persisted[82][ $shipping::META_STATUS_ID ], 'Deleting latest bound event restores current shipment status' );
 $test_factory_clones = false;
 
+$manual_exceptions_order = new WC_Order( 83 );
+$shipping::update_order_shipping_data( $manual_exceptions_order, 'carrier', [ 'tracking_code' => 'MANUAL-EXCEPTION', 'status_id' => 'in_transit' ] );
+$manual_expected = $exceptions::get_current_shipment( $manual_exceptions_order )['id'];
+$manual_status = $manual_exceptions_order->get_meta( $shipping::META_STATUS_ID );
+$manual_timeline = $manual_exceptions_order->get_meta( $tracking::META_TIMELINE );
+foreach ( [ 'failed_handoff', 'delivery_failed', 'returned_to_sender' ] as $manual_type ) {
+	$recorded = $exceptions::record_exception( $manual_exceptions_order, [ 'type' => $manual_type, 'expected_shipment_id' => $exceptions::get_current_shipment( $manual_exceptions_order )['id'] ], [ 'note' => 'Operator evidence' ] );
+	vst_assert_true( ! is_wp_error( $recorded ), 'Manual exception type can be recorded' );
+	vst_assert_same( $manual_type, $recorded['type'], 'Manual exception type is retained' );
+	vst_assert_same( 'manual', $recorded['source_id'], 'Manual source is server-derived' );
+	vst_assert_same( 7, $recorded['actor_id'], 'Manual actor is server-derived' );
+	vst_assert_same( 'Operator evidence', $recorded['note'], 'Operator note is retained' );
+}
+vst_assert_same( $manual_status, $manual_exceptions_order->get_meta( $shipping::META_STATUS_ID ), 'Manual exceptions do not invent carrier state' );
+vst_assert_same( $manual_timeline, $manual_exceptions_order->get_meta( $tracking::META_TIMELINE ), 'Manual exceptions do not add customer timeline events' );
+vst_assert_true( is_wp_error( $exceptions::record_exception( $manual_exceptions_order, [ 'type' => 'delivery_failed', 'expected_shipment_id' => $manual_expected ] ) ), 'Stale virtual shipment ID is rejected after identity materialization' );
+$test_actor_allowed = false;
+vst_assert_true( is_wp_error( $exceptions::record_exception( $manual_exceptions_order, [ 'type' => 'delivery_failed', 'expected_shipment_id' => $exceptions::get_current_shipment( $manual_exceptions_order )['id'] ] ) ), 'Manual exception requires order capability' );
+$test_actor_allowed = true;
+
 vst_finish_contract_suite( 'VST-50 domain' );
