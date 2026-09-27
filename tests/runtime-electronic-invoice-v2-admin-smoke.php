@@ -55,6 +55,7 @@ $_POST = [
 if ( 'save' === $mode ) {
 	$_POST['vck_einvoice_status'] = 'ready';
 	$_POST['yoohw_vietnam_store_tools_einvoice_nonce'] = wp_create_nonce( $domain::ACTION_SAVE . '_' . $order_id );
+	$_REQUEST = $_POST;
 	( new $domain() )->handle_save_action();
 } else {
 	$_POST['vck_einvoice_document_kind'] = 'original';
@@ -63,6 +64,7 @@ if ( 'save' === $mode ) {
 	$_POST['vck_einvoice_symbol'] = 'SER-58';
 	$_POST['vck_einvoice_issued_at'] = '2026-09-27T10:00';
 	$_POST['yoohw_vietnam_store_tools_einvoice_nonce'] = wp_create_nonce( $domain::ACTION_RECORD_DOCUMENT . '_' . $order_id );
+	$_REQUEST = $_POST;
 	( new $domain() )->handle_record_document_action();
 }
 throw new RuntimeException( 'Admin action did not redirect and exit.' );

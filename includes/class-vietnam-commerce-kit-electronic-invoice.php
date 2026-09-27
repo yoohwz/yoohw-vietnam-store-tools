@@ -204,9 +204,10 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		}
 		$context = is_array( $context ) ? $context : [];
 		$strict = ! empty( $context['v2_strict'] );
+		$conditional = array_key_exists( 'expected_revision', $context ) && array_key_exists( 'expected_current_document_id', $context );
 		$persisted = wc_get_order( $resolved->get_id() );
 		$has_v2 = $persisted instanceof WC_Order && '' !== (string) $persisted->get_meta( self::META_REVISION, true );
-		if ( ! $strict && ! $has_v2 ) {
+		if ( ! $strict && ! $has_v2 && ! $conditional ) {
 			return self::update_order_data_unlocked( $resolved, $data, $context );
 		}
 		$token = self::acquire_lock( $resolved->get_id() );
@@ -218,12 +219,17 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			if ( ! $fresh instanceof WC_Order ) {
 				return new WP_Error( 'yoohw_vietnam_store_tools_einvoice_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
 			}
-			if ( $strict ) {
-				if ( isset( $context['allowed_current_statuses'] ) && ( ! is_array( $context['allowed_current_statuses'] ) || ! in_array( self::get_order_data( $fresh )['status'], $context['allowed_current_statuses'], true ) ) ) {
-					return self::stale_error();
-				}
+			if ( $strict || $conditional ) {
 				$expected = isset( $context['expected_revision'] ) ? $context['expected_revision'] : null;
 				if ( null === $expected || ! ctype_digit( (string) $expected ) || (int) $expected !== absint( $fresh->get_meta( self::META_REVISION, true ) ) ) {
+					return self::stale_error();
+				}
+				if ( $conditional && ( (string) $context['expected_current_document_id'] !== (string) $fresh->get_meta( self::META_CURRENT_DOCUMENT_ID, true ) || ( isset( $context['expected_projection'] ) && self::get_order_data( $fresh ) !== $context['expected_projection'] ) ) ) {
+					return self::stale_error();
+				}
+			}
+			if ( $strict ) {
+				if ( isset( $context['allowed_current_statuses'] ) && ( ! is_array( $context['allowed_current_statuses'] ) || ! in_array( self::get_order_data( $fresh )['status'], $context['allowed_current_statuses'], true ) ) ) {
 					return self::stale_error();
 				}
 				if ( isset( $data['status'] ) && in_array( sanitize_key( $data['status'] ), [ 'adjusted', 'replaced' ], true ) && sanitize_key( $data['status'] ) !== self::get_order_data( $fresh )['status'] ) {
@@ -724,21 +730,24 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'The customer billing email is missing.', 'yoohw-vietnam-store-tools' ) ] );
 		}
 
+		$current_data = self::get_order_data( $order );
 		if ( ! self::send_customer_invoice_email( $order ) ) {
 			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'The electronic invoice email could not be sent.', 'yoohw-vietnam-store-tools' ) ] );
 		}
 
-		$current_data = self::get_order_data( $order );
-
-		if ( 'sent' !== $current_data['status'] ) {
-			self::update_order_data(
-				$order,
-				[ 'status' => 'sent' ],
-				[
-					'source' => 'customer_email',
-					'note'   => __( 'Electronic invoice emailed to the customer.', 'yoohw-vietnam-store-tools' ),
-				]
-			);
+		$result = self::update_order_data(
+			$order,
+			'sent' === $current_data['status'] ? [] : [ 'status' => 'sent' ],
+			[
+				'source' => 'customer_email',
+				'note' => 'sent' === $current_data['status'] ? '' : __( 'Electronic invoice emailed to the customer.', 'yoohw-vietnam-store-tools' ),
+				'expected_revision' => $current_data['workflow_revision'],
+				'expected_current_document_id' => $current_data['current_document_id'],
+				'expected_projection' => $current_data,
+			]
+		);
+		if ( is_wp_error( $result ) ) {
+			$this->redirect_to_order( $order, [ 'vck_einvoice_error' => __( 'The email was sent, but the invoice changed before its status could be updated. Reload the order before sending again.', 'yoohw-vietnam-store-tools' ) ] );
 		}
 
 		$this->redirect_to_order( $order, [ 'vck_einvoice_notice' => 'email_sent' ] );
