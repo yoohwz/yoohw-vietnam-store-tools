@@ -12,17 +12,17 @@ async function runCase( className, clipboardResult ) {
 	let legacyCalls = 0;
 	let prompted = false;
 	const attributes = {
-		'data-vck-copy': 'Order: 60\nPayment link: https://example.test/?key=current',
-		'data-vck-copy-label': 'Copy payment instructions',
+		'data-vck-copy': '123456789',
+		'data-vck-copy-label': 'Copy account number',
 		'data-vck-copied-label': 'Copied',
-		'aria-label': 'Copy payment instructions',
+		'aria-label': 'Copy account number',
 	};
 	const button = {
 		classList: { contains: name => name === className, add() {}, remove() {} },
 		getAttribute: key => Object.prototype.hasOwnProperty.call( attributes, key ) ? attributes[key] : null,
 		setAttribute: ( key, value ) => { attributes[key] = value; },
 		removeAttribute: key => { delete attributes[key]; },
-		textContent: 'Copy payment instructions',
+		textContent: 'Copy account number',
 	};
 	const textarea = { setAttribute() {}, style: {}, select() {} };
 	const context = {
@@ -37,22 +37,25 @@ async function runCase( className, clipboardResult ) {
 		},
 	};
 	vm.runInNewContext( source, context );
-	handler( { target: { closest: () => button }, preventDefault() {} } );
+	handler( { target: { closest: selector => { assert.equal( selector, '.vck-vietqr-copy' ); return 'vck-vietqr-copy' === className ? button : null; } }, preventDefault() {} } );
 	await new Promise( resolve => setImmediate( resolve ) );
 	return { button, copied, legacyCalls, prompted, attributes };
 }
 
 ( async function() {
 	let copied = '';
-	let result = await runCase( 'vck-payment-copy', text => { copied = text; return Promise.resolve(); } );
-	assert.match( copied, /key=current/ );
+	let result = await runCase( 'vck-vietqr-copy', text => { copied = text; return Promise.resolve(); } );
+	assert.equal( copied, '123456789' );
 	assert.equal( result.legacyCalls, 0 );
-	assert.equal( result.button.textContent, 'Copied' );
+	assert.equal( result.attributes['aria-label'], 'Copied' );
 	assert.equal( result.prompted, false );
 
 	result = await runCase( 'vck-vietqr-copy', () => Promise.reject( new Error( 'clipboard denied' ) ) );
-	assert.match( result.copied, /key=current/ );
+	assert.equal( result.copied, '123456789' );
 	assert.equal( result.legacyCalls, 1 );
 	assert.equal( result.prompted, false );
-	console.log( 'PASS: payment-link and existing VietQR clipboard fallback.' );
+	result = await runCase( 'vck-payment-copy', () => Promise.reject( new Error( 'removed control' ) ) );
+	assert.equal( result.legacyCalls, 0 );
+	assert.equal( result.prompted, false );
+	console.log( 'PASS: VietQR clipboard and fallback; removed payment controls ignored.' );
 }() ).catch( error => { console.error( error ); process.exitCode = 1; } );
