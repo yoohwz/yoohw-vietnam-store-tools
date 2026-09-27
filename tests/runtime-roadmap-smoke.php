@@ -24,6 +24,7 @@ try {
 	$product->save();
 	$order = wc_create_order();
 	$order->add_product( $product, 3 );
+	$order->calculate_totals();
 	$order->set_currency( 'VND' );
 	$order->set_payment_method( 'bacs' );
 	$order->set_billing_email( 'fixture@example.test' );
@@ -38,6 +39,7 @@ try {
 	$item_id = (int) array_key_first( $order->get_items( 'line_item' ) );
 	$before_status = $order->get_status();
 	$before_total = $order->get_total();
+	vst_assert_true( (float) $before_total > 0, 'Fixture has a positive payable total' );
 	$before_paid = $order->get_date_paid();
 	$before_transaction = $order->get_transaction_id();
 	$before_refunds = count( $order->get_refunds() );
@@ -57,6 +59,9 @@ try {
 
 	$reconciliation = 'Yoohw_Vietnam_Store_Tools_Payment_Reconciliation';
 	$observation = $reconciliation::record_manual_observation( $order, [ 'amount' => $before_total, 'currency' => 'VND', 'observed_at' => gmdate( 'c' ), 'reference' => 'VST62-REF' ] );
+	if ( is_wp_error( $observation ) ) {
+		throw new RuntimeException( 'Manual observation fixture failed: ' . $observation->get_error_code() );
+	}
 	vst_assert_true( ! is_wp_error( $observation ), 'Manual observation persists' );
 	$match = $reconciliation::match_manual_observation( $order, $observation['id'] );
 	vst_assert_true( ! is_wp_error( $match ), 'Full-order manual match persists' );
