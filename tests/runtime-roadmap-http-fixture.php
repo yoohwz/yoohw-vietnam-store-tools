@@ -32,7 +32,8 @@ if ( 'prepare' === $phase ) {
 	$product->set_virtual( true );
 	$product->save();
 	$classic = wp_insert_post( [ 'post_title' => 'VST-62 Classic Checkout', 'post_name' => 'vst62-classic-checkout', 'post_type' => 'page', 'post_status' => 'publish', 'post_content' => '[woocommerce_checkout]' ] );
-	$blocks = wp_insert_post( [ 'post_title' => 'VST-62 Blocks Checkout', 'post_name' => 'vst62-blocks-checkout', 'post_type' => 'page', 'post_status' => 'publish', 'post_content' => '<!-- wp:woocommerce/checkout /-->' ] );
+	$block_content = ( new ReflectionMethod( WC_Install::class, 'get_checkout_block_content' ) )->invoke( null );
+	$blocks = wp_insert_post( [ 'post_title' => 'VST-62 Blocks Checkout', 'post_name' => 'vst62-blocks-checkout', 'post_type' => 'page', 'post_status' => 'publish', 'post_content' => $block_content ] );
 	update_option( 'woocommerce_checkout_page_id', $classic );
 	$wards = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_wards_for_province( '01' );
 	$fixture = [ 'old' => $old, 'product_id' => $product->get_id(), 'classic_page_id' => $classic, 'blocks_page_id' => $blocks, 'classic_url' => get_permalink( $classic ), 'blocks_url' => get_permalink( $blocks ), 'ward' => (string) array_key_first( $wards ) ];
