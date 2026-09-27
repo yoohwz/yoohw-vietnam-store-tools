@@ -7,6 +7,7 @@ return [
 	'plural-forms' => 'nplurals=1; plural=0;',
 	'messages'     => [
 		'Add rule'                                                 => 'LANGPACK_SENTINEL',
+		'Payment'                                                  => 'Payment',
 		'Settings'                                                 => 'Settings',
 		'Tax status' . "\4" . 'None'                                => 'CONTEXT_SENTINEL',
 		"%d service enabled\0%d services enabled"                  => '%d services enabled',

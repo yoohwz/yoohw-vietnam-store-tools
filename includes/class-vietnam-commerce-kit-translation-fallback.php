@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 	private const DOMAIN = 'yoohw-vietnam-store-tools';
 	private static $catalogs = [];
-	private static $pack_keys = [];
+	private static $active_keys = [];
 
 	public static function register() {
 		add_filter( 'gettext_' . self::DOMAIN, [ __CLASS__, 'singular' ], 10, 3 );
@@ -33,30 +33,34 @@ final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 		return in_array( $locale, [ 'vi', 'vi_VN' ], true ) ? $locale : null;
 	}
 
-	private static function pack_has( $locale, $key, $plural = null ) {
-		if ( ! array_key_exists( $locale, self::$pack_keys ) ) {
-			global $wp_version;
+	private static function active_has( $locale, $key, $plural = null ) {
+		global $l10n;
 
-			$base = WP_LANG_DIR . '/plugins/' . self::DOMAIN . '-' . $locale;
-			$keys = [];
-			$php_catalog = version_compare( (string) $wp_version, '6.5', '>=' )
-				&& is_readable( $base . '.l10n.php' );
-			if ( $php_catalog ) {
-				$data = include $base . '.l10n.php';
-				if ( is_array( $data ) && isset( $data['messages'] ) && is_array( $data['messages'] ) ) {
-					$keys = $data['messages'];
-				}
-			} elseif ( is_readable( $base . '.mo' ) ) {
-				$mo = new MO();
-				if ( $mo->import_from_file( $base . '.mo' ) ) {
-					$keys = $mo->entries;
-				}
-			}
-			self::$pack_keys[ $locale ] = $keys;
+		$translations = isset( $l10n[ self::DOMAIN ] ) ? $l10n[ self::DOMAIN ] : null;
+		if ( ! is_object( $translations ) ) {
+			return false;
 		}
 
-		return array_key_exists( $key, self::$pack_keys[ $locale ] )
-			|| ( null !== $plural && array_key_exists( $key . "\0" . $plural, self::$pack_keys[ $locale ] ) );
+		$identity = spl_object_hash( $translations );
+		if ( ! isset( self::$active_keys[ $locale ] ) || self::$active_keys[ $locale ]['identity'] !== $identity ) {
+			$keys = [];
+			if ( $translations instanceof MO ) {
+				$keys = $translations->entries;
+			} elseif ( class_exists( 'WP_Translations', false ) && $translations instanceof WP_Translations ) {
+				$controller = WP_Translation_Controller::get_instance();
+				if ( is_callable( [ $controller, 'get_entries' ] ) ) {
+					$keys = $controller->get_entries( self::DOMAIN );
+				}
+			}
+			self::$active_keys[ $locale ] = [
+				'identity' => $identity,
+				'keys'     => $keys,
+			];
+		}
+
+		$keys = self::$active_keys[ $locale ]['keys'];
+		return array_key_exists( $key, $keys )
+			|| ( null !== $plural && array_key_exists( $key . "\0" . $plural, $keys ) );
 	}
 
 	private static function fallback( $translation, $source, $context = '', $plural = null, $number = null ) {
@@ -68,7 +72,7 @@ final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 		$original = null === $plural || 1 === (int) $number ? $source : $plural;
 		$key      = '' === $context ? $source : $context . "\4" . $source;
 		$catalog  = self::catalog( $locale );
-		if ( $translation !== $original || null === $catalog || self::pack_has( $locale, $key, $plural ) || ! isset( $catalog->entries[ $key ] ) ) {
+		if ( $translation !== $original || null === $catalog || self::active_has( $locale, $key, $plural ) || ! isset( $catalog->entries[ $key ] ) ) {
 			return $translation;
 		}
 

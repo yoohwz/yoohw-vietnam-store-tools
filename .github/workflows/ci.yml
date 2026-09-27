@@ -400,6 +400,9 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
           "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-language-pack-partial.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL php-pack
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-force-mo.php", WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL mo-pack
+          "${wp_env[@]}" run cli wp eval 'unlink( WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
           "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
@@ -460,6 +463,9 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
           "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-language-pack-partial.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL php-pack
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-force-mo.php", WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL mo-pack
+          "${wp_env[@]}" run cli wp eval 'unlink( WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
           "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env

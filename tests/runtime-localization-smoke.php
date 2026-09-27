@@ -30,7 +30,7 @@ if ( $actual !== $expected ) {
 }
 
 $expected_fallbacks = [
-	'Payment'      => 'Thanh toán',
+	'Payment'      => isset( $args[1] ) && 'php-pack' === $args[1] ? 'Payment' : 'Thanh toán',
 	'Unreconciled' => 'Chưa đối soát',
 	'Dashboard'    => 'Bảng điều khiển',
 	'Store health' => 'Sức khỏe cửa hàng',
