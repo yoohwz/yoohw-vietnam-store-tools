@@ -142,6 +142,11 @@ jobs:
       - name: Payment reconciliation admin contracts
         run: php tests/payment-reconciliation-admin-contract-tests.php
 
+      - name: Native payment link contracts
+        run: |
+          php tests/payment-link-contract-tests.php
+          node tests/payment-link-copy-tests.js
+
       - name: Store health contracts
         run: |
           php tests/store-health-contract-tests.php
