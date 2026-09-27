@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T12:11:54+00:00\n"
+"POT-Creation-Date: 2026-09-27T13:11:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -1621,7 +1621,7 @@ msgid "Could not create the CSV export."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:30
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:342
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:409
 msgid "Externally verified"
 msgstr ""
 
@@ -1641,178 +1641,182 @@ msgstr ""
 msgid "Payment reconciliation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:75
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:120
 msgid "Source ID"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:76
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:135
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:121
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:202
 msgid "Transfer reference"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:77
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:136
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:122
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:203
 msgid "Amount and currency"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:78
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:115
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:123
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:182
 msgid "Observed time"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:79
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:124
 msgid "Recorded time"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:80
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:125
 msgid "Recorded by"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:84
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:129
+msgid "Update payment reconciliation"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:132
 msgid "Select an observation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:90
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:138
 msgid "Selected"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:98
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:165
 msgid "Externally verified evidence is read only here."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:101
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:168
 msgid "Reconciliation history"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:117
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:184
 msgid "Supersedes:"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:133
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:200
 msgid "Selected observation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:134
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:201
 msgid "Record ID"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:138
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
 msgid "Correct observation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:138
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
 msgid "Record transfer observation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:140
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:207
 msgid "A correction appends a new record and keeps the previous record in history."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:143
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:210
 msgid "Observed amount"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:144
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:211
 msgid "Order currency"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:145
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:212
 msgid "Transfer reference (optional)"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:146
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:213
 msgid "Observed time (store time)"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:147
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:214
 msgid "Note (optional)"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:148
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:215
 msgid "Save correction"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:148
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:215
 msgid "Record observation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:150
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:217
 msgid "Confirm that you compared this transfer with the order. This records a manual reconciliation and does not confirm the bank transaction automatically."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:152
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:219
 msgid "Mark manually reconciled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:155
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:222
 msgid "Reverse this manual match. The status will be recalculated from the remaining history."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:157
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:224
 msgid "Reverse manual reconciliation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:176
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:243
 msgid "You cannot edit this order."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:180
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:247
 msgid "Invalid payment reconciliation request."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:230
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:297
 msgid "Payment reconciliation record saved."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:231
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:298
 msgid "Enter a valid observed date and time."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:232
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:299
 msgid "The reconciliation history changed. Review the current record and try again."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:233
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:300
 msgid "Manual reconciliation is unavailable for this payment method or externally verified order."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:234
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:301
 msgid "Enter a valid positive amount with the correct currency precision."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:235
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:302
 msgid "The observed amount and currency must exactly match the order before manual reconciliation."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:236
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:303
 msgid "The observation has changed. Review the current history and try again."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:238
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:305
 msgid "Payment reconciliation was not saved. Review the current order and try again."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:340
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:407
 msgid "Manual"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:342
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:409
 msgid "No evidence"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:347
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:414
 msgid "Observation"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:348
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:415
 msgid "Manual match"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:349
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:416
 msgid "External verification"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:350
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:417
 msgid "Reversal"
 msgstr ""
 

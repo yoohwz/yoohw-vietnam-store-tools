@@ -11,6 +11,17 @@ function wp_date( $format, $timestamp = null ) { return gmdate( $format, null ==
 function get_option( $key ) { return 'date_format' === $key ? 'Y-m-d' : 'H:i'; }
 function get_userdata( $id ) { return (object) [ 'display_name' => 'Operator ' . $id ]; }
 function wp_unslash( $value ) { return $value; }
+function is_admin() { return true; }
+function get_current_screen() { global $test_screen_id; return (object) [ 'id' => $test_screen_id ]; }
+function wc_get_page_screen_id() { return 'woocommerce_page_wc-orders'; }
+function add_meta_box( $id, $title, $callback, $screen, $context, $priority ) {
+	global $test_metaboxes;
+	$test_metaboxes[] = [ $id, $screen, $context, $priority ];
+}
+function add_filter( $hook, $callback ) {
+	global $test_admin_filters;
+	$test_admin_filters[ $hook ] = $callback;
+}
 
 class VST_Admin_Order extends WC_Order {
 	public $payment_method = 'bacs';
@@ -23,13 +34,54 @@ $admin = ( new ReflectionClass( 'Yoohw_Vietnam_Store_Tools_Payment_Reconciliatio
 $domain = 'Yoohw_Vietnam_Store_Tools_Payment_Reconciliation';
 $panel = 'Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin';
 $order = new VST_Admin_Order( 90 );
+$test_orders[90] = $order;
+$test_metaboxes = [];
+$test_admin_filters = [];
+$test_screen_id = 'shop_order';
+$_GET['post'] = '90';
+$admin->add_order_metabox();
+vst_assert_same( [
+	[ 'yoohw-vietnam-store-tools-payment-reconciliation', 'shop_order', 'side', 'default' ],
+	[ 'yoohw-vietnam-store-tools-payment-reconciliation', 'woocommerce_page_wc-orders', 'side', 'default' ],
+], $test_metaboxes, 'Relevant BACS registers in the side stack on legacy and HPOS screens without VietQR' );
+vst_assert_true( isset( $test_admin_filters['get_user_option_meta-box-order_shop_order'] ), 'Relevant order adjusts only the rendered metabox order for its current screen' );
+$saved_order = [
+	'side' => 'yoohw-vietnam-store-tools-bacs-vietqr,other-side-box',
+	'normal' => 'order_data,yoohw-vietnam-store-tools-payment-reconciliation,order_notes',
+];
+$rendered_order = $admin->side_stack_order( $saved_order );
+vst_assert_same( 'yoohw-vietnam-store-tools-bacs-vietqr,yoohw-vietnam-store-tools-payment-reconciliation,other-side-box', $rendered_order['side'], 'Saved normal placement is rendered immediately after VietQR in the side stack' );
+vst_assert_same( 'order_data,order_notes', $rendered_order['normal'], 'Other normal metaboxes keep their order' );
+vst_assert_same( 'order_data,yoohw-vietnam-store-tools-payment-reconciliation,order_notes', $saved_order['normal'], 'Saved user preference is not mutated' );
+vst_assert_same( 'yoohw-vietnam-store-tools-bacs-vietqr,yoohw-vietnam-store-tools-payment-reconciliation,other-side-box', $admin->side_stack_order( $rendered_order )['side'], 'Repeated ordering does not duplicate the metabox' );
+vst_assert_same( [ 'side' => 'other-side-box,yoohw-vietnam-store-tools-payment-reconciliation' ], $admin->side_stack_order( [ 'side' => 'other-side-box,yoohw-vietnam-store-tools-payment-reconciliation' ] ), 'Existing side customization remains when VietQR is absent' );
+vst_assert_same( false, $admin->side_stack_order( false ), 'Default order remains under WordPress registration order' );
+unset( $_GET['post'] );
+$test_screen_id = 'woocommerce_page_wc-orders';
+$_GET['id'] = '90';
+$test_admin_filters = [];
+$admin->add_order_metabox();
+vst_assert_true( isset( $test_admin_filters['get_user_option_meta-box-order_woocommerce_page_wc-orders'] ), 'HPOS order screen also adjusts saved placement at render time' );
+unset( $_GET['id'] );
+$test_screen_id = 'shop_order';
 
 ob_start();
 $admin->render_metabox( $order );
 $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'Record observation' ), 'Plain BACS can enter manual evidence without VietQR settings' );
 vst_assert_true( false !== strpos( $html, 'Unreconciled' ), 'No-history BACS displays unreconciled' );
+vst_assert_true( false !== strpos( $html, 'type="button" class="vck-payment-reconciliation__toggle" aria-expanded="false" aria-controls="vck-payment-reconciliation-panel-90"' ), 'Manual toggle begins collapsed and controls an order-specific panel' );
+vst_assert_true( false !== strpos( $html, 'id="vck-payment-reconciliation-panel-90" class="vck-payment-reconciliation__panel" hidden' ), 'Manual controls begin in a natively hidden panel' );
+vst_assert_true( strpos( $html, 'Unreconciled' ) < strpos( $html, 'id="vck-payment-reconciliation-panel-90"' ) && strpos( $html, 'Record observation' ) > strpos( $html, 'id="vck-payment-reconciliation-panel-90"' ), 'Current status stays visible while manual workflow is collapsed' );
+vst_assert_true( false !== strpos( $html, 'input:not([type="hidden"]):not([disabled])' ), 'Expansion focuses a visible enabled field' );
+vst_assert_true( false === strpos( $html, '<form ' ), 'Metabox does not nest a form inside the order editor' );
 vst_assert_same( 0, $order->saves, 'Admin read does not write old orders' );
+$test_actor_allowed = false;
+ob_start();
+$admin->render_metabox( $order );
+$read_only_html = ob_get_clean();
+vst_assert_true( false !== strpos( $read_only_html, 'Unreconciled' ) && false === strpos( $read_only_html, 'class="vck-payment-reconciliation__toggle"' ), 'User without edit capability sees status without an empty toggle' );
+$test_actor_allowed = true;
 
 $observation = $domain::record_manual_observation( $order, [ 'amount' => '100000', 'currency' => 'VND', 'reference' => 'BANK-90' ] );
 ob_start();
@@ -54,6 +106,7 @@ $admin->render_metabox( $order );
 $html = ob_get_clean();
 vst_assert_true( $panel::is_relevant( $order ) && false !== strpos( $html, 'Reconciliation history' ), 'History remains visible after payment method changes' );
 vst_assert_true( false === strpos( $html, 'name="vck_payment_operation"' ), 'Changed payment method cannot use manual controls' );
+vst_assert_true( false === strpos( $html, 'class="vck-payment-reconciliation__toggle"' ), 'History-only order has no empty edit toggle' );
 $order->payment_method = 'bacs';
 $domain::reverse_entry( $order, $match['id'] );
 vst_assert_same( 'recorded', $domain::get_order_data( $order )['state'], 'Manual reversal returns to recorded' );
@@ -82,6 +135,7 @@ ob_start();
 $admin->render_metabox( $external );
 $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'Externally verified evidence is read only here.' ), 'External verified evidence displays read only' );
+vst_assert_true( false === strpos( $html, 'class="vck-payment-reconciliation__toggle"' ), 'Externally verified order has no empty edit toggle' );
 vst_assert_true( false === strpos( $html, 'name="vck_payment_operation"' ), 'External evidence has no manual mutation controls' );
 vst_assert_true( false !== strpos( $html, 'verified_bank / BANK-91' ), 'External source and transaction remain visible in audit trail' );
 
