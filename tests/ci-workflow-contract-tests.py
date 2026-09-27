@@ -109,7 +109,7 @@ def main() -> int:
         "localization-runtime-63",
         "localization-runtime-67",
         "localization-runtime-latest",
-        "returns-runtime",
+        "roadmap-runtime",
         "plugin-check",
     )
     for job_id in deep_jobs:
@@ -131,7 +131,7 @@ def main() -> int:
         "WordPress 6.3 translation runtime",
         "WordPress 6.7 translation runtime",
         "WordPress latest translation runtime",
-        "WooCommerce returns runtime",
+        "WooCommerce roadmap runtime",
         "Localization quality",
         "WordPress Plugin Check",
     ):
@@ -145,8 +145,8 @@ def main() -> int:
         raise AssertionError("Deep CI must have exactly one ready_for_review transition")
     if "name: Repository contracts" not in workflow:
         raise AssertionError("Repository contracts check name must remain stable")
-    if 'require_success "$PHP_EXPECTED" "$RETURNS_RUNTIME_RESULT" "WooCommerce returns runtime"' not in required_job.group("body"):
-        raise AssertionError("Required gate must enforce DB-backed returns runtime when PHP validation is active")
+    if 'require_success "$PHP_EXPECTED" "$ROADMAP_RUNTIME_RESULT" "WooCommerce roadmap runtime"' not in required_job.group("body"):
+        raise AssertionError("Required gate must enforce DB-backed roadmap runtime when PHP validation is active")
 
     print("CI workflow contracts PASS: stable governance/required contexts, single ready-for-review transition, explicit skipped check contexts, fail-safe routing, and quick-before-deep staging.")
     return 0

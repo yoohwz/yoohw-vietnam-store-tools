@@ -467,8 +467,8 @@ jobs:
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
 
-  returns-runtime:
-    name: WooCommerce returns runtime
+  roadmap-runtime:
+    name: WooCommerce roadmap runtime
     needs:
       - changes
       - repository-contracts
@@ -619,7 +619,7 @@ jobs:
       - localization-runtime-63
       - localization-runtime-67
       - localization-runtime-latest
-      - returns-runtime
+      - roadmap-runtime
       - plugin-check
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -642,7 +642,7 @@ jobs:
           LOCALIZATION_RUNTIME_63_RESULT: ${{ needs.localization-runtime-63.result }}
           LOCALIZATION_RUNTIME_67_RESULT: ${{ needs.localization-runtime-67.result }}
           LOCALIZATION_RUNTIME_LATEST_RESULT: ${{ needs.localization-runtime-latest.result }}
-          RETURNS_RUNTIME_RESULT: ${{ needs.returns-runtime.result }}
+          ROADMAP_RUNTIME_RESULT: ${{ needs.roadmap-runtime.result }}
           PLUGIN_CHECK_EXPECTED: ${{ needs.changes.outputs.run_plugin_check }}
           PLUGIN_CHECK_RESULT: ${{ needs.plugin-check.result }}
         run: |
@@ -674,7 +674,7 @@ jobs:
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_63_RESULT" "WordPress 6.3 translation runtime"
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_67_RESULT" "WordPress 6.7 translation runtime"
           require_success "$LOCALIZATION_RUNTIME_EXPECTED" "$LOCALIZATION_RUNTIME_LATEST_RESULT" "WordPress latest translation runtime"
-          require_success "$PHP_EXPECTED" "$RETURNS_RUNTIME_RESULT" "WooCommerce returns runtime"
+          require_success "$PHP_EXPECTED" "$ROADMAP_RUNTIME_RESULT" "WooCommerce roadmap runtime"
           require_success "$PLUGIN_CHECK_EXPECTED" "$PLUGIN_CHECK_RESULT" "WordPress Plugin Check"
           {
             echo "### VST CI gate"
@@ -685,6 +685,6 @@ jobs:
             echo "- PHP 7.4 / 8.2 / 8.4: $PHP_74_RESULT / $PHP_82_RESULT / $PHP_84_RESULT"
             echo "- Localization quality: $LOCALIZATION_QUALITY_RESULT"
             echo "- Localization runtime 6.3 / 6.7 / latest: $LOCALIZATION_RUNTIME_63_RESULT / $LOCALIZATION_RUNTIME_67_RESULT / $LOCALIZATION_RUNTIME_LATEST_RESULT"
-            echo "- WooCommerce returns runtime: $RETURNS_RUNTIME_RESULT"
+            echo "- WooCommerce roadmap runtime: $ROADMAP_RUNTIME_RESULT"
             echo "- WordPress Plugin Check: $PLUGIN_CHECK_RESULT"
           } >> "$GITHUB_STEP_SUMMARY"
