@@ -72,12 +72,9 @@ function wc_get_order( $order ) {
 	if ( ! isset( $vst_orders[ $id ] ) ) { return false; }
 	return clone $vst_orders[ $id ];
 }
-class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
-	const META_LEGACY_ID = 'legacy-id';
+class Yoohw_Vietnam_Store_Tools_Shipment_Identity {
 	public static $shipment = [ 'id' => 'legacy:5', 'closed' => false, 'data' => [ 'provider' => 'manual', 'tracking_code' => 'X' ] ];
-	public static $exceptions = [];
 	public static function get_current_shipment() { return self::$shipment; }
-	public static function get_exceptions() { return self::$exceptions; }
 }
 class VST_Test_WPDB {
 	public $options = 'wp_options';
@@ -173,12 +170,16 @@ $vst_orders[6]->items[21]->set_quantity( 1 );
 $metadata = $returns::mutate( $changed_order, $changed['return_id'], 1, 'correct', [ 'reason' => 'Corrected reason' ] );
 vst_assert_true( ! is_wp_error( $metadata ), 'Informational correction survives lowered current item quantity' );
 vst_assert_true( is_wp_error( $returns::mutate( $changed_order, $changed['return_id'], 2, 'correct', [ 'items' => [ 21 => 2 ] ] ) ), 'Item allocation correction rechecks lowered capacity' );
+$historical_ledger = $returns::get_ledger( $changed_order );
+$historical_ledger['events'][0]['changes']['returned_exception_id'] = 'historical-id';
+$vst_orders[6]->update_meta_data( $returns::META_LEDGER, $historical_ledger );
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-returns-lite-admin.php';
 $admin = new Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin();
 ob_start();
-$admin->render_exceptions( $changed_order );
 $admin->render_returns_metabox( $changed_order );
 $metabox_html = ob_get_clean();
+vst_assert_true( false === strpos( $metabox_html, 'Fulfillment exceptions' ) && false === strpos( $metabox_html, 'record_exception' ) && false === strpos( $metabox_html, 'returned_exception_id' ), 'Removed exception controls are absent from order admin HTML' );
+vst_assert_true( false === strpos( $metabox_html, 'historical-id' ), 'Historical return exception reference stays out of current admin UI' );
 vst_assert_true( false === strpos( $metabox_html, '<form' ) && false === strpos( $metabox_html, '</form>' ), 'Order metabox does not nest action forms inside the order editor form' );
 vst_assert_true( false !== strpos( $metabox_html, 'form="yoohw-vst-action-' ), 'Metabox controls target footer forms explicitly' );
 preg_match_all( '/<(?:input|select|textarea|button)\b[^>]*>/i', $metabox_html, $controls );

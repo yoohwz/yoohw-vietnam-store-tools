@@ -1,6 +1,6 @@
 <?php
 /**
- * Order-admin controls for manual exceptions and Returns Lite.
+ * Order-admin controls for Returns Lite.
  *
  * @package VietnamCommerceKit
  */
@@ -14,61 +14,10 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 	private $active_form = '';
 
 	public function __construct() {
-		add_action( 'yoohw_vietnam_store_tools_shipping_admin_metabox_after', [ $this, 'render_exceptions' ], 30 );
 		add_action( 'add_meta_boxes', [ $this, 'add_returns_metabox' ] );
-		add_action( 'admin_post_yoohw_vietnam_store_tools_record_exception', [ $this, 'handle_exception' ] );
 		add_action( 'admin_post_yoohw_vietnam_store_tools_return_action', [ $this, 'handle_return' ] );
 		add_action( 'admin_notices', [ $this, 'render_notice' ] );
 		add_action( 'admin_footer', [ $this, 'render_action_forms' ] );
-	}
-
-	public function render_exceptions( $order ) {
-		if ( ! $order instanceof WC_Order || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
-			return;
-		}
-		$domain = 'Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions';
-		$current = $domain::get_current_shipment( $order );
-		$history = $domain::get_exceptions( $order );
-		if ( empty( $current['id'] ) && ! $history ) {
-			return;
-		}
-		echo '<hr><h4>' . esc_html__( 'Fulfillment exceptions', 'yoohw-vietnam-store-tools' ) . '</h4>';
-		if ( ! empty( $current['id'] ) ) {
-			$data = isset( $current['data'] ) ? $current['data'] : [];
-			echo '<p><strong>' . esc_html__( 'Current shipment', 'yoohw-vietnam-store-tools' ) . ':</strong> ' . esc_html( $current['id'] ) . '<br>';
-			echo esc_html( isset( $data['provider_name'] ) ? $data['provider_name'] : '' ) . ' ' . esc_html( isset( $data['tracking_code'] ) ? $data['tracking_code'] : '' ) . '<br>';
-			echo esc_html( $current['closed'] ? __( 'Closed', 'yoohw-vietnam-store-tools' ) : __( 'Open', 'yoohw-vietnam-store-tools' ) ) . '</p>';
-		}
-		if ( $history ) {
-			echo '<ul>';
-			foreach ( array_reverse( $history ) as $entry ) {
-				echo '<li><strong>' . esc_html( self::exception_label( $entry['type'] ) ) . '</strong> · ' . esc_html( isset( $entry['occurred_at'] ) ? $entry['occurred_at'] : '' );
-				echo '<br>' . esc_html__( 'Shipment', 'yoohw-vietnam-store-tools' ) . ': ' . esc_html( isset( $entry['shipment_id'] ) ? $entry['shipment_id'] : '' );
-				if ( ! empty( $entry['parent_shipment_id'] ) || ! empty( $entry['replacement_shipment_id'] ) ) {
-					echo '<br>' . esc_html__( 'Predecessor / replacement', 'yoohw-vietnam-store-tools' ) . ': ' . esc_html( isset( $entry['parent_shipment_id'] ) ? $entry['parent_shipment_id'] : '' ) . ' / ' . esc_html( isset( $entry['replacement_shipment_id'] ) ? $entry['replacement_shipment_id'] : '' );
-				}
-				echo '<br>' . esc_html__( 'Source / actor', 'yoohw-vietnam-store-tools' ) . ': ' . esc_html( isset( $entry['source_id'] ) ? $entry['source_id'] : '' ) . ' / ' . esc_html( isset( $entry['actor_id'] ) ? $entry['actor_id'] : 0 );
-				if ( ! empty( $entry['note'] ) ) {
-					echo '<br>' . esc_html( $entry['note'] );
-				}
-				echo '</li>';
-			}
-			echo '</ul>';
-		}
-		if ( ! empty( $current['id'] ) && ! $current['closed'] ) {
-			$this->action_form_open();
-			wp_nonce_field( 'yoohw_vst_exception_' . $order->get_id(), 'yoohw_vst_nonce' );
-			echo '<input type="hidden" name="action" value="yoohw_vietnam_store_tools_record_exception">';
-			echo '<input type="hidden" name="order_id" value="' . esc_attr( $order->get_id() ) . '">';
-			echo '<input type="hidden" name="expected_shipment_id" value="' . esc_attr( $current['id'] ) . '">';
-			echo '<p><label>' . esc_html__( 'Record exception', 'yoohw-vietnam-store-tools' ) . ' <select name="exception_type">';
-			foreach ( [ 'failed_handoff', 'delivery_failed', 'returned_to_sender' ] as $type ) {
-				echo '<option value="' . esc_attr( $type ) . '">' . esc_html( self::exception_label( $type ) ) . '</option>';
-			}
-			echo '</select></label></p><p><label>' . esc_html__( 'Operator note (optional)', 'yoohw-vietnam-store-tools' ) . '<br><textarea name="note" rows="2" style="width:100%"></textarea></label></p>';
-			submit_button( __( 'Record exception', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
-			$this->action_form_close();
-		}
 	}
 
 	public function add_returns_metabox() {
@@ -138,21 +87,10 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 		echo '</ul>';
 		$outbound = $record['outbound_shipment'];
 		if ( ! empty( $outbound['id'] ) ) {
-			$current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+			$current = Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order );
 			echo '<p>' . esc_html__( 'Original shipment', 'yoohw-vietnam-store-tools' ) . ': ' . esc_html( $outbound['id'] ) . ' · ' . esc_html( $outbound['provider'] ) . ' · ' . esc_html( $outbound['tracking_code'] );
 			if ( $current['id'] !== $outbound['id'] ) {
 				echo ' (' . esc_html__( 'historical reference', 'yoohw-vietnam-store-tools' ) . ')';
-			}
-			echo '</p>';
-		}
-		if ( ! empty( $record['returned_exception_id'] ) ) {
-			echo '<p>' . esc_html__( 'Return-to-sender exception', 'yoohw-vietnam-store-tools' ) . ': ' . esc_html( $record['returned_exception_id'] );
-			$found = false;
-			foreach ( Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_exceptions( $order ) as $entry ) {
-				$found = $found || $record['returned_exception_id'] === $entry['id'];
-			}
-			if ( ! $found ) {
-				echo ' (' . esc_html__( 'missing reference', 'yoohw-vietnam-store-tools' ) . ')';
 			}
 			echo '</p>';
 		}
@@ -197,7 +135,6 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 		echo '<p><label>' . esc_html__( 'Reason', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="reason" class="widefat" value="' . esc_attr( $record['reason'] ) . '"></label></p>';
 		echo '<p><label>' . esc_html__( 'Operator note', 'yoohw-vietnam-store-tools' ) . '<br><textarea name="note" class="widefat" rows="2"></textarea></label></p>';
 		echo '<p><label>' . esc_html__( 'Reverse shipment reference', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="reverse_reference" class="widefat" value="' . esc_attr( $record['reverse_reference'] ) . '"></label></p>';
-		echo '<p><label>' . esc_html__( 'Return-to-sender exception ID (optional)', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="returned_exception_id" class="widefat" value="' . esc_attr( $record['returned_exception_id'] ) . '"></label></p>';
 		submit_button( __( 'Save return correction', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
 		$this->action_form_close();
 		if ( in_array( $state, [ 'open', 'received' ], true ) ) {
@@ -217,7 +154,9 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 				if ( ! empty( $event['changes']['note'] ) ) {
 					echo ' · ' . esc_html( $event['changes']['note'] );
 				}
-				echo '<br><code>' . esc_html( wp_json_encode( $event['changes'] ) ) . '</code></li>';
+				$visible_changes = $event['changes'];
+				unset( $visible_changes['returned_exception_id'] );
+				echo '<br><code>' . esc_html( wp_json_encode( $visible_changes ) ) . '</code></li>';
 			}
 		}
 		echo '</ul></details></div><hr>';
@@ -268,16 +207,6 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 		}
 	}
 
-	public function handle_exception() {
-		$order = $this->authorized_order( 'yoohw_vst_exception_' );
-		$type = sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'exception_type' ) );
-		if ( ! in_array( $type, [ 'failed_handoff', 'delivery_failed', 'returned_to_sender' ], true ) ) {
-			$this->redirect( $order, __( 'Invalid manual exception type.', 'yoohw-vietnam-store-tools' ) );
-		}
-		$result = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::record_exception( $order, [ 'type' => $type, 'expected_shipment_id' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'expected_shipment_id' ) ], [ 'note' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_textarea( 'note' ) ] );
-		$this->redirect( $order, is_wp_error( $result ) ? $result->get_error_message() : '' );
-	}
-
 	public function handle_return() {
 		$order = $this->authorized_order( 'yoohw_vst_return_' );
 		$operation = sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'operation' ) );
@@ -285,7 +214,6 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 			'reason' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'reason' ),
 			'note' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_textarea( 'note' ),
 			'reverse_reference' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'reverse_reference' ),
-			'returned_exception_id' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'returned_exception_id' ),
 			'refund_id' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'refund_id' ),
 			'state' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'state' ),
 		];
@@ -333,16 +261,5 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 			return;
 		}
 		echo '<div class="notice notice-' . ( $error ? 'error' : 'success' ) . ' is-dismissible"><p>' . esc_html( $error ? $error : __( 'Order operation saved.', 'yoohw-vietnam-store-tools' ) ) . '</p></div>';
-	}
-
-	private static function exception_label( $type ) {
-		$labels = [
-			'failed_handoff' => __( 'Failed handoff', 'yoohw-vietnam-store-tools' ),
-			'delivery_failed' => __( 'Delivery failed', 'yoohw-vietnam-store-tools' ),
-			'returned_to_sender' => __( 'Returned to sender', 'yoohw-vietnam-store-tools' ),
-			'cancelled' => __( 'Shipment cancelled', 'yoohw-vietnam-store-tools' ),
-			'replaced' => __( 'Shipment replaced', 'yoohw-vietnam-store-tools' ),
-		];
-		return isset( $labels[ $type ] ) ? $labels[ $type ] : $type;
 	}
 }

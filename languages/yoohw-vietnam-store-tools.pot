@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T09:28:58+00:00\n"
+"POT-Creation-Date: 2026-09-27T11:37:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -660,7 +660,7 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:524
-#: includes/class-vietnam-commerce-kit-shipping.php:2020
+#: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copied"
 msgstr ""
 
@@ -1206,7 +1206,7 @@ msgid "Send invoice email to customer"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:586
-#: includes/class-vietnam-commerce-kit-shipping.php:1283
+#: includes/class-vietnam-commerce-kit-shipping.php:1282
 msgid "Email settings"
 msgstr ""
 
@@ -1239,7 +1239,7 @@ msgid "File unavailable"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:784
-#: includes/class-vietnam-commerce-kit-shipping.php:1286
+#: includes/class-vietnam-commerce-kit-shipping.php:1285
 msgid "The customer billing email is missing."
 msgstr ""
 
@@ -1398,14 +1398,6 @@ msgstr ""
 msgid "The invoice edit lock expired. Reload and retry."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-fulfillment-exceptions.php:87
-msgid "Cancelled"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-fulfillment-exceptions.php:240
-msgid "Shipment exception could not be recorded."
-msgstr ""
-
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:69
 msgid "Vietnam Store Toolkit for WooCommerce detected active plugins from Le Van Toan."
 msgstr ""
@@ -1464,8 +1456,8 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-order-management.php:786
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:850
 #: includes/class-vietnam-commerce-kit-shipping.php:70
-#: includes/class-vietnam-commerce-kit-shipping.php:847
-#: includes/class-vietnam-commerce-kit-shipping.php:1273
+#: includes/class-vietnam-commerce-kit-shipping.php:846
+#: includes/class-vietnam-commerce-kit-shipping.php:1272
 #: templates/emails/customer-shipping-tracking.php:70
 #: templates/emails/plain/customer-shipping-tracking.php:43
 msgid "Tracking code"
@@ -2025,192 +2017,126 @@ msgstr ""
 msgid "Please enter a valid Vietnamese phone number."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:35
-msgid "Fulfillment exceptions"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:38
-msgid "Current shipment"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:40
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
-msgid "Closed"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:40
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
-msgid "Open"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:46
-msgid "Shipment"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:48
-msgid "Predecessor / replacement"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:50
-msgid "Source / actor"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:64
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:69
-msgid "Record exception"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:68
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:119
-msgid "Operator note (optional)"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:84
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:33
 msgid "Returns Lite"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:108
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:57
 msgid "No returns recorded for this order."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:113
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:62
 msgid "Create manual return"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:114
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:63
 msgid "Choose product items and whole-unit quantities. This does not create a refund or restock products."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:118
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:197
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:67
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:135
 msgid "Reason"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:120
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:68
+msgid "Operator note (optional)"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:69
 msgid "Create return"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
+msgid "Open"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
 msgid "Goods received"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
+msgid "Closed"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:74
 msgid "Return voided"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:134
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:83
 msgid "Order item changed or missing"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:142
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:91
 msgid "Original shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:144
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:93
 msgid "historical reference"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:149
-msgid "Return-to-sender exception"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:155
-msgid "missing reference"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:160
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:199
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:98
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:137
 msgid "Reverse shipment reference"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:169
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:107
 msgid "Linked refund"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:171
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:109
 msgid "missing refund"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:175
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:113
 msgid "Unlink refund"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:187
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
 msgid "Link existing refund"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:193
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:131
 msgid "Save return items"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:198
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:136
 msgid "Operator note"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:200
-msgid "Return-to-sender exception ID (optional)"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:201
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:138
 msgid "Save return correction"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:208
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:145
 msgid "Transition note (optional)"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:209
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:146
 msgid "Void this return"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:213
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:150
 msgid "Audit history"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:216
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:153
 msgid "Actor"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:235
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:174
 msgid "ordered"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:275
-msgid "Invalid manual exception type."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:302
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:230
 msgid "Unknown return action."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:317
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:245
 msgid "Security check failed or order access denied."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:335
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:263
 msgid "Order operation saved."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:340
-msgid "Failed handoff"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:341
-#: includes/class-vietnam-commerce-kit-shipment-tracking.php:263
-msgid "Delivery failed"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:342
-#: includes/class-vietnam-commerce-kit-shipment-tracking.php:264
-msgid "Returned to sender"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:343
-msgid "Shipment cancelled"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:344
-msgid "Shipment replaced"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-returns-lite.php:52
@@ -2230,68 +2156,77 @@ msgid "Return edit lock expired. Reload and retry."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-returns-lite.php:129
-#: includes/class-vietnam-commerce-kit-returns-lite.php:178
+#: includes/class-vietnam-commerce-kit-returns-lite.php:177
 msgid "Enter a return reason."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:158
+#: includes/class-vietnam-commerce-kit-returns-lite.php:157
 msgid "This return state change is not allowed."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:166
+#: includes/class-vietnam-commerce-kit-returns-lite.php:165
 msgid "Items cannot be changed after this return leaves open state."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:188
-msgid "Return-to-sender exception does not belong to this shipment."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-returns-lite.php:192
+#: includes/class-vietnam-commerce-kit-returns-lite.php:184
 msgid "No return changes were submitted."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:197
+#: includes/class-vietnam-commerce-kit-returns-lite.php:189
 msgid "Choose a WooCommerce refund."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:202
+#: includes/class-vietnam-commerce-kit-returns-lite.php:194
 msgid "Refund is already linked to this return."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:211
+#: includes/class-vietnam-commerce-kit-returns-lite.php:203
 msgid "Refund does not belong to this order."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:215
+#: includes/class-vietnam-commerce-kit-returns-lite.php:207
 msgid "Refund is not linked to this return."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:222
+#: includes/class-vietnam-commerce-kit-returns-lite.php:214
 msgid "Unknown return operation."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:227
+#: includes/class-vietnam-commerce-kit-returns-lite.php:219
 msgid "Choose at least one product item."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:243
+#: includes/class-vietnam-commerce-kit-returns-lite.php:235
 msgid "Return items or quantities are invalid."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:248
+#: includes/class-vietnam-commerce-kit-returns-lite.php:240
 msgid "Return quantity exceeds the current order item quantity."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:285
+#: includes/class-vietnam-commerce-kit-returns-lite.php:266
 msgid "Return edit lock could not be created. Retry later."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:300
+#: includes/class-vietnam-commerce-kit-returns-lite.php:281
 msgid "Another operator is editing returns for this order. Reload and retry."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-returns-lite.php:321
+#: includes/class-vietnam-commerce-kit-returns-lite.php:302
 msgid "This return changed since the page loaded. Reload and retry."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-shipment-identity.php:77
+msgid "Cancelled"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-shipment-identity.php:177
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php:329
+#: includes/class-vietnam-commerce-kit-shipping.php:373
+#: includes/class-vietnam-commerce-kit-shipping.php:761
+#: includes/class-vietnam-commerce-kit-shipping.php:801
+#: includes/class-vietnam-commerce-kit-shipping.php:809
+msgid "Shipment is no longer current."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:44
@@ -2348,16 +2283,16 @@ msgstr ""
 msgid "Delivered"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipment-tracking.php:318
-msgid "Select a valid shipment status."
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php:263
+msgid "Delivery failed"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipment-tracking.php:329
-#: includes/class-vietnam-commerce-kit-shipping.php:373
-#: includes/class-vietnam-commerce-kit-shipping.php:761
-#: includes/class-vietnam-commerce-kit-shipping.php:802
-#: includes/class-vietnam-commerce-kit-shipping.php:810
-msgid "Shipment is no longer current."
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php:264
+msgid "Returned to sender"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-shipment-tracking.php:318
+msgid "Select a valid shipment status."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:335
@@ -2651,7 +2586,7 @@ msgid "Products without a shipping class"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:119
-#: includes/class-vietnam-commerce-kit-shipping.php:870
+#: includes/class-vietnam-commerce-kit-shipping.php:869
 msgid "Shipping fee"
 msgstr ""
 
@@ -2704,19 +2639,19 @@ msgid "New shipping rule"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:68
-#: includes/class-vietnam-commerce-kit-shipping.php:843
-#: includes/class-vietnam-commerce-kit-shipping.php:1265
-#: includes/class-vietnam-commerce-kit-shipping.php:1466
+#: includes/class-vietnam-commerce-kit-shipping.php:842
+#: includes/class-vietnam-commerce-kit-shipping.php:1264
+#: includes/class-vietnam-commerce-kit-shipping.php:1465
 msgid "Provider"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:69
-#: includes/class-vietnam-commerce-kit-shipping.php:862
+#: includes/class-vietnam-commerce-kit-shipping.php:861
 msgid "Service"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:71
-#: includes/class-vietnam-commerce-kit-shipping.php:851
+#: includes/class-vietnam-commerce-kit-shipping.php:850
 msgid "Status"
 msgstr ""
 
@@ -2768,7 +2703,7 @@ msgid "Shipping action failed: %s"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:638
-#: includes/class-vietnam-commerce-kit-shipping.php:1768
+#: includes/class-vietnam-commerce-kit-shipping.php:1767
 msgid "Shipping provider returned an invalid response."
 msgstr ""
 
@@ -2776,82 +2711,82 @@ msgstr ""
 msgid "Tracking code is required."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:866
+#: includes/class-vietnam-commerce-kit-shipping.php:865
 msgid "Label ID"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:874
+#: includes/class-vietnam-commerce-kit-shipping.php:873
 #: includes/emails/class-vietnam-commerce-kit-customer-shipping-tracking-email.php:209
 msgid "COD amount"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:878
+#: includes/class-vietnam-commerce-kit-shipping.php:877
 msgid "Last synced"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:895
+#: includes/class-vietnam-commerce-kit-shipping.php:894
 msgid "No shipment data has been saved for this order."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:945
+#: includes/class-vietnam-commerce-kit-shipping.php:944
 msgid "Sync shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:957
+#: includes/class-vietnam-commerce-kit-shipping.php:956
 msgid "Print label"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:969
+#: includes/class-vietnam-commerce-kit-shipping.php:968
 msgid "Cancel shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1233
+#: includes/class-vietnam-commerce-kit-shipping.php:1232
 msgid "The saved shipment provider is not available."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1254
+#: includes/class-vietnam-commerce-kit-shipping.php:1253
 msgid "Save tracking code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1255
-#: includes/class-vietnam-commerce-kit-shipping.php:1259
+#: includes/class-vietnam-commerce-kit-shipping.php:1254
+#: includes/class-vietnam-commerce-kit-shipping.php:1258
 msgid "Update tracking code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1275
+#: includes/class-vietnam-commerce-kit-shipping.php:1274
 msgid "Tracking URL"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1277
+#: includes/class-vietnam-commerce-kit-shipping.php:1276
 msgid "Leave blank to create the link from the carrier tracking URL template."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1277
+#: includes/class-vietnam-commerce-kit-shipping.php:1276
 msgid "Tracking settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1281
+#: includes/class-vietnam-commerce-kit-shipping.php:1280
 msgid "Email tracking details to the customer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1338
+#: includes/class-vietnam-commerce-kit-shipping.php:1337
 msgid "Other carrier"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1462
-#: includes/class-vietnam-commerce-kit-shipping.php:1475
+#: includes/class-vietnam-commerce-kit-shipping.php:1461
+#: includes/class-vietnam-commerce-kit-shipping.php:1474
 msgid "Create shipment"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1925
+#: includes/class-vietnam-commerce-kit-shipping.php:1924
 msgid "Enter a valid HTTP or HTTPS tracking URL, or leave it blank to use the carrier template."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:1993
+#: includes/class-vietnam-commerce-kit-shipping.php:1992
 msgid "Manually entered"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipping.php:2020
+#: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copy tracking code"
 msgstr ""
 

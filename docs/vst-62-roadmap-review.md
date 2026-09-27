@@ -7,8 +7,8 @@ This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b
 ### Phase 1 — Domain contract foundation (#50 / PR #51)
 
 - Payment reconciliation gained order-meta evidence history and a derived state (`unreconciled`, `recorded`, `reconciled`) independent of trust (`manual`, `external_verified`). Manual observations/matches and source-validated external evidence have separate entry points. Only a registered source callback can create externally verified evidence; Core checks full amount/currency and source-scoped transaction reuse, including retained trashed orders. Instructions and a manual match are never bank verification.
-- Fulfillment gained a current shipment identity and exception ledger for failed handoff/delivery, cancellation, return to sender, and replacement. Existing shipments read with a virtual `legacy:<order ID>` identity until an applicable write. Identity-aware writes reject a stale/closed shipment; replacement links old and new identities.
-- Shipping provider arrays/callbacks, the three-argument shipping update projection, tracking timeline shape, and existing order metadata and hooks remain supported. New identity-aware shipping methods, exception source filter, payment evidence source filter, and update hooks are additive. Legacy callers cannot retroactively receive stale-write protection.
+- Shipment tracking gained a current shipment identity for cancellation and replacement. Existing shipments read with a virtual `legacy:<order ID>` identity until an applicable write. Identity-aware writes reject a stale/closed shipment; replacement links old and new identities.
+- Shipping provider arrays/callbacks, the three-argument shipping update projection, tracking timeline shape, and existing order metadata and hooks remain supported. New identity-aware shipping methods, payment evidence source filter, and update hooks are additive. Legacy callers cannot retroactively receive stale-write protection.
 - No provider integration, broad merchant UI, migration, custom table, partial-payment aggregation, or carrier automation was added.
 
 ### Phase 2 — Payment Reconciliation v1 (#52 / PR #53)
@@ -23,10 +23,10 @@ This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b
 - The assistant exposes the existing DevVN/current address and legacy shipment engine. Explicitly confirmed migration uses bounded 200-row batches, separate order/customer/shipment progress, backup of original fields and a final rescan. Only exact-safe rows are written; ambiguous rows remain for Human review. WooCommerce Status Tools callbacks remain available.
 - It does not schedule scanning, broaden classification rules, rewrite review rows, or resolve ambiguous legacy addresses. An explicit full-corpus scan can be slow on a large store.
 
-### Phase 4 — Fulfillment Exceptions and Returns Lite (#56 / PR #57)
+### Phase 4 — Shipment identity and Returns Lite (#56 / PR #57; revised by VST-70)
 
-- Order admin can record shipment exceptions against the exact current identity. Timeline events remain customer-facing tracking evidence; exception history does not silently rewrite them. Cancellation closes an identity; replacement starts a linked successor. Tracking-code correction is still a correction, not a replacement.
-- Returns Lite adds a manual order-item event ledger with quantity allocation and revision checks. Operators can create, correct, receive, close and cancel records. Item snapshots, reason, actor/time, optional refund reference and shipment exception reference are retained. Cancellation releases allocation; stale writes and over-allocation are rejected.
+- Tracking timeline remains the place for delivery progress and failure. Cancellation closes an identity; replacement starts a successor. Tracking-code correction remains a correction. The unreleased manual exception UI and ledger writes were removed by VST-70.
+- Returns Lite adds a manual order-item event ledger with quantity allocation and revision checks. Operators can create, correct, receive, close and cancel records. Item snapshots, reason, actor/time, optional refund reference and reverse shipment reference are retained. Cancellation releases allocation; stale writes and over-allocation are rejected.
 - Refund/shipment references are informational. Returns Lite never issues a refund, adjusts stock, changes WooCommerce order status, sends a customer email, or creates a carrier/RMA workflow. The optional order-list indicator was omitted.
 
 ### Phase 5 — Electronic Invoice Handoff v2 (#58 / PR #59)
@@ -47,9 +47,9 @@ This dossier reviews the six merged phases on `main@6069b54a418af614c0e38941856b
 | Area | Shipped impact and boundary |
 | --- | --- |
 | Customer | Existing Vietnam address/phone, Classic and Blocks checkout, shipping fee/ward zones, tracking, VAT request, invoice email/data and BACS/VietQR surfaces remain. Phase 6 gives a merchant a native WooCommerce order-pay URL to share; no new VST customer route exists. |
-| Merchant | Order admin now includes payment evidence, fulfillment exceptions/returns, invoice documents/handoff, payment-link/BACS copy and Store Health/migration. Manual operations work without connectors. |
-| Persisted order data | Additive payment evidence, shipment identity/exception history, tracking-event identity binding, Returns Lite ledger, invoice handoff fields/revision/document ledger. WooCommerce order CRUD/meta is used for legacy and HPOS. The payment URL/key is not duplicated in VST metadata. |
-| Public extension contracts | Shipping provider registry and callbacks, shipping projection and identity-aware method, timeline methods/events, payment evidence and shipment exception source registries, electronic-invoice legacy and v2 APIs/hooks. See `docs/extension-contracts.md` for exact signatures and meanings. |
+| Merchant | Order admin now includes payment evidence, returns, invoice documents/handoff, payment-link/BACS copy and Store Health/migration. Manual operations work without connectors. |
+| Persisted order data | Additive payment evidence, shipment identity, tracking-event identity binding, Returns Lite ledger, invoice handoff fields/revision/document ledger. WooCommerce order CRUD/meta is used for legacy and HPOS. The payment URL/key is not duplicated in VST metadata. |
+| Public extension contracts | Shipping provider registry and callbacks, shipping projection and identity-aware method, timeline methods/events, payment evidence source registry, electronic-invoice legacy and v2 APIs/hooks. See `docs/extension-contracts.md` for exact signatures and meanings. |
 | Internal only | Store Health UI helpers, BACS/VietQR account preparation, return ledger/locks, invoice ledger/locks and admin render details are implementation details. Public PHP visibility alone does not turn them into stable extension APIs. |
 | Concurrency | Shipment expected ID, Returns Lite ledger/return revisions and lock, invoice workflow revision/current-document ID and lock reject stale writes. Payment admin actions validate active entry IDs. Legacy shipping projection and invoice APIs preserve their documented compatibility limits. |
 | Security/privacy | Admin actions require capabilities and nonces; order-level mutations require `edit_shop_order`. Tracking lookup retains rate/privacy checks. Payment URL remains a sensitive on-demand admin value. Share text excludes customer PII. Attachments require validation/readability for active download. |

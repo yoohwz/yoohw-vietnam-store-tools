@@ -136,7 +136,7 @@ final class Yoohw_Vietnam_Store_Tools {
 			'includes/class-vietnam-commerce-kit-address-fields.php',
 			'includes/class-vietnam-commerce-kit-phone-normalization.php',
 			'includes/class-vietnam-commerce-kit-shipping.php',
-			'includes/class-vietnam-commerce-kit-fulfillment-exceptions.php',
+			'includes/class-vietnam-commerce-kit-shipment-identity.php',
 			'includes/class-vietnam-commerce-kit-returns-lite.php',
 			'includes/class-vietnam-commerce-kit-returns-lite-admin.php',
 			'includes/class-vietnam-commerce-kit-shipment-tracking.php',

@@ -44,6 +44,11 @@ try {
 	$before_paid = $order->get_date_paid();
 	$before_transaction = $order->get_transaction_id();
 	$before_refunds = count( $order->get_refunds() );
+	$shipping_admin = new Yoohw_Vietnam_Store_Tools_Shipping();
+	ob_start();
+	$shipping_admin->render_admin_order_metabox( $order );
+	$shipping_html = ob_get_clean();
+	vst_assert_true( false === strpos( $shipping_html, 'Fulfillment exceptions' ) && false === strpos( $shipping_html, 'yoohw_vietnam_store_tools_record_exception' ) && false === strpos( $shipping_html, 'exception_type' ), 'Rendered shipping admin has no exception heading or action form' );
 
 	$payment = new Yoohw_Vietnam_Store_Tools_BACS_VietQR();
 	ob_start();
@@ -71,16 +76,18 @@ try {
 	vst_assert_true( ! is_wp_error( $reversal ), 'Manual match can be reversed' );
 	vst_assert_same( 'recorded', $reconciliation::get_order_data( wc_get_order( $order->get_id() ) )['state'], 'Reversal restores recorded observation' );
 
-	$exceptions = 'Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions';
-	$virtual = $exceptions::get_current_shipment( $order )['id'];
+	$identity = 'Yoohw_Vietnam_Store_Tools_Shipment_Identity';
+	$virtual = $identity::get_current_shipment( $order )['id'];
 	vst_assert_same( 'legacy:' . $order->get_id(), $virtual, 'Existing shipment has virtual identity' );
 	$timeline = Yoohw_Vietnam_Store_Tools_Shipment_Tracking::add_timeline_event( $order, [ 'status' => 'in_transit', 'occurred_at' => gmdate( 'Y-m-d\TH:i' ), 'expected_shipment_id' => $virtual ] );
 	vst_assert_same( true, $timeline, 'Tracking timeline accepts current shipment' );
-	$current = $exceptions::get_current_shipment( wc_get_order( $order->get_id() ) )['id'];
+	$current = $identity::get_current_shipment( wc_get_order( $order->get_id() ) )['id'];
 	vst_assert_true( '' !== $current && $current !== $virtual, 'Timeline materializes current shipment identity' );
-	vst_assert_true( is_wp_error( $exceptions::record_exception( $order, [ 'type' => 'delivery_failed', 'expected_shipment_id' => $virtual ] ) ), 'Stale shipment identity is rejected' );
-	$exception = $exceptions::record_exception( $order, [ 'type' => 'delivery_failed', 'expected_shipment_id' => $current ] );
-	vst_assert_true( ! is_wp_error( $exception ), 'Current shipment exception persists' );
+	vst_assert_true( is_wp_error( $identity::assert_current( $order, $virtual ) ), 'Stale shipment identity is rejected' );
+	vst_assert_same( true, $identity::assert_current( $order, $current ), 'Current shipment identity remains valid' );
+	$exception_history = '_yoohw_vietnam_store_tools_shipment_exception_history';
+	$order->update_meta_data( $exception_history, [ [ 'id' => 'historical', 'type' => 'delivery_failed' ] ] );
+	$order->save();
 
 	$returns = 'Yoohw_Vietnam_Store_Tools_Returns_Lite';
 	$return = $returns::create( $order, [ $item_id => 1 ], [ 'reason' => 'Fixture return' ], 0 );
@@ -95,7 +102,7 @@ try {
 	$reloaded = wc_get_order( $order->get_id() );
 	vst_assert_same( 1, count( $invoice::get_order_documents( $reloaded ) ), 'Invoice document survives reload' );
 	vst_assert_same( 3, count( $reconciliation::get_history( $reloaded ) ), 'Payment history survives invoice write' );
-	vst_assert_same( 1, count( $exceptions::get_exceptions( $reloaded ) ), 'Shipment history survives invoice write' );
+	vst_assert_same( [ [ 'id' => 'historical', 'type' => 'delivery_failed' ] ], $reloaded->get_meta( $exception_history, true ), 'Historical exception meta survives unrelated writes' );
 	vst_assert_same( 1, count( $returns::get_returns( $reloaded ) ), 'Return survives invoice write' );
 	vst_assert_same( $before_status, $reloaded->get_status(), 'Operational workflows leave WooCommerce status unchanged' );
 	vst_assert_same( $before_total, $reloaded->get_total(), 'Operational workflows leave order total unchanged' );

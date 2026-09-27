@@ -317,11 +317,11 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		if ( ! isset( $statuses[ $status ] ) ) {
 			return new WP_Error( 'yoohw_vietnam_store_tools_invalid_tracking_status', __( 'Select a valid shipment status.', 'yoohw-vietnam-store-tools' ) );
 		}
-		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
-		$current_shipment = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+		Yoohw_Vietnam_Store_Tools_Shipment_Identity::refresh_order( $order );
+		$current_shipment = Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order );
 		$expected_id = isset( $event_data['expected_shipment_id'] ) ? sanitize_text_field( $event_data['expected_shipment_id'] ) : $current_shipment['id'];
 		if ( ! empty( $current_shipment['id'] ) ) {
-			$check = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::assert_current( $order, $expected_id );
+			$check = Yoohw_Vietnam_Store_Tools_Shipment_Identity::assert_current( $order, $expected_id );
 			if ( is_wp_error( $check ) ) {
 				return $check;
 			}
@@ -356,8 +356,8 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 
 		$order->update_meta_data( self::META_TIMELINE, $events );
 		if ( ! empty( $current_shipment['id'] ) ) {
-			$shipment_id = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::ensure_current_id( $order );
-			Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::bind_timeline_event( $order, $event_id, $shipment_id );
+			$shipment_id = Yoohw_Vietnam_Store_Tools_Shipment_Identity::ensure_current_id( $order );
+			Yoohw_Vietnam_Store_Tools_Shipment_Identity::bind_timeline_event( $order, $event_id, $shipment_id );
 		}
 
 		if ( $update_shipment_status ) {
@@ -379,8 +379,8 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		if ( ! $order instanceof WC_Order || '' === $event_id ) {
 			return false;
 		}
-		Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::refresh_order( $order );
-		$deleted_event_was_current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::timeline_event_is_current( $order, $event_id );
+		Yoohw_Vietnam_Store_Tools_Shipment_Identity::refresh_order( $order );
+		$deleted_event_was_current = Yoohw_Vietnam_Store_Tools_Shipment_Identity::timeline_event_is_current( $order, $event_id );
 
 		$events = array_values(
 			array_filter(
@@ -393,9 +393,9 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 
 		$order->update_meta_data( self::META_TIMELINE, $events );
 
-		$current = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+		$current = Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order );
 		$current_events = array_values( array_filter( $events, static function ( $event ) use ( $order ) {
-			return Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::timeline_event_is_current( $order, $event['id'] );
+			return Yoohw_Vietnam_Store_Tools_Shipment_Identity::timeline_event_is_current( $order, $event['id'] );
 		} ) );
 		if ( ! $deleted_event_was_current || ( ! empty( $current['id'] ) && $current['closed'] ) ) {
 			// A predecessor timeline cannot reopen a cancelled current shipment.
