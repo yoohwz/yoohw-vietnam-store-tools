@@ -149,11 +149,14 @@ def exercise_history_contracts() -> None:
     readme = read("readme.txt")
     english = read("changelog.txt")
     vietnamese = read("changelog-vi.txt")
-    validate_changelog_history(readme, english, vietnamese, "1.1.6", "1.1.6")
+    validate_changelog_history(readme, english, vietnamese, "1.2.0", "1.1.6")
 
     release_en = next(section[2] for section in changelog_sections(english) if section[0] == "1.1.6")
     release_vi = next(section[2] for section in changelog_sections(vietnamese) if section[0] == "1.1.6")
     ga_en = next(section[2] for section in changelog_sections(english) if section[0] == "1.1.5")
+
+    published_english = english[english.index("= 1.1.6"):]
+    published_vietnamese = vietnamese[vietnamese.index("= 1.1.6"):]
 
     development_readme = (
         "== Changelog ==\n\n= 1.2.0 (In development) =\n\n* Future work.\n\n"
@@ -161,8 +164,8 @@ def exercise_history_contracts() -> None:
     )
     validate_changelog_history(
         development_readme,
-        "= 1.2.0 (In development) =\n\n* Future work.\n\n" + english,
-        "= 1.2.0 (Đang phát triển) =\n\n* Công việc tương lai.\n\n" + vietnamese,
+        "= 1.2.0 (In development) =\n\n* Future work.\n\n" + published_english,
+        "= 1.2.0 (Đang phát triển) =\n\n* Công việc tương lai.\n\n" + published_vietnamese,
         "1.2.0",
         "1.1.6",
     )
@@ -188,15 +191,30 @@ def exercise_history_contracts() -> None:
         ("contaminated release", readme, english.replace(release_en, release_en + "\n* Extra change."), vietnamese),
         ("contaminated Vietnamese release", readme, english, vietnamese.replace(release_vi, release_vi + "\n* Thay đổi thêm.")),
     ]
+    expected_failures = {
+        "older README entry": "exactly the current changelog version",
+        "missing history link": "link the complete changelog history",
+        "lost release": "lost required published history",
+        "duplicate release": "unique and descending",
+        "lost older history": "lost required published history",
+        "reordered history": "unique and descending",
+        "locale mismatch": "version sequences differ",
+        "redated release": "changed the locked 1.1.6 release section",
+        "unfinalized release": "published history must have a finalized date",
+        "contaminated release": "changed the locked 1.1.6 release section",
+        "contaminated Vietnamese release": "changed the locked 1.1.6 release section",
+    }
     for label, candidate_readme, candidate_en, candidate_vi in mutations:
         try:
-            validate_changelog_history(candidate_readme, candidate_en, candidate_vi, "1.1.6", "1.1.6")
-        except AssertionError:
+            validate_changelog_history(candidate_readme, candidate_en, candidate_vi, "1.2.0", "1.1.6")
+        except AssertionError as error:
+            if expected_failures[label] not in str(error):
+                raise AssertionError(f"History contract rejected {label} for the wrong reason: {error}") from error
             continue
         raise AssertionError(f"History contract unexpectedly accepted {label}")
-    validate_stable_tag("1.1.6", "1.1.6", "1.1.6")
+    validate_stable_tag("1.1.6", "1.2.0", "1.1.6")
     require_stable_tag_rejection("1.1.5", "1.1.6", "1.1.6")
-    require_stable_tag_rejection("1.2.0", "1.1.6", "1.1.6")
+    require_stable_tag_rejection("1.2.0", "1.2.0", "1.1.6")
     require_stable_tag_rejection("1.1.7", "1.1.6", "1.1.7")
 
 

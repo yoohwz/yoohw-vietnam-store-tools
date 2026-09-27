@@ -44,6 +44,9 @@ Learn more about the plugin on the [official Vietnam Store Toolkit website](http
 * Shipping fee rules based on address, cart, weight, shipping class, free shipping, and COD.
 * Tracking numbers, a manual timeline, and an order tracking page with no carrier API required.
 * HPOS-compatible order filters, bulk actions, and CSV exports.
+* Optional VND-to-USD conversion for compatible WooCommerce PayPal Payments checkouts using a merchant-set rate.
+* Manual payment reconciliation on the order screen; no automatic paid-status change.
+* Store health dashboard and guided legacy address and GHTK data migration.
 
 = Vietnamese Addresses and Checkout Blocks =
 
@@ -138,9 +141,15 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.1.6 (September 8, 2026) =
+= 1.2.0 (In development) =
 
-* New: Added validated Ward / Commune children to the native WooCommerce Shipping Zone regions tree while preserving country, province/city, postcode, zone-order, and cache behavior.
-* Quality: Strengthened release validation with risk-aware staged CI and durable workflow ownership, review, and release gates.
+* New: Added optional VND-to-USD payment conversion for compatible WooCommerce PayPal Payments checkout flows, using a merchant-entered rate locked to each payment attempt and guarded compatibility checks.
+* New: Added manual payment reconciliation on the order screen to record observations, match exact order amounts, review evidence, and correct entries without automatically marking orders paid.
+* New: Added a Store health dashboard and a guided assistant to scan, back up, and batch-migrate compatible legacy address and GHTK tracking data.
+* New: Expanded the provider-neutral electronic invoice handoff with revision-guarded updates, document history, provider references, and clearer order administration and email details; invoice issuance remains external.
+* Improve: Protected shipment and tracking updates with shipment identity and stale-action checks, preserving the current shipment and its timeline across order instances and cancellations.
+* Improve: Refined order information layout and compacted the payment reconciliation controls in a side metabox; improved BACS/VietQR transfer details and copy behavior.
+* Compatibility: Filled missing Vietnamese translation keys from bundled catalogs while retaining WordPress language-pack priority, and refined the Vietnamese Store health label.
+* Developer: Expanded payment, shipment, and electronic-invoice extension contracts and strengthened release, checkout, localization, and HPOS validation.
 
 See `changelog.txt` for the complete change history.
