@@ -58,6 +58,8 @@ final class Yoohw_Vietnam_Store_Tools {
 		}
 
 		$this->register_translation_path();
+		require_once YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'includes/class-vietnam-commerce-kit-translation-fallback.php';
+		Yoohw_Vietnam_Store_Tools_Translation_Fallback::register();
 
 		add_action( 'before_woocommerce_init', [ $this, 'declare_woocommerce_compatibility' ] );
 

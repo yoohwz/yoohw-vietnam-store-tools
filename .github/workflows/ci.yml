@@ -333,13 +333,15 @@ jobs:
           wp_env=(npx --yes @wordpress/env@11.13.0)
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
           "${wp_env[@]}" run cli wp plugin activate woocommerce
-          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi_VN.mo" );'
           "${wp_env[@]}" run cli wp option update WPLANG vi
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
           ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
@@ -389,13 +391,20 @@ jobs:
           wp_env=(npx --yes @wordpress/env@11.13.0)
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
           "${wp_env[@]}" run cli wp plugin activate woocommerce
-          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi_VN.mo" );'
           "${wp_env[@]}" run cli wp option update WPLANG vi
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
           ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-language-pack-partial.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL php-pack
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-force-mo.php", WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL mo-pack
+          "${wp_env[@]}" run cli wp eval 'unlink( WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
@@ -445,13 +454,20 @@ jobs:
           wp_env=(npx --yes @wordpress/env@11.13.0)
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_PLUGIN_DIR . "/woocommerce" ); file_put_contents( WP_PLUGIN_DIR . "/woocommerce/woocommerce.php", "<?php\n/**\n * Plugin Name: WooCommerce runtime dependency stub\n * Version: 1.0.0\n */\n" );'
           "${wp_env[@]}" run cli wp plugin activate woocommerce
-          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WPMU_PLUGIN_DIR ); wp_mkdir_p( WP_LANG_DIR ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/vst-translation-monitor.php", WPMU_PLUGIN_DIR . "/vst-translation-monitor.php" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi.mo" ); copy( WP_PLUGIN_DIR . "/yoohw-vietnam-store-tools/tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/vi_VN.mo" );'
           "${wp_env[@]}" run cli wp option update WPLANG vi
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools 2>&1 | tee "$RUNNER_TEMP/vst-activation.log"
           ! grep -F '_load_textdomain_just_in_time' "$RUNNER_TEMP/vst-activation.log"
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-language-pack-partial.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL php-pack
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-force-mo.php", WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL mo-pack
+          "${wp_env[@]}" run cli wp eval 'unlink( WPMU_PLUGIN_DIR . "/vst-force-mo.php" );'
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop

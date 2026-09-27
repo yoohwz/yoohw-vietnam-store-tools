@@ -9,3 +9,14 @@ msgstr ""
 
 msgid "Add rule"
 msgstr "LANGPACK_SENTINEL"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgctxt "Tax status"
+msgid "None"
+msgstr "CONTEXT_SENTINEL"
+
+msgid "%d service enabled"
+msgid_plural "%d services enabled"
+msgstr[0] "PLURAL_SENTINEL"
