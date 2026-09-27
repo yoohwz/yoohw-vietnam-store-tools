@@ -98,8 +98,15 @@ vst_assert_same( 0, $read['workflow_revision'], 'Legacy revision defaults to zer
 vst_assert_same( '', $read['current_document_id'], 'Legacy current document defaults to empty' );
 vst_assert_same( [], $api::get_order_documents( 58 ), 'Legacy read does not invent document' );
 vst_assert_same( $before, $orders[58]->meta, 'Legacy read makes no write' );
+$first_lock = '_yoohw_vst_einvoice_lock_58';
+$wpdb->rows[ $first_lock ] = 'first-v2-writer|' . ( time() + 20 );
+$blocked_legacy = $api::update_order_data( 58, [ 'status' => 'replaced', 'number' => 'RACING-1' ], [ 'source' => 'old_connector' ] );
+vst_assert_true( is_wp_error( $blocked_legacy ), 'Legacy writer cannot bypass first v2 writer lock before revision exists' );
+vst_assert_same( $before, $orders[58]->meta, 'Blocked legacy writer leaves projection and history unchanged' );
+unset( $wpdb->rows[ $first_lock ] );
 $legacy = $api::update_order_data( 58, [ 'status' => 'replaced' ], [ 'source' => 'old_connector' ] );
 vst_assert_same( true, $legacy, 'Legacy status-only replacement remains accepted' );
+vst_assert_same( '', $orders[58]->get_meta( $api::META_REVISION ), 'Legacy writer before v2 does not create a revision' );
 vst_assert_same( [], $api::get_order_documents( 58 ), 'Legacy replacement does not fabricate lineage' );
 $invalid = $api::update_order_data( 58, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 0 ] );
 vst_assert_true( is_wp_error( $invalid ), 'Strict ready requires invoice request fields' );

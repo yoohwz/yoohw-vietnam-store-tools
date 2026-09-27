@@ -26,6 +26,14 @@ try {
 	vst_assert_same( 0, $domain::get_order_data( $before )['workflow_revision'], 'Old order has zero revision' );
 	vst_assert_same( [], $domain::get_order_documents( $before ), 'Old order has no document on read' );
 	vst_assert_same( '', wc_get_order( $order->get_id() )->get_meta( $domain::META_REVISION, true ), 'Read did not persist revision' );
+	$lock_name = '_yoohw_vst_einvoice_lock_' . $order->get_id();
+	vst_assert_true( add_option( $lock_name, 'first-v2-writer|' . ( time() + 20 ), '', false ), 'First v2 writer lock fixture created' );
+	$blocked = $domain::update_order_data( $order, [ 'status' => 'verified' ], [ 'source' => 'old_connector' ] );
+	vst_assert_true( is_wp_error( $blocked ), 'Legacy writer cannot bypass first v2 writer lock' );
+	vst_assert_same( 'requested', $domain::get_order_data( $order->get_id() )['status'], 'Blocked legacy write leaves projection unchanged' );
+	delete_option( $lock_name );
+	vst_assert_same( true, $domain::update_order_data( $order, [ 'status' => 'verified' ], [ 'source' => 'old_connector' ] ), 'Legacy write succeeds before v2 opt-in' );
+	vst_assert_same( '', wc_get_order( $order->get_id() )->get_meta( $domain::META_REVISION, true ), 'Pre-v2 legacy write does not create revision' );
 	$orders_admin = new Yoohw_Vietnam_Store_Tools_Order_Management();
 	$orders_admin->handle_bulk_actions( 'https://localhost/wp-admin/', Yoohw_Vietnam_Store_Tools_Order_Management::ACTION_MARK_INVOICE_READY, [ $order->get_id() ] );
 	vst_assert_same( 'ready', $domain::get_order_data( $order->get_id() )['status'], 'Bulk admin action marks complete invoice ready' );
@@ -53,6 +61,9 @@ try {
 	vst_assert_same( $before_status, $final->get_status(), 'Workflow did not change Woo order status' );
 	vst_assert_same( $before_refunds, count( $final->get_refunds() ), 'Workflow did not create refund' );
 } finally {
+	if ( $order instanceof WC_Order ) {
+		delete_option( '_yoohw_vst_einvoice_lock_' . $order->get_id() );
+	}
 	if ( $order instanceof WC_Order ) {
 		$order->delete( true );
 	}

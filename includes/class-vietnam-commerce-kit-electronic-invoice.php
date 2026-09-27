@@ -205,11 +205,6 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		$context = is_array( $context ) ? $context : [];
 		$strict = ! empty( $context['v2_strict'] );
 		$conditional = array_key_exists( 'expected_revision', $context ) && array_key_exists( 'expected_current_document_id', $context );
-		$persisted = wc_get_order( $resolved->get_id() );
-		$has_v2 = $persisted instanceof WC_Order && '' !== (string) $persisted->get_meta( self::META_REVISION, true );
-		if ( ! $strict && ! $has_v2 && ! $conditional ) {
-			return self::update_order_data_unlocked( $resolved, $data, $context );
-		}
 		$token = self::acquire_lock( $resolved->get_id() );
 		if ( is_wp_error( $token ) ) {
 			return $token;
@@ -243,7 +238,7 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			if ( ! self::owns_lock( $fresh->get_id(), $token ) ) {
 				return self::lock_error();
 			}
-			$context['advance_revision'] = true;
+			$context['advance_revision'] = $strict || $conditional || '' !== (string) $fresh->get_meta( self::META_REVISION, true );
 			return self::update_order_data_unlocked( $fresh, $data, $context );
 		} finally {
 			self::release_lock( $resolved->get_id(), $token );
