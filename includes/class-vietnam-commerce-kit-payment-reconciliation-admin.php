@@ -45,7 +45,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			$screens[] = wc_get_page_screen_id( 'shop-order' );
 		}
 		foreach ( array_unique( array_filter( $screens ) ) as $screen ) {
-			add_meta_box( 'yoohw-vietnam-store-tools-payment-reconciliation', __( 'Payment reconciliation', 'yoohw-vietnam-store-tools' ), [ $this, 'render_metabox' ], $screen, 'normal', 'default' );
+			add_meta_box( 'yoohw-vietnam-store-tools-payment-reconciliation', __( 'Payment reconciliation', 'yoohw-vietnam-store-tools' ), [ $this, 'render_metabox' ], $screen, 'side', 'default' );
 		}
 	}
 
@@ -80,6 +80,17 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			$this->detail( __( 'Recorded by', 'yoohw-vietnam-store-tools' ), $this->actor_name( $entry ) );
 		}
 		if ( $manual ) {
+			$panel_id = 'vck-payment-reconciliation-panel-' . $order->get_id();
+			echo '<style>
+			.vck-payment-reconciliation__toggle { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; width: 100%; margin: 12px 0 0; padding: 10px 2px; border: 0; border-top: 1px solid #dcdcde; border-bottom: 1px solid #dcdcde; background: transparent; color: var(--wp-admin-theme-color, #2271b1); cursor: pointer; font-weight: 600; text-align: left; }
+			.vck-payment-reconciliation__toggle:hover, .vck-payment-reconciliation__toggle:focus { color: var(--wp-admin-theme-color-darker-10, #135e96); }
+			.vck-payment-reconciliation__toggle:focus-visible { border-radius: 2px; box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1); outline: 2px solid transparent; }
+			.vck-payment-reconciliation__toggle .dashicons { transition: transform 0.15s ease; }
+			.vck-payment-reconciliation__toggle[aria-expanded="true"] .dashicons { transform: rotate(180deg); }
+			.vck-payment-reconciliation__panel[hidden] { display: none; }
+			</style>';
+			echo '<button type="button" class="vck-payment-reconciliation__toggle" aria-expanded="false" aria-controls="' . esc_attr( $panel_id ) . '"><span>' . esc_html__( 'Update payment reconciliation', 'yoohw-vietnam-store-tools' ) . '</span><span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span></button>';
+			echo '<div id="' . esc_attr( $panel_id ) . '" class="vck-payment-reconciliation__panel" hidden>';
 			if ( count( $observations ) > 1 ) {
 				echo '<h4>' . esc_html__( 'Select an observation', 'yoohw-vietnam-store-tools' ) . '</h4><ul>';
 				foreach ( $observations as $candidate ) {
@@ -94,6 +105,25 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 				echo '</ul>';
 			}
 			$this->render_manual_controls( $order, $observation, $match );
+			echo '</div>';
+			?>
+			<script>
+			(function () {
+				var panel = document.getElementById('vck-payment-reconciliation-panel-<?php echo (int) $order->get_id(); ?>');
+				var toggle = panel && document.querySelector('.vck-payment-reconciliation__toggle[aria-controls="' + panel.id + '"]');
+				if (!toggle) { return; }
+				toggle.addEventListener('click', function () {
+					var expanded = toggle.getAttribute('aria-expanded') !== 'true';
+					toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+					panel.hidden = !expanded;
+					if (expanded) {
+						var firstField = panel.querySelector('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])');
+						if (firstField) { firstField.focus(); }
+					}
+				});
+			}());
+			</script>
+			<?php
 		} elseif ( 'external_verified' === $data['trust'] ) {
 			echo '<p>' . esc_html__( 'Externally verified evidence is read only here.', 'yoohw-vietnam-store-tools' ) . '</p>';
 		}
