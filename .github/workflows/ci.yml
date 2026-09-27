@@ -502,11 +502,25 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE legacy --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN legacy save --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN legacy document --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-smoke.php VST-62-SMOKE legacy --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-store-health-smoke.php VST-54-SMOKE legacy --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE prepare legacy --user=1
+          "${wp_env[@]}" run cli wp plugin deactivate yoohw-vietnam-store-tools
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE inactive legacy --user=1
+          "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE active legacy --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN hpos save --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN hpos document --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-smoke.php VST-62-SMOKE hpos --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-store-health-smoke.php VST-54-SMOKE hpos --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE prepare hpos --user=1
+          "${wp_env[@]}" run cli wp plugin deactivate yoohw-vietnam-store-tools
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE inactive hpos --user=1
+          "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE active hpos --user=1
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
