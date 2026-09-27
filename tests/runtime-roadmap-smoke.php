@@ -73,7 +73,7 @@ try {
 	$exceptions = 'Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions';
 	$virtual = $exceptions::get_current_shipment( $order )['id'];
 	vst_assert_same( 'legacy:' . $order->get_id(), $virtual, 'Existing shipment has virtual identity' );
-	$timeline = Yoohw_Vietnam_Store_Tools_Shipment_Tracking::add_timeline_event( $order, [ 'status' => 'in_transit', 'occurred_at' => gmdate( 'c' ), 'expected_shipment_id' => $virtual ] );
+	$timeline = Yoohw_Vietnam_Store_Tools_Shipment_Tracking::add_timeline_event( $order, [ 'status' => 'in_transit', 'occurred_at' => gmdate( 'Y-m-d\TH:i' ), 'expected_shipment_id' => $virtual ] );
 	vst_assert_same( true, $timeline, 'Tracking timeline accepts current shipment' );
 	$current = $exceptions::get_current_shipment( wc_get_order( $order->get_id() ) )['id'];
 	vst_assert_true( '' !== $current && $current !== $virtual, 'Timeline materializes current shipment identity' );
@@ -82,7 +82,7 @@ try {
 	vst_assert_true( ! is_wp_error( $exception ), 'Current shipment exception persists' );
 
 	$returns = 'Yoohw_Vietnam_Store_Tools_Returns_Lite';
-	$return = $returns::create( $order, [ $item_id => 1 ], [ 'reason' => 'Fixture return', 'refund_reference' => 'INFO-ONLY' ], 0 );
+	$return = $returns::create( $order, [ $item_id => 1 ], [ 'reason' => 'Fixture return' ], 0 );
 	vst_assert_true( ! is_wp_error( $return ), 'Return on same order persists' );
 	vst_assert_true( is_wp_error( $returns::create( $order, [ $item_id => 3 ], [ 'reason' => 'Excess' ], 1 ) ), 'Quantity allocation rejects excess' );
 
