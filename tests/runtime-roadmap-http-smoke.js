@@ -112,6 +112,12 @@ async function blocks() {
 
 async function orderPay() {
   cookies.set(fixture.auth_cookie_name, fixture.auth_cookie);
+  const accountOrder = checkResponse(await request('GET', fixture.account_order_url), 'My Account order view');
+  assert.match(accountOrder.text, /VST62-HTTP-TRACK/, 'Customer order view renders tracking code');
+  assert.match(accountOrder.text, /vck-tracking-timeline/, 'Customer order view renders tracking timeline');
+  const accountAddress = checkResponse(await request('GET', fixture.account_address_url), 'My Account billing address editor');
+  assert.match(accountAddress.text, /billing_state/, 'Customer address editor renders province');
+  assert.match(accountAddress.text, /billing_city/, 'Customer address editor renders ward');
   const page = checkResponse(await request('GET', fixture.pay_url), 'Native order-pay page');
   assert.match(page.text, /id="order_review"/, 'Native order-pay form renders for the order customer');
   assert.match(page.text, /payment_method_bacs/, 'BACS gateway is available on order-pay');
@@ -122,7 +128,7 @@ async function orderPay() {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
   }), 'Native order-pay BACS submission');
   assert.match(paid.text, /VST-62 HTTP|Fixture Bank|123456789/, 'Native order-pay customer BACS output renders');
-  console.log('PASS: Native order-pay HTTP form, nonce, BACS gateway and customer output');
+  console.log('PASS: My Account order tracking/address and native order-pay HTTP form, nonce, BACS gateway and customer output');
 }
 
 ({ classic, blocks, 'order-pay': orderPay }[mode])().catch(error => { console.error(error); process.exitCode = 1; });
