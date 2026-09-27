@@ -103,8 +103,8 @@
 .vck-info-column__row {
 	align-items: start;
 	display: grid;
-	gap: 8px;
-	grid-template-columns: 26px minmax( 0, 1fr );
+	gap: 2px;
+	grid-template-columns: minmax( 0, 1fr );
 }
 
 .vck-info-column__row + .vck-info-column__row {
@@ -122,7 +122,10 @@
 	font-weight: 600;
 	letter-spacing: 0.02em;
 	line-height: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	text-transform: uppercase;
+	white-space: nowrap;
 }
 
 .vck-info-column__content {
