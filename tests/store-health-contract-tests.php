@@ -9,6 +9,9 @@ function add_action() {}
 function add_filter() {}
 function apply_filters( $hook, $value ) { return $value; }
 function get_option( $key, $default = false ) { return $GLOBALS['options'][ $key ] ?? $default; }
+function admin_url( $path ) { return '/wp-admin/' . $path; }
+function add_menu_page( $page_title, $menu_title ) { $GLOBALS['menu_labels'][] = $menu_title; return 'vst-menu'; }
+function add_submenu_page( $parent, $page_title, $menu_title ) { $GLOBALS['submenu_labels'][] = [ $parent, $menu_title ]; }
 function wc_get_base_location() { return $GLOBALS['location']; }
 function wc_clean( $value ) { return trim( (string) $value ); }
 function absint( $value ) { return abs( (int) $value ); }
@@ -21,6 +24,12 @@ class Yoohw_Vietnam_Store_Tools_Shipment_Tracking { const OPTION_LOOKUP_ENABLED 
 foreach ( [ 'admin-menu', 'vietnam-address-data', 'bacs-vietqr', 'store-health' ] as $file ) {
 	require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-' . $file . '.php';
 }
+$GLOBALS['menu_labels'] = [];
+$GLOBALS['submenu_labels'] = [];
+( new ReflectionClass( 'Yoohw_Vietnam_Store_Tools_Admin_Menu' ) )->newInstanceWithoutConstructor()->register_menu();
+( new Yoohw_Vietnam_Store_Tools_Store_Health() )->register_menu();
+vst_assert_same( [ 'Vietnam store' ], $GLOBALS['menu_labels'], 'Top-level menu retains brand label' );
+vst_assert_same( [ [ 'yoohw-vietnam-store', 'Dashboard' ], [ 'yoohw-vietnam-store', 'Store health' ] ], $GLOBALS['submenu_labels'], 'Submenus use requested labels and order' );
 function snapshot() {
 	$rows = ( new Yoohw_Vietnam_Store_Tools_Store_Health() )->get_checks();
 	return array_column( $rows, 1, 0 );

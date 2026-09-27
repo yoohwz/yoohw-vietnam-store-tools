@@ -73,7 +73,9 @@ try {
 	$groups->invoke( $menu );
 	remove_filter( 'query', $monitor );
 	vst_assert_same( [], $writes, 'Health render executes zero SQL writes' );
-	vst_assert_true( false !== strpos( $html, esc_html__( 'Not scanned. Run a scan to see legacy data readiness.', 'yoohw-vietnam-store-tools' ) ), 'Normal render does not scan' );
+	vst_assert_true( false !== strpos( $html, 'yoohw-vietnam-store__hero' ) && false !== strpos( $html, '<h1>' . esc_html__( 'Store health', 'yoohw-vietnam-store-tools' ) . '</h1>' ), 'Health hero follows Dashboard structure and title' );
+	vst_assert_true( false !== strpos( $html, esc_html__( 'Not scanned', 'yoohw-vietnam-store-tools' ) ), 'Initial metric shows unscanned state' );
+	vst_assert_true( false !== strpos( $html, 'vck-health-assistant" aria-labelledby="vck-health-assistant-title" hidden' ), 'Assistant is hidden before explicit scan' );
 	vst_assert_true( false === strpos( implode( '\n', $queries ), 'REGEXP' ), 'No migration corpus query on render' );
 	$original_order = wc_get_order( $orders[1] )->get_address( 'billing' );
 	$original_customer = get_user_meta( $users[1] );

@@ -26,6 +26,8 @@
 		var scan = page.find('.vck-health-scan');
 		var migrate = page.find('.vck-health-migrate');
 		var report = page.find('.vck-health-report');
+		var assistant = page.find('.vck-health-assistant');
+		var scanResult = page.find('.vck-health-scan-result');
 		var progress = page.find('.vck-health-progress');
 		var errors = page.find('.vck-health-errors');
 		var running = false;
@@ -39,6 +41,13 @@
 		}
 		function display(data) {
 			lastStatus = data;
+			var safe = parseCount(data.remaining);
+			var review = parseCount(data.addressesReview) + parseCount(data.customerAddressesReview);
+			page.find('[data-health-metric="legacy"]').text(safe);
+			page.find('[data-health-hint="legacy"]').text(getString('exactSafeRows', 'Exact-safe rows'));
+			page.find('[data-health-metric="review"]').text(review);
+			assistant.prop('hidden', safe <= 0);
+			scanResult.prop('hidden', safe > 0).text(safe > 0 ? '' : getString(review > 0 ? 'manualOnly' : 'noMigratable', ''));
 			page.find('.vck-health-counts').prop('hidden', false).find('[data-count]').each(function () {
 				$(this).text(parseCount(data[$(this).attr('data-count')]));
 			});
@@ -46,6 +55,7 @@
 		}
 		function fail(response) {
 			lastStatus = null;
+			assistant.prop('hidden', true);
 			progress.text(getString('requestFailed', '') + ' ' + (response && response.data && response.data.message || ''));
 			lock(false);
 		}

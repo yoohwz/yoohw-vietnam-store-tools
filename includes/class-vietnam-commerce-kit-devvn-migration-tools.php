@@ -77,6 +77,14 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 			[],
 			YOOHW_VIETNAM_STORE_TOOLS_VERSION
 		);
+		if ( 'yoohw-store-health' === $page ) {
+			wp_enqueue_style(
+				'yoohw-vietnam-store-tools-admin-menu',
+				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/admin/vietnam-store.css',
+				[],
+				YOOHW_VIETNAM_STORE_TOOLS_VERSION
+			);
+		}
 
 		wp_enqueue_script(
 			'vck-devvn-migration-tools',
@@ -106,6 +114,9 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 					'orderAddresses' => __( 'order address rows', 'yoohw-vietnam-store-tools' ),
 					'userAddresses'  => __( 'customer address rows', 'yoohw-vietnam-store-tools' ),
 					'trackingOrders' => __( 'shipment orders', 'yoohw-vietnam-store-tools' ),
+					'exactSafeRows'  => __( 'Exact-safe rows', 'yoohw-vietnam-store-tools' ),
+					'manualOnly'    => __( 'Legacy data was found, but no exact-safe rows can be migrated automatically. Manual review is required.', 'yoohw-vietnam-store-tools' ),
+					'noMigratable'  => __( 'No migratable legacy data detected.', 'yoohw-vietnam-store-tools' ),
 				],
 			]
 		);

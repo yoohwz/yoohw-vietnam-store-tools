@@ -45,6 +45,14 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 			'none',
 			'55.5001'
 		);
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Vietnam store', 'yoohw-vietnam-store-tools' ),
+			__( 'Dashboard', 'yoohw-vietnam-store-tools' ),
+			'manage_woocommerce',
+			self::MENU_SLUG,
+			[ $this, 'render_page' ]
+		);
 	}
 
 	private function add_menu_icon_style() {
@@ -388,13 +396,13 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 
 		if ( $show_devvn_migration ) {
 			$maintenance_items[] = [
-				'title'       => __( 'Store Health / Migration', 'yoohw-vietnam-store-tools' ),
+				'title'       => __( 'Store health', 'yoohw-vietnam-store-tools' ),
 				'description' => __( 'Review store configuration and scan legacy data before an explicit safe migration.', 'yoohw-vietnam-store-tools' ),
 				'status'      => __( 'Manual tool', 'yoohw-vietnam-store-tools' ),
 				'active'      => true,
 				'icon'        => 'dashicons-database-import',
 				'url'         => admin_url( 'admin.php?page=yoohw-store-health' ),
-				'action'      => __( 'Open migration tools', 'yoohw-vietnam-store-tools' ),
+				'action'      => __( 'Open Store health', 'yoohw-vietnam-store-tools' ),
 			];
 		}
 
