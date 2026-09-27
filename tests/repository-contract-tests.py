@@ -191,10 +191,25 @@ def exercise_history_contracts() -> None:
         ("contaminated release", readme, english.replace(release_en, release_en + "\n* Extra change."), vietnamese),
         ("contaminated Vietnamese release", readme, english, vietnamese.replace(release_vi, release_vi + "\n* Thay đổi thêm.")),
     ]
+    expected_failures = {
+        "older README entry": "exactly the current changelog version",
+        "missing history link": "link the complete changelog history",
+        "lost release": "lost required published history",
+        "duplicate release": "unique and descending",
+        "lost older history": "lost required published history",
+        "reordered history": "unique and descending",
+        "locale mismatch": "version sequences differ",
+        "redated release": "changed the locked 1.1.6 release section",
+        "unfinalized release": "published history must have a finalized date",
+        "contaminated release": "changed the locked 1.1.6 release section",
+        "contaminated Vietnamese release": "changed the locked 1.1.6 release section",
+    }
     for label, candidate_readme, candidate_en, candidate_vi in mutations:
         try:
-            validate_changelog_history(candidate_readme, candidate_en, candidate_vi, "1.1.6", "1.1.6")
-        except AssertionError:
+            validate_changelog_history(candidate_readme, candidate_en, candidate_vi, "1.2.0", "1.1.6")
+        except AssertionError as error:
+            if expected_failures[label] not in str(error):
+                raise AssertionError(f"History contract rejected {label} for the wrong reason: {error}") from error
             continue
         raise AssertionError(f"History contract unexpectedly accepted {label}")
     validate_stable_tag("1.1.6", "1.2.0", "1.1.6")
