@@ -275,6 +275,22 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			}
 			$pending[] = [ 'key' => $key, 'value' => $meta->value, 'id' => absint( $meta->id ) ];
 		}
+		// WooCommerce hides pending deletions from get_meta_data(); inspect its loaded meta entries before refreshing.
+		if ( property_exists( $order, 'meta_data' ) ) {
+			$property = ( new ReflectionObject( $order ) )->getProperty( 'meta_data' );
+			if ( PHP_VERSION_ID < 80100 ) {
+				$property->setAccessible( true );
+			}
+			foreach ( (array) $property->getValue( $order ) as $meta ) {
+				if ( ! is_object( $meta ) || empty( $meta->id ) || ! isset( $meta->key ) || null !== $meta->value || ! method_exists( $meta, 'get_changes' ) || ! array_key_exists( 'value', $meta->get_changes() ) ) {
+					continue;
+				}
+				$key = (string) $meta->key;
+				if ( 0 !== strpos( $key, '_yoohw_vietnam_store_tools_einvoice_' ) ) {
+					$pending[] = [ 'key' => $key, 'value' => null, 'id' => absint( $meta->id ) ];
+				}
+			}
+		}
 		$order->read_meta_data( true );
 		foreach ( $pending as $meta ) {
 			if ( null === $meta['value'] ) {

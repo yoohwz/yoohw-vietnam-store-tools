@@ -42,7 +42,7 @@ class WC_Meta_Data {
 	public $id = 0;
 	public $key;
 	public $value;
-	public function __construct( $key, $value ) { $this->key = $key; $this->value = $value; }
+	public function __construct( $key, $value, $id = 0 ) { $this->key = $key; $this->value = $value; $this->id = $id; }
 	public function get_changes() { return [ 'value' => $this->value ]; }
 }
 class WC_Order {
@@ -50,15 +50,16 @@ class WC_Order {
 	public $meta = [];
 	public $notes = [];
 	public $pending_meta = [];
+	protected $meta_data = [];
 	public function __construct( $id ) { $this->id = $id; }
 	public function get_id() { return $this->id; }
 	public function get_meta( $key ) { return $this->meta[ $key ] ?? ''; }
 	public function get_meta_data() {
 		$result = [];
-		foreach ( $this->pending_meta as $key => $value ) { $result[] = new WC_Meta_Data( $key, $value ); }
+		foreach ( $this->pending_meta as $key => $value ) { if ( null !== $value ) { $result[] = new WC_Meta_Data( $key, $value ); } }
 		return $result;
 	}
-	public function read_meta_data() { global $orders; $this->meta = $orders[ $this->id ]->meta; $this->pending_meta = []; }
+	public function read_meta_data() { global $orders; $this->meta = $orders[ $this->id ]->meta; $this->pending_meta = []; $this->meta_data = []; }
 	public function update_meta_data( $key, $value, $meta_id = 0 ) {
 		global $wpdb, $steal_invoice_lock_on_revision;
 		$this->meta[ $key ] = $value;
@@ -68,7 +69,7 @@ class WC_Order {
 			$steal_invoice_lock_on_revision = false;
 		}
 	}
-	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); $this->pending_meta[ $key ] = null; }
+	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); $this->pending_meta[ $key ] = null; $this->meta_data[] = new WC_Meta_Data( $key, null, 1 ); }
 	public function add_order_note( $note ) { $this->notes[] = $note; }
 	public function save() { global $orders; $this->pending_meta = []; $orders[ $this->id ] = clone $this; }
 }
@@ -151,6 +152,7 @@ unset( $wpdb->rows['_yoohw_vst_einvoice_lock_63'] );
 $order = new WC_Order( 58 );
 $order->meta[ $api::META_STATUS ] = 'adjusted';
 $order->meta[ $api::META_NUMBER ] = 'OLD-1';
+$order->meta['_connector_to_delete'] = 'old';
 $order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
 $orders[58] = clone $order;
 $before = $orders[58]->meta;
@@ -192,6 +194,7 @@ vst_assert_same( 'replaced', $new_data['status'], 'Current projection reflects r
 vst_assert_same( 2, $new_data['workflow_revision'], 'Document advances revision' );
 vst_assert_true( is_wp_error( $api::record_order_document( 58, $doc, [ 'expected_revision' => 1, 'expected_current_document_id' => $prior ] ) ), 'Stale document write fails' );
 $order->update_meta_data( '_connector_pending', 'preserved' );
+$order->delete_meta_data( '_connector_to_delete' );
 $legacy_after = $api::update_order_data( $order, [ 'status' => 'adjusted', 'number' => 'LEGACY-EDIT' ], [ 'source' => 'old_connector' ] );
 vst_assert_same( true, $legacy_after, 'Old connector adjustment from stale object remains accepted after v2 opt-in' );
 vst_assert_same( 3, $api::get_order_data( 58 )['workflow_revision'], 'Legacy update advances v2 revision' );
@@ -199,6 +202,7 @@ vst_assert_same( 3, $api::get_order_data( $order )['workflow_revision'], 'Caller
 vst_assert_same( 'LEGACY-EDIT', $api::get_order_data( $order )['number'], 'Caller order object reflects the completed projection' );
 vst_assert_same( count( $api::get_order_history( 58 ) ), count( $api::get_order_history( $order ) ), 'Caller order object reflects current history' );
 vst_assert_same( 'preserved', $orders[58]->get_meta( '_connector_pending' ), 'Connector pending non-invoice metadata survives v2 save' );
+vst_assert_same( '', $orders[58]->get_meta( '_connector_to_delete' ), 'Connector pending non-invoice metadata deletion survives v2 save' );
 vst_assert_same( 'NEW-2', $api::get_order_documents( 58 )[1]['number'], 'Later projection edit cannot rewrite document snapshot' );
 vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'adjustment', 'prior_document_id' => $new_data['current_document_id'] ], [ 'expected_revision' => 2, 'expected_current_document_id' => $new_data['current_document_id'] ] ) ), 'Legacy update invalidates stale v2 tab' );
 vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 3, 'allowed_current_statuses' => [ 'requested', 'verified', 'ready' ] ] ) ), 'Bulk ready guard rejects issued or adjusted current state' );
