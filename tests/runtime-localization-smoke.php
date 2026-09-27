@@ -40,6 +40,9 @@ foreach ( $expected_fallbacks as $source => $translated ) {
 		WP_CLI::error( 'Missing Vietnamese fallback for ' . $source );
 	}
 }
+if ( 'Theo dõi đơn hàng Việt Nam' !== _x( 'Vietnam Order Tracking', 'block title', 'yoohw-vietnam-store-tools' ) ) {
+	WP_CLI::error( 'Missing contextual Vietnamese fallback.' );
+}
 
 if ( 'LANGPACK_SENTINEL' === $expected ) {
 	if ( 'Settings' !== __( 'Settings', 'yoohw-vietnam-store-tools' ) ) {
