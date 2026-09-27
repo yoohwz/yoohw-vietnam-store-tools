@@ -58,7 +58,8 @@
 .vck-store-health .vck-health-metric strong { display: block; margin: 7px 0; font-size: 27px; line-height: 1.2; }
 .vck-store-health .vck-health-metric strong.is-attention { color: #996800; }
 .vck-store-health .vck-health-metric small { font-size: 12px; }
-.vck-store-health .vck-health-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.vck-store-health .vck-health-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.vck-store-health .vck-health-heading .yoohw-vietnam-store__section-heading { margin-bottom: 0; }
 .vck-store-health .vck-health-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .vck-store-health .vck-health-card { padding: 20px; }
 .vck-store-health .vck-health-card.is-attention { border-left: 4px solid #dba617; background: #fffdf4; }
