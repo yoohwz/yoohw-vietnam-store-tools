@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 11.1
-Stable tag: 1.1.6
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -164,7 +164,7 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.2.0 (In development) =
+= 1.2.0 (September 27, 2026) =
 
 * New: Added optional VND-to-USD payment conversion for compatible WooCommerce PayPal Payments checkout flows, using a merchant-entered rate locked to each payment attempt and guarded compatibility checks.
 * New: Added manual payment reconciliation on the order screen to record observations, match exact order amounts, review evidence, and correct entries without automatically marking orders paid.
