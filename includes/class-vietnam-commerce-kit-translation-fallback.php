@@ -40,7 +40,6 @@ final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 			$base = WP_LANG_DIR . '/plugins/' . self::DOMAIN . '-' . $locale;
 			$keys = [];
 			$php_catalog = version_compare( (string) $wp_version, '6.5', '>=' )
-				&& 'mo' !== apply_filters( 'translation_file_format', 'php', self::DOMAIN )
 				&& is_readable( $base . '.l10n.php' );
 			if ( $php_catalog ) {
 				$data = include $base . '.l10n.php';
