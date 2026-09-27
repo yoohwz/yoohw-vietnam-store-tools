@@ -26,8 +26,12 @@ try {
 	vst_assert_same( 0, $domain::get_order_data( $before )['workflow_revision'], 'Old order has zero revision' );
 	vst_assert_same( [], $domain::get_order_documents( $before ), 'Old order has no document on read' );
 	vst_assert_same( '', wc_get_order( $order->get_id() )->get_meta( $domain::META_REVISION, true ), 'Read did not persist revision' );
-	$ready = $domain::update_order_data( $order, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 0, 'source' => 'admin' ] );
-	vst_assert_true( ! is_wp_error( $ready ), 'Strict ready passes complete request' );
+	$orders_admin = new Yoohw_Vietnam_Store_Tools_Order_Management();
+	$orders_admin->handle_bulk_actions( 'https://localhost/wp-admin/', Yoohw_Vietnam_Store_Tools_Order_Management::ACTION_MARK_INVOICE_READY, [ $order->get_id() ] );
+	vst_assert_same( 'ready', $domain::get_order_data( $order->get_id() )['status'], 'Bulk admin action marks complete invoice ready' );
+	vst_assert_same( 1, $domain::get_order_data( $order->get_id() )['workflow_revision'], 'Bulk admin action advances revision once' );
+	$orders_admin->handle_bulk_actions( 'https://localhost/wp-admin/', Yoohw_Vietnam_Store_Tools_Order_Management::ACTION_MARK_INVOICE_READY, [ $order->get_id() ] );
+	vst_assert_same( 1, $domain::get_order_data( $order->get_id() )['workflow_revision'], 'Bulk admin action skips already-ready order' );
 	$record = [ 'kind' => 'original', 'provider' => 'Manual provider', 'number' => 'INV-58', 'symbol' => 'SER-58', 'issued_at' => '2026-09-27T10:00:00Z' ];
 	$first = $domain::record_order_document( $order, $record, [ 'expected_revision' => 1, 'source' => 'admin' ] );
 	vst_assert_true( ! is_wp_error( $first ), 'Original document persists through WooCommerce CRUD' );

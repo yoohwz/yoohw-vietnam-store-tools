@@ -185,8 +185,10 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 			} elseif ( self::ACTION_MARK_INVOICE_READY === $action ) {
 				if ( $this->order_has_invoice_request( $order ) ) {
 					$current = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::get_order_data( $order );
-					$result = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::update_order_data( $order, [ 'status' => 'ready' ], [ 'source' => 'admin', 'actor_id' => get_current_user_id(), 'v2_strict' => true, 'expected_revision' => $current['workflow_revision'] ] );
-					$result = ! is_wp_error( $result );
+					if ( in_array( $current['status'], [ 'requested', 'verified' ], true ) ) {
+						$result = Yoohw_Vietnam_Store_Tools_Electronic_Invoice::update_order_data( $order, [ 'status' => 'ready' ], [ 'source' => 'admin', 'actor_id' => get_current_user_id(), 'v2_strict' => true, 'expected_revision' => $current['workflow_revision'], 'allowed_current_statuses' => [ 'requested', 'verified' ] ] );
+						$result = ! is_wp_error( $result );
+					}
 				}
 			} elseif ( self::ACTION_UPDATE_CARRIER === $action ) {
 				$result = $this->update_order_carrier( $order, $carrier_id, $carrier_options[ $carrier_id ] );
@@ -652,7 +654,9 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 		if ( $this->is_invoice_feature_enabled() ) {
 			$labels[ self::ACTION_EXPORT_INVOICE ] = __( 'Export VAT invoice CSV', 'yoohw-vietnam-store-tools' );
 			$labels[ self::ACTION_EXPORT_INVOICE_HANDOFF ] = __( 'Export invoice handoff CSV', 'yoohw-vietnam-store-tools' );
-			$labels[ self::ACTION_MARK_INVOICE_READY ] = __( 'Mark invoice ready', 'yoohw-vietnam-store-tools' );
+			if ( Yoohw_Vietnam_Store_Tools_Electronic_Invoice::is_workflow_enabled() ) {
+				$labels[ self::ACTION_MARK_INVOICE_READY ] = __( 'Mark invoice ready', 'yoohw-vietnam-store-tools' );
+			}
 		}
 
 		$labels[ self::ACTION_MARK_PREPARED ]    = __( 'Mark as prepared', 'yoohw-vietnam-store-tools' );

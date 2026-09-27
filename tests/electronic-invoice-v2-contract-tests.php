@@ -128,6 +128,12 @@ vst_assert_same( true, $legacy_after, 'Old connector adjustment from stale objec
 vst_assert_same( 3, $api::get_order_data( 58 )['workflow_revision'], 'Legacy update advances v2 revision' );
 vst_assert_same( 'NEW-2', $api::get_order_documents( 58 )[1]['number'], 'Later projection edit cannot rewrite document snapshot' );
 vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'adjustment', 'prior_document_id' => $new_data['current_document_id'] ], [ 'expected_revision' => 2, 'expected_current_document_id' => $new_data['current_document_id'] ] ) ), 'Legacy update invalidates stale v2 tab' );
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 3, 'allowed_current_statuses' => [ 'requested', 'verified', 'ready' ] ] ) ), 'Bulk ready guard rejects issued or adjusted current state' );
+$ready_order = new WC_Order( 59 );
+$ready_order->meta[ $api::META_STATUS ] = 'ready';
+$ready_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$orders[59] = clone $ready_order;
+vst_assert_true( is_wp_error( $api::update_order_data( 59, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 0, 'allowed_current_statuses' => [ 'requested', 'verified' ] ] ) ), 'Bulk ready skips an already ready order' );
 $fresh = $api::get_order_data( 58 );
 $adjustment = [ 'kind' => 'adjustment', 'prior_document_id' => $fresh['current_document_id'], 'provider' => 'Neutral provider', 'number' => 'ADJ-3', 'symbol' => 'SER-3', 'issued_at' => '2026-09-27T11:00:00Z' ];
 $adjusted = $api::record_order_document( 58, $adjustment, [ 'expected_revision' => 3, 'expected_current_document_id' => $fresh['current_document_id'], 'source' => 'integration' ] );
@@ -136,6 +142,8 @@ vst_assert_same( 'adjustment', $api::get_order_documents( 58 )[2]['kind'], 'Adju
 vst_assert_same( $fresh['current_document_id'], $api::get_order_documents( 58 )[2]['prior_document_id'], 'Adjustment links exact predecessor' );
 vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'issued_at' => '2026-02-31T10:00:00Z' ], [ 'v2_strict' => true, 'expected_revision' => 4 ] ) ), 'Invalid calendar date rejected' );
 $after = $api::get_order_data( 58 );
+vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'replacement', 'prior_document_id' => $after['current_document_id'], 'provider' => "Bad\nprovider", 'number' => '5', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 4, 'expected_current_document_id' => $after['current_document_id'] ] ) ), 'Document identity control character rejected before sanitization' );
+vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'provider' => "Bad\tprovider" ], [ 'v2_strict' => true, 'expected_revision' => 4 ] ) ), 'Strict update identity control character rejected before sanitization' );
 vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'replacement', 'prior_document_id' => 'other-order', 'provider' => 'N', 'number' => '5', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 4, 'expected_current_document_id' => $after['current_document_id'] ] ) ), 'Foreign predecessor rejected' );
 $lock_name = '_yoohw_vst_einvoice_lock_58';
 $wpdb->rows[ $lock_name ] = 'active|' . ( time() + 20 );

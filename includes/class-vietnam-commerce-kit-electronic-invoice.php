@@ -219,6 +219,9 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 				return new WP_Error( 'yoohw_vietnam_store_tools_einvoice_invalid_order', __( 'Could not load order.', 'yoohw-vietnam-store-tools' ) );
 			}
 			if ( $strict ) {
+				if ( isset( $context['allowed_current_statuses'] ) && ( ! is_array( $context['allowed_current_statuses'] ) || ! in_array( self::get_order_data( $fresh )['status'], $context['allowed_current_statuses'], true ) ) ) {
+					return self::stale_error();
+				}
 				$expected = isset( $context['expected_revision'] ) ? $context['expected_revision'] : null;
 				if ( null === $expected || ! ctype_digit( (string) $expected ) || (int) $expected !== absint( $fresh->get_meta( self::META_REVISION, true ) ) ) {
 					return self::stale_error();
@@ -552,17 +555,23 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 
 		$data = [
 			'status'     => sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_status' ) ),
-			'provider'   => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_provider' ),
-			'number'     => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_number' ),
-			'symbol'     => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_symbol' ),
+			'provider'   => self::get_post_identity_field( 'vck_einvoice_provider' ),
+			'number'     => self::get_post_identity_field( 'vck_einvoice_number' ),
+			'symbol'     => self::get_post_identity_field( 'vck_einvoice_symbol' ),
 			'issued_at'  => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_issued_at' ),
 			'lookup_url' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_lookup_url' ),
-			'provider_document_id' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_provider_document_id' ),
-			'handoff_reference' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_handoff_reference' ),
-			'provider_status_text' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_provider_status_text' ),
+			'provider_document_id' => self::get_post_identity_field( 'vck_einvoice_provider_document_id' ),
+			'handoff_reference' => self::get_post_identity_field( 'vck_einvoice_handoff_reference' ),
+			'provider_status_text' => self::get_post_identity_field( 'vck_einvoice_provider_status_text' ),
 			'handed_off_at' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_handed_off_at' ),
 			'confirmed_at' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_confirmed_at' ),
 		];
+		$current_data = self::get_order_data( $order );
+		foreach ( [ 'issued_at', 'handed_off_at', 'confirmed_at' ] as $date_key ) {
+			if ( '' === $data[ $date_key ] && '' !== $current_data[ $date_key ] && '' === self::format_datetime_input_value( $current_data[ $date_key ] ) ) {
+				unset( $data[ $date_key ] );
+			}
+		}
 		$created_attachments = [];
 
 		foreach ( [ 'pdf', 'xml' ] as $file_type ) {
@@ -622,14 +631,14 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		$data = [
 			'kind' => $kind,
 			'prior_document_id' => 'original' === $kind ? '' : Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_expected_document_id' ),
-			'provider' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_provider' ),
-			'number' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_number' ),
-			'symbol' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_symbol' ),
+			'provider' => self::get_post_identity_field( 'vck_einvoice_provider' ),
+			'number' => self::get_post_identity_field( 'vck_einvoice_number' ),
+			'symbol' => self::get_post_identity_field( 'vck_einvoice_symbol' ),
 			'issued_at' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_issued_at' ),
 			'lookup_url' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_lookup_url' ),
-			'provider_document_id' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_provider_document_id' ),
-			'handoff_reference' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_handoff_reference' ),
-			'provider_status_text' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_provider_status_text' ),
+			'provider_document_id' => self::get_post_identity_field( 'vck_einvoice_provider_document_id' ),
+			'handoff_reference' => self::get_post_identity_field( 'vck_einvoice_handoff_reference' ),
+			'provider_status_text' => self::get_post_identity_field( 'vck_einvoice_provider_status_text' ),
 			'handed_off_at' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_handed_off_at' ),
 			'confirmed_at' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'vck_einvoice_confirmed_at' ),
 		];
@@ -986,6 +995,15 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		return (bool) $is_valid;
 	}
 
+	private static function get_post_identity_field( $key ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Admin action handlers verify their form nonce before calling this helper.
+		if ( ! isset( $_POST[ $key ] ) ) {
+			return '';
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Preserve raw text so v2 validation can reject control characters before sanitization.
+		return wp_unslash( $_POST[ $key ] );
+	}
+
 	private static function sanitize_data_value( $key, $value ) {
 		if ( 'status' === $key ) {
 			$value = sanitize_key( $value );
@@ -1317,6 +1335,10 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 				}
 			}
 			$projection = [];
+			$valid_raw = self::validate_v2_identity_fields( $document );
+			if ( is_wp_error( $valid_raw ) ) {
+				return $valid_raw;
+			}
 			foreach ( self::get_data_field_map() as $key => $meta_key ) {
 				unset( $meta_key );
 				if ( array_key_exists( $key, $document ) ) {
@@ -1413,7 +1435,24 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		return $snapshot;
 	}
 
+	private static function validate_v2_identity_fields( $data ) {
+		foreach ( [ 'provider' => 120, 'number' => 80, 'symbol' => 80, 'provider_document_id' => 160, 'handoff_reference' => 160, 'provider_status_text' => 160 ] as $key => $limit ) {
+			if ( ! array_key_exists( $key, $data ) ) {
+				continue;
+			}
+			$value = $data[ $key ];
+			if ( ! is_scalar( $value ) || strlen( (string) $value ) > $limit || preg_match( '/[\x00-\x1F\x7F]/', (string) $value ) ) {
+				return self::v2_error( 'field', __( 'An invoice field is too long or contains control characters.', 'yoohw-vietnam-store-tools' ) );
+			}
+		}
+		return true;
+	}
+
 	private static function validate_v2_projection( $order, $data, $require_document = false ) {
+		$valid_raw = self::validate_v2_identity_fields( $data );
+		if ( is_wp_error( $valid_raw ) ) {
+			return $valid_raw;
+		}
 		$current = self::get_order_data( $order );
 		$next = array_merge( $current, is_array( $data ) ? $data : [] );
 		$status = isset( $next['status'] ) ? sanitize_key( $next['status'] ) : '';
@@ -1423,11 +1462,9 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		if ( ( $require_document || $status !== $current['status'] ) && in_array( $status, [ 'verified', 'ready', 'issued', 'sent', 'adjusted', 'replaced' ], true ) && ! self::has_complete_invoice_request( $order ) ) {
 			return self::v2_error( 'request', __( 'Complete the company name, tax code, address and invoice email before advancing the invoice workflow.', 'yoohw-vietnam-store-tools' ) );
 		}
-		foreach ( [ 'provider' => 120, 'number' => 80, 'symbol' => 80, 'provider_document_id' => 160, 'handoff_reference' => 160, 'provider_status_text' => 160 ] as $key => $limit ) {
-			$value = (string) $next[ $key ];
-			if ( strlen( $value ) > $limit || preg_match( '/[\x00-\x1F\x7F]/', $value ) ) {
-				return self::v2_error( 'field', __( 'An invoice field is too long or contains control characters.', 'yoohw-vietnam-store-tools' ) );
-			}
+		$valid_identity = self::validate_v2_identity_fields( $next );
+		if ( is_wp_error( $valid_identity ) ) {
+			return $valid_identity;
 		}
 		$advancing = $require_document || $status !== $current['status'];
 		if ( '' !== (string) $next['lookup_url'] && ( $advancing || ( isset( $data['lookup_url'] ) && (string) $data['lookup_url'] !== (string) $current['lookup_url'] ) ) ) {
