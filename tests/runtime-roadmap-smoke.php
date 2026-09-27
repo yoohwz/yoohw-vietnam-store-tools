@@ -14,6 +14,7 @@ $old_settings = get_option( 'woocommerce_bacs_settings', false );
 $old_invoice = get_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, false );
 $product = null;
 $order = null;
+$extra_orders = [];
 try {
 	update_option( 'woocommerce_bacs_accounts', [ [ 'account_name' => 'VST fixture', 'account_number' => '123456789', 'bank_name' => 'Fixture Bank', 'sort_code' => '970436' ] ] );
 	update_option( 'woocommerce_bacs_settings', [ 'enabled' => 'yes', Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_ENABLED => 'yes', Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_INCLUDE_AMOUNT => 'yes' ] );
@@ -102,7 +103,65 @@ try {
 	vst_assert_same( $before_transaction, $reloaded->get_transaction_id(), 'Operational workflows leave transaction ID unchanged' );
 	vst_assert_same( $before_refunds, count( $reloaded->get_refunds() ), 'Operational workflows create no refund' );
 	vst_assert_same( '', $reloaded->get_meta( '_yoohw_vietnam_store_tools_payment_link', true ), 'No VST payment-link metadata' );
+	$stock_before = wc_get_product( $product->get_id() )->get_stock_quantity();
+	$admin_id = get_current_user_id();
+	wp_set_current_user( 0 );
+	ob_start();
+	$payment->render_payment_link_metabox( $reloaded );
+	$unauthorized_html = ob_get_clean();
+	wp_set_current_user( $admin_id );
+	vst_assert_same( '', $unauthorized_html, 'Order payment link is hidden without edit_shop_order' );
+	vst_assert_same( $stock_before, wc_get_product( $product->get_id() )->get_stock_quantity(), 'VST operational actions leave stock unchanged' );
+
+	foreach ( [ 'pending', 'failed', 'on-hold', 'processing', 'completed', 'cancelled', 'refunded' ] as $status ) {
+		$state_order = wc_create_order();
+		$extra_orders[] = $state_order;
+		$state_order->set_currency( 'VND' );
+		$state_order->set_payment_method( 'bacs' );
+		$state_order->set_total( 10000 );
+		$state_order->set_status( $status );
+		$state_order->save();
+		$state_paid = $state_order->get_date_paid();
+		$state_before = [ $state_order->get_status(), $state_paid ? $state_paid->getTimestamp() : null, $state_order->get_transaction_id(), count( $state_order->get_refunds() ) ];
+		ob_start();
+		$payment->render_payment_link_metabox( $state_order );
+		$html = ob_get_clean();
+		$has_url = false !== strpos( $html, esc_attr( $state_order->get_checkout_payment_url() ) );
+		vst_assert_same( in_array( $status, [ 'pending', 'failed' ], true ), $has_url, 'Native payment URL eligibility: ' . $status );
+		vst_assert_same( [], $reconciliation::get_history( $state_order ), 'Admin view is not payment evidence: ' . $status );
+		$after = wc_get_order( $state_order->get_id() );
+		$after_paid = $after->get_date_paid();
+		vst_assert_same( $state_before, [ $after->get_status(), $after_paid ? $after_paid->getTimestamp() : null, $after->get_transaction_id(), count( $after->get_refunds() ) ], 'Admin view preserves WooCommerce state: ' . $status );
+	}
+	$zero = wc_create_order();
+	$extra_orders[] = $zero;
+	$zero->set_currency( 'VND' );
+	$zero->set_payment_method( 'bacs' );
+	$zero->set_total( 0 );
+	$zero->save();
+	ob_start();
+	$payment->render_payment_link_metabox( $zero );
+	$zero_html = ob_get_clean();
+	vst_assert_true( false === strpos( $zero_html, esc_attr( $zero->get_checkout_payment_url() ) ), 'Zero-total order has no payment link' );
+	vst_assert_same( [], $reconciliation::get_history( $zero ), 'Zero-total order has no payment evidence' );
+
+	$bacs_order = wc_create_order();
+	$extra_orders[] = $bacs_order;
+	$bacs_order->set_currency( 'VND' );
+	$bacs_order->set_payment_method( 'bacs' );
+	$bacs_order->set_total( 10000 );
+	$bacs_order->save();
+	$gateway = new WC_Gateway_BACS();
+	$bacs_result = $gateway->process_payment( $bacs_order->get_id() );
+	vst_assert_same( 'success', $bacs_result['result'], 'Native WooCommerce BACS gateway accepts positive order' );
+	$bacs_persisted = wc_get_order( $bacs_order->get_id() );
+	vst_assert_same( 'on-hold', $bacs_persisted->get_status(), 'Native BACS puts order on hold' );
+	vst_assert_same( [], $reconciliation::get_history( $bacs_persisted ), 'Native BACS submission is not reconciliation evidence' );
+	vst_assert_same( null, $bacs_persisted->get_date_paid(), 'Native BACS does not mark order paid' );
 } finally {
+	foreach ( $extra_orders as $extra_order ) {
+		$extra_order->delete( true );
+	}
 	if ( $order instanceof WC_Order ) {
 		$order->delete( true );
 	}
