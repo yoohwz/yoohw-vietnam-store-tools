@@ -47,6 +47,38 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		foreach ( array_unique( array_filter( $screens ) ) as $screen ) {
 			add_meta_box( 'yoohw-vietnam-store-tools-payment-reconciliation', __( 'Payment reconciliation', 'yoohw-vietnam-store-tools' ), [ $this, 'render_metabox' ], $screen, 'side', 'default' );
 		}
+		$screen = get_current_screen();
+		if ( $screen && in_array( $screen->id, $screens, true ) ) {
+			add_filter( 'get_user_option_meta-box-order_' . $screen->id, [ $this, 'side_stack_order' ] );
+		}
+	}
+
+	/**
+	 * Place this box after VietQR in the rendered side stack without changing saved user preferences.
+	 */
+	public function side_stack_order( $order ) {
+		if ( ! is_array( $order ) ) {
+			return $order;
+		}
+		$id = 'yoohw-vietnam-store-tools-payment-reconciliation';
+		$vietqr_id = 'yoohw-vietnam-store-tools-bacs-vietqr';
+		$side = isset( $order['side'] ) && is_string( $order['side'] ) ? explode( ',', $order['side'] ) : [];
+		$vietqr_position = array_search( $vietqr_id, $side, true );
+		$already_side = in_array( $id, $side, true );
+		if ( false === $vietqr_position && $already_side ) {
+			return $order;
+		}
+		foreach ( $order as $context => $ids ) {
+			if ( ! is_string( $ids ) ) {
+				continue;
+			}
+			$order[ $context ] = implode( ',', array_diff( explode( ',', $ids ), [ $id ] ) );
+		}
+		$side = isset( $order['side'] ) && is_string( $order['side'] ) && '' !== $order['side'] ? explode( ',', $order['side'] ) : [];
+		$vietqr_position = array_search( $vietqr_id, $side, true );
+		array_splice( $side, false === $vietqr_position ? count( $side ) : $vietqr_position + 1, 0, [ $id ] );
+		$order['side'] = implode( ',', $side );
+		return $order;
 	}
 
 	public function render_metabox( $post_or_order ) {

@@ -12,11 +12,15 @@ function get_option( $key ) { return 'date_format' === $key ? 'Y-m-d' : 'H:i'; }
 function get_userdata( $id ) { return (object) [ 'display_name' => 'Operator ' . $id ]; }
 function wp_unslash( $value ) { return $value; }
 function is_admin() { return true; }
-function get_current_screen() { return (object) [ 'id' => 'shop_order' ]; }
+function get_current_screen() { global $test_screen_id; return (object) [ 'id' => $test_screen_id ]; }
 function wc_get_page_screen_id() { return 'woocommerce_page_wc-orders'; }
 function add_meta_box( $id, $title, $callback, $screen, $context, $priority ) {
 	global $test_metaboxes;
 	$test_metaboxes[] = [ $id, $screen, $context, $priority ];
+}
+function add_filter( $hook, $callback ) {
+	global $test_admin_filters;
+	$test_admin_filters[ $hook ] = $callback;
 }
 
 class VST_Admin_Order extends WC_Order {
@@ -32,13 +36,34 @@ $panel = 'Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin';
 $order = new VST_Admin_Order( 90 );
 $test_orders[90] = $order;
 $test_metaboxes = [];
+$test_admin_filters = [];
+$test_screen_id = 'shop_order';
 $_GET['post'] = '90';
 $admin->add_order_metabox();
 vst_assert_same( [
 	[ 'yoohw-vietnam-store-tools-payment-reconciliation', 'shop_order', 'side', 'default' ],
 	[ 'yoohw-vietnam-store-tools-payment-reconciliation', 'woocommerce_page_wc-orders', 'side', 'default' ],
 ], $test_metaboxes, 'Relevant BACS registers in the side stack on legacy and HPOS screens without VietQR' );
+vst_assert_true( isset( $test_admin_filters['get_user_option_meta-box-order_shop_order'] ), 'Relevant order adjusts only the rendered metabox order for its current screen' );
+$saved_order = [
+	'side' => 'yoohw-vietnam-store-tools-bacs-vietqr,other-side-box',
+	'normal' => 'order_data,yoohw-vietnam-store-tools-payment-reconciliation,order_notes',
+];
+$rendered_order = $admin->side_stack_order( $saved_order );
+vst_assert_same( 'yoohw-vietnam-store-tools-bacs-vietqr,yoohw-vietnam-store-tools-payment-reconciliation,other-side-box', $rendered_order['side'], 'Saved normal placement is rendered immediately after VietQR in the side stack' );
+vst_assert_same( 'order_data,order_notes', $rendered_order['normal'], 'Other normal metaboxes keep their order' );
+vst_assert_same( 'order_data,yoohw-vietnam-store-tools-payment-reconciliation,order_notes', $saved_order['normal'], 'Saved user preference is not mutated' );
+vst_assert_same( 'yoohw-vietnam-store-tools-bacs-vietqr,yoohw-vietnam-store-tools-payment-reconciliation,other-side-box', $admin->side_stack_order( $rendered_order )['side'], 'Repeated ordering does not duplicate the metabox' );
+vst_assert_same( [ 'side' => 'other-side-box,yoohw-vietnam-store-tools-payment-reconciliation' ], $admin->side_stack_order( [ 'side' => 'other-side-box,yoohw-vietnam-store-tools-payment-reconciliation' ] ), 'Existing side customization remains when VietQR is absent' );
+vst_assert_same( false, $admin->side_stack_order( false ), 'Default order remains under WordPress registration order' );
 unset( $_GET['post'] );
+$test_screen_id = 'woocommerce_page_wc-orders';
+$_GET['id'] = '90';
+$test_admin_filters = [];
+$admin->add_order_metabox();
+vst_assert_true( isset( $test_admin_filters['get_user_option_meta-box-order_woocommerce_page_wc-orders'] ), 'HPOS order screen also adjusts saved placement at render time' );
+unset( $_GET['id'] );
+$test_screen_id = 'shop_order';
 
 ob_start();
 $admin->render_metabox( $order );
