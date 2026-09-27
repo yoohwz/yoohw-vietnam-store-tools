@@ -56,6 +56,9 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Identity {
 		if ( ! $order ) {
 			return self::error( 'invalid_order' );
 		}
+		if ( ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
+			return self::error( 'forbidden' );
+		}
 		self::refresh_order( $order );
 		$current = self::get_current_shipment( $order );
 		$materialized_legacy = 'legacy:' . $order->get_id() === $expected_id

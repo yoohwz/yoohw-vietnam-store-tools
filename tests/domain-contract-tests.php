@@ -248,5 +248,10 @@ $current_id = $identity::get_current_shipment( $historical )['id'];
 $identity::ensure_current_id( $historical );
 vst_assert_same( $old_history, $historical->get_meta( '_yoohw_vietnam_store_tools_shipment_exception_history' ), 'Historical exception data stays inert after identity write' );
 vst_assert_true( is_wp_error( $identity::assert_current( $historical, $current_id ) ), 'Materialized identity rejects stale virtual ID' );
+$test_actor_allowed = false;
+$active_historical_id = $identity::get_current_shipment( $historical )['id'];
+vst_assert_true( is_wp_error( $identity::close_current( $historical, $active_historical_id ) ), 'Closing shipment requires order capability' );
+vst_assert_same( 'in_transit', $historical->get_meta( $shipping::META_STATUS_ID ), 'Denied close preserves shipment state' );
+$test_actor_allowed = true;
 
 vst_finish_contract_suite( 'VST-50 domain' );
