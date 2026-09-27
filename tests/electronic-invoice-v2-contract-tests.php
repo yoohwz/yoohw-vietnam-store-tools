@@ -38,16 +38,39 @@ class WP_Error {
 	public function get_error_code() { return $this->code; }
 	public function get_error_message() { return $this->message; }
 }
+class WC_Meta_Data {
+	public $id = 0;
+	public $key;
+	public $value;
+	public function __construct( $key, $value ) { $this->key = $key; $this->value = $value; }
+	public function get_changes() { return [ 'value' => $this->value ]; }
+}
 class WC_Order {
 	private $id;
 	public $meta = [];
 	public $notes = [];
+	public $pending_meta = [];
 	public function __construct( $id ) { $this->id = $id; }
 	public function get_id() { return $this->id; }
 	public function get_meta( $key ) { return $this->meta[ $key ] ?? ''; }
-	public function update_meta_data( $key, $value ) { $this->meta[ $key ] = $value; }
+	public function get_meta_data() {
+		$result = [];
+		foreach ( $this->pending_meta as $key => $value ) { $result[] = new WC_Meta_Data( $key, $value ); }
+		return $result;
+	}
+	public function read_meta_data() { global $orders; $this->meta = $orders[ $this->id ]->meta; $this->pending_meta = []; }
+	public function update_meta_data( $key, $value, $meta_id = 0 ) {
+		global $wpdb, $steal_invoice_lock_on_revision;
+		$this->meta[ $key ] = $value;
+		$this->pending_meta[ $key ] = $value;
+		if ( $steal_invoice_lock_on_revision && '_yoohw_vietnam_store_tools_einvoice_revision' === $key ) {
+			$wpdb->rows[ '_yoohw_vst_einvoice_lock_' . $this->id ] = 'new-writer|' . ( time() + 20 );
+			$steal_invoice_lock_on_revision = false;
+		}
+	}
+	public function delete_meta_data( $key ) { unset( $this->meta[ $key ] ); $this->pending_meta[ $key ] = null; }
 	public function add_order_note( $note ) { $this->notes[] = $note; }
-	public function save() { global $orders; $orders[ $this->id ] = clone $this; }
+	public function save() { global $orders; $this->pending_meta = []; $orders[ $this->id ] = clone $this; }
 }
 function wc_get_order( $id ) { global $orders; $id = $id instanceof WC_Order ? $id->get_id() : (int) $id; return isset( $orders[ $id ] ) ? clone $orders[ $id ] : false; }
 class Yoohw_Vietnam_Store_Tools_Admin_Menu {
@@ -95,11 +118,36 @@ vst_assert_same( '', $unsaved->get_meta( $api::META_REVISION ), 'Unsaved legacy 
 vst_assert_true( ! isset( $wpdb->rows['_yoohw_vst_einvoice_lock_0'] ), 'Unsaved order cannot hold a persisted per-order lock' );
 $pending_order = new WC_Order( 61 );
 $orders[61] = clone $pending_order;
-$pending_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$pending_order->update_meta_data( Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED, 'yes' );
 vst_assert_same( true, $api::update_order_data( $pending_order, [ 'status' => 'adjusted' ], [ 'source' => 'old_connector' ] ), 'Legacy persisted order object retains unsaved VAT request metadata' );
 vst_assert_same( 'yes', $orders[61]->get_meta( Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ), 'Legacy save persists pending request metadata' );
 vst_assert_same( 'adjusted', $api::get_order_data( 61 )['status'], 'Legacy save persists workflow status with pending request' );
 vst_assert_same( '', $orders[61]->get_meta( $api::META_REVISION ), 'Pending legacy object does not create v2 revision' );
+$lock_loss_order = new WC_Order( 62 );
+$lock_loss_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$lock_loss_order->meta[ $api::META_REVISION ] = 1;
+$orders[62] = clone $lock_loss_order;
+$steal_invoice_lock_on_revision = true;
+vst_assert_true( is_wp_error( $api::update_order_data( 62, [ 'status' => 'verified' ], [ 'source' => 'old_connector' ] ) ), 'Writer losing lock before save fails closed' );
+vst_assert_same( 'requested', $api::get_order_data( 62 )['status'], 'Lost-lock writer does not persist projection' );
+vst_assert_same( 1, $api::get_order_data( 62 )['workflow_revision'], 'Lost-lock writer does not persist revision' );
+vst_assert_same( [], $orders[62]->notes, 'Lost-lock writer creates no order note' );
+unset( $wpdb->rows['_yoohw_vst_einvoice_lock_62'] );
+$lost_document_order = new WC_Order( 63 );
+$lost_document_order->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
+$lost_document_order->meta[ $api::META_STATUS ] = 'ready';
+$lost_document_order->meta[ $api::META_REVISION ] = 1;
+foreach ( [ 'company_name' => 'Acme', 'tax_code' => '0123456789', 'company_address' => 'Ha Noi', 'email' => 'invoice@example.test' ] as $key => $value ) {
+	$lost_document_order->meta[ '_yoohw_vietnam_store_tools_tax_invoice_' . $key ] = $value;
+}
+$orders[63] = clone $lost_document_order;
+$steal_invoice_lock_on_revision = true;
+$lost_document = $api::record_order_document( 63, [ 'kind' => 'original', 'provider' => 'N', 'number' => '63', 'symbol' => 'S', 'issued_at' => '2026-09-27T10:00:00Z' ], [ 'expected_revision' => 1 ] );
+vst_assert_true( is_wp_error( $lost_document ), 'Document write losing lock before save fails closed' );
+vst_assert_same( [], $api::get_order_documents( 63 ), 'Lost-lock document does not persist a snapshot' );
+vst_assert_same( 'ready', $api::get_order_data( 63 )['status'], 'Lost-lock document does not change current projection' );
+vst_assert_same( [], $orders[63]->notes, 'Lost-lock document creates no order note' );
+unset( $wpdb->rows['_yoohw_vst_einvoice_lock_63'] );
 $order = new WC_Order( 58 );
 $order->meta[ $api::META_STATUS ] = 'adjusted';
 $order->meta[ $api::META_NUMBER ] = 'OLD-1';
@@ -143,9 +191,14 @@ $new_data = $api::get_order_data( 58 );
 vst_assert_same( 'replaced', $new_data['status'], 'Current projection reflects replacement' );
 vst_assert_same( 2, $new_data['workflow_revision'], 'Document advances revision' );
 vst_assert_true( is_wp_error( $api::record_order_document( 58, $doc, [ 'expected_revision' => 1, 'expected_current_document_id' => $prior ] ) ), 'Stale document write fails' );
+$order->update_meta_data( '_connector_pending', 'preserved' );
 $legacy_after = $api::update_order_data( $order, [ 'status' => 'adjusted', 'number' => 'LEGACY-EDIT' ], [ 'source' => 'old_connector' ] );
 vst_assert_same( true, $legacy_after, 'Old connector adjustment from stale object remains accepted after v2 opt-in' );
 vst_assert_same( 3, $api::get_order_data( 58 )['workflow_revision'], 'Legacy update advances v2 revision' );
+vst_assert_same( 3, $api::get_order_data( $order )['workflow_revision'], 'Caller order object reflects the completed v2 revision' );
+vst_assert_same( 'LEGACY-EDIT', $api::get_order_data( $order )['number'], 'Caller order object reflects the completed projection' );
+vst_assert_same( count( $api::get_order_history( 58 ) ), count( $api::get_order_history( $order ) ), 'Caller order object reflects current history' );
+vst_assert_same( 'preserved', $orders[58]->get_meta( '_connector_pending' ), 'Connector pending non-invoice metadata survives v2 save' );
 vst_assert_same( 'NEW-2', $api::get_order_documents( 58 )[1]['number'], 'Later projection edit cannot rewrite document snapshot' );
 vst_assert_true( is_wp_error( $api::record_order_document( 58, [ 'kind' => 'adjustment', 'prior_document_id' => $new_data['current_document_id'] ], [ 'expected_revision' => 2, 'expected_current_document_id' => $new_data['current_document_id'] ] ) ), 'Legacy update invalidates stale v2 tab' );
 vst_assert_true( is_wp_error( $api::update_order_data( 58, [ 'status' => 'ready' ], [ 'v2_strict' => true, 'expected_revision' => 3, 'allowed_current_statuses' => [ 'requested', 'verified', 'ready' ] ] ) ), 'Bulk ready guard rejects issued or adjusted current state' );

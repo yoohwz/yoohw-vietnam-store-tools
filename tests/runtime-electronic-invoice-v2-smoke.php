@@ -67,10 +67,14 @@ try {
 	$second = $domain::record_order_document( $fresh, $replacement, [ 'expected_revision' => 2, 'expected_current_document_id' => $prior, 'source' => 'admin' ] );
 	vst_assert_true( ! is_wp_error( $second ), 'Replacement persists' );
 	vst_assert_true( is_wp_error( $domain::record_order_document( $fresh, $replacement, [ 'expected_revision' => 2, 'expected_current_document_id' => $prior ] ) ), 'Stale replacement rejected' );
+	$fresh->update_meta_data( '_vst58_connector_pending', 'preserved' );
 	$legacy = $domain::update_order_data( $fresh, [ 'status' => 'adjusted', 'number' => 'LEGACY-EDIT' ], [ 'source' => 'integration' ] );
 	vst_assert_true( ! is_wp_error( $legacy ), 'Legacy connector still writes after v2 opt-in' );
 	$final = wc_get_order( $order->get_id() );
 	vst_assert_same( 4, $domain::get_order_data( $final )['workflow_revision'], 'Legacy write advances revision' );
+	vst_assert_same( 4, $domain::get_order_data( $fresh )['workflow_revision'], 'Caller order object reflects v2 revision' );
+	vst_assert_same( 'LEGACY-EDIT', $domain::get_order_data( $fresh )['number'], 'Caller order object reflects v2 projection' );
+	vst_assert_same( 'preserved', $final->get_meta( '_vst58_connector_pending', true ), 'Caller pending non-invoice metadata persists' );
 	vst_assert_same( 'INV-59', $domain::get_order_documents( $final )[1]['number'], 'Snapshot survives legacy edit' );
 	vst_assert_same( $before_status, $final->get_status(), 'Workflow did not change Woo order status' );
 	vst_assert_same( $before_refunds, count( $final->get_refunds() ), 'Workflow did not create refund' );

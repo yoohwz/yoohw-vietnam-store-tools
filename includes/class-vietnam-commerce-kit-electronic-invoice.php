@@ -15,7 +15,7 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 	const ACTION_SEND_EMAIL = 'yoohw_vietnam_store_tools_send_einvoice_email';
 	const ACTION_RECORD_DOCUMENT = 'yoohw_vietnam_store_tools_record_einvoice_document';
 	const MAX_DOCUMENTS = 50;
-	const LEASE_SECONDS = 30;
+	const LEASE_SECONDS = 120;
 
 	const META_STATUS            = '_yoohw_vietnam_store_tools_einvoice_status';
 	const META_NUMBER            = '_yoohw_vietnam_store_tools_einvoice_number';
@@ -243,10 +243,45 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			}
 			$has_v2 = '' !== (string) $fresh->get_meta( self::META_REVISION, true ) || '' !== (string) $fresh->get_meta( self::META_CURRENT_DOCUMENT_ID, true ) || (bool) $fresh->get_meta( self::META_DOCUMENTS, true );
 			$context['advance_revision'] = $strict || $conditional || $has_v2;
-			$write_order = ! $has_v2 && ! $strict && ! $conditional && $order instanceof WC_Order ? $resolved : $fresh;
+			$context['lock_token'] = $token;
+			$write_order = $fresh;
+			if ( $order instanceof WC_Order ) {
+				self::refresh_caller_meta_for_write( $resolved );
+				$write_order = $resolved;
+			}
 			return self::update_order_data_unlocked( $write_order, $data, $context );
 		} finally {
 			self::release_lock( $resolved->get_id(), $token );
+		}
+	}
+
+	private static function refresh_caller_meta_for_write( $order ) {
+		if ( ! method_exists( $order, 'get_meta_data' ) || ! method_exists( $order, 'read_meta_data' ) ) {
+			return;
+		}
+		// Keep the caller's pending non-workflow metadata while reloading authoritative invoice state.
+		$pending = [];
+		foreach ( $order->get_meta_data() as $meta ) {
+			if ( ! is_object( $meta ) || ! isset( $meta->key ) || ! method_exists( $meta, 'get_changes' ) ) {
+				continue;
+			}
+			$changes = $meta->get_changes();
+			if ( ! empty( $meta->id ) && ! array_key_exists( 'value', $changes ) ) {
+				continue;
+			}
+			$key = (string) $meta->key;
+			if ( 0 === strpos( $key, '_yoohw_vietnam_store_tools_einvoice_' ) ) {
+				continue;
+			}
+			$pending[] = [ 'key' => $key, 'value' => $meta->value, 'id' => absint( $meta->id ) ];
+		}
+		$order->read_meta_data( true );
+		foreach ( $pending as $meta ) {
+			if ( null === $meta['value'] ) {
+				$order->delete_meta_data( $meta['key'] );
+			} else {
+				$order->update_meta_data( $meta['key'], $meta['value'], $meta['id'] );
+			}
 		}
 	}
 
@@ -333,11 +368,14 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		$history_entry = self::create_history_entry( $changes, $context, $note );
 		self::append_history_entry( $order, $history_entry );
 
-		if ( ! empty( $context['add_order_note'] ) ) {
-			$order->add_order_note( self::get_order_note_message( $current, $next, $note ) );
+		if ( isset( $context['lock_token'] ) && ! self::owns_lock( $order->get_id(), $context['lock_token'] ) ) {
+			return self::lock_error();
 		}
 
 		$order->save();
+		if ( ! empty( $context['add_order_note'] ) ) {
+			$order->add_order_note( self::get_order_note_message( $current, $next, $note ) );
+		}
 
 		do_action( 'yoohw_vietnam_store_tools_einvoice_workflow_updated', $order, self::get_order_data( $order ), $changes, $history_entry );
 
@@ -1272,6 +1310,7 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		if ( is_wp_error( $token ) ) {
 			return $token;
 		}
+		$context['lock_token'] = $token;
 		try {
 			$fresh = wc_get_order( $order->get_id() );
 			if ( ! $fresh instanceof WC_Order || ! self::is_workflow_enabled() || ! self::order_has_invoice_request( $fresh ) ) {
