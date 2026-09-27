@@ -399,7 +399,9 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 
 	private function format_bacs_instructions( $order, $accounts, $link ) {
 		$lines = [
+			/* translators: %s: WooCommerce order number. */
 			sprintf( __( 'Order: %s', 'yoohw-vietnam-store-tools' ), $order->get_order_number() ),
+			/* translators: 1: Formatted order amount, 2: currency code. */
 			sprintf( __( 'Amount: %1$s %2$s', 'yoohw-vietnam-store-tools' ), html_entity_decode( wp_strip_all_tags( wc_price( (float) $order->get_total(), [ 'currency' => $order->get_currency() ] ) ), ENT_QUOTES, 'UTF-8' ), $order->get_currency() ),
 		];
 		foreach ( $accounts as $account ) {
