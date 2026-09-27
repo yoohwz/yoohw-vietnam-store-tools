@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
 "POT-Creation-Date: 2026-09-27T13:11:01+00:00\n"
@@ -382,7 +382,7 @@ msgstr "Quản lý đơn hàng"
 #: includes/class-vietnam-commerce-kit-store-health.php:21
 #: includes/class-vietnam-commerce-kit-store-health.php:82
 msgid "Store health"
-msgstr "Sức khỏe cửa hàng"
+msgstr "Tình trạng cửa hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:400
 msgid ""
@@ -399,7 +399,7 @@ msgstr "Công cụ thủ công"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:405
 msgid "Open Store health"
-msgstr "Mở Sức khỏe cửa hàng"
+msgstr "Mở Tình trạng cửa hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:412
 msgid "Shipping and delivery"
