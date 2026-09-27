@@ -35,3 +35,68 @@
 .vck-devvn-migration-progress.is-error .vck-devvn-migration-progress__bar span {
 	background: #b32d2e;
 }
+
+/* Store Health follows the Vietnam store dashboard's hero, cards and status tokens. */
+.vck-store-health .vck-health-metrics {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.vck-store-health .vck-health-metric,
+.vck-store-health .vck-health-card {
+	border: 1px solid var(--yoohw-border);
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+
+.vck-store-health .vck-health-metric { padding: 18px; }
+.vck-store-health .vck-health-metric span,
+.vck-store-health .vck-health-metric small { display: block; color: var(--yoohw-muted); }
+.vck-store-health .vck-health-metric span { font-size: 12px; }
+.vck-store-health .vck-health-metric strong { display: block; margin: 7px 0; font-size: 27px; line-height: 1.2; }
+.vck-store-health .vck-health-metric strong.is-attention { color: #996800; }
+.vck-store-health .vck-health-metric small { font-size: 12px; }
+.vck-store-health .vck-health-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.vck-store-health .vck-health-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.vck-store-health .vck-health-card { padding: 20px; }
+.vck-store-health .vck-health-card.is-attention { border-left: 4px solid #dba617; background: #fffdf4; }
+.vck-store-health .vck-health-card h3 { margin: 0 0 6px; font-size: 16px; }
+.vck-store-health .vck-health-card p { color: var(--yoohw-muted); line-height: 1.5; }
+.vck-store-health .vck-health-checks { margin-top: 18px; overflow: hidden; border: 1px solid var(--yoohw-border); border-radius: 7px; }
+.vck-store-health .vck-health-check { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; border-bottom: 1px solid var(--yoohw-border); }
+.vck-store-health .vck-health-check:last-child { border-bottom: 0; }
+.vck-store-health .yoohw-vietnam-store__status.is-attention { background: #fff1cd; color: #805600; }
+.vck-store-health .vck-health-note { margin-bottom: 0; }
+.vck-store-health .vck-health-action { padding: 14px 0; border-top: 1px solid var(--yoohw-border); }
+.vck-store-health .vck-health-action:first-of-type { margin-top: 16px; }
+.vck-store-health .vck-health-action p { margin: 5px 0 12px; }
+.vck-store-health .vck-health-probe { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.vck-store-health .vck-health-probe p { margin-bottom: 0; }
+.vck-store-health .vck-health-probe .button { flex: 0 0 auto; }
+.vck-store-health .vck-health-scan-result,
+.vck-store-health .vck-health-warning { margin-top: 14px; padding: 12px 14px; border: 1px solid var(--yoohw-border); border-left: 4px solid #dba617; border-radius: 6px; background: #fffdf4; }
+.vck-store-health .vck-health-scan-result[hidden],
+.vck-store-health .vck-health-assistant[hidden] { display: none; }
+.vck-store-health .vck-health-report { margin-top: 14px; white-space: pre-line; }
+.vck-store-health .vck-health-table-wrap { overflow-x: auto; }
+.vck-store-health .vck-health-counts { width: 100%; border-collapse: collapse; }
+.vck-store-health .vck-health-counts th,
+.vck-store-health .vck-health-counts td { padding: 12px; border-bottom: 1px solid var(--yoohw-border); text-align: left; }
+.vck-store-health .vck-health-counts thead { background: #f6f7f7; }
+.vck-store-health .vck-health-progress { margin-top: 14px; }
+@media screen and (max-width: 900px) {
+	.vck-store-health .vck-health-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media screen and (max-width: 782px) {
+	.vck-store-health .vck-health-grid { grid-template-columns: 1fr; }
+	.vck-store-health .vck-health-heading { align-items: flex-start; }
+}
+@media screen and (max-width: 600px) {
+	.vck-store-health .vck-health-metrics { grid-template-columns: 1fr; }
+	.vck-store-health .vck-health-heading,
+	.vck-store-health .vck-health-probe { flex-direction: column; align-items: flex-start; }
+	.vck-store-health .yoohw-vietnam-store__hero { padding-top: 54px; }
+	.vck-store-health .vck-health-check { align-items: flex-start; }
+}
