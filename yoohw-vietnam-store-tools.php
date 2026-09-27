@@ -139,6 +139,7 @@ final class Yoohw_Vietnam_Store_Tools {
 			'includes/class-vietnam-commerce-kit-shipping-rules.php',
 			'includes/class-vietnam-commerce-kit-bacs-vietqr.php',
 			'includes/class-vietnam-commerce-kit-payment-reconciliation.php',
+			'includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php',
 			'includes/class-vietnam-commerce-kit-tax-invoice.php',
 			'includes/class-vietnam-commerce-kit-electronic-invoice.php',
 			'includes/class-vietnam-commerce-kit-order-management.php',
@@ -209,6 +210,10 @@ final class Yoohw_Vietnam_Store_Tools {
 
 		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_BACS_VietQR' ) ) {
 			new Yoohw_Vietnam_Store_Tools_BACS_VietQR();
+		}
+
+		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin' ) ) {
+			new Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin();
 		}
 
 		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_PayPal_Conversion' ) ) {

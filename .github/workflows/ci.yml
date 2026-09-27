@@ -133,6 +133,9 @@ jobs:
       - name: Payment and shipment domain contracts
         run: php tests/domain-contract-tests.php
 
+      - name: Payment reconciliation admin contracts
+        run: php tests/payment-reconciliation-admin-contract-tests.php
+
       - name: PayPal VND/USD conversion contracts
         run: php tests/paypal-vnd-usd-contract-tests.php
 

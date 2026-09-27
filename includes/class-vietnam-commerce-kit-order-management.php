@@ -308,13 +308,19 @@ final class Yoohw_Vietnam_Store_Tools_Order_Management {
 		}
 
 		$has_shipping = '' !== $carrier || '' !== $tracking_code;
+		$has_payment = Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin::is_relevant( $order );
 
-		if ( ! $invoice_enabled && ! $has_shipping ) {
+		if ( ! $invoice_enabled && ! $has_shipping && ! $has_payment ) {
 			echo '<span class="vck-info-column__empty" aria-hidden="true">—</span>';
 			return;
 		}
 
 		echo '<div class="vck-info-column">';
+
+		if ( $has_payment ) {
+			$payment = Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_order_data( $order );
+			echo '<div class="vck-info-column__row"><span class="vck-info-column__label">' . esc_html__( 'Payment', 'yoohw-vietnam-store-tools' ) . '</span><span class="vck-info-column__content"><a href="' . esc_url( $order->get_edit_order_url() . '#yoohw-vietnam-store-tools-payment-reconciliation' ) . '">' . esc_html( Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin::status_label( $payment ) ) . '</a></span></div>';
+		}
 
 		if ( $invoice_enabled ) {
 			echo '<div class="vck-info-column__row">';
