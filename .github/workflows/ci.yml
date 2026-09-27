@@ -509,6 +509,12 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE inactive legacy --user=1
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE active legacy --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP prepare --user=1
+          node tests/runtime-roadmap-http-smoke.js classic
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP blocks --user=1
+          node tests/runtime-roadmap-http-smoke.js blocks
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-returns-lite-smoke.php VST-56-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE hpos --user=1
@@ -521,6 +527,12 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE inactive hpos --user=1
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-lifecycle-smoke.php VST-62-LIFECYCLE active hpos --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP prepare --user=1
+          node tests/runtime-roadmap-http-smoke.js classic
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP blocks --user=1
+          node tests/runtime-roadmap-http-smoke.js blocks
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop
