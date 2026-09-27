@@ -33,7 +33,7 @@ final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 		return in_array( $locale, [ 'vi', 'vi_VN' ], true ) ? $locale : null;
 	}
 
-	private static function pack_has( $locale, $key ) {
+	private static function pack_has( $locale, $key, $plural = null ) {
 		if ( ! array_key_exists( $locale, self::$pack_keys ) ) {
 			global $wp_version;
 
@@ -55,7 +55,8 @@ final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 			self::$pack_keys[ $locale ] = $keys;
 		}
 
-		return array_key_exists( $key, self::$pack_keys[ $locale ] );
+		return array_key_exists( $key, self::$pack_keys[ $locale ] )
+			|| ( null !== $plural && array_key_exists( $key . "\0" . $plural, self::$pack_keys[ $locale ] ) );
 	}
 
 	private static function fallback( $translation, $source, $context = '', $plural = null, $number = null ) {
@@ -67,7 +68,7 @@ final class Yoohw_Vietnam_Store_Tools_Translation_Fallback {
 		$original = null === $plural || 1 === (int) $number ? $source : $plural;
 		$key      = '' === $context ? $source : $context . "\4" . $source;
 		$catalog  = self::catalog( $locale );
-		if ( $translation !== $original || null === $catalog || self::pack_has( $locale, $key ) || ! isset( $catalog->entries[ $key ] ) ) {
+		if ( $translation !== $original || null === $catalog || self::pack_has( $locale, $key, $plural ) || ! isset( $catalog->entries[ $key ] ) ) {
 			return $translation;
 		}
 

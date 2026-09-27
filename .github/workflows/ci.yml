@@ -340,7 +340,7 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
-          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
         if: ${{ always() }}
@@ -398,7 +398,9 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
-          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-language-pack-partial.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL php-pack
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
         if: ${{ always() }}
@@ -456,7 +458,9 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
           "${wp_env[@]}" run cli wp eval 'wp_mkdir_p( WP_LANG_DIR . "/plugins" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/.runtime-sentinel.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL
-          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" );'
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "tests/fixtures/vst-language-pack-partial.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php LANGPACK_SENTINEL php-pack
+          "${wp_env[@]}" run cli wp eval 'copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.mo", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.mo" ); copy( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . "languages/yoohw-vietnam-store-tools-vi.l10n.php", WP_LANG_DIR . "/plugins/yoohw-vietnam-store-tools-vi.l10n.php" );'
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-localization-smoke.php 'Thêm quy tắc'
       - name: Stop wp-env
         if: ${{ always() }}

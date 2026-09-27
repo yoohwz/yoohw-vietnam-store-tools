@@ -51,7 +51,8 @@ if ( 'LANGPACK_SENTINEL' === $expected ) {
 	if ( 'CONTEXT_SENTINEL' !== _x( 'None', 'Tax status', 'yoohw-vietnam-store-tools' ) ) {
 		WP_CLI::error( 'Contextual language-pack entry lost priority.' );
 	}
-	if ( 'PLURAL_SENTINEL' !== _n( '%d service enabled', '%d services enabled', 2, 'yoohw-vietnam-store-tools' ) ) {
+	$expected_plural = isset( $args[1] ) && 'php-pack' === $args[1] ? '%d services enabled' : 'PLURAL_SENTINEL';
+	if ( $expected_plural !== _n( '%d service enabled', '%d services enabled', 2, 'yoohw-vietnam-store-tools' ) ) {
 		WP_CLI::error( 'Plural language-pack entry lost priority.' );
 	}
 } else {
