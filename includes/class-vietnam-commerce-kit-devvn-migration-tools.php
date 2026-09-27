@@ -66,11 +66,8 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 	}
 
 	public function enqueue_assets() {
-		if ( 'wc-status' !== sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'page' ) ) ) {
-			return;
-		}
-
-		if ( 'tools' !== sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'tab' ) ) ) {
+		$page = sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'page' ) );
+		if ( 'yoohw-store-health' !== $page && ( 'wc-status' !== $page || 'tools' !== sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'tab' ) ) ) ) {
 			return;
 		}
 
@@ -97,6 +94,8 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 				'nonce'         => wp_create_nonce( 'yoohw_vietnam_store_tools_devvn_migration' ),
 				'migrationTool' => self::MIGRATE_TOOL_ID,
 				'strings'       => [
+					'scanFailed'     => __( 'Scan failed. Please try again.', 'yoohw-vietnam-store-tools' ),
+					'scanning'       => __( 'Scanning legacy data...', 'yoohw-vietnam-store-tools' ),
 					'preparing'      => __( 'Preparing sync...', 'yoohw-vietnam-store-tools' ),
 					'processing'     => __( 'Syncing...', 'yoohw-vietnam-store-tools' ),
 					'completed'      => __( 'Sync completed.', 'yoohw-vietnam-store-tools' ),
@@ -152,8 +151,13 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 
 			$mode = sanitize_key( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'mode', 'step' ) );
 
-			if ( 'start' === $mode ) {
+			if ( in_array( $mode, [ 'start', 'scan' ], true ) ) {
 				wp_send_json_success( $this->get_ajax_migration_status() );
+				return;
+			}
+
+			if ( 'step' !== $mode ) {
+				wp_send_json_error( [ 'message' => __( 'Invalid migration action.', 'yoohw-vietnam-store-tools' ) ], 400 );
 				return;
 			}
 
@@ -323,6 +327,7 @@ final class Yoohw_Vietnam_Store_Tools_DevVN_Migration_Tools {
 		$pending = $this->get_pending_migration_status();
 
 		return [
+			'report'                  => $this->format_dry_run_message( $pending['orders'], $pending['customers'], $pending['tracking'] ),
 			'remaining'               => $pending['remaining'],
 			'done'                    => 0 === $pending['remaining'],
 			'addressesTotal'          => (int) $pending['orders']['total'],

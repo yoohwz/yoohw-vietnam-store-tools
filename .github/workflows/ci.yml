@@ -136,6 +136,12 @@ jobs:
       - name: Payment reconciliation admin contracts
         run: php tests/payment-reconciliation-admin-contract-tests.php
 
+      - name: Store health contracts
+        run: |
+          php tests/store-health-contract-tests.php
+          php tests/migration-assistant-contract-tests.php
+          node tests/migration-assistant-ui-tests.js
+
       - name: PayPal VND/USD conversion contracts
         run: php tests/paypal-vnd-usd-contract-tests.php
 

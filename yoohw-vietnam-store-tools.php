@@ -127,6 +127,7 @@ final class Yoohw_Vietnam_Store_Tools {
 			'includes/class-vietnam-commerce-kit-logger.php',
 			'includes/class-vietnam-commerce-kit-paypal-conversion.php',
 			'includes/class-vietnam-commerce-kit-admin-menu.php',
+			'includes/class-vietnam-commerce-kit-store-health.php',
 			'includes/class-vietnam-commerce-kit-vietnam-address-data.php',
 			'includes/class-vietnam-commerce-kit-legacy-plugin-guard.php',
 			'includes/class-vietnam-commerce-kit-blocks-integration.php',
@@ -162,6 +163,7 @@ final class Yoohw_Vietnam_Store_Tools {
 
 		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_Admin_Menu' ) ) {
 			new Yoohw_Vietnam_Store_Tools_Admin_Menu();
+			new Yoohw_Vietnam_Store_Tools_Store_Health();
 		}
 
 		if (

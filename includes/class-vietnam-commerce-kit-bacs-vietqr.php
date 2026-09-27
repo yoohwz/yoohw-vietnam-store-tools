@@ -431,8 +431,8 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 				]
 			);
 
-			$bank_bin       = $this->get_account_bank_bin( $account );
-			$account_number = $this->sanitize_account_number( $account['account_number'] );
+			$bank_bin       = self::get_account_bank_bin( $account );
+			$account_number = self::sanitize_account_number( $account['account_number'] );
 
 			if ( '' === $bank_bin || '' === $account_number ) {
 				continue;
@@ -454,6 +454,17 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		}
 
 		return $payment_accounts;
+	}
+
+	/** Internal read-only readiness check; shares payment account normalization. */
+	public static function has_usable_account() {
+		$accounts = get_option( 'woocommerce_bacs_accounts', [] );
+		foreach ( is_array( $accounts ) ? $accounts : [] as $account ) {
+			if ( is_array( $account ) && '' !== self::get_account_bank_bin( $account ) && '' !== self::sanitize_account_number( $account['account_number'] ?? '' ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private function get_vietqr_image_url( $bank_bin, $account_number, $account_name, $amount, $transfer_content ) {
@@ -558,17 +569,17 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		}
 	}
 
-	private function sanitize_bank_bin( $value ) {
+	private static function sanitize_bank_bin( $value ) {
 		return preg_replace( '/\D+/', '', (string) $value );
 	}
 
-	private function get_account_bank_bin( $account ) {
+	private static function get_account_bank_bin( $account ) {
 		foreach ( [ 'sort_code', 'bic' ] as $field ) {
 			if ( empty( $account[ $field ] ) ) {
 				continue;
 			}
 
-			$bank_bin = $this->sanitize_bank_bin( $account[ $field ] );
+			$bank_bin = self::sanitize_bank_bin( $account[ $field ] );
 
 			if ( '' !== $bank_bin ) {
 				return $bank_bin;
@@ -578,7 +589,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		return '';
 	}
 
-	private function sanitize_account_number( $value ) {
+	private static function sanitize_account_number( $value ) {
 		return preg_replace( '/[^A-Za-z0-9]+/', '', (string) $value );
 	}
 
