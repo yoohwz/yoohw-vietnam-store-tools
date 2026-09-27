@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-27T04:14:14+00:00\n"
+"POT-Creation-Date: 2026-09-27T04:25:05+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -2033,59 +2033,59 @@ msgstr "Chuyển đổi PayPal sang USD không thể xác minh tổng tiền VND
 msgid "Please enter a valid Vietnamese phone number."
 msgstr "Vui lòng nhập số điện thoại Việt Nam hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:31
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:35
 msgid "Fulfillment exceptions"
 msgstr "Ngoại lệ giao hàng"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:34
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:38
 msgid "Current shipment"
 msgstr "Lô hàng hiện tại"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:36
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:40
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
 msgid "Closed"
 msgstr "Đã đóng"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:36
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:40
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
 msgid "Open"
 msgstr "Đang mở"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:42
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:46
 msgid "Shipment"
 msgstr "Lô hàng"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:44
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:48
 msgid "Predecessor / replacement"
 msgstr "Lô hàng trước / thay thế"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:46
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:50
 msgid "Source / actor"
 msgstr "Nguồn / người thực hiện"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:60
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:65
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:64
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:69
 msgid "Record exception"
 msgstr "Ghi nhận ngoại lệ"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:64
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:115
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:68
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:119
 msgid "Operator note (optional)"
 msgstr "Ghi chú của nhân viên (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:80
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:84
 msgid "Returns Lite"
 msgstr "Trả hàng cơ bản"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:104
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:108
 msgid "No returns recorded for this order."
 msgstr "Đơn hàng này chưa có bản ghi trả hàng."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:109
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:113
 msgid "Create manual return"
 msgstr "Tạo bản ghi trả hàng thủ công"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:110
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:114
 msgid ""
 "Choose product items and whole-unit quantities. This does not create a "
 "refund or restock products."
@@ -2093,131 +2093,135 @@ msgstr ""
 "Chọn sản phẩm và số lượng nguyên. Thao tác này không hoàn tiền hoặc nhập lại "
 "kho."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:114
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:189
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:118
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:197
 msgid "Reason"
 msgstr "Lý do"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:116
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:120
 msgid "Create return"
 msgstr "Tạo bản ghi trả hàng"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
 msgid "Goods received"
 msgstr "Đã nhận hàng trả"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:121
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:125
 msgid "Return voided"
 msgstr "Bản ghi trả hàng đã hủy"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:130
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:134
 msgid "Order item changed or missing"
 msgstr "Mục hàng đã thay đổi hoặc không còn tồn tại"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:138
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:142
 msgid "Original shipment"
 msgstr "Lô hàng ban đầu"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:140
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:144
 msgid "historical reference"
 msgstr "tham chiếu lịch sử"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:145
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:149
 msgid "Return-to-sender exception"
 msgstr "Ngoại lệ hoàn hàng về người gửi"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:151
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:155
 msgid "missing reference"
 msgstr "tham chiếu không còn tồn tại"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:156
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:191
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:160
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:199
 msgid "Reverse shipment reference"
 msgstr "Tham chiếu vận chuyển hàng trả"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:165
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:169
 msgid "Linked refund"
 msgstr "Khoản hoàn tiền đã liên kết"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:166
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:171
 msgid "missing refund"
 msgstr "khoản hoàn tiền không còn tồn tại"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:170
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:175
 msgid "Unlink refund"
 msgstr "Bỏ liên kết hoàn tiền"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:182
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:187
 msgid "Link existing refund"
 msgstr "Liên kết khoản hoàn tiền hiện có"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:190
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:193
+msgid "Save return items"
+msgstr "Lưu mục hàng trả"
+
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:198
 msgid "Operator note"
 msgstr "Ghi chú của nhân viên"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:192
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:200
 msgid "Return-to-sender exception ID (optional)"
 msgstr "ID ngoại lệ hoàn hàng về người gửi (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:193
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:201
 msgid "Save return correction"
 msgstr "Lưu chỉnh sửa bản ghi trả hàng"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:200
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:208
 msgid "Transition note (optional)"
 msgstr "Ghi chú chuyển trạng thái (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:201
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:209
 msgid "Void this return"
 msgstr "Hủy bản ghi trả hàng này"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:205
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:213
 msgid "Audit history"
 msgstr "Lịch sử thao tác"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:208
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:216
 msgid "Actor"
 msgstr "Người thực hiện"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:227
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:235
 msgid "ordered"
 msgstr "đã đặt"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:246
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:275
 msgid "Invalid manual exception type."
 msgstr "Loại ngoại lệ thủ công không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:271
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:302
 msgid "Unknown return action."
 msgstr "Thao tác trả hàng không xác định."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:282
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:317
 msgid "Security check failed or order access denied."
 msgstr "Kiểm tra bảo mật thất bại hoặc không có quyền truy cập đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:300
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:335
 msgid "Order operation saved."
 msgstr "Đã lưu thao tác trên đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:305
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:340
 msgid "Failed handoff"
 msgstr "Bàn giao thất bại"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:306
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:341
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:263
 msgid "Delivery failed"
 msgstr "Giao hàng thất bại"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:307
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:342
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:264
 msgid "Returned to sender"
 msgstr "Đã hoàn về người gửi"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:308
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:343
 msgid "Shipment cancelled"
 msgstr "Lô hàng đã hủy"
 
-#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:309
+#: includes/class-vietnam-commerce-kit-returns-lite-admin.php:344
 msgid "Shipment replaced"
 msgstr "Lô hàng đã thay thế"
 

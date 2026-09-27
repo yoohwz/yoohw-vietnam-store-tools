@@ -10,12 +10,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
+	private $footer_forms = [];
+	private $active_form = '';
+
 	public function __construct() {
 		add_action( 'yoohw_vietnam_store_tools_shipping_admin_metabox_after', [ $this, 'render_exceptions' ], 30 );
 		add_action( 'add_meta_boxes', [ $this, 'add_returns_metabox' ] );
 		add_action( 'admin_post_yoohw_vietnam_store_tools_record_exception', [ $this, 'handle_exception' ] );
 		add_action( 'admin_post_yoohw_vietnam_store_tools_return_action', [ $this, 'handle_return' ] );
 		add_action( 'admin_notices', [ $this, 'render_notice' ] );
+		add_action( 'admin_footer', [ $this, 'render_action_forms' ] );
 	}
 
 	public function render_exceptions( $order ) {
@@ -52,7 +56,7 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 			echo '</ul>';
 		}
 		if ( ! empty( $current['id'] ) && ! $current['closed'] ) {
-			echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+			$this->action_form_open();
 			wp_nonce_field( 'yoohw_vst_exception_' . $order->get_id(), 'yoohw_vst_nonce' );
 			echo '<input type="hidden" name="action" value="yoohw_vietnam_store_tools_record_exception">';
 			echo '<input type="hidden" name="order_id" value="' . esc_attr( $order->get_id() ) . '">';
@@ -63,7 +67,7 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 			}
 			echo '</select></label></p><p><label>' . esc_html__( 'Operator note (optional)', 'yoohw-vietnam-store-tools' ) . '<br><textarea name="note" rows="2" style="width:100%"></textarea></label></p>';
 			submit_button( __( 'Record exception', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
-			echo '</form>';
+			$this->action_form_close();
 		}
 	}
 
@@ -114,7 +118,7 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 		echo '<p><label>' . esc_html__( 'Reason', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="reason" class="widefat" required></label></p>';
 		echo '<p><label>' . esc_html__( 'Operator note (optional)', 'yoohw-vietnam-store-tools' ) . '<br><textarea name="note" class="widefat" rows="2"></textarea></label></p>';
 		submit_button( __( 'Create return', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
-		echo '</form>';
+		$this->action_form_close();
 	}
 
 	private function render_return( $order, $record, $order_items, $refunds, $events, $allocated ) {
@@ -162,13 +166,14 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 					$matched = $refund;
 				}
 			}
-			echo '<p>' . esc_html__( 'Linked refund', 'yoohw-vietnam-store-tools' ) . ' #' . esc_html( $refund_id ) . ': ';
+			echo '<p>' . esc_html__( 'Linked refund', 'yoohw-vietnam-store-tools' ) . ' ';
+			echo $matched ? '<a href="' . esc_url( $order->get_edit_order_url() . '#woocommerce-order-items' ) . '">#' . esc_html( $refund_id ) . '</a>: ' : '#' . esc_html( $refund_id ) . ': ';
 			echo $matched ? esc_html( wp_strip_all_tags( wc_price( abs( $matched->get_amount() ), [ 'currency' => $order->get_currency() ] ) ) . ' · ' . $matched->get_reason() ) : esc_html__( 'missing refund', 'yoohw-vietnam-store-tools' );
 			echo '</p>';
 			$this->form_open( $order, 'unlink_refund', $record['id'], $record['revision'] );
 			echo '<input type="hidden" name="refund_id" value="' . esc_attr( $refund_id ) . '">';
 			submit_button( __( 'Unlink refund', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
-			echo '</form>';
+			$this->action_form_close();
 		}
 		if ( $refunds ) {
 			$this->form_open( $order, 'link_refund', $record['id'], $record['revision'] );
@@ -180,18 +185,21 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 			}
 			echo '</select> ';
 			submit_button( __( 'Link existing refund', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
-			echo '</form>';
+			$this->action_form_close();
+		}
+		if ( 'open' === $state ) {
+			$this->form_open( $order, 'correct_items', $record['id'], $record['revision'] );
+			$this->render_item_fields( $order_items, $record['items'] );
+			submit_button( __( 'Save return items', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
+			$this->action_form_close();
 		}
 		$this->form_open( $order, 'correct', $record['id'], $record['revision'] );
-		if ( 'open' === $state ) {
-			$this->render_item_fields( $order_items, $record['items'] );
-		}
 		echo '<p><label>' . esc_html__( 'Reason', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="reason" class="widefat" value="' . esc_attr( $record['reason'] ) . '"></label></p>';
 		echo '<p><label>' . esc_html__( 'Operator note', 'yoohw-vietnam-store-tools' ) . '<br><textarea name="note" class="widefat" rows="2"></textarea></label></p>';
 		echo '<p><label>' . esc_html__( 'Reverse shipment reference', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="reverse_reference" class="widefat" value="' . esc_attr( $record['reverse_reference'] ) . '"></label></p>';
 		echo '<p><label>' . esc_html__( 'Return-to-sender exception ID (optional)', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="returned_exception_id" class="widefat" value="' . esc_attr( $record['returned_exception_id'] ) . '"></label></p>';
 		submit_button( __( 'Save return correction', 'yoohw-vietnam-store-tools' ), 'secondary', 'submit', false );
-		echo '</form>';
+		$this->action_form_close();
 		if ( in_array( $state, [ 'open', 'received' ], true ) ) {
 			$next_states = 'open' === $state ? [ 'received', 'closed', 'cancelled' ] : [ 'closed', 'cancelled' ];
 			foreach ( $next_states as $next ) {
@@ -199,7 +207,7 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 				echo '<input type="hidden" name="state" value="' . esc_attr( $next ) . '">';
 				echo '<p><label>' . esc_html__( 'Transition note (optional)', 'yoohw-vietnam-store-tools' ) . '<br><input type="text" name="note" class="widefat"></label></p>';
 				submit_button( 'cancelled' === $next ? __( 'Void this return', 'yoohw-vietnam-store-tools' ) : $labels[ $next ], 'secondary', 'submit', false );
-				echo '</form>';
+				$this->action_form_close();
 			}
 		}
 		echo '<details><summary>' . esc_html__( 'Audit history', 'yoohw-vietnam-store-tools' ) . '</summary><ul>';
@@ -230,13 +238,34 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 	}
 
 	private function form_open( $order, $operation, $return_id, $revision ) {
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+		$this->action_form_open();
 		wp_nonce_field( 'yoohw_vst_return_' . $order->get_id(), 'yoohw_vst_nonce' );
 		echo '<input type="hidden" name="action" value="yoohw_vietnam_store_tools_return_action">';
 		echo '<input type="hidden" name="order_id" value="' . esc_attr( $order->get_id() ) . '">';
 		echo '<input type="hidden" name="operation" value="' . esc_attr( $operation ) . '">';
 		echo '<input type="hidden" name="return_id" value="' . esc_attr( $return_id ) . '">';
 		echo '<input type="hidden" name="return_revision" value="' . esc_attr( $revision ) . '">';
+	}
+
+	private function action_form_open() {
+		$this->active_form = 'yoohw-vst-action-' . count( $this->footer_forms );
+		$this->footer_forms[] = $this->active_form;
+		ob_start();
+	}
+
+	private function action_form_close() {
+		$html = ob_get_clean();
+		// The order editor already owns an outer form. Associate controls with a footer form.
+		$html = preg_replace( '/<(input|select|textarea|button)\b/i', '<$1 form="' . esc_attr( $this->active_form ) . '"', $html );
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Every dynamic field is escaped when composed above.
+		echo $html;
+		$this->active_form = '';
+	}
+
+	public function render_action_forms() {
+		foreach ( $this->footer_forms as $form_id ) {
+			echo '<form id="' . esc_attr( $form_id ) . '" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"></form>';
+		}
 	}
 
 	public function handle_exception() {
@@ -260,17 +289,23 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin {
 			'refund_id' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'refund_id' ),
 			'state' => Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'state' ),
 		];
-		if ( in_array( $operation, [ 'create', 'correct' ], true ) && isset( $_POST['items'] ) && is_array( $_POST['items'] ) ) {
-			$data['items'] = array_filter( wp_unslash( $_POST['items'] ), static function ( $quantity ) { return is_scalar( $quantity ) && '' !== (string) $quantity && '0' !== (string) $quantity; } ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Domain validates IDs, ownership and positive integer quantities.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- authorized_order() verified this form's order-specific nonce above.
+		if ( in_array( $operation, [ 'create', 'correct_items' ], true ) && isset( $_POST['items'] ) && is_array( $_POST['items'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- authorized_order() verified the nonce; the domain validates item IDs, ownership and quantities.
+			$data['items'] = array_filter( wp_unslash( $_POST['items'] ), static function ( $quantity ) { return is_scalar( $quantity ) && '' !== (string) $quantity && '0' !== (string) $quantity; } );
 		}
 		$domain = 'Yoohw_Vietnam_Store_Tools_Returns_Lite';
 		if ( 'create' === $operation ) {
 			$result = $domain::create( $order, isset( $data['items'] ) ? $data['items'] : [], $data, absint( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'ledger_revision' ) ) );
 		} else {
-			if ( ! in_array( $operation, [ 'correct', 'transition', 'link_refund', 'unlink_refund' ], true ) ) {
+			if ( ! in_array( $operation, [ 'correct', 'correct_items', 'transition', 'link_refund', 'unlink_refund' ], true ) ) {
 				$this->redirect( $order, __( 'Unknown return action.', 'yoohw-vietnam-store-tools' ) );
 			}
-			$result = $domain::mutate( $order, Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'return_id' ), absint( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'return_revision' ) ), $operation, $data );
+			$kind = 'correct_items' === $operation ? 'correct' : $operation;
+			if ( 'correct_items' === $operation ) {
+				$data = [ 'items' => isset( $data['items'] ) ? $data['items'] : [] ];
+			}
+			$result = $domain::mutate( $order, Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'return_id' ), absint( Yoohw_Vietnam_Store_Tools_Request_Security::get_post_text( 'return_revision' ) ), $kind, $data );
 		}
 		$this->redirect( $order, is_wp_error( $result ) ? $result->get_error_message() : '' );
 	}
