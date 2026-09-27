@@ -1179,6 +1179,11 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 			'pdf_attachment_id' => __( 'PDF invoice', 'yoohw-vietnam-store-tools' ),
 			'xml_attachment_id' => __( 'XML invoice data', 'yoohw-vietnam-store-tools' ),
 			'provider'          => __( 'Invoice provider', 'yoohw-vietnam-store-tools' ),
+			'provider_document_id' => __( 'Provider document ID', 'yoohw-vietnam-store-tools' ),
+			'handoff_reference' => __( 'Handoff reference', 'yoohw-vietnam-store-tools' ),
+			'provider_status_text' => __( 'Provider status text', 'yoohw-vietnam-store-tools' ),
+			'handed_off_at'     => __( 'Handed off at', 'yoohw-vietnam-store-tools' ),
+			'confirmed_at'      => __( 'Confirmed at', 'yoohw-vietnam-store-tools' ),
 		];
 	}
 

@@ -111,6 +111,12 @@ class VST_Test_WPDB {
 $wpdb = new VST_Test_WPDB();
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-electronic-invoice.php';
 $api = 'Yoohw_Vietnam_Store_Tools_Electronic_Invoice';
+$field_labels_method = new ReflectionMethod( $api, 'get_field_labels' );
+if ( PHP_VERSION_ID < 80100 ) { $field_labels_method->setAccessible( true ); }
+$field_labels = $field_labels_method->invoke( null );
+foreach ( [ 'provider_document_id' => 'Provider document ID', 'handoff_reference' => 'Handoff reference', 'provider_status_text' => 'Provider status text', 'handed_off_at' => 'Handed off at', 'confirmed_at' => 'Confirmed at' ] as $field => $label ) {
+	vst_assert_same( $label, $field_labels[ $field ] ?? null, 'Handoff history field has a localized label: ' . $field );
+}
 $unsaved = new WC_Order( 0 );
 $unsaved->meta[ Yoohw_Vietnam_Store_Tools_Tax_Invoice::META_REQUESTED ] = 'yes';
 vst_assert_same( true, $api::update_order_data( $unsaved, [ 'status' => 'replaced' ], [ 'source' => 'old_connector' ] ), 'Legacy connector may update an unsaved order object' );
