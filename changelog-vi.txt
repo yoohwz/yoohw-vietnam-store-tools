@@ -1,6 +1,6 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
-= 1.2.0 (Đang phát triển) =
+= 1.2.0 (27/09/2026) =
 
 * Bổ sung tùy chọn quy đổi VND sang USD cho các luồng thanh toán tương thích của WooCommerce PayPal Payments, dùng tỷ giá do cửa hàng nhập và cố định cho từng lần thanh toán, kèm kiểm tra tương thích an toàn.
 * Bổ sung đối soát thanh toán thủ công trên màn hình đơn hàng để ghi nhận giao dịch quan sát được, khớp đúng số tiền đơn hàng, xem bằng chứng và điều chỉnh bản ghi mà không tự động đánh dấu đơn đã thanh toán.

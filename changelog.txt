@@ -1,6 +1,6 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
-= 1.2.0 (In development) =
+= 1.2.0 (September 27, 2026) =
 
 * New: Added optional VND-to-USD payment conversion for compatible WooCommerce PayPal Payments checkout flows, using a merchant-entered rate locked to each payment attempt and guarded compatibility checks.
 * New: Added manual payment reconciliation on the order screen to record observations, match exact order amounts, review evidence, and correct entries without automatically marking orders paid.
