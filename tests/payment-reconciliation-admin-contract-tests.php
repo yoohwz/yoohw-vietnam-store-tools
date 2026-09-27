@@ -80,7 +80,7 @@ $test_actor_allowed = false;
 ob_start();
 $admin->render_metabox( $order );
 $read_only_html = ob_get_clean();
-vst_assert_true( false !== strpos( $read_only_html, 'Unreconciled' ) && false === strpos( $read_only_html, 'vck-payment-reconciliation__toggle' ), 'User without edit capability sees status without an empty toggle' );
+vst_assert_true( false !== strpos( $read_only_html, 'Unreconciled' ) && false === strpos( $read_only_html, 'class="vck-payment-reconciliation__toggle"' ), 'User without edit capability sees status without an empty toggle' );
 $test_actor_allowed = true;
 
 $observation = $domain::record_manual_observation( $order, [ 'amount' => '100000', 'currency' => 'VND', 'reference' => 'BANK-90' ] );
@@ -106,7 +106,7 @@ $admin->render_metabox( $order );
 $html = ob_get_clean();
 vst_assert_true( $panel::is_relevant( $order ) && false !== strpos( $html, 'Reconciliation history' ), 'History remains visible after payment method changes' );
 vst_assert_true( false === strpos( $html, 'name="vck_payment_operation"' ), 'Changed payment method cannot use manual controls' );
-vst_assert_true( false === strpos( $html, 'vck-payment-reconciliation__toggle' ), 'History-only order has no empty edit toggle' );
+vst_assert_true( false === strpos( $html, 'class="vck-payment-reconciliation__toggle"' ), 'History-only order has no empty edit toggle' );
 $order->payment_method = 'bacs';
 $domain::reverse_entry( $order, $match['id'] );
 vst_assert_same( 'recorded', $domain::get_order_data( $order )['state'], 'Manual reversal returns to recorded' );
@@ -135,7 +135,7 @@ ob_start();
 $admin->render_metabox( $external );
 $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'Externally verified evidence is read only here.' ), 'External verified evidence displays read only' );
-vst_assert_true( false === strpos( $html, 'vck-payment-reconciliation__toggle' ), 'Externally verified order has no empty edit toggle' );
+vst_assert_true( false === strpos( $html, 'class="vck-payment-reconciliation__toggle"' ), 'Externally verified order has no empty edit toggle' );
 vst_assert_true( false === strpos( $html, 'name="vck_payment_operation"' ), 'External evidence has no manual mutation controls' );
 vst_assert_true( false !== strpos( $html, 'verified_bank / BANK-91' ), 'External source and transaction remain visible in audit trail' );
 
