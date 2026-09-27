@@ -1009,7 +1009,7 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		if ( ! isset( $_POST[ $key ] ) ) {
 			return '';
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Preserve raw text so v2 validation can reject control characters before sanitization.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce is verified by the handler; v2 validation must inspect raw text before sanitization.
 		return wp_unslash( $_POST[ $key ] );
 	}
 
