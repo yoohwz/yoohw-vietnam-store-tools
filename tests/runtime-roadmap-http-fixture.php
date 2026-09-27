@@ -35,8 +35,17 @@ if ( 'prepare' === $phase ) {
 	$block_content = ( new ReflectionMethod( WC_Install::class, 'get_checkout_block_content' ) )->invoke( null );
 	$blocks = wp_insert_post( [ 'post_title' => 'VST-62 Blocks Checkout', 'post_name' => 'vst62-blocks-checkout', 'post_type' => 'page', 'post_status' => 'publish', 'post_content' => $block_content ] );
 	update_option( 'woocommerce_checkout_page_id', $classic );
+	$customer_id = wp_insert_user( [ 'user_login' => 'vst62-http-customer', 'user_email' => 'pay62@example.test', 'user_pass' => wp_generate_password( 32 ), 'role' => 'customer' ] );
+	vst_assert_true( ! is_wp_error( $customer_id ), 'HTTP customer created' );
+	$pay_order = wc_create_order( [ 'customer_id' => $customer_id ] );
+	$pay_order->add_product( $product, 1 );
+	$pay_order->set_billing_email( 'pay62@example.test' );
+	$pay_order->set_billing_country( 'VN' );
+	$pay_order->set_payment_method( 'bacs' );
+	$pay_order->calculate_totals();
+	$pay_order->save();
 	$wards = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_wards_for_province( '01' );
-	$fixture = [ 'old' => $old, 'product_id' => $product->get_id(), 'classic_page_id' => $classic, 'blocks_page_id' => $blocks, 'classic_url' => get_permalink( $classic ), 'blocks_url' => get_permalink( $blocks ), 'ward' => (string) array_key_first( $wards ) ];
+	$fixture = [ 'old' => $old, 'product_id' => $product->get_id(), 'classic_page_id' => $classic, 'blocks_page_id' => $blocks, 'classic_url' => get_permalink( $classic ), 'blocks_url' => get_permalink( $blocks ), 'ward' => (string) array_key_first( $wards ), 'customer_id' => $customer_id, 'pay_order_id' => $pay_order->get_id(), 'pay_url' => $pay_order->get_checkout_payment_url(), 'auth_cookie_name' => LOGGED_IN_COOKIE, 'auth_cookie' => wp_generate_auth_cookie( $customer_id, time() + HOUR_IN_SECONDS, 'logged_in' ) ];
 	file_put_contents( $path, wp_json_encode( $fixture ) );
 	vst_assert_true( $classic > 0 && $blocks > 0 && $product->get_id() > 0 && '' !== $fixture['ward'], 'HTTP fixture pages, product and ward created' );
 } elseif ( 'blocks' === $phase ) {
@@ -59,6 +68,10 @@ if ( 'prepare' === $phase ) {
 		vst_assert_same( 'on-hold', $order->get_status(), 'Native BACS order status: ' . $email );
 		vst_assert_same( [], Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_history( $order ), 'HTTP payment is not reconciliation evidence: ' . $email );
 	}
+	$pay_order = wc_get_order( $fixture['pay_order_id'] );
+	vst_assert_same( 'on-hold', $pay_order->get_status(), 'Native order-pay BACS status' );
+	vst_assert_same( null, $pay_order->get_date_paid(), 'Native order-pay does not set paid date' );
+	vst_assert_same( [], Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_history( $pay_order ), 'Native order-pay is not reconciliation evidence' );
 } else {
 	foreach ( [ 'classic62@example.test', 'blocks62@example.test' ] as $email ) {
 		foreach ( wc_get_orders( [ 'billing_email' => $email, 'limit' => -1 ] ) as $order ) {
@@ -72,6 +85,13 @@ if ( 'prepare' === $phase ) {
 		if ( isset( $fixture[ $key ] ) ) {
 			wp_delete_post( $fixture[ $key ], true );
 		}
+	}
+	if ( isset( $fixture['pay_order_id'] ) && wc_get_order( $fixture['pay_order_id'] ) ) {
+		wc_get_order( $fixture['pay_order_id'] )->delete( true );
+	}
+	if ( isset( $fixture['customer_id'] ) ) {
+		require_once ABSPATH . 'wp-admin/includes/user.php';
+		wp_delete_user( $fixture['customer_id'] );
 	}
 	foreach ( $fixture['old'] ?? [] as $name => $value ) {
 		if ( false === $value ) {

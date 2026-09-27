@@ -513,6 +513,7 @@ jobs:
           node tests/runtime-roadmap-http-smoke.js classic
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP blocks --user=1
           node tests/runtime-roadmap-http-smoke.js blocks
+          node tests/runtime-roadmap-http-smoke.js order-pay
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
@@ -531,6 +532,7 @@ jobs:
           node tests/runtime-roadmap-http-smoke.js classic
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP blocks --user=1
           node tests/runtime-roadmap-http-smoke.js blocks
+          node tests/runtime-roadmap-http-smoke.js order-pay
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
       - name: Stop wp-env

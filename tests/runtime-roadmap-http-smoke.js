@@ -5,7 +5,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 
 const mode = process.argv[2];
-assert.ok(['classic', 'blocks'].includes(mode), 'Choose classic or blocks');
+assert.ok(['classic', 'blocks', 'order-pay'].includes(mode), 'Choose classic, blocks or order-pay');
 const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/.vst62-http-fixture.json'), 'utf8'));
 const base = new URL(fixture.classic_url).origin;
 assert.ok(['localhost', '127.0.0.1'].includes(new URL(base).hostname), 'Disposable localhost only');
@@ -110,4 +110,19 @@ async function blocks() {
   console.log('PASS: Blocks page and Store API address, phone, VAT and native BACS checkout');
 }
 
-(mode === 'classic' ? classic() : blocks()).catch(error => { console.error(error); process.exitCode = 1; });
+async function orderPay() {
+  cookies.set(fixture.auth_cookie_name, fixture.auth_cookie);
+  const page = checkResponse(await request('GET', fixture.pay_url), 'Native order-pay page');
+  assert.match(page.text, /id="order_review"/, 'Native order-pay form renders for the order customer');
+  assert.match(page.text, /payment_method_bacs/, 'BACS gateway is available on order-pay');
+  const nonce = page.text.match(/name="woocommerce-pay-nonce"[^>]*value="([^"]+)"/);
+  assert.ok(nonce, 'Native order-pay nonce renders');
+  const fields = new URLSearchParams({ woocommerce_pay: '1', payment_method: 'bacs', 'woocommerce-pay-nonce': nonce[1] });
+  const paid = checkResponse(await request('POST', fixture.pay_url, fields, {
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+  }), 'Native order-pay BACS submission');
+  assert.match(paid.text, /VST-62 HTTP|Fixture Bank|123456789/, 'Native order-pay customer BACS output renders');
+  console.log('PASS: Native order-pay HTTP form, nonce, BACS gateway and customer output');
+}
+
+({ classic, blocks, 'order-pay': orderPay }[mode])().catch(error => { console.error(error); process.exitCode = 1; });
