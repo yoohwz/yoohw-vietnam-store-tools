@@ -1,6 +1,6 @@
 <?php
 /**
- * Shipment identity and operational exceptions on WooCommerce orders.
+ * Current shipment identity and timeline bindings on WooCommerce orders.
  *
  * @package VietnamCommerceKit
  */
@@ -9,15 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
-	const META_CURRENT_ID   = '_yoohw_vietnam_store_tools_current_shipment_id';
-	const META_LEGACY_ID    = '_yoohw_vietnam_store_tools_legacy_shipment_id';
-	const META_HISTORY      = '_yoohw_vietnam_store_tools_shipment_exception_history';
+final class Yoohw_Vietnam_Store_Tools_Shipment_Identity {
+	const META_CURRENT_ID = '_yoohw_vietnam_store_tools_current_shipment_id';
+	const META_LEGACY_ID = '_yoohw_vietnam_store_tools_legacy_shipment_id';
+	const META_CLOSED_ID = '_yoohw_vietnam_store_tools_closed_shipment_id';
 	const META_EVENT_BINDINGS = '_yoohw_vietnam_store_tools_tracking_event_shipments';
-
-	public static function get_exception_types() {
-		return [ 'failed_handoff', 'delivery_failed', 'cancelled', 'returned_to_sender', 'replaced' ];
-	}
 
 	public static function get_current_shipment( $order ) {
 		$order = self::order( $order );
@@ -33,13 +29,10 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		if ( '' === $id && $has_legacy_shipment ) {
 			$id = 'legacy:' . $order->get_id();
 		}
-		return [ 'id' => $id, 'closed' => self::is_closed( $order, $id ), 'data' => $data ];
-	}
-
-	public static function get_exceptions( $order ) {
-		$order = self::order( $order );
-		$history = $order ? $order->get_meta( self::META_HISTORY, true ) : [];
-		return is_array( $history ) ? array_values( $history ) : [];
+		$closed_id = (string) $order->get_meta( self::META_CLOSED_ID, true );
+		// Old cancelled shipments have no lifecycle marker; their shipping status is enough to prevent reopening.
+		$closed = '' !== $id && ( $id === $closed_id || ( isset( $data['status_id'] ) && 'cancelled' === $data['status_id'] ) );
+		return [ 'id' => $id, 'closed' => $closed, 'data' => $data ];
 	}
 
 	public static function ensure_current_id( $order ) {
@@ -58,36 +51,29 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		return $current['id'];
 	}
 
-	public static function record_exception( $order, $data, $context = [] ) {
+	public static function close_current( $order, $expected_id ) {
 		$order = self::order( $order );
-		if ( ! $order || ! is_array( $data ) ) {
+		if ( ! $order ) {
 			return self::error( 'invalid_order' );
 		}
 		self::refresh_order( $order );
-		$type = isset( $data['type'] ) ? sanitize_key( $data['type'] ) : '';
-		if ( ! in_array( $type, self::get_exception_types(), true ) || 'replaced' === $type ) {
-			return self::error( 'invalid_type' );
-		}
-		$check = self::authorize( $order, $context, $data );
-		if ( is_wp_error( $check ) ) {
-			return $check;
-		}
 		$current = self::get_current_shipment( $order );
-		$expected = isset( $data['expected_shipment_id'] ) ? sanitize_text_field( $data['expected_shipment_id'] ) : '';
-		if ( '' === $expected || $expected !== $current['id'] || $current['closed'] ) {
+		$materialized_legacy = 'legacy:' . $order->get_id() === $expected_id
+			&& $current['id'] === (string) $order->get_meta( self::META_LEGACY_ID, true );
+		if ( '' === (string) $expected_id || ( $expected_id !== $current['id'] && ! $materialized_legacy ) || $current['id'] === (string) $order->get_meta( self::META_CLOSED_ID, true ) ) {
 			return self::error( 'stale_shipment' );
 		}
-		$id = self::ensure_current_id( $order );
-		if ( is_wp_error( $id ) ) {
-			return $id;
+		$id = $current['id'];
+		if ( 0 === strpos( $id, 'legacy:' ) ) {
+			$id = wp_generate_uuid4();
+			$order->update_meta_data( self::META_CURRENT_ID, $id );
+			$order->update_meta_data( self::META_LEGACY_ID, $id );
 		}
-		$entry = self::entry( $order, $type, $id, $current['data'], $context );
-		if ( 'cancelled' === $type ) {
-			$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS_ID, 'cancelled' );
-			$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS, __( 'Cancelled', 'yoohw-vietnam-store-tools' ) );
-		}
-		self::append( $order, $entry );
-		return $entry;
+		$order->update_meta_data( self::META_CLOSED_ID, $id );
+		$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS_ID, 'cancelled' );
+		$order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_STATUS, __( 'Cancelled', 'yoohw-vietnam-store-tools' ) );
+		$order->save();
+		return $id;
 	}
 
 	public static function replace_shipment( $order, $new_provider, $new_data, $context = [] ) {
@@ -95,11 +81,10 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		if ( ! $order || ! is_array( $new_data ) ) {
 			return self::error( 'invalid_order' );
 		}
-		self::refresh_order( $order );
-		$check = self::authorize( $order, $context, [ 'provider' => $new_provider, 'data' => $new_data, 'type' => 'replaced' ] );
-		if ( is_wp_error( $check ) ) {
-			return $check;
+		if ( ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
+			return self::error( 'forbidden' );
 		}
+		self::refresh_order( $order );
 		$provider_id = is_array( $new_provider ) && isset( $new_provider['id'] ) ? $new_provider['id'] : $new_provider;
 		$registered_provider = Yoohw_Vietnam_Store_Tools_Shipping::get_provider( $provider_id );
 		if ( ! $registered_provider ) {
@@ -122,10 +107,8 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 			$order->update_meta_data( self::META_LEGACY_ID, $previous_id );
 		}
 		$order->update_meta_data( self::META_CURRENT_ID, $new_id );
-		$entry = self::entry( $order, 'replaced', $previous_id, $current['data'], $context );
-		$entry['replacement_shipment_id'] = $new_id;
-		$entry['parent_shipment_id'] = $previous_id;
-		self::append( $order, $entry );
+		$order->delete_meta_data( self::META_CLOSED_ID );
+		$order->save();
 		return [ 'id' => $new_id, 'parent_id' => $previous_id ];
 	}
 
@@ -172,55 +155,6 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 		return 0 === strpos( $current['id'], 'legacy:' ) || ( '' !== $legacy_id && $current['id'] === $legacy_id );
 	}
 
-	private static function authorize( $order, $context, $payload ) {
-		$source = isset( $context['source_id'] ) ? sanitize_key( $context['source_id'] ) : 'manual';
-		if ( 'manual' === $source ) {
-			return current_user_can( 'edit_shop_order', $order->get_id() ) ? true : self::error( 'forbidden' );
-		}
-		$sources = apply_filters( 'yoohw_vietnam_store_tools_shipment_exception_sources', [] );
-		if ( ! is_array( $sources ) || ! isset( $sources[ $source ] ) || ! is_callable( $sources[ $source ] ) ) {
-			return self::error( 'unregistered_source' );
-		}
-		return call_user_func( $sources[ $source ], $order, $payload, $context ) === true ? true : self::error( 'invalid_source_evidence' );
-	}
-
-	private static function entry( $order, $type, $shipment_id, $data, $context ) {
-		$source = isset( $context['source_id'] ) ? sanitize_key( $context['source_id'] ) : 'manual';
-		return [
-			'id' => wp_generate_uuid4(),
-			'shipment_id' => $shipment_id,
-			'type' => $type,
-			'provider' => $data['provider'],
-			'tracking_code' => $data['tracking_code'],
-			'occurred_at' => gmdate( 'c' ),
-			'actor_id' => 'manual' === $source ? get_current_user_id() : 0,
-			'source_id' => $source,
-			'note' => isset( $context['note'] ) ? sanitize_textarea_field( $context['note'] ) : '',
-			'parent_shipment_id' => '',
-			'replacement_shipment_id' => '',
-		];
-	}
-
-	private static function append( $order, $entry ) {
-		$history = self::get_exceptions( $order );
-		$history[] = $entry;
-		$order->update_meta_data( self::META_HISTORY, $history );
-		$order->save();
-		do_action( 'yoohw_vietnam_store_tools_shipment_exception_recorded', $order, $entry );
-	}
-
-	private static function is_closed( $order, $id ) {
-		if ( '' === $id ) {
-			return false;
-		}
-		foreach ( self::get_exceptions( $order ) as $entry ) {
-			if ( $id === $entry['shipment_id'] && in_array( $entry['type'], [ 'cancelled', 'replaced' ], true ) ) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private static function order( $order ) {
 		if ( ! function_exists( 'wc_get_order' ) ) {
 			return false;
@@ -237,6 +171,6 @@ final class Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions {
 	}
 
 	private static function error( $code ) {
-		return new WP_Error( 'yoohw_vietnam_store_tools_shipment_' . $code, __( 'Shipment exception could not be recorded.', 'yoohw-vietnam-store-tools' ) );
+		return new WP_Error( 'yoohw_vietnam_store_tools_shipment_' . $code, __( 'Shipment is no longer current.', 'yoohw-vietnam-store-tools' ) );
 	}
 }

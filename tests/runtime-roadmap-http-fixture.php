@@ -51,7 +51,7 @@ if ( 'prepare' === $phase ) {
 	$pay_order->update_meta_data( Yoohw_Vietnam_Store_Tools_Shipping::META_TRACKING_CODE, 'VST62-HTTP-TRACK' );
 	$pay_order->calculate_totals();
 	$pay_order->save();
-	$shipment = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $pay_order );
+	$shipment = Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $pay_order );
 	$timeline = Yoohw_Vietnam_Store_Tools_Shipment_Tracking::add_timeline_event( $pay_order, [ 'status' => 'in_transit', 'occurred_at' => gmdate( 'Y-m-d\TH:i' ), 'expected_shipment_id' => $shipment['id'] ] );
 	vst_assert_same( true, $timeline, 'Customer order tracking timeline created' );
 	$wards = Yoohw_Vietnam_Store_Tools_Vietnam_Address_Data::get_wards_for_province( '01' );

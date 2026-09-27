@@ -15,6 +15,7 @@ $fixture = get_option( $fixture_option, [] );
 $keys = [
 	'_yoohw_vietnam_store_tools_payment_reconciliation_history',
 	'_yoohw_vietnam_store_tools_shipment_exception_history',
+	'_yoohw_vietnam_store_tools_current_shipment_id',
 	'_yoohw_vietnam_store_tools_returns_lite',
 	'_yoohw_vietnam_store_tools_einvoice_history',
 	'_yoohw_vietnam_store_tools_einvoice_documents',
@@ -39,9 +40,11 @@ if ( 'prepare' === $phase ) {
 	$order->save();
 	$payment = Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::record_manual_observation( $order, [ 'amount' => '10000', 'currency' => 'VND', 'observed_at' => gmdate( 'c' ), 'reference' => 'VST62-LIFE' ] );
 	vst_assert_true( ! is_wp_error( $payment ), 'Payment history prepared' );
-	$shipment_id = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order )['id'];
-	$exception = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::record_exception( $order, [ 'type' => 'failed_handoff', 'expected_shipment_id' => $shipment_id ] );
-	vst_assert_true( ! is_wp_error( $exception ), 'Shipment exception prepared' );
+	$shipment_id = Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order )['id'];
+	$identity = Yoohw_Vietnam_Store_Tools_Shipment_Identity::ensure_current_id( $order );
+	vst_assert_true( ! is_wp_error( $identity ), 'Shipment identity prepared' );
+	$order->update_meta_data( '_yoohw_vietnam_store_tools_shipment_exception_history', [ [ 'id' => 'historical' ] ] );
+	$order->save();
 	$item_id = (int) array_key_first( $order->get_items( 'line_item' ) );
 	$return = Yoohw_Vietnam_Store_Tools_Returns_Lite::create( $order, [ $item_id => 1 ], [ 'reason' => 'Lifecycle fixture' ], 0 );
 	vst_assert_true( ! is_wp_error( $return ), 'Return history prepared' );
@@ -84,7 +87,7 @@ if ( 'prepare' === $phase ) {
 	} else {
 		vst_assert_same( true, is_plugin_active( 'yoohw-vietnam-store-tools/yoohw-vietnam-store-tools.php' ), 'Plugin is active again' );
 		vst_assert_same( 1, count( Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_history( $order ) ), 'Payment history readable after activation' );
-		vst_assert_same( 1, count( Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_exceptions( $order ) ), 'Shipment history readable after activation' );
+		vst_assert_same( $fixture['snapshot']['_yoohw_vietnam_store_tools_current_shipment_id'], Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order )['id'], 'Shipment identity readable after activation' );
 		vst_assert_same( 1, count( Yoohw_Vietnam_Store_Tools_Returns_Lite::get_returns( $order ) ), 'Return history readable after activation' );
 		vst_assert_same( 'verified', Yoohw_Vietnam_Store_Tools_Electronic_Invoice::get_order_data( $order )['status'], 'Invoice projection readable after activation' );
 		$shipment_option = Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY;
@@ -92,7 +95,7 @@ if ( 'prepare' === $phase ) {
 		update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, 'no' );
 		update_option( $shipment_option, 'no' );
 		vst_assert_same( 'verified', Yoohw_Vietnam_Store_Tools_Electronic_Invoice::get_order_data( $order )['status'], 'Invoice history remains readable when feature disabled' );
-		vst_assert_same( 1, count( Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_exceptions( $order ) ), 'Shipment history remains readable when customer display disabled' );
+		vst_assert_same( $fixture['snapshot']['_yoohw_vietnam_store_tools_shipment_exception_history'], $order->get_meta( '_yoohw_vietnam_store_tools_shipment_exception_history', true ), 'Historical exception data remains untouched' );
 		if ( false === $old_shipment_option ) {
 			delete_option( $shipment_option );
 		} else {

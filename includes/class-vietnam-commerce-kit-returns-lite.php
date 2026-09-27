@@ -128,7 +128,7 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite {
 		if ( '' === $reason ) {
 			return self::error( 'reason', __( 'Enter a return reason.', 'yoohw-vietnam-store-tools' ) );
 		}
-		$shipment = Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_current_shipment( $order );
+		$shipment = Yoohw_Vietnam_Store_Tools_Shipment_Identity::get_current_shipment( $order );
 		$shipping = isset( $shipment['data'] ) ? $shipment['data'] : [];
 		return [
 			'order_id' => $order->get_id(),
@@ -144,7 +144,6 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite {
 				'provider' => isset( $shipping['provider'] ) ? $shipping['provider'] : '',
 				'tracking_code' => isset( $shipping['tracking_code'] ) ? $shipping['tracking_code'] : '',
 			],
-			'returned_exception_id' => '',
 			'reverse_reference' => '',
 		];
 	}
@@ -181,13 +180,6 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite {
 						$changes[ $field ] = substr( $changes[ $field ], 0, 200 );
 					}
 				}
-			}
-			if ( array_key_exists( 'returned_exception_id', $data ) ) {
-				$id = sanitize_text_field( $data['returned_exception_id'] );
-				if ( '' !== $id && ! self::valid_exception( $order, $target, $id ) ) {
-					return self::error( 'exception', __( 'Return-to-sender exception does not belong to this shipment.', 'yoohw-vietnam-store-tools' ) );
-				}
-				$changes['returned_exception_id'] = $id;
 			}
 			return $changes ? $changes : self::error( 'empty', __( 'No return changes were submitted.', 'yoohw-vietnam-store-tools' ) );
 		}
@@ -259,17 +251,6 @@ final class Yoohw_Vietnam_Store_Tools_Returns_Lite {
 			];
 		}
 		return $items;
-	}
-
-	private static function valid_exception( $order, $target, $id ) {
-		$original_id = $target['outbound_shipment']['id'];
-		$legacy_id = (string) $order->get_meta( Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::META_LEGACY_ID, true );
-		foreach ( Yoohw_Vietnam_Store_Tools_Fulfillment_Exceptions::get_exceptions( $order ) as $entry ) {
-			if ( $id === $entry['id'] && 'returned_to_sender' === $entry['type'] && ( $original_id === $entry['shipment_id'] || ( 'legacy:' . $order->get_id() === $original_id && $legacy_id === $entry['shipment_id'] ) ) ) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static function lock_name( $order_id ) {
