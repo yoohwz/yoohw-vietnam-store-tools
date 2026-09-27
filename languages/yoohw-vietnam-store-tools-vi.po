@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-27T11:25:32+00:00\n"
+"POT-Creation-Date: 2026-09-27T11:37:42+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -2573,11 +2573,11 @@ msgstr ""
 msgid "This return changed since the page loaded. Reload and retry."
 msgstr "Bản ghi trả hàng đã thay đổi sau khi mở trang. Hãy tải lại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-shipment-identity.php:74
+#: includes/class-vietnam-commerce-kit-shipment-identity.php:77
 msgid "Cancelled"
 msgstr "Đã hủy"
 
-#: includes/class-vietnam-commerce-kit-shipment-identity.php:174
+#: includes/class-vietnam-commerce-kit-shipment-identity.php:177
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:329
 #: includes/class-vietnam-commerce-kit-shipping.php:373
 #: includes/class-vietnam-commerce-kit-shipping.php:761

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27T11:25:32+00:00\n"
+"POT-Creation-Date: 2026-09-27T11:37:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -2216,11 +2216,11 @@ msgstr ""
 msgid "This return changed since the page loaded. Reload and retry."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipment-identity.php:74
+#: includes/class-vietnam-commerce-kit-shipment-identity.php:77
 msgid "Cancelled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-shipment-identity.php:174
+#: includes/class-vietnam-commerce-kit-shipment-identity.php:177
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:329
 #: includes/class-vietnam-commerce-kit-shipping.php:373
 #: includes/class-vietnam-commerce-kit-shipping.php:761
