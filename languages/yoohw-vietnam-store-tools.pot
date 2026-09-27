@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T10:12:54+00:00\n"
+"POT-Creation-Date: 2026-09-27T03:39:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -151,6 +151,7 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-admin-menu.php:122
 #: includes/class-vietnam-commerce-kit-admin-menu.php:168
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:226
+#: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr ""
 
@@ -173,6 +174,7 @@ msgid "Version %s"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:237
+#: includes/class-vietnam-commerce-kit-store-health.php:100
 msgid "Core features"
 msgstr ""
 
@@ -213,6 +215,7 @@ msgid "Save feature settings"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:305
+#: includes/class-vietnam-commerce-kit-store-health.php:35
 msgid "Vietnam address fields"
 msgstr ""
 
@@ -221,6 +224,7 @@ msgid "Use Vietnam provinces and wards, compact name fields, address normalizati
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:309
+#: includes/class-vietnam-commerce-kit-store-health.php:36
 msgid "Vietnam phone validation and normalization"
 msgstr ""
 
@@ -229,6 +233,7 @@ msgid "Validate Vietnamese phone numbers and store them consistently across chec
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:313
+#: includes/class-vietnam-commerce-kit-store-health.php:38
 msgid "Customer shipment information"
 msgstr ""
 
@@ -245,6 +250,7 @@ msgid "Add Vietnam-specific order information, filters, bulk actions, and CSV ex
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#: includes/class-vietnam-commerce-kit-store-health.php:62
 msgid "Accept invoice requests at checkout"
 msgstr ""
 
@@ -253,6 +259,7 @@ msgid "Allow customers to submit company and tax details for new orders."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:326
+#: includes/class-vietnam-commerce-kit-store-health.php:37
 msgid "Manage electronic invoice workflow"
 msgstr ""
 
@@ -261,200 +268,208 @@ msgid "Allow staff to update invoice status, references, notes, PDF, and XML fil
 msgstr ""
 
 #. translators: %d: number of enabled shipping services.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:374
+#: includes/class-vietnam-commerce-kit-admin-menu.php:373
 #, php-format
 msgid "%d service enabled"
 msgid_plural "%d services enabled"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:380
+#: includes/class-vietnam-commerce-kit-admin-menu.php:379
 msgid "Order management"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:381
+#: includes/class-vietnam-commerce-kit-admin-menu.php:380
 msgid "Use Vietnam-specific order columns, filters, shipment actions, and invoice information from the order list."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:382
-#: includes/class-vietnam-commerce-kit-admin-menu.php:440
-#: includes/class-vietnam-commerce-kit-admin-menu.php:457
-#: includes/class-vietnam-commerce-kit-admin-menu.php:467
+#: includes/class-vietnam-commerce-kit-admin-menu.php:381
+#: includes/class-vietnam-commerce-kit-admin-menu.php:439
+#: includes/class-vietnam-commerce-kit-admin-menu.php:456
+#: includes/class-vietnam-commerce-kit-admin-menu.php:466
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:106
+#: includes/class-vietnam-commerce-kit-store-health.php:31
 msgid "Enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:382
-#: includes/class-vietnam-commerce-kit-admin-menu.php:440
-#: includes/class-vietnam-commerce-kit-admin-menu.php:458
-#: includes/class-vietnam-commerce-kit-admin-menu.php:467
-#: includes/class-vietnam-commerce-kit-admin-menu.php:478
+#: includes/class-vietnam-commerce-kit-admin-menu.php:381
+#: includes/class-vietnam-commerce-kit-admin-menu.php:439
+#: includes/class-vietnam-commerce-kit-admin-menu.php:457
+#: includes/class-vietnam-commerce-kit-admin-menu.php:466
+#: includes/class-vietnam-commerce-kit-admin-menu.php:477
+#: includes/class-vietnam-commerce-kit-store-health.php:32
 msgid "Disabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:386
+#: includes/class-vietnam-commerce-kit-admin-menu.php:385
 msgid "Manage orders"
 msgstr ""
 
+#: includes/class-vietnam-commerce-kit-admin-menu.php:391
+#: includes/class-vietnam-commerce-kit-store-health.php:20
+#: includes/class-vietnam-commerce-kit-store-health.php:21
+#: includes/class-vietnam-commerce-kit-store-health.php:75
+msgid "Store Health / Migration"
+msgstr ""
+
 #: includes/class-vietnam-commerce-kit-admin-menu.php:392
-msgid "DevVN migration"
+msgid "Review store configuration and scan legacy data before an explicit safe migration."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:393
-msgid "Inspect and migrate compatible address and order data using WooCommerce status tools."
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-admin-menu.php:394
 msgid "Manual tool"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:398
+#: includes/class-vietnam-commerce-kit-admin-menu.php:397
 msgid "Open migration tools"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:405
+#: includes/class-vietnam-commerce-kit-admin-menu.php:404
 msgid "Shipping and delivery"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:406
+#: includes/class-vietnam-commerce-kit-admin-menu.php:405
 msgid "Connect carriers, define shipping rules, and control the tracking experience."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:409
+#: includes/class-vietnam-commerce-kit-admin-menu.php:408
 msgid "Shipping services"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:411
+#: includes/class-vietnam-commerce-kit-admin-menu.php:410
 msgid "Configure carrier accounts, pickup addresses, automatic synchronization, and shipment status mappings."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:412
+#: includes/class-vietnam-commerce-kit-admin-menu.php:411
 msgid "No shipping service connector is installed. Manual shipment management remains available on orders."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:413
+#: includes/class-vietnam-commerce-kit-admin-menu.php:412
 msgid "Manual only"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:417
+#: includes/class-vietnam-commerce-kit-admin-menu.php:416
 msgid "Configure services"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:420
+#: includes/class-vietnam-commerce-kit-admin-menu.php:419
 msgid "Shipping zones and rules"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:421
+#: includes/class-vietnam-commerce-kit-admin-menu.php:420
 msgid "Assign rates and the Vietnam shipping rules method to WooCommerce shipping zones."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:422
+#: includes/class-vietnam-commerce-kit-admin-menu.php:421
 msgid "WooCommerce settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:426
+#: includes/class-vietnam-commerce-kit-admin-menu.php:425
 msgid "Manage shipping zones"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:429
+#: includes/class-vietnam-commerce-kit-admin-menu.php:428
 msgid "Shipment tracking"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:430
+#: includes/class-vietnam-commerce-kit-admin-menu.php:429
 msgid "Configure public order lookup, carrier tracking URL templates, and custom carriers."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:431
+#: includes/class-vietnam-commerce-kit-admin-menu.php:430
 msgid "Public lookup enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:431
+#: includes/class-vietnam-commerce-kit-admin-menu.php:430
 msgid "Public lookup disabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:435
+#: includes/class-vietnam-commerce-kit-admin-menu.php:434
 msgid "Configure tracking"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:438
+#: includes/class-vietnam-commerce-kit-admin-menu.php:437
 msgid "Shipping tracking email"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:439
+#: includes/class-vietnam-commerce-kit-admin-menu.php:438
 msgid "Control the subject, heading, content, and email format for customer shipment updates."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:444
+#: includes/class-vietnam-commerce-kit-admin-menu.php:443
 msgid "Configure email"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:450
+#: includes/class-vietnam-commerce-kit-admin-menu.php:449
 msgid "Checkout, payments, and invoices"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:451
+#: includes/class-vietnam-commerce-kit-admin-menu.php:450
 msgid "Manage Vietnam checkout behavior and payment or invoice features."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:454
+#: includes/class-vietnam-commerce-kit-admin-menu.php:453
 msgid "Vietnam address and phone fields"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:455
+#: includes/class-vietnam-commerce-kit-admin-menu.php:454
 msgid "Control Vietnam address formatting, checkout compatibility, phone validation, and normalization in Core features."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:458
+#: includes/class-vietnam-commerce-kit-admin-menu.php:457
 msgid "Partially enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:462
+#: includes/class-vietnam-commerce-kit-admin-menu.php:461
+#: includes/class-vietnam-commerce-kit-store-health.php:101
 msgid "Open store address settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:465
+#: includes/class-vietnam-commerce-kit-admin-menu.php:464
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:292
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:319
+#: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:466
+#: includes/class-vietnam-commerce-kit-admin-menu.php:465
 msgid "Configure bank accounts, transfer content, QR layout, order amount, and customer email display."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:471
+#: includes/class-vietnam-commerce-kit-admin-menu.php:470
+#: includes/class-vietnam-commerce-kit-store-health.php:102
 msgid "Configure VietQR"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:474
+#: includes/class-vietnam-commerce-kit-admin-menu.php:473
 msgid "Business invoices"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:475
+#: includes/class-vietnam-commerce-kit-admin-menu.php:474
 msgid "Collect invoice requests at checkout and manage electronic invoice data on orders as two independent capabilities."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:477
+#: includes/class-vietnam-commerce-kit-admin-menu.php:476
 msgid "Requests and workflow enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:478
+#: includes/class-vietnam-commerce-kit-admin-menu.php:477
 msgid "Checkout requests enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:478
+#: includes/class-vietnam-commerce-kit-admin-menu.php:477
 msgid "Workflow enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:482
+#: includes/class-vietnam-commerce-kit-admin-menu.php:481
 msgid "Configure invoices"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:488
+#: includes/class-vietnam-commerce-kit-admin-menu.php:487
 msgid "Maintenance tools"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:489
+#: includes/class-vietnam-commerce-kit-admin-menu.php:488
 msgid "Review operational data and migrate compatible settings from legacy Vietnam checkout plugins."
 msgstr ""
 
@@ -653,6 +668,7 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:49
 #: includes/class-vietnam-commerce-kit-legacy-plugin-guard.php:74
+#: includes/class-vietnam-commerce-kit-store-health.php:106
 msgid "Scan data"
 msgstr ""
 
@@ -674,47 +690,58 @@ msgstr ""
 msgid "Sync all safe order addresses, customer profile addresses, and shipment data created by Le Van Toan plugins into Vietnam Store Toolkit for WooCommerce data. The browser will process the sync in chunks of up to %d address rows per data type. Address values are backed up before changes are saved."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:100
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:97
+msgid "Scan failed. Please try again."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:98
+msgid "Scanning legacy data..."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:99
 msgid "Preparing sync..."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:101
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:100
 msgid "Syncing..."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:102
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:101
 msgid "Sync completed."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:103
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:102
 msgid "No safe data from Le Van Toan plugins is available to sync."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:104
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:103
 msgid "Sync stopped because no progress was made in the latest step. Please run the scan tool and review the remaining data."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:105
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:104
 msgid "Sync request failed. Please try again."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:106
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:105
 msgid "This will sync all safe data from Le Van Toan plugins in the background. Continue?"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:107
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:106
+#: includes/class-vietnam-commerce-kit-store-health.php:110
 msgid "order address rows"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:108
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:107
+#: includes/class-vietnam-commerce-kit-store-health.php:111
 msgid "customer address rows"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:109
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:108
+#: includes/class-vietnam-commerce-kit-store-health.php:112
 msgid "shipment orders"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:144
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:143
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:446
 #: includes/class-vietnam-commerce-kit-electronic-invoice.php:516
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:531
@@ -724,91 +751,95 @@ msgstr ""
 msgid "Security check failed. Please reload the page and try again."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:198
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:160
+msgid "Invalid migration action."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:202
 msgid "You do not have permission to run this tool."
 msgstr ""
 
 #. translators: 1: order ID, 2: address type, 3: state, 4: city, 5: address line 2.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:245
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:249
 #, php-format
 msgid "Order #%1$d %2$s: %3$s / %4$s / %5$s"
 msgstr ""
 
 #. translators: 1: user ID, 2: address type, 3: state, 4: city, 5: address line 2.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:305
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:309
 #, php-format
 msgid "User #%1$d %2$s: %3$s / %4$s / %5$s"
 msgstr ""
 
 #. translators: %d: order ID.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:402
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:522
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:407
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:527
 #, php-format
 msgid "Order #%d could not be loaded."
 msgstr ""
 
 #. translators: %d: user ID.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:472
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:477
 #, php-format
 msgid "User #%d could not be loaded."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:714
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:719
 msgid "Billing"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:718
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:723
 msgid "Shipping"
 msgstr ""
 
 #. translators: 1: total rows, 2: mappable rows, 3: review rows, 4: billing rows, 5: shipping rows, 6: orders, 7: old three-level rows, 8: new two-level rows.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1171
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1176
 #, php-format
 msgid "Le Van Toan plugin data scan complete. Order address rows: %1$d total (%4$d billing, %5$d shipping). Safe order sync: %2$d address rows across %6$d orders (%7$d old three-level rows, %8$d new two-level rows). Order address rows needing official mapping/manual review: %3$d."
 msgstr ""
 
 #. translators: 1: total rows, 2: mappable rows, 3: review rows, 4: billing rows, 5: shipping rows, 6: users, 7: old three-level rows, 8: new two-level rows, 9: already-normalized rows with missing country.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1184
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1189
 #, php-format
 msgid "Customer address rows: %1$d total (%4$d billing, %5$d shipping). Safe customer sync: %2$d address rows across %6$d users (%7$d old three-level rows, %8$d new two-level rows, %9$d already-normalized rows with missing country). Customer address rows needing official mapping/manual review: %3$d."
 msgstr ""
 
 #. translators: 1: tracking total, 2: tracking remaining.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1198
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1203
 #, php-format
 msgid "Shipment orders: %1$d total; %2$d still need normalized VCK shipment data."
 msgstr ""
 
 #. translators: %s: samples.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1206
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1211
 #, php-format
 msgid "Order address review samples: %s."
 msgstr ""
 
 #. translators: %s: samples.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1214
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1219
 #, php-format
 msgid "Customer address review samples: %s."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1224
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1229
 msgid "All safe data from Le Van Toan plugins has been synced. Any remaining address rows require official mapping or manual review."
 msgstr ""
 
 #. translators: 1: safe order address rows, 2: safe customer address rows, 3: tracking orders, 4: order review rows, 5: customer review rows.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1229
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1234
 #, php-format
 msgid "Remaining: %1$d safe order address rows, %2$d safe customer address rows, %3$d shipment orders. Manual review still needed for %4$d order address rows and %5$d customer address rows."
 msgstr ""
 
 #. translators: 1: orders updated, 2: order addresses migrated, 3: users updated, 4: customer addresses migrated, 5: tracking orders synced, 6: remaining safe order rows, 7: remaining safe customer rows, 8: remaining order review rows, 9: remaining customer review rows.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1241
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1246
 #, php-format
 msgid "Le Van Toan plugin data sync batch complete. Updated %1$d orders and synced %2$d order address rows. Updated %3$d users and synced %4$d customer address rows. Synced %5$d shipment orders. Remaining safe order address rows: %6$d. Remaining safe customer address rows: %7$d. Remaining address rows needing mapping/manual review: %8$d order rows and %9$d customer rows."
 msgstr ""
 
 #. translators: %s: error messages.
-#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1258
+#: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:1263
 #, php-format
 msgid "Errors: %s"
 msgstr ""
@@ -1707,6 +1738,7 @@ msgid "Create tracking links and a customer-facing tracking timeline without con
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:62
+#: includes/class-vietnam-commerce-kit-store-health.php:63
 msgid "Public order lookup"
 msgstr ""
 
@@ -2263,6 +2295,101 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-shipping.php:2020
 msgid "Copy tracking code"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:44
+msgid "Store country"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:47
+msgid "Store province / city"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:47
+#: includes/class-vietnam-commerce-kit-store-health.php:57
+msgid "Good"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:47
+#: includes/class-vietnam-commerce-kit-store-health.php:57
+#: includes/class-vietnam-commerce-kit-store-health.php:59
+msgid "Needs attention"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:53
+msgid "Bank transfer (BACS)"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:57
+msgid "Usable VietQR bank account"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:59
+msgid "Enable BACS to offer VietQR at checkout."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:64
+msgid "Manual shipment tracking"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:64
+msgid "Action available"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:76
+msgid "Configuration checks are informational. Disabled features may be intentional; no settings or stored data are changed by this page."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:77
+msgid "Configuration readiness"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:85
+msgid "Invoice requests and electronic invoice workflow are independent. Manual tracking is available on orders without a carrier connector."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:86
+msgid "Actions requiring attention"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:96
+msgid "No configuration problems detected by these checks."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:104
+msgid "Data / migration readiness"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:105
+msgid "Scan legacy Vietnam Checkout / DevVN data on demand. Only exact-safe rows can be migrated; rows needing manual review remain unchanged. Address values are backed up before migration."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:108
+msgid "Data type"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:108
+msgid "Legacy rows found"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:108
+msgid "Safe rows remaining"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:108
+msgid "Needs manual review"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:115
+msgid "Not scanned. Run a scan to see legacy data readiness."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:116
+msgid "Sync all safe data"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-store-health.php:119
+msgid "WooCommerce Status Tools"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:80

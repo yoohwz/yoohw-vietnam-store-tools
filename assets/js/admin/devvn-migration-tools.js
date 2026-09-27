@@ -20,10 +20,103 @@
 		});
 	}
 
+	function initHealthAssistant() {
+		var page = $('.vck-store-health');
+		if (!page.length) { return; }
+		var scan = page.find('.vck-health-scan');
+		var migrate = page.find('.vck-health-migrate');
+		var report = page.find('.vck-health-report');
+		var progress = page.find('.vck-health-progress');
+		var errors = page.find('.vck-health-errors');
+		var running = false;
+		var lastStatus = null;
+		var moved = [0, 0, 0];
+
+		function lock(value) {
+			running = value;
+			scan.prop('disabled', value);
+			migrate.prop('disabled', value || !lastStatus || parseCount(lastStatus.remaining) <= 0);
+		}
+		function display(data) {
+			lastStatus = data;
+			page.find('.vck-health-counts').prop('hidden', false).find('[data-count]').each(function () {
+				$(this).text(parseCount(data[$(this).attr('data-count')]));
+			});
+			report.text(data.report || data.message || '');
+		}
+		function fail(response) {
+			lastStatus = null;
+			progress.text(getString('requestFailed', '') + ' ' + (response && response.data && response.data.message || ''));
+			lock(false);
+		}
+		function showMoved() {
+			progress.empty();
+			['orderAddresses', 'userAddresses', 'trackingOrders'].forEach(function (key, index) {
+				$('<p>').text(getString(key, key) + ': ' + moved[index]).appendTo(progress);
+			});
+		}
+		function finishScan(message) {
+			// An explicit final read also refreshes samples after the final write.
+			requestMigration('scan').done(function (response) {
+				if (!response || !response.success || !response.data) { fail(response); return; }
+				display(response.data);
+				$('<p>').text(message).appendTo(progress);
+				lock(false);
+			}).fail(function () { fail(); });
+		}
+		function step() {
+			var before = parseCount(lastStatus.remaining);
+			requestMigration('step').done(function (response) {
+				if (!response || !response.success || !response.data) { fail(response); return; }
+				var data = response.data;
+				var result = data.step || {};
+				moved[0] += parseCount(result.orderAddressesMoved);
+				moved[1] += parseCount(result.customerAddressesMoved);
+				moved[2] += parseCount(result.trackingSynced);
+				display(data);
+				showMoved();
+				['addressErrors', 'customerAddressErrors', 'trackingErrors'].forEach(function (key) {
+					(result[key] || []).forEach(function (message) {
+						if (errors.children().length < 15) { $('<li>').text(message).appendTo(errors); }
+					});
+				});
+				if (data.stopped || (!data.done && parseCount(data.remaining) >= before)) {
+					finishScan(getString('stopped', ''));
+				} else if (data.done) {
+					finishScan(getString('completed', ''));
+				} else {
+					window.setTimeout(step, 250);
+				}
+			}).fail(function () { fail(); });
+		}
+		scan.on('click', function () {
+			if (running) { return; }
+			lock(true);
+			errors.empty();
+			progress.text(getString('scanning', ''));
+			requestMigration('scan').done(function (response) {
+				if (!response || !response.success || !response.data) { fail(response); return; }
+				display(response.data);
+				progress.empty();
+				lock(false);
+			}).fail(function () { fail(); });
+		});
+		migrate.on('click', function () {
+			if (running || !lastStatus || parseCount(lastStatus.remaining) <= 0 || !window.confirm(getString('confirmMigrate', 'Continue?'))) { return; }
+			lock(true);
+			errors.empty();
+			moved = [0, 0, 0];
+			showMoved();
+			step();
+		});
+	}
+
 	$(function () {
 		if (!config.ajaxUrl || !config.nonce || !config.migrationTool) {
 			return;
 		}
+
+		initHealthAssistant();
 
 		var form = $('#form_' + config.migrationTool);
 		var button = $('input[type="submit"][form="form_' + config.migrationTool + '"]');
@@ -89,17 +182,20 @@
 						].filter(Boolean).join(', ') + '.';
 					}
 
+					var errors = [].concat(step.addressErrors || [], step.customerAddressErrors || [], step.trackingErrors || []).slice(0, 15).join(' ');
+					stepDetail += ' ' + errors;
+
 					setProgress(percent, getString('processing', 'Syncing...'), stepDetail);
 
 					if (data.stopped) {
-						setProgress(percent, getString('stopped', 'Sync stopped because no progress was made in the latest step.'), data.message || '');
+						setProgress(percent, getString('stopped', 'Sync stopped because no progress was made in the latest step.'), stepDetail);
 						progress.addClass('is-error').removeClass('is-running is-complete');
 						stopRunning();
 						return;
 					}
 
 					if (data.done) {
-						complete(data.message || '');
+						complete(stepDetail);
 						return;
 					}
 
