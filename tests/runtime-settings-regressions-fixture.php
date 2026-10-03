@@ -12,7 +12,7 @@ $fixture = get_option( $fixture_key, [] );
 if ( 'prepare' === $args[1] ) {
 	vst_assert_same( [], $fixture, 'No previous settings fixture remains' );
 	if ( $fixture || file_exists( $mu_path ) ) { throw new RuntimeException( 'Existing fixture must be cleaned up first.' ); }
-	$options = [ 'woocommerce_currency', 'woocommerce_bacs_settings', 'woocommerce_bacs_accounts', Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PHONE_NORMALIZATION, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ORDER_MANAGEMENT, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, Yoohw_Vietnam_Store_Tools_Tax_Invoice::OPTION_ID, Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTINGS_OPTION ];
+	$options = [ 'woocommerce_coming_soon', 'woocommerce_store_pages_only', 'woocommerce_currency', 'woocommerce_bacs_settings', 'woocommerce_bacs_accounts', Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PHONE_NORMALIZATION, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ORDER_MANAGEMENT, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, Yoohw_Vietnam_Store_Tools_Tax_Invoice::OPTION_ID, Yoohw_Vietnam_Store_Tools_PayPal_Conversion::SETTINGS_OPTION ];
 	$old = [];
 	foreach ( $options as $option ) { $old[ $option ] = get_option( $option, false ); }
 	$fixture = [ 'old' => $old, 'orders' => [], 'user_id' => get_current_user_id() ];
