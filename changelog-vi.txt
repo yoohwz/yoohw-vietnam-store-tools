@@ -1,5 +1,16 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
+= 1.2.0 (27/09/2026) =
+
+* Bổ sung tùy chọn quy đổi VND sang USD cho các luồng thanh toán tương thích của WooCommerce PayPal Payments, dùng tỷ giá do cửa hàng nhập và cố định cho từng lần thanh toán, kèm kiểm tra tương thích an toàn.
+* Bổ sung đối soát thanh toán thủ công trên màn hình đơn hàng để ghi nhận giao dịch quan sát được, khớp đúng số tiền đơn hàng, xem bằng chứng và điều chỉnh bản ghi mà không tự động đánh dấu đơn đã thanh toán.
+* Bổ sung bảng Tình trạng cửa hàng và trợ lý có hướng dẫn để quét, sao lưu và chuyển đổi theo lô dữ liệu địa chỉ cũ cùng dữ liệu theo dõi GHTK tương thích.
+* Mở rộng quy trình bàn giao hóa đơn điện tử trung lập với nhà cung cấp: cập nhật có kiểm tra phiên bản, lịch sử chứng từ, mã tham chiếu nhà cung cấp và thông tin rõ hơn trong quản trị đơn hàng và email; việc phát hành hóa đơn vẫn do hệ thống bên ngoài thực hiện.
+* Cải tiến: Bảo vệ cập nhật vận đơn và theo dõi bằng mã định danh vận đơn cùng kiểm tra thao tác cũ, duy trì vận đơn hiện tại và hành trình của nó qua các đối tượng đơn hàng và thao tác hủy.
+* Cải tiến: Sắp xếp lại thông tin đơn hàng và thu gọn phần đối soát thanh toán trong metabox bên; cải thiện chi tiết chuyển khoản BACS/VietQR và thao tác sao chép.
+* Tương thích: Dùng bản dịch tiếng Việt đi kèm để điền các khóa còn thiếu nhưng vẫn ưu tiên gói ngôn ngữ WordPress, đồng thời chỉnh nhãn Tình trạng cửa hàng.
+* Dành cho nhà phát triển: Mở rộng hợp đồng tích hợp thanh toán, vận chuyển và hóa đơn điện tử; tăng cường kiểm tra bản phát hành, thanh toán, bản địa hóa và HPOS.
+
 = 1.1.6 (08/09/2026) =
 
 * Bổ sung Phường / Xã đã xác thực làm node con của Tỉnh / Thành phố trong cây khu vực Shipping Zones gốc của WooCommerce, đồng thời duy trì hành vi quốc gia, tỉnh/thành, mã bưu chính, thứ tự zone và cache.
