@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-09-27T13:11:01+00:00\n"
+"POT-Creation-Date: 2026-10-03T14:52:36+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -163,7 +163,7 @@ msgstr "Cài đặt"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:130
 #: includes/class-vietnam-commerce-kit-admin-menu.php:176
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:226
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:237
 #: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr "Bạn không có quyền quản lý cài đặt WooCommerce."
@@ -532,8 +532,8 @@ msgid "Open store address settings"
 msgstr "Mở cài đặt địa chỉ cửa hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:472
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:292
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:319
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:303
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:330
 #: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr "Chuyển khoản VietQR"
@@ -592,16 +592,16 @@ msgstr ""
 "Kiểm tra dữ liệu vận hành và di chuyển các cài đặt tương thích từ plugin "
 "thanh toán Việt Nam cũ."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:39
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:191
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:50
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:202
 msgid "Bank BIN"
 msgstr "Mã BIN ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:51
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:62
 msgid "VietQR"
 msgstr "VietQR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:53
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:64
 msgid ""
 "Choose a bank in each bank transfer account to generate VietQR payment QR "
 "codes for Vietnamese bank transfers. Existing legacy Bank BIN and Sort code "
@@ -611,87 +611,87 @@ msgstr ""
 "chuyển khoản ngân hàng tại Việt Nam. Các giá trị Mã BIN ngân hàng và Sort "
 "code cũ vẫn được hỗ trợ."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:57
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:68
 msgid "VietQR payment QR"
 msgstr "Mã QR thanh toán VietQR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:59
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:70
 msgid "Show VietQR code for direct bank transfer orders"
 msgstr "Hiển thị mã VietQR cho đơn thanh toán chuyển khoản ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:63
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:201
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:74
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:212
 msgid "Transfer content template"
 msgstr "Mẫu nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:65
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:202
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:76
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:213
 msgid "Available placeholders: {order_id}, {order_number}, {site_name}."
 msgstr "Biến có thể dùng: {order_id}, {order_number}, {site_name}."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:70
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:337
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:354
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:385
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:81
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:348
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:365
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:396
 msgid "Amount"
 msgstr "Số tiền"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:72
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:83
 msgid "Include the order amount in the QR code when the order currency is VND"
 msgstr "Thêm số tiền đơn hàng vào mã QR khi tiền tệ của đơn là VND"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:76
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:87
 msgid "QR template"
 msgstr "Mẫu QR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:80
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:91
 msgid "Compact with VietQR logo"
 msgstr "Gọn kèm logo VietQR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:81
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:92
 msgid "Compact"
 msgstr "Gọn"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:82
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:93
 msgid "QR only"
 msgstr "Chỉ mã QR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:86
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:97
 msgid "Email display"
 msgstr "Hiển thị trong email"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:88
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:99
 msgid "Show VietQR code in customer bank transfer emails"
 msgstr "Hiển thị mã VietQR trong email chuyển khoản gửi khách hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:192
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:203
 msgid ""
 "Enter the VietQR/NAPAS bank BIN for this Vietnam bank account, for example "
 "970436."
 msgstr ""
 "Nhập Mã BIN VietQR/NAPAS cho tài khoản ngân hàng Việt Nam này, ví dụ 970436."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:193
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:204
 msgid "Bank BIN is required to generate VietQR codes."
 msgstr "Cần nhập Mã BIN ngân hàng để tạo mã VietQR."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:194
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:205
 msgid ""
 "Choose the receiving bank. The VietQR bank BIN will be filled automatically."
 msgstr "Chọn ngân hàng nhận tiền. Mã BIN VietQR sẽ được tự động điền."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:195
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:334
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:357
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:206
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:345
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:399
 msgid "Bank"
 msgstr "Ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:196
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:207
 msgid "Please select a bank to generate VietQR codes."
 msgstr "Vui lòng chọn ngân hàng để tạo mã VietQR."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:197
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:208
 msgid ""
 "Vietnam Store Toolkit for WooCommerce uses Vietnam bank transfer accounts "
 "for VietQR."
@@ -699,94 +699,94 @@ msgstr ""
 "Vietnam Store Toolkit for WooCommerce sử dụng tài khoản chuyển khoản ngân "
 "hàng Việt Nam cho VietQR."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:198
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:209
 msgid "Country"
 msgstr "Quốc gia"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:199
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:210
 msgid "Vietnam"
 msgstr "Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:200
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:211
 msgid "Select a bank"
 msgstr "Chọn ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:203
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:214
 msgid "Could not save the VietQR transfer content template."
 msgstr "Không thể lưu mẫu nội dung chuyển khoản VietQR."
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:204
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:215
 msgid "Account Name"
 msgstr "Tên tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:205
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:216
 msgid "Account Number"
 msgstr "Số tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:206
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:217
 msgid "Bank Name"
 msgstr "Tên ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:207
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:218
 msgid "BIC / SWIFT"
 msgstr "Mã BIC / SWIFT"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:208
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:219
 msgid "IBAN"
 msgstr "Mã IBAN"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:322
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:382
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:333
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:393
 msgid "Pay by bank transfer"
 msgstr "Thanh toán chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:332
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:350
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:343
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:361
 msgid "VietQR payment QR code"
 msgstr "Mã QR thanh toán VietQR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:335
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:356
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:346
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:398
 msgid "Account number"
 msgstr "Số tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:335
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:346
 msgid "Copy account number"
 msgstr "Sao chép số tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:336
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:347
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:400
 msgid "Account name"
 msgstr "Tên tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:338
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:386
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:349
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:397
 msgid "Transfer content"
 msgstr "Nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:338
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:349
 msgid "Copy transfer content"
 msgstr "Sao chép nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:355
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:366
 msgid "Transfer note"
 msgstr "Nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:358
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
 msgid "Account holder"
 msgstr "Chủ tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:401
 msgid "QR code"
 msgstr "Mã QR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:409
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
 #: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copied"
 msgstr "Đã sao chép"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:469
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:480
 msgid "Not included in QR code"
 msgstr "Không kèm trong mã QR"
 
@@ -2099,7 +2099,7 @@ msgstr "Đảo đối soát"
 msgid "Payment evidence could not be recorded."
 msgstr "Không thể ghi nhận bằng chứng thanh toán."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:197
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:199
 msgid ""
 "PayPal order creation cannot be repeated for the active VND to USD payment "
 "attempt. Please start a new checkout attempt."
@@ -2107,7 +2107,7 @@ msgstr ""
 "Không thể tạo lại đơn hàng PayPal cho lần thanh toán chuyển đổi từ VND sang "
 "USD đang hoạt động. Vui lòng bắt đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:205
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:207
 msgid ""
 "PayPal USD conversion could not safely prepare this order. Please use "
 "another payment method or contact the store."
@@ -2115,7 +2115,7 @@ msgstr ""
 "Không thể chuẩn bị đơn hàng này một cách an toàn để chuyển đổi PayPal sang "
 "USD. Vui lòng dùng phương thức thanh toán khác hoặc liên hệ cửa hàng."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:210
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:212
 msgid ""
 "The PayPal USD amount changed during checkout. Please refresh the checkout "
 "and try again."
@@ -2123,7 +2123,7 @@ msgstr ""
 "Số tiền USD của PayPal đã thay đổi trong quá trình thanh toán. Vui lòng tải "
 "lại trang thanh toán và thử lại."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:226
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:228
 msgid ""
 "PayPal USD conversion could not verify the active payment attempt before "
 "updating the order."
@@ -2131,7 +2131,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không thể xác minh lần thanh toán đang hoạt động "
 "trước khi cập nhật đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:232
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:234
 msgid ""
 "PayPal order updates cannot be safely associated with this VND to USD "
 "payment attempt. Please start a new checkout attempt."
@@ -2139,14 +2139,14 @@ msgstr ""
 "Không thể liên kết an toàn nội dung cập nhật đơn hàng PayPal với lần thanh "
 "toán chuyển đổi từ VND sang USD này. Vui lòng bắt đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:236
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:249
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:238
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:251
 msgid "PayPal returned an unsupported order update for this converted payment."
 msgstr ""
 "PayPal trả về nội dung cập nhật đơn hàng không được hỗ trợ cho khoản thanh "
 "toán đã chuyển đổi này."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:259
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:261
 msgid ""
 "PayPal returned an unsafe monetary order update. Please start a new checkout "
 "attempt."
@@ -2154,7 +2154,7 @@ msgstr ""
 "PayPal trả về nội dung cập nhật số tiền không an toàn. Vui lòng bắt đầu một "
 "lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:264
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:266
 msgid ""
 "The PayPal order amount changed after USD conversion was locked. Please "
 "start a new checkout attempt."
@@ -2162,28 +2162,28 @@ msgstr ""
 "Số tiền đơn hàng PayPal đã thay đổi sau khi phép chuyển đổi sang USD được "
 "khóa. Vui lòng bắt đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:280
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:289
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:282
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:291
 msgid "PayPal returned an order that does not match the locked USD payment."
 msgstr "PayPal trả về đơn hàng không khớp với khoản thanh toán USD đã khóa."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:376
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:900
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:906
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:378
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:971
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:977
 msgid ""
 "The WooCommerce order could not be linked to the locked PayPal USD payment."
 msgstr ""
 "Không thể liên kết đơn hàng WooCommerce với khoản thanh toán PayPal USD đã "
 "khóa."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:404
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:406
 msgid ""
 "Saved PayPal payment methods are not supported by VND to USD conversion."
 msgstr ""
 "Phương thức thanh toán PayPal đã lưu không được hỗ trợ khi chuyển đổi từ VND "
 "sang USD."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:407
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:409
 msgid ""
 "Continuing an existing PayPal order is not supported by VND to USD "
 "conversion."
@@ -2191,16 +2191,32 @@ msgstr ""
 "Không hỗ trợ tiếp tục đơn hàng PayPal hiện có khi chuyển đổi từ VND sang USD."
 
 #. translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:440
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:442
 #, php-format
 msgid "PayPal will charge %1$s USD (1 USD = %2$s VND)."
 msgstr "PayPal sẽ thu %1$s USD (1 USD = %2$s VND)."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:448
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:450
 msgid "PayPal USD conversion is not available for this checkout."
 msgstr "Chuyển đổi PayPal sang USD không khả dụng cho lần thanh toán này."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:746
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:498
+msgid ""
+"PayPal USD conversion is unavailable because the installed integration "
+"contract is incompatible."
+msgstr ""
+"Không thể chuyển đổi PayPal sang USD vì hợp đồng tích hợp đã cài đặt không "
+"tương thích."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:499
+msgid ""
+"PayPal USD conversion is unavailable because the integration has not "
+"completed compatibility evaluation."
+msgstr ""
+"Không thể chuyển đổi PayPal sang USD vì tích hợp chưa hoàn tất đánh giá tính "
+"tương thích."
+
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:817
 msgid ""
 "PayPal USD conversion is inactive because its manual VND per USD rate is "
 "invalid."
@@ -2208,15 +2224,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không hoạt động vì tỷ giá VND trên mỗi USD nhập "
 "thủ công không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:749
-msgid ""
-"PayPal USD conversion is inactive because the installed WooCommerce PayPal "
-"Payments integration contract is incompatible."
-msgstr ""
-"Chuyển đổi PayPal sang USD không hoạt động vì hợp đồng tích hợp WooCommerce "
-"PayPal Payments đã cài đặt không tương thích."
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:752
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:823
 msgid ""
 "PayPal USD conversion requires CAPTURE intent. PayPal is unavailable until "
 "WooCommerce PayPal Payments uses CAPTURE."
@@ -2224,23 +2232,15 @@ msgstr ""
 "Chuyển đổi PayPal sang USD yêu cầu phương thức CAPTURE. PayPal sẽ không khả "
 "dụng cho đến khi WooCommerce PayPal Payments sử dụng CAPTURE."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:762
-msgid ""
-"PayPal USD conversion is unavailable because the installed integration is "
-"incompatible."
-msgstr ""
-"Chuyển đổi PayPal sang USD không khả dụng vì tích hợp đã cài đặt không tương "
-"thích."
-
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:769
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:840
 msgid "This PayPal payment flow is not supported by VND to USD conversion."
 msgstr "Luồng thanh toán PayPal này không hỗ trợ chuyển đổi từ VND sang USD."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:773
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:844
 msgid "PayPal USD conversion supports one-time CAPTURE payments only."
 msgstr "Chuyển đổi PayPal sang USD chỉ hỗ trợ thanh toán CAPTURE một lần."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:807
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:878
 msgid ""
 "PayPal USD conversion is unavailable because its exchange rate or checkout "
 "session is invalid."
@@ -2248,7 +2248,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD không khả dụng vì tỷ giá hoặc phiên thanh toán "
 "không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:819
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:890
 msgid ""
 "The cart changed after PayPal conversion was locked. Please start a new "
 "checkout attempt."
@@ -2256,8 +2256,8 @@ msgstr ""
 "Giỏ hàng đã thay đổi sau khi phép chuyển đổi PayPal được khóa. Vui lòng bắt "
 "đầu một lần thanh toán mới."
 
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:837
-#: includes/class-vietnam-commerce-kit-paypal-conversion.php:857
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:908
+#: includes/class-vietnam-commerce-kit-paypal-conversion.php:928
 msgid "PayPal USD conversion could not verify the current VND total."
 msgstr "Chuyển đổi PayPal sang USD không thể xác minh tổng tiền VND hiện tại."
 

@@ -50,8 +50,11 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 require __DIR__ . '/support/assertions.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conversion.php';
 
+$unevaluated = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+vst_assert_same( [ 'reason' => 'NOT_EVALUATED', 'probe' => '', 'ready' => false ], $unevaluated->get_adapter_status(), 'Unevaluated compatibility has an explicit non-incompatible result' );
 $unavailable_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
 vst_assert_same( array( 'core-module' ), $unavailable_runtime->register_ppcp_module( array( 'core-module' ) ), 'Compatible PPCP version without required services does not append the adapter module' );
+vst_assert_same( 'INCOMPATIBLE_MISSING_CLASS', $unavailable_runtime->get_adapter_status()['reason'], 'Missing PPCP classes have a bounded distinct reason' );
 vst_assert_same( false, Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active(), 'Inactive PPCP plugin is detected for conditional settings rendering' );
 $GLOBALS['vst_active_plugins'] = array( 'woocommerce-paypal-payments/woocommerce-paypal-payments.php' );
 vst_assert_true( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active(), 'Active PPCP plugin is detected for conditional settings rendering' );

@@ -22,6 +22,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 	const SETTING_TITLE            = 'yoohw_vietnam_store_tools_vietqr_title';
 
 	public function __construct() {
+		add_filter( 'experimental_woocommerce_admin_payment_reactify_render_sections', [ $this, 'use_native_bacs_settings' ] );
 		add_filter( 'woocommerce_get_bacs_locale', [ $this, 'add_vietnam_bacs_locale' ] );
 		add_filter( 'woocommerce_settings_api_form_fields_' . self::GATEWAY_ID, [ $this, 'add_bacs_vietqr_settings' ] );
 		add_filter( 'woocommerce_bacs_accounts', [ $this, 'hide_default_bacs_accounts_when_vietqr_renders' ], 10, 2 );
@@ -33,6 +34,16 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		add_action( 'woocommerce_view_order', [ $this, 'render_view_order_vietqr' ], 9 );
 		add_action( 'woocommerce_email_before_order_table', [ $this, 'render_email_vietqr' ], 20, 3 );
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
+	}
+
+	/** Use WooCommerce's native extension fields and save path for BACS only. */
+	public function use_native_bacs_settings( $sections ) {
+		if ( ! is_array( $sections ) ) {
+			return $sections;
+		}
+		return array_values( array_filter( $sections, static function( $section ) {
+			return self::GATEWAY_ID !== $section;
+		} ) );
 	}
 
 	public function add_vietnam_bacs_locale( $locale ) {
@@ -681,7 +692,9 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		$path = Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'path' );
 
 		return 'wc-admin' === $page
-			&& false !== strpos( $path, 'settings/payments/' . self::GATEWAY_ID );
+			&& ( false !== strpos( $path, 'settings/payments/' . self::GATEWAY_ID )
+				|| false !== strpos( $path, 'settings/payments/offline/' . self::GATEWAY_ID )
+			);
 	}
 
 	private function get_admin_bank_accounts_for_script() {

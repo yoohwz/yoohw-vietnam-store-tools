@@ -504,6 +504,7 @@ jobs:
           npx --yes @wordpress/env@11.13.0 start --update
           wp_env=(npx --yes @wordpress/env@11.13.0)
           "${wp_env[@]}" run cli wp plugin install woocommerce --version=11.1.2 --activate
+          "${wp_env[@]}" run cli wp plugin install woocommerce-paypal-payments --version=4.1.3 --activate
           "${wp_env[@]}" run cli wp plugin activate yoohw-vietnam-store-tools
       - name: Verify legacy and HPOS order storage
         shell: bash
@@ -528,6 +529,9 @@ jobs:
           node tests/runtime-roadmap-http-smoke.js order-pay
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS prepare --user=1
+          node tests/runtime-settings-regressions-http.js
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS cleanup --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN hpos save --user=1
@@ -546,6 +550,9 @@ jobs:
           node tests/runtime-roadmap-http-smoke.js order-pay
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS prepare --user=1
+          node tests/runtime-settings-regressions-http.js
+          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS cleanup --user=1
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop

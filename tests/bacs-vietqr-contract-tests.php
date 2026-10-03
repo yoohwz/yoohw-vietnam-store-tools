@@ -1,6 +1,7 @@
 <?php
 /** Surviving BACS/VietQR account and QR normalization contracts. */
 define( 'ABSPATH', __DIR__ . '/' );
+define( 'YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR', dirname( __DIR__ ) . '/' );
 require __DIR__ . '/support/assertions.php';
 
 $GLOBALS['vst_options'] = [];
@@ -30,6 +31,12 @@ class WC_Order {
 
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-bacs-vietqr.php';
 $ui = new Yoohw_Vietnam_Store_Tools_BACS_VietQR();
+vst_assert_same( [ 'cod', 'third_party', 'cheque' ], $ui->use_native_bacs_settings( [ 'cod', 'bacs', 'third_party', 'cheque' ] ), 'Only BACS falls back; other sections retain order' );
+vst_assert_same( [ 'cod' ], $ui->use_native_bacs_settings( [ 'cod' ] ), 'Absent BACS leaves the list unchanged' );
+vst_assert_same( [], $ui->use_native_bacs_settings( [ 'bacs', 'bacs' ] ), 'No duplicate BACS section survives' );
+vst_assert_same( null, $ui->use_native_bacs_settings( null ), 'Unexpected input is preserved' );
+$fields = $ui->add_bacs_vietqr_settings( [ 'account_details' => [ 'type' => 'account_details' ] ] );
+vst_assert_same( $fields, $ui->add_bacs_vietqr_settings( $fields ), 'Native field provider is idempotent' );
 $order = new WC_Order();
 $qr = new ReflectionMethod( $ui, 'get_vietqr_payment_accounts' );
 if ( PHP_VERSION_ID < 80100 ) {

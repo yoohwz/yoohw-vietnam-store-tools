@@ -53,6 +53,17 @@ try {
 	vst_assert_same( false, class_exists( 'Yoohw_Vietnam_Store_Tools_Returns_Lite', false ), 'Returns Lite domain is not bootstrapped' );
 	vst_assert_same( false, class_exists( 'Yoohw_Vietnam_Store_Tools_Returns_Lite_Admin', false ), 'Returns Lite admin is not bootstrapped' );
 	vst_assert_same( false, has_action( 'admin_post_yoohw_vietnam_store_tools_return_action' ), 'Return action is not registered' );
+	require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-page.php';
+	require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-payment-gateways.php';
+	$payment_settings = new WC_Settings_Payment_Gateways();
+	vst_assert_same( false, $payment_settings->should_render_react_section( 'bacs' ), 'BACS uses native extension settings' );
+	foreach ( [ 'main', 'offline', 'cod', 'cheque' ] as $section ) {
+		vst_assert_same( true, $payment_settings->should_render_react_section( $section ), 'React preserved for ' . $section );
+	}
+	$gateway = WC()->payment_gateways()->payment_gateways()['bacs'];
+	vst_assert_same( 'WC_Gateway_BACS', get_class( $gateway ), 'Native BACS registry remains unchanged' );
+	vst_assert_true( isset( $gateway->get_form_fields()[ Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_ENABLED ] ), 'Native filter contains VietQR setting' );
+	vst_assert_true( preg_match( '/<input[^>]*name="yoohw_vietnam_store_tools_shipping\[tracking_code\]"[^>]*required/', $shipping_html ) === 0, 'Tracking input cannot constrain parent order form' );
 	$payment = new Yoohw_Vietnam_Store_Tools_BACS_VietQR();
 	vst_assert_same( false, method_exists( $payment, 'render_payment_link_metabox' ), 'Payment link renderer is absent' );
 	vst_assert_same( false, has_action( 'add_meta_boxes', [ $payment, 'add_payment_link_metabox' ] ), 'Payment link metabox is not registered' );
