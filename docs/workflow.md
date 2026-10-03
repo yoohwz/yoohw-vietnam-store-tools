@@ -41,11 +41,11 @@ Compute follows phase, not mutable task metadata:
 
 | Phase | Default |
 | --- | --- |
-| Root orchestration; Fast, Controlled, or correction implementation | GPT-6 Sol / MEDIUM |
-| Separate Controlled discovery/architecture with genuine Plan Review | GPT-6 Sol / HIGH |
-| Each fresh independent Technical Review or re-review | GPT-6 Sol / HIGH |
+| Root orchestration; Fast, Controlled, or correction implementation | GPT-6.1 Sol / MEDIUM |
+| Separate Controlled discovery/architecture with genuine Plan Review | GPT-6.1 Sol / HIGH |
+| Each fresh independent Technical Review or re-review | GPT-6.1 Sol / HIGH |
 
-Use GPT-6 Sol / XHIGH only for a specific unresolved architecture/security reason after reducing irrelevant context. GPT-6 Astra requires exceptional manual escalation and is never the governed default. Do not switch models for individual Git, lint, or test substeps.
+Use GPT-6.1 Sol / XHIGH only for a specific unresolved architecture/security reason after reducing irrelevant context. GPT-6 Astra requires exceptional manual escalation and is never the governed default. Do not switch models for individual Git, lint, or test substeps.
 
 ## Discovery and Plan Review
 
@@ -55,7 +55,7 @@ Codex reads the Issue, GitHub state, repository/worktree state, and relevant con
 
 Codex implements only within the Issue and approved boundary, maintains one task branch/PR, and validates the change. A draft PR uses quick CI. The `ready_for_review` transition activates risk-matched deep CI; PR body or status prose never controls CI depth. Preserve `Workflow governance`, `Repository contracts`, `VST Required Gate`, PHP 7.4/8.2/8.4 contexts, localization quality, WordPress translation-runtime checks, strict Plugin Check, product/architecture/address/email/PayPal contract suites, and WordPress.org release checks. Green CI proves only the checks that ran; runtime-sensitive changes need relevant WordPress/WooCommerce evidence.
 
-For each exact Controlled candidate, Codex delegates one fresh independent Technical Reviewer at GPT-6 Sol / HIGH when native per-role delegation is available. The reviewer receives the approved Issue/boundary, admitted base, exact SHA and total diff, relevant contracts, and validation evidence. It has fresh context and read-only source access; it must not rely on implementer scratch reasoning or self-review conclusions and must not recursively delegate. Its PASS or findings are recorded durably in GitHub review/comment evidence with the exact reviewed SHA. Codex must not present its own assessment as independent review. If native fresh delegation is unavailable, preserve the candidate and stop with `TECHNICAL_REVIEW_REQUIRED`, `Next: Review VST-N`; ChatGPT then performs a fresh standalone independent Technical Review and records exact-SHA evidence before its separate Acceptance Review. Do not weaken independence to avoid the fallback. Fast candidates still receive risk-appropriate validation and Acceptance Review; a fresh delegated or manual independent Technical Reviewer is mandatory for Controlled candidates.
+For each exact Controlled candidate, Codex delegates one fresh independent Technical Reviewer at GPT-6.1 Sol / HIGH when native per-role delegation is available. The reviewer receives the approved Issue/boundary, admitted base, exact SHA and total diff, relevant contracts, and validation evidence. It has fresh context and read-only source access; it must not rely on implementer scratch reasoning or self-review conclusions and must not recursively delegate. Its PASS or findings are recorded durably in GitHub review/comment evidence with the exact reviewed SHA. Codex must not present its own assessment as independent review. If native fresh delegation is unavailable, preserve the candidate and stop with `TECHNICAL_REVIEW_REQUIRED`, `Next: Review VST-N`; ChatGPT then performs a fresh standalone independent Technical Review and records exact-SHA evidence before its separate Acceptance Review. Do not weaken independence to avoid the fallback. Fast candidates still receive risk-appropriate validation and Acceptance Review; a fresh delegated or manual independent Technical Reviewer is mandatory for Controlled candidates.
 
 Any candidate movement invalidates prior Technical Review and Acceptance. Return corrections to the same implementation role at MEDIUM, validate, and use a new fresh reviewer at HIGH for the new exact SHA. Continue while each cycle makes material progress on current in-scope findings. Use `HUMAN_DECISION_REQUIRED` for no material progress, a repeated/stagnant blocker, oscillation, unsafe continuation, or scope/architecture expansion requiring a Human decision. There is no numeric correction-round cap.
 
