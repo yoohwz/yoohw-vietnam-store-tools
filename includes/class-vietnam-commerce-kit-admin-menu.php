@@ -142,6 +142,11 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 			update_option( $option_id, $value, false );
 		}
 
+		if ( isset( $_POST['vietqr_settings'] ) && is_array( $_POST['vietqr_settings'] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only the four Dashboard-owned keys are sanitized and merged by the BACS provider.
+			Yoohw_Vietnam_Store_Tools_BACS_VietQR::save_dashboard_settings( wp_unslash( $_POST['vietqr_settings'] ) );
+		}
+
 		$paypal_invalid = false;
 		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active() && isset( $_POST['paypal_conversion'] ) && is_array( $_POST['paypal_conversion'] ) ) {
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each setting is sanitized and allowlisted below.
@@ -268,6 +273,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 						</label>
 					<?php endforeach; ?>
 				</div>
+				<?php $this->render_vietqr_settings(); ?>
 				<div class="<?php echo esc_attr( 'yoohw-vietnam-store__paypal-settings' . ( $paypal_active ? '' : ' is-unavailable' ) ); ?>">
 					<div class="yoohw-vietnam-store__section-heading">
 						<h3><?php esc_html_e( 'PayPal USD conversion', 'yoohw-vietnam-store-tools' ); ?></h3>
@@ -304,6 +310,56 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 				</p>
 			</form>
 		</section>
+		<?php
+	}
+
+	private function render_vietqr_settings() {
+		$settings = Yoohw_Vietnam_Store_Tools_BACS_VietQR::get_dashboard_settings();
+		$controls = [
+			Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_ENABLED => [
+				'title' => __( 'Enable VietQR payment QR', 'yoohw-vietnam-store-tools' ),
+				'help'  => __( 'Show VietQR code for direct bank transfer orders', 'yoohw-vietnam-store-tools' ),
+			],
+			Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_INCLUDE_AMOUNT => [
+				'title' => __( 'Include order amount', 'yoohw-vietnam-store-tools' ),
+				'help'  => __( 'Include the order amount in the QR code when the order currency is VND', 'yoohw-vietnam-store-tools' ),
+			],
+			Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_SHOW_EMAIL => [
+				'title' => __( 'Show VietQR in customer bank-transfer emails', 'yoohw-vietnam-store-tools' ),
+				'help'  => __( 'Show VietQR code in customer bank transfer emails', 'yoohw-vietnam-store-tools' ),
+			],
+		];
+		$template_key = Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_IMAGE_TEMPLATE;
+		?>
+		<div id="yoohw-vietnam-store-vietqr" class="yoohw-vietnam-store__vietqr-settings">
+			<div class="yoohw-vietnam-store__section-heading">
+				<h3><?php esc_html_e( 'VietQR settings', 'yoohw-vietnam-store-tools' ); ?></h3>
+				<p><?php esc_html_e( 'Manage bank accounts, Vietnam bank selection, and the transfer content template in WooCommerce bank transfer settings.', 'yoohw-vietnam-store-tools' ); ?>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' ) ); ?>"><?php esc_html_e( 'Bank transfer settings', 'yoohw-vietnam-store-tools' ); ?></a>
+				</p>
+			</div>
+			<input type="hidden" name="vietqr_settings[present]" value="1">
+			<?php foreach ( $controls as $key => $control ) : ?>
+				<label class="yoohw-vietnam-store__feature" for="<?php echo esc_attr( $key ); ?>">
+					<span class="yoohw-vietnam-store__feature-content">
+						<strong><?php echo esc_html( $control['title'] ); ?></strong>
+						<span><?php echo esc_html( $control['help'] ); ?></span>
+					</span>
+					<span class="yoohw-vietnam-store__switch">
+						<input id="<?php echo esc_attr( $key ); ?>" name="vietqr_settings[<?php echo esc_attr( $key ); ?>]" type="checkbox" value="yes" <?php checked( 'yes' === $settings[ $key ] ); ?>>
+						<span aria-hidden="true"></span>
+					</span>
+				</label>
+			<?php endforeach; ?>
+			<label class="yoohw-vietnam-store__vietqr-template" for="<?php echo esc_attr( $template_key ); ?>">
+				<strong><?php esc_html_e( 'QR template', 'yoohw-vietnam-store-tools' ); ?></strong>
+				<select id="<?php echo esc_attr( $template_key ); ?>" name="vietqr_settings[<?php echo esc_attr( $template_key ); ?>]">
+					<?php foreach ( [ 'qr_only' => __( 'QR only', 'yoohw-vietnam-store-tools' ), 'compact' => __( 'Compact', 'yoohw-vietnam-store-tools' ), 'compact2' => __( 'Compact with VietQR logo', 'yoohw-vietnam-store-tools' ) ] as $value => $label ) : ?>
+						<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $settings[ $template_key ], $value ); ?>><?php echo esc_html( $label ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</label>
+		</div>
 		<?php
 	}
 
@@ -474,7 +530,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 						'status'      => $vietqr_active ? __( 'Enabled', 'yoohw-vietnam-store-tools' ) : __( 'Disabled', 'yoohw-vietnam-store-tools' ),
 						'active'      => $vietqr_active,
 						'icon'        => 'dashicons-money-alt',
-						'url'         => admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' ),
+						'url'         => $this->get_page_url() . '#yoohw-vietnam-store-vietqr',
 						'action'      => __( 'Configure VietQR', 'yoohw-vietnam-store-tools' ),
 					],
 					[

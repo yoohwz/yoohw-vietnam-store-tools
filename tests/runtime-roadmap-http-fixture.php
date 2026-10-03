@@ -8,6 +8,7 @@ $phase = $args[1];
 $path = __DIR__ . '/fixtures/.vst62-http-fixture.json';
 $fixture = file_exists( $path ) ? json_decode( file_get_contents( $path ), true ) : [];
 $settings = [
+	'woocommerce_coming_soon',
 	'woocommerce_checkout_page_id',
 	'woocommerce_myaccount_page_id',
 	'woocommerce_bacs_settings',
@@ -23,6 +24,7 @@ if ( 'prepare' === $phase ) {
 	foreach ( $settings as $name ) {
 		$old[ $name ] = get_option( $name, false );
 	}
+	update_option( 'woocommerce_coming_soon', 'no' );
 	update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS, 'yes' );
 	update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PHONE_NORMALIZATION, 'yes' );
 	update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_CUSTOMER_SHIPMENT_DISPLAY, 'yes' );

@@ -1270,7 +1270,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping {
 
 		echo '</select></p>';
 		echo '<p><label for="vck_manual_shipping_tracking_code_' . esc_attr( $order->get_id() ) . '">' . esc_html__( 'Tracking code', 'yoohw-vietnam-store-tools' ) . '</label>';
-		echo '<input type="text" id="vck_manual_shipping_tracking_code_' . esc_attr( $order->get_id() ) . '" name="yoohw_vietnam_store_tools_shipping[tracking_code]" class="widefat" value="' . esc_attr( $tracking_code ) . '" autocomplete="off" required></p>';
+		echo '<input type="text" id="vck_manual_shipping_tracking_code_' . esc_attr( $order->get_id() ) . '" name="yoohw_vietnam_store_tools_shipping[tracking_code]" class="widefat" value="' . esc_attr( $tracking_code ) . '" autocomplete="off"></p>';
 		echo '<p><label for="vck_manual_shipping_tracking_url_' . esc_attr( $order->get_id() ) . '">' . esc_html__( 'Tracking URL', 'yoohw-vietnam-store-tools' ) . '</label>';
 		echo '<input type="url" id="vck_manual_shipping_tracking_url_' . esc_attr( $order->get_id() ) . '" name="yoohw_vietnam_store_tools_shipping[tracking_url]" class="widefat" value="' . esc_attr( $tracking_url ) . '" autocomplete="off">';
 		echo '<span class="description">' . esc_html__( 'Leave blank to create the link from the carrier tracking URL template.', 'yoohw-vietnam-store-tools' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=shipping&section=yoohw_shipment_tracking' ) ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Tracking settings', 'yoohw-vietnam-store-tools' ) . '</a></span></p>';

@@ -35,6 +35,38 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
 	}
 
+	/** Values for the four VietQR controls owned by the Vietnam store Dashboard. */
+	public static function get_dashboard_settings() {
+		$settings = get_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', [] );
+		$settings = is_array( $settings ) ? $settings : [];
+
+		return array_intersect_key( $settings, self::dashboard_defaults() ) + self::dashboard_defaults();
+	}
+
+	/** Merge only Dashboard-owned keys into the existing native BACS option. */
+	public static function save_dashboard_settings( $submitted ) {
+		$settings = get_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', [] );
+		$settings = is_array( $settings ) ? $settings : [];
+
+		foreach ( self::dashboard_defaults() as $key => $default ) {
+			$value = isset( $submitted[ $key ] ) && is_scalar( $submitted[ $key ] ) ? wc_clean( (string) $submitted[ $key ] ) : '';
+			$settings[ $key ] = self::SETTING_IMAGE_TEMPLATE === $key
+				? ( in_array( $value, [ 'compact2', 'compact', 'qr_only' ], true ) ? $value : $default )
+				: ( 'yes' === $value ? 'yes' : 'no' );
+		}
+
+		update_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', $settings );
+	}
+
+	private static function dashboard_defaults() {
+		return [
+			self::SETTING_ENABLED        => 'no',
+			self::SETTING_INCLUDE_AMOUNT => 'yes',
+			self::SETTING_IMAGE_TEMPLATE => 'qr_only',
+			self::SETTING_SHOW_EMAIL     => 'yes',
+		];
+	}
+
 	public function add_vietnam_bacs_locale( $locale ) {
 		$locale[ self::COUNTRY_CODE ]['sortcode']['label'] = __( 'Bank BIN', 'yoohw-vietnam-store-tools' );
 
@@ -593,12 +625,16 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 	}
 
 	private static function get_account_bank_bin( $account ) {
-		foreach ( [ 'sort_code', 'bic' ] as $field ) {
+		// The Vietnam React account modal writes its selected BIN to bic; sort_code is the legacy fallback.
+		foreach ( [ 'bic', 'sort_code' ] as $field ) {
 			if ( empty( $account[ $field ] ) ) {
 				continue;
 			}
 
 			$bank_bin = self::sanitize_bank_bin( $account[ $field ] );
+			if ( 'bic' === $field && ! preg_match( '/^\d{6}$/', $bank_bin ) ) {
+				continue;
+			}
 
 			if ( '' !== $bank_bin ) {
 				return $bank_bin;
@@ -681,7 +717,9 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		$path = Yoohw_Vietnam_Store_Tools_Request_Security::get_query_text( 'path' );
 
 		return 'wc-admin' === $page
-			&& false !== strpos( $path, 'settings/payments/' . self::GATEWAY_ID );
+			&& ( false !== strpos( $path, 'settings/payments/' . self::GATEWAY_ID )
+				|| false !== strpos( $path, 'settings/payments/offline/' . self::GATEWAY_ID )
+			);
 	}
 
 	private function get_admin_bank_accounts_for_script() {

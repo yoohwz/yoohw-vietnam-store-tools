@@ -194,6 +194,7 @@
 		if (
 			Boolean( params.isBacsSettings ) ||
 			-1 !== href.indexOf( 'settings/payments/bacs' ) ||
+			-1 !== href.indexOf( 'settings/payments/offline/bacs' ) ||
 			-1 !== href.indexOf( 'section=bacs' ) ||
 			-1 !== href.indexOf( 'gateway=bacs' ) ||
 			-1 !== href.indexOf( 'method=bacs' )
@@ -529,7 +530,8 @@
 			return '';
 		}
 
-		return normalizeBankBin( match.sort_code ) || normalizeBankBin( match.bic );
+		var reactBin = normalizeBankBin( match.bic );
+		return /^\d{6}$/.test( reactBin ) ? reactBin : normalizeBankBin( match.sort_code );
 	}
 
 	function getBankNameField( modal ) {
@@ -715,9 +717,11 @@
 	}
 
 	function syncAdminUi() {
-		syncModals();
-		ensureTransferTemplateField();
-		syncTransferTemplateSaveButton();
+		if ( isBacsSettingsScreen() ) {
+			syncModals();
+			ensureTransferTemplateField();
+			syncTransferTemplateSaveButton();
+		}
 	}
 
 	function scheduleSync() {

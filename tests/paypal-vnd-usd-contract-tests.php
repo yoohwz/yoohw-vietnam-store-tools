@@ -31,6 +31,7 @@ function esc_attr( $value ) { return $value; }
 function esc_url( $value ) { return $value; }
 function admin_url( $path = '' ) { return 'https://store.test/wp-admin/' . $path; }
 function wp_nonce_field() {}
+function selected( $value, $expected ) { if ( $value === $expected ) { echo 'selected'; } }
 function checked( $value, $expected = true ) {
 	if ( $value === $expected ) {
 		echo 'checked';
@@ -50,8 +51,11 @@ final class Yoohw_Vietnam_Store_Tools_Tax_Invoice {
 require __DIR__ . '/support/assertions.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conversion.php';
 
+$unevaluated = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+vst_assert_same( [ 'reason' => 'NOT_EVALUATED', 'probe' => '', 'ready' => false ], $unevaluated->get_adapter_status(), 'Unevaluated compatibility has an explicit non-incompatible result' );
 $unavailable_runtime = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
 vst_assert_same( array( 'core-module' ), $unavailable_runtime->register_ppcp_module( array( 'core-module' ) ), 'Compatible PPCP version without required services does not append the adapter module' );
+vst_assert_same( 'INCOMPATIBLE_MISSING_CLASS', $unavailable_runtime->get_adapter_status()['reason'], 'Missing PPCP classes have a bounded distinct reason' );
 vst_assert_same( false, Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active(), 'Inactive PPCP plugin is detected for conditional settings rendering' );
 $GLOBALS['vst_active_plugins'] = array( 'woocommerce-paypal-payments/woocommerce-paypal-payments.php' );
 vst_assert_true( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::is_ppcp_plugin_active(), 'Active PPCP plugin is detected for conditional settings rendering' );
@@ -221,6 +225,7 @@ vst_assert_true( false !== strpos( $script, 'gatewayId' ) && false !== strpos( $
 vst_assert_true( false !== strpos( $script, 'yoohw_paypal_usd_quote' ), 'Frontend refreshes its server-owned quote after cart total changes' );
 vst_assert_true( false !== strpos( $script, 'checkout_place_order_' ) && false !== strpos( $script, 'wc-block-components-checkout-place-order-button' ), 'Classic and Blocks place-order controls wait for a current server quote' );
 
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-bacs-vietqr.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-admin-menu.php';
 $admin_reflection = new ReflectionClass( 'Yoohw_Vietnam_Store_Tools_Admin_Menu' );
 $admin_instance   = $admin_reflection->newInstanceWithoutConstructor();
@@ -231,6 +236,7 @@ $GLOBALS['vst_active_plugins'] = array();
 ob_start();
 $render_settings->invoke( $admin_instance );
 $inactive_settings = ob_get_clean();
+vst_assert_true( strpos( $inactive_settings, 'yoohw-vietnam-store__vietqr-settings' ) < strpos( $inactive_settings, 'yoohw-vietnam-store__paypal-settings' ), 'VietQR card appears before PayPal settings even when PPCP is inactive' );
 vst_assert_true( false !== strpos( $inactive_settings, 'PayPal USD conversion' ), 'Inactive PPCP still renders the PayPal conversion heading' );
 vst_assert_true( false !== strpos( $inactive_settings, 'Available only when WooCommerce PayPal Payments is installed and active.' ), 'Inactive PPCP renders the dependency description' );
 vst_assert_true( false !== strpos( $inactive_settings, 'yoohw-vietnam-store__paypal-settings is-unavailable' ), 'Inactive PPCP renders the compact unavailable card state' );

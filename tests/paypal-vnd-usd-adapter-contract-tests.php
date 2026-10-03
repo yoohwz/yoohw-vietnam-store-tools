@@ -273,6 +273,9 @@ namespace {
 		}
 		return $default;
 	}
+	function current_user_can() { return true; }
+	function esc_html( $value ) { return $value; }
+	function esc_html__( $value ) { return $value; }
 	function add_filter() {}
 	function add_action() {}
 
@@ -431,6 +434,10 @@ namespace {
 	require __DIR__ . '/support/assertions.php';
 	require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-paypal-conversion.php';
 
+	$unevaluated = new Yoohw_Vietnam_Store_Tools_PayPal_Conversion();
+	ob_start(); $unevaluated->admin_notices(); $notice = ob_get_clean();
+	vst_assert_true( false !== strpos( $notice, 'NOT_EVALUATED' ) && false === strpos( $notice, 'incompatible' ), 'Not-evaluated notice is truthful and does not imply incompatibility' );
+	vst_assert_same( [], $unevaluated->filter_available_gateways( [ 'ppcp-gateway' => (object) [] ] ), 'Enabled unverified VND adapter still suppresses the gateway' );
 	$service_definitions = vst_ppcp_service_definitions();
 	$probe_scenario      = getenv( 'VST_PPCP_TEST_SCENARIO' );
 	if ( in_array( $probe_scenario, array( 'incompatible-constructor', 'incompatible-settings-method', 'incompatible-refund-helper' ), true ) ) {
@@ -438,6 +445,13 @@ namespace {
 		$core_modules = array( new Fake_PPCP_Service_Module( $service_definitions ) );
 		vst_assert_same( $core_modules, $runtime->register_ppcp_module( $core_modules ), 'Incompatible ' . $probe_scenario . ' contract leaves PPCP modules unchanged' );
 		vst_assert_same( false, $runtime->force_place_order_button( false ), 'Incompatible ' . $probe_scenario . ' contract fails closed without adapter readiness' );
+		vst_assert_same( 'INCOMPATIBLE_SIGNATURE', $runtime->get_adapter_status()['reason'], 'Signature mismatch records its diagnostic reason' );
+		$expected_probes = array(
+			'incompatible-constructor' => 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager::__construct',
+			'incompatible-settings-method' => 'WooCommerce\\PayPalCommerce\\Settings\\Data\\SettingsProvider::merchant_country',
+			'incompatible-refund-helper' => 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor::get_payments',
+		);
+		vst_assert_same( $expected_probes[ $probe_scenario ], $runtime->get_adapter_status()['probe'], 'Signature mismatch names the exact failed dependency' );
 		vst_finish_contract_suite( 'PayPal PPCP ' . $probe_scenario . ' probe' );
 		exit;
 	}
@@ -459,6 +473,8 @@ namespace {
 	$missing_sdk_modules = array( new Fake_PPCP_Service_Module( $missing_sdk_services ) );
 	vst_assert_same( $missing_sdk_modules, $missing_sdk_runtime->register_ppcp_module( $missing_sdk_modules ), 'Missing sdk-v6.manager leaves PPCP modules unchanged and boots without the adapter' );
 	vst_assert_same( false, $missing_sdk_runtime->force_place_order_button( false ), 'Missing sdk-v6.manager keeps conversion unavailable' );
+
+	vst_assert_same( [ 'reason' => 'INCOMPATIBLE_MISSING_SERVICE', 'probe' => 'sdk-v6.manager', 'ready' => false ], $missing_sdk_runtime->get_adapter_status(), 'Missing service exposes the exact allowlisted dependency' );
 
 	$missing_refund_services = $service_definitions;
 	unset( $missing_refund_services['wcgateway.processor.refunds'] );
@@ -485,6 +501,7 @@ namespace {
 	$core_modules = array( new Fake_PPCP_Service_Module( $service_definitions ) );
 	$registered   = $runtime->register_ppcp_module( $core_modules );
 	vst_assert_same( 2, count( $registered ), 'Verified PPCP 4.1.3 services and signatures register exactly one lazy adapter module' );
+	vst_assert_same( [ 'reason' => 'COMPATIBLE', 'probe' => '', 'ready' => true ], $runtime->get_adapter_status(), 'Verified contract reaches compatible/ready without stale failure reason' );
 	$module     = $registered[1];
 	$extensions = $module->extensions();
 	vst_assert_true( isset( $extensions['wcgateway.processor.refunds'] ), 'Registers the verified PPCP refund service extension' );

@@ -79,6 +79,9 @@ if ( 'prepare' === $phase ) {
 		vst_assert_same( $value, $order->get_meta( $key, true ), 'Order metadata preserved: ' . $key );
 	}
 	if ( 'inactive' === $phase ) {
+		require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-page.php';
+		require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-payment-gateways.php';
+		vst_assert_same( true, ( new WC_Settings_Payment_Gateways() )->should_render_react_section( 'bacs' ), 'Deactivation restores default React BACS section' );
 		vst_assert_same( false, is_plugin_active( 'yoohw-vietnam-store-tools/yoohw-vietnam-store-tools.php' ), 'Plugin is deactivated in this process' );
 		$package = [ 'destination' => [ 'country' => 'VN', 'state' => 'VN:01', 'city' => $fixture['ward'], 'postcode' => '' ] ];
 		$matched = WC_Shipping_Zones::get_zone_matching_package( $package );

@@ -2,3 +2,4 @@
 *.zip
 __pycache__/
 tests/fixtures/.runtime-sentinel.mo
+tests/fixtures/.vst85-settings.json
