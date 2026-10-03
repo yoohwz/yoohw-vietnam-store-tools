@@ -7,15 +7,15 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 11.1
-Stable tag: 1.1.6
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A Vietnam-focused WooCommerce toolkit for two-tier addresses, Checkout Blocks, VietQR, VAT invoices, shipping fees, and order tracking.
+A Vietnam-focused WooCommerce toolkit for addresses, payments, invoices, shipping, tracking, and store operations.
 
 == Description ==
 
-Vietnam Store Toolkit for WooCommerce adds essential tools for stores in Vietnam: province/city and ward/commune addresses, VietQR, VAT invoices, phone numbers, shipping fees, tracking numbers, and order tracking.
+Vietnam Store Toolkit for WooCommerce adds Vietnam-specific checkout and address fields, payment and invoice tools, shipping and tracking, order operations, and guided migration. It works with WooCommerce's checkout, orders, and shipping flows.
 
 Learn more about the plugin on the [official Vietnam Store Toolkit website](https://vietnamstore.org/).
 
@@ -35,29 +35,37 @@ Learn more about the plugin on the [official Vietnam Store Toolkit website](http
 
 = Key Features =
 
-* Two-tier addresses covering 34 provinces/cities and 3,321 wards/communes/special zones.
-* Province/city-dependent ward/commune lists in Classic Checkout, Cart, and Checkout Blocks.
-* Native WooCommerce Shipping Zone tree with wards/communes nested below their province/city.
-* VAT invoice requests and a provider-neutral electronic invoicing workflow.
-* VietQR for WooCommerce Direct bank transfer.
-* Vietnamese phone number normalization and validation.
-* Shipping fee rules based on address, cart, weight, shipping class, free shipping, and COD.
-* Tracking numbers, a manual timeline, and an order tracking page with no carrier API required.
+* Two-tier Province/City and Ward/Commune addresses in Classic Checkout, Cart, and Checkout Blocks, with Store API support.
+* Ward-level restrictions in native WooCommerce Shipping Zones.
+* VietQR payment details for WooCommerce Direct bank transfer.
+* Optional VND-to-USD conversion for compatible WooCommerce PayPal Payments checkouts using a merchant-set rate.
+* Manual payment reconciliation that records evidence without automatically marking orders paid.
+* VAT request fields and a provider-neutral electronic invoice handoff.
+* Shipping fee rules for address, cart, weight, shipping class, free shipping, and COD conditions.
+* Shipment details, a manual tracking timeline, and a customer order tracking page.
 * HPOS-compatible order filters, bulk actions, and CSV exports.
+* Store Health checks and guided migration of compatible legacy address and GHTK data.
+* Vietnamese phone validation and localized interface, email, and validation messages.
 
 = Vietnamese Addresses and Checkout Blocks =
 
-The plugin stores province/city codes in WooCommerce's `state` field and ward/commune codes in its `city` field, and hides the postcode when appropriate. Address combinations are validated before they are saved, and ward/commune lists are loaded only when needed.
+The plugin stores province/city codes in WooCommerce's `state` field and ward/commune codes in its `city` field. It validates address combinations and hides the postcode when appropriate.
 
-The fields are applied to checkout, My Account, the cart, store addresses, customer profiles, and orders in wp-admin. In Cart and Checkout Blocks, Ward/Commune is a Province/City-dependent list that synchronizes directly with the Store API, including on custom block pages.
+The fields appear at checkout, in My Account and the cart, and in store, customer, and order addresses. In Cart and Checkout Blocks, the Ward/Commune list follows the selected Province/City through the Store API, including on custom block pages.
 
-= VAT Invoices and VietQR =
+= Payments, VietQR and Reconciliation =
 
-The invoice request feature is enabled independently under Vietnam store > Core features and does not depend on WooCommerce tax calculation. Classic Checkout and Checkout Blocks can collect the company name, tax identification number, invoice email address, and company address.
+VietQR extends WooCommerce Direct bank transfer (`bacs`); it does not create a new gateway. QR images and transfer details can appear on order confirmation, in My Account, in emails, and in wp-admin. VietQR does not confirm bank transactions or mark an order paid.
 
-The electronic invoicing workflow stores the status, number/series, issue date, lookup URL, provider, PDF/XML files, and change log. The plugin does not issue invoices itself or call a provider API.
+Staff can record transfer observations and references, then manually reconcile an exact order amount on the order screen. Payment Reconciliation retains evidence, history, and corrections. It does not complete WooCommerce payments, set a paid date or transaction ID, issue refunds, or change stock.
 
-VietQR is added to WooCommerce Direct bank transfer (`bacs`) and does not create a new payment gateway. The QR image and transfer details can appear on the order confirmation page, in My Account, in emails, and in wp-admin. The plugin does not confirm transactions or automatically mark orders as paid.
+Optional PayPal VND-to-USD conversion requires a compatible WooCommerce PayPal Payments setup and a merchant-entered VND-per-USD rate. The rate is locked for each payment attempt while the WooCommerce order remains in VND. Compatibility checks prevent conversion when the supported payment path is unavailable; this is not a general currency switcher.
+
+= VAT Requests and Electronic Invoices =
+
+When enabled under Vietnam store > Core features, Classic Checkout and Checkout Blocks can collect company, tax, invoice email, and company address details. This is independent of WooCommerce tax calculation.
+
+The provider-neutral Electronic Invoice Handoff tracks status, provider references, document history, PDF/XML files, and customer email handling. The plugin does not issue a legal electronic invoice or call an invoice provider API; issuance remains with your provider.
 
 = Shipping Fees and Order Tracking =
 
@@ -67,17 +75,19 @@ Deactivating the plugin removes ward narrowing: mixed zones fall back to their n
 
 The “Shipping Fee Rules” method works within WooCommerce Shipping Zones. Rules are evaluated from top to bottom and can be based on province/city, ward/commune, cart total, weight, shipping class, fee, free-shipping threshold, and COD. The editor supports sorting and UTF-8 CSV import/export.
 
-The Shipping panel lets you enter a carrier, tracking number, and tracking URL; send an email; and maintain a manual timeline. URL templates generate links from `{tracking_code}`, and administrators can also define custom carriers.
+The Shipping panel lets staff enter a carrier, tracking number, and tracking URL, send an email, and maintain a customer-facing timeline. Updates belong to the current shipment; stale actions from a replaced or cancelled shipment are rejected. Core manual tracking needs no carrier API. URL templates can create tracking links from `{tracking_code}`.
 
 Add the “Order Tracking” block or `[yoohw_order_tracking]` shortcode to let customers look up orders using the order number together with their billing email address or phone number. Results do not display addresses, products, totals, or contact details.
 
-= Order Management and HPOS =
+= Order Management and Store Health =
 
-The WooCommerce > Orders screen includes a compact Information column for invoice and tracking details, advanced filters, actions to resend tracking emails and update carriers, CSV exports, and handoff progress controls. The plugin uses the WooCommerce order API and supports both HPOS and legacy storage.
+The WooCommerce > Orders screen has a compact Information column, relevant filters and bulk actions, and CSV exports. Staff can manage shipment and invoice handoffs there; Payment Reconciliation stays on the order screen. These tools support HPOS and legacy order storage.
+
+Store Health shows configuration readiness and lets staff explicitly scan legacy data. Opening it does not scan or migrate orders or customers. Migration starts only after a merchant action: scan, review the report, back up data, then synchronize compatible data in batches. Ambiguous data requires manual review.
 
 = Migration and Data =
 
-WooCommerce Status Tools can scan, back up, and batch-synchronize legacy addresses and GHTK data from Le Van Toan's plugin. Run the scan tool and review its report before synchronizing.
+Migration tools support compatible legacy addresses and GHTK tracking data from Le Van Toan's plugin. Review the scan report before synchronizing.
 
 The 2026-07 administrative dataset is based on the National Statistics Office of Viet Nam through Vietnam Provinces API v2. The bank and BIN lists are based on the VietQR bank list API. Sources and update procedures are documented in `data/SOURCES.md`.
 
@@ -92,15 +102,19 @@ Source APIs are used only to build static data; the plugin does not call them at
 
 Address, phone, invoice, and shipping data is stored in the store's WordPress/WooCommerce installation. The plugin does not add analytics, advertising, or remote data collection services.
 
+The plugin stores no separate PayPal credentials. If conversion is enabled, the installed WooCommerce PayPal Payments extension continues to communicate with PayPal under its own configuration; this plugin participates in the guarded amount and currency conversion path.
+
 == Installation ==
 
 1. Install and activate WooCommerce.
 2. Install and activate Vietnam Store Toolkit for WooCommerce.
-3. Review your selling locations and store address in WooCommerce settings.
-4. Configure Direct bank transfer if you need VietQR.
-5. If you need invoices, enable “Accept invoice requests at checkout” under Vietnam store > Core features.
-6. If you need address-based fees, add “Shipping Fee Rules” to a Shipping Zone.
-7. If you are migrating from Le Van Toan's plugin, run the scan tool before synchronizing.
+3. Review your selling locations, store address, and Vietnam store settings.
+4. Configure Direct bank transfer and VietQR if you use bank transfers.
+5. Configure PayPal conversion only with a compatible WooCommerce PayPal Payments setup.
+6. Enable invoice requests and configure shipping zones, fee rules, and tracking as needed.
+7. Open Store Health and run an explicit scan before migrating legacy data.
+
+See the [Documentation](https://vietnamstore.org/documentation/) for detailed setup.
 
 == Frequently Asked Questions ==
 
@@ -120,6 +134,18 @@ Yes, when “Accept invoice requests at checkout” is enabled under Vietnam sto
 
 No. VietQR is added to Direct bank transfer but does not connect to bank transactions.
 
+= Does payment reconciliation mark an order as paid? =
+
+No. It records and reconciles payment evidence without completing the WooCommerce payment or changing its paid state.
+
+= Does PayPal VND-to-USD conversion change the WooCommerce order currency? =
+
+No. The order remains in VND; a compatible PayPal payment attempt uses the guarded USD conversion path.
+
+= Does Store Health automatically scan or migrate my store? =
+
+No. Opening Store Health is safe; scanning and migration each require an explicit merchant action.
+
 = Where do I configure shipping zones or fees at the ward/commune level? =
 
 Go to WooCommerce > Settings > Shipping and open a zone. In the native Zone regions tree, expand Vietnam and a Province / City, then select one or more Ward / Commune children to restrict every method in that zone. To calculate different fees with additional cart or product conditions, add “Shipping Fee Rules” to the zone.
@@ -138,9 +164,15 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.1.6 (September 8, 2026) =
+= 1.2.0 (September 27, 2026) =
 
-* New: Added validated Ward / Commune children to the native WooCommerce Shipping Zone regions tree while preserving country, province/city, postcode, zone-order, and cache behavior.
-* Quality: Strengthened release validation with risk-aware staged CI and durable workflow ownership, review, and release gates.
+* New: Added optional VND-to-USD payment conversion for compatible WooCommerce PayPal Payments checkout flows, using a merchant-entered rate locked to each payment attempt and guarded compatibility checks.
+* New: Added manual payment reconciliation on the order screen to record observations, match exact order amounts, review evidence, and correct entries without automatically marking orders paid.
+* New: Added a Store health dashboard and a guided assistant to scan, back up, and batch-migrate compatible legacy address and GHTK tracking data.
+* New: Expanded the provider-neutral electronic invoice handoff with revision-guarded updates, document history, provider references, and clearer order administration and email details; invoice issuance remains external.
+* Improve: Protected shipment and tracking updates with shipment identity and stale-action checks, preserving the current shipment and its timeline across order instances and cancellations.
+* Improve: Refined order information layout and compacted the payment reconciliation controls in a side metabox; improved BACS/VietQR transfer details and copy behavior.
+* Compatibility: Filled missing Vietnamese translation keys from bundled catalogs while retaining WordPress language-pack priority, and refined the Vietnamese Store health label.
+* Developer: Expanded payment, shipment, and electronic-invoice extension contracts and strengthened release, checkout, localization, and HPOS validation.
 
 See `changelog.txt` for the complete change history.
