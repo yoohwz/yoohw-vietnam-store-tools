@@ -39,11 +39,13 @@ if ( 'prepare' === $args[1] ) {
 	update_option( 'woocommerce_bacs_accounts', [ [ 'account_name' => 'VST85 fixture', 'account_number' => '123456789', 'bank_name' => 'Fixture Bank', 'sort_code' => '970436', 'iban' => '', 'bic' => '' ] ] );
 	wp_mkdir_p( WPMU_PLUGIN_DIR );
 	file_put_contents( $mu_path, '<?php require WP_PLUGIN_DIR . "/' . dirname( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_BASENAME ) . '/tests/fixtures/vst-settings-regressions-probe.php";' );
-	$expiry = time() + HOUR_IN_SECONDS;
-	$token = WP_Session_Tokens::get_instance( get_current_user_id() )->create( $expiry );
-	$fixture['session_token'] = $token;
+	$login = 'vst85-' . strtolower( wp_generate_password( 12, false, false ) );
+	$password = wp_generate_password( 32, true, true );
+	$user_id = wp_insert_user( [ 'user_login' => $login, 'user_pass' => $password, 'user_email' => $login . '@example.test', 'role' => 'shop_manager' ] );
+	if ( is_wp_error( $user_id ) ) { throw new RuntimeException( 'Could not create fixture user.' ); }
+	$fixture['created_user_id'] = $user_id;
 	update_option( $fixture_key, $fixture, false );
-	file_put_contents( $path, wp_json_encode( [ 'base' => home_url(), 'orders' => $fixture['orders'], 'hpos' => Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled(), 'cookies' => [ AUTH_COOKIE => wp_generate_auth_cookie( get_current_user_id(), $expiry, 'auth', $token ), SECURE_AUTH_COOKIE => wp_generate_auth_cookie( get_current_user_id(), $expiry, 'secure_auth', $token ), LOGGED_IN_COOKIE => wp_generate_auth_cookie( get_current_user_id(), $expiry, 'logged_in', $token ) ] ] ) );
+	file_put_contents( $path, wp_json_encode( [ 'base' => home_url(), 'orders' => $fixture['orders'], 'hpos' => Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled(), 'login' => $login, 'password' => $password ] ) );
 	chmod( $path, 0600 );
 } else {
 	foreach ( $fixture['orders'] ?? [] as $id ) { $order = wc_get_order( $id ); if ( $order ) { $order->delete( true ); } }
@@ -52,6 +54,7 @@ if ( 'prepare' === $args[1] ) {
 		vst_assert_same( $value, get_option( $option, false ), 'Original setting restored: ' . $option );
 	}
 	if ( isset( $fixture['session_token'] ) ) { WP_Session_Tokens::get_instance( $fixture['user_id'] )->destroy( $fixture['session_token'] ); }
+	if ( isset( $fixture['created_user_id'] ) ) { require_once ABSPATH . 'wp-admin/includes/user.php'; wp_delete_user( $fixture['created_user_id'] ); }
 	if ( file_exists( $path ) ) { unlink( $path ); }
 	if ( file_exists( $mu_path ) ) { unlink( $mu_path ); }
 	delete_option( $fixture_key );

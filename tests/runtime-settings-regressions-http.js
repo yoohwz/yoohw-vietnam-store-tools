@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fixture = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/.vst85-settings.json`));
 const base = fixture.base;
 assert.ok(['localhost', '127.0.0.1', process.env.VST_TEST_HOST].filter(Boolean).includes(new URL(base).hostname));
-const cookies = new Map(Object.entries(fixture.cookies));
+const cookies = new Map();
 async function request(method, target, body, headers = {}, authenticated = true) {
   const url = new URL(target, `${base}/`);
   assert.equal(url.origin, new URL(base).origin, 'Requests stay on the explicitly selected fixture');
@@ -27,9 +27,14 @@ async function saveFeatures(enabled) {
     const tag=next.match(new RegExp(`<input[^>]*id="${id}"[^>]*>`)); assert.ok(tag,`Reload control ${id}`);
     assert.equal(/checked/.test(tag[0]),enabled.includes(id),`Reload reflects saved ${id}`);
   }
+  const paypalTag=next.match(/<input[^>]*id="yoohw-paypal-conversion-enabled"[^>]*>/);assert.ok(paypalTag,'Reload PayPal control');assert.equal(/checked/.test(paypalTag[0]),enabled.includes('paypal'),'Reload reflects saved PayPal toggle');
   return probe();
 }
 (async()=>{
+  await request('GET','/wp-login.php');
+  const login=await request('POST','/wp-login.php',new URLSearchParams({log:fixture.login,pwd:fixture.password,testcookie:'1',redirect_to:`${base}/wp-admin/`}));
+  assert.equal(login.response.status,302,'Native HTTP login succeeds');
+  assert.ok([...cookies.keys()].some(name=>name.startsWith('wordpress_logged_in_')),'Web session cookie received');
   const initial=await probe(); const oldLookup=initial.public_lookup_enabled;
   const on=await saveFeatures([...featureOptions,'paypal']);
   for(const id of featureOptions) assert.equal(on.options[id],'yes');

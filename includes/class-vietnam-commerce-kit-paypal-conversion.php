@@ -723,12 +723,12 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 					),
 					'string'
 				)
-				&& ( $refund_payments_method->isProtected() || $refund_payments_method->isPublic() )
 				&& $this->method_signature_matches(
 					$refund_payments_method,
 					array( 'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Order' ),
 					'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Payments'
 				)
+				&& ( $refund_payments_method->isProtected() || $refund_payments_method->isPublic() )
 				&& $this->constructor_matches( $sdk_constructor, $sdk_constructor_types, $sdk_class->getName() )
 				&& $this->constructor_matches( $refund_constructor, $refund_constructor_types, $refund_class->getName() );
 			if ( ! $matches ) {

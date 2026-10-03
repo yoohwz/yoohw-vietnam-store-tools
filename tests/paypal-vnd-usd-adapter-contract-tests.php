@@ -446,7 +446,12 @@ namespace {
 		vst_assert_same( $core_modules, $runtime->register_ppcp_module( $core_modules ), 'Incompatible ' . $probe_scenario . ' contract leaves PPCP modules unchanged' );
 		vst_assert_same( false, $runtime->force_place_order_button( false ), 'Incompatible ' . $probe_scenario . ' contract fails closed without adapter readiness' );
 		vst_assert_same( 'INCOMPATIBLE_SIGNATURE', $runtime->get_adapter_status()['reason'], 'Signature mismatch records its diagnostic reason' );
-		vst_assert_true( '' !== $runtime->get_adapter_status()['probe'], 'Signature mismatch names a bounded probe' );
+		$expected_probes = array(
+			'incompatible-constructor' => 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager::__construct',
+			'incompatible-settings-method' => 'WooCommerce\\PayPalCommerce\\Settings\\Data\\SettingsProvider::merchant_country',
+			'incompatible-refund-helper' => 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor::get_payments',
+		);
+		vst_assert_same( $expected_probes[ $probe_scenario ], $runtime->get_adapter_status()['probe'], 'Signature mismatch names the exact failed dependency' );
 		vst_finish_contract_suite( 'PayPal PPCP ' . $probe_scenario . ' probe' );
 		exit;
 	}
