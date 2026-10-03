@@ -22,7 +22,6 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 	const SETTING_TITLE            = 'yoohw_vietnam_store_tools_vietqr_title';
 
 	public function __construct() {
-		add_filter( 'experimental_woocommerce_admin_payment_reactify_render_sections', [ $this, 'use_native_bacs_settings' ] );
 		add_filter( 'woocommerce_get_bacs_locale', [ $this, 'add_vietnam_bacs_locale' ] );
 		add_filter( 'woocommerce_settings_api_form_fields_' . self::GATEWAY_ID, [ $this, 'add_bacs_vietqr_settings' ] );
 		add_filter( 'woocommerce_bacs_accounts', [ $this, 'hide_default_bacs_accounts_when_vietqr_renders' ], 10, 2 );
@@ -36,14 +35,36 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
 	}
 
-	/** Use WooCommerce's native extension fields and save path for BACS only. */
-	public function use_native_bacs_settings( $sections ) {
-		if ( ! is_array( $sections ) ) {
-			return $sections;
+	/** Values for the four VietQR controls owned by the Vietnam store Dashboard. */
+	public static function get_dashboard_settings() {
+		$settings = get_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', [] );
+		$settings = is_array( $settings ) ? $settings : [];
+
+		return array_intersect_key( $settings, self::dashboard_defaults() ) + self::dashboard_defaults();
+	}
+
+	/** Merge only Dashboard-owned keys into the existing native BACS option. */
+	public static function save_dashboard_settings( $submitted ) {
+		$settings = get_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', [] );
+		$settings = is_array( $settings ) ? $settings : [];
+
+		foreach ( self::dashboard_defaults() as $key => $default ) {
+			$value = isset( $submitted[ $key ] ) && is_scalar( $submitted[ $key ] ) ? wc_clean( (string) $submitted[ $key ] ) : '';
+			$settings[ $key ] = self::SETTING_IMAGE_TEMPLATE === $key
+				? ( in_array( $value, [ 'compact2', 'compact', 'qr_only' ], true ) ? $value : $default )
+				: ( 'yes' === $value ? 'yes' : 'no' );
 		}
-		return array_values( array_filter( $sections, static function( $section ) {
-			return self::GATEWAY_ID !== $section;
-		} ) );
+
+		update_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', $settings );
+	}
+
+	private static function dashboard_defaults() {
+		return [
+			self::SETTING_ENABLED        => 'no',
+			self::SETTING_INCLUDE_AMOUNT => 'yes',
+			self::SETTING_IMAGE_TEMPLATE => 'qr_only',
+			self::SETTING_SHOW_EMAIL     => 'yes',
+		];
 	}
 
 	public function add_vietnam_bacs_locale( $locale ) {
@@ -604,12 +625,16 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 	}
 
 	private static function get_account_bank_bin( $account ) {
-		foreach ( [ 'sort_code', 'bic' ] as $field ) {
+		// The Vietnam React account modal writes its selected BIN to bic; sort_code is the legacy fallback.
+		foreach ( [ 'bic', 'sort_code' ] as $field ) {
 			if ( empty( $account[ $field ] ) ) {
 				continue;
 			}
 
 			$bank_bin = self::sanitize_bank_bin( $account[ $field ] );
+			if ( 'bic' === $field && ! preg_match( '/^\d{6}$/', $bank_bin ) ) {
+				continue;
+			}
 
 			if ( '' !== $bank_bin ) {
 				return $bank_bin;

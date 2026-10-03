@@ -53,38 +53,55 @@ async function saveFeatures(enabled) {
   console.log('PASS: all seven Dashboard controls submit -> persisted state -> reload -> next-request hooks/output; independent gates and history preserved');
   const prefix='yoohw_vietnam_store_tools_vietqr_';
   const route='/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs';
-  const keys=['enabled','transfer_content','include_amount','image_template','show_email'];
-  async function saveBacs(values) {
-    const page=await request('GET',route);
-    assert.equal(page.response.status,200);
-    for(const key of keys) assert.equal((page.text.match(new RegExp(`name="woocommerce_bacs_${prefix}${key}"`,'g'))||[]).length,1,`Exactly one native control ${key}`);
-    const state=await probe();
-    assert.deepEqual(state.options.woocommerce_bacs_accounts,initial.options.woocommerce_bacs_accounts,"Accounts unchanged before BACS submit");
-    const form=new URLSearchParams({_wpnonce:nonce(page.text),save:'Save changes'});
-    const settings={...state.options.woocommerce_bacs_settings,...values};
-    for(const [key,value] of Object.entries(settings)) { if(value==='yes') form.set(`woocommerce_bacs_${key}`,'1'); else if(value!=='no') form.set(`woocommerce_bacs_${key}`,String(value)); }
-    for(const account of state.options.woocommerce_bacs_accounts) for(const key of ['account_name','account_number','bank_name','sort_code','iban','bic']) form.append(`bacs_${key}[]`,account[key]||'');
-    const saved=await request('POST',route,form);assert.ok([200,302].includes(saved.response.status),saved.text.slice(0,500));
-    const reload=await request('GET',route);
+  const keys=['enabled','include_amount','image_template','show_email'];
+  async function saveVietqr(values) {
+    const page=await dashboard();
+    for(const key of keys) assert.equal((page.match(new RegExp(`name="vietqr_settings\\[${prefix}${key}\\]"`,'g'))||[]).length,1,`Exactly one Dashboard control ${key}`);
+    assert.ok(page.includes('yoohw-vietnam-store__vietqr-settings'),'Dedicated VietQR settings card');
+    assert.ok(page.includes('yoohw-vietnam-store__paypal-settings'),'PayPal settings alongside VietQR');
+    assert.ok(page.indexOf('yoohw-vietnam-store__vietqr-settings')<page.indexOf('yoohw-vietnam-store__paypal-settings'),'VietQR precedes PayPal settings');
+    assert.equal(page.includes(`name="vietqr_settings[${prefix}transfer_content]"`),false,'Transfer content stays on BACS');
+    const before=await probe(); assert.equal(before.bacs_react,true,'Active VST preserves React BACS');
+    const invalid=await request('POST','/wp-admin/admin-post.php',new URLSearchParams({action:'yoohw_vietnam_store_tools_save_features',_wpnonce:'invalid','vietqr_settings[present]':'1'}));assert.equal(invalid.response.status,403,'Dashboard nonce remains required');
+    assert.deepEqual((await probe()).options.woocommerce_bacs_settings,before.options.woocommerce_bacs_settings,'Rejected save does not change BACS');
+    const form=new URLSearchParams({action:'yoohw_vietnam_store_tools_save_features',_wpnonce:nonce(page),'paypal_conversion[rate]':'25000','paypal_conversion[enabled]':'yes','vietqr_settings[present]':'1'});
+    for(const id of featureOptions) form.set(`features[${id}]`,'yes');
+    for(const key of keys) if(values[key]!=='no') form.set(`vietqr_settings[${prefix}${key}]`,values[key]);
+    // Attempted unowned keys must not replace native fields or the React-side template.
+    form.set('vietqr_settings[title]','must-not-write');form.set(`vietqr_settings[${prefix}transfer_content]`,'must-not-write');
+    const saved=await request('POST','/wp-admin/admin-post.php',form);assert.equal(saved.response.status,302);
+    const reload=await dashboard();
     for(const key of keys) {
-      const value=settings[prefix+key];
-      const tag=reload.text.match(new RegExp(`<(?:input|select)[^>]*name="woocommerce_bacs_${prefix}${key}"[^>]*>`));assert.ok(tag,`Reload ${key}`);
-      if(['enabled','include_amount','show_email'].includes(key)) assert.equal(/checked/.test(tag[0]),value==='yes',`Reload checkbox ${key}`);
-      else if(key==='transfer_content') assert.ok(tag[0].includes(`value="${value}"`),'Reload transfer template');
-      else assert.ok(reload.text.includes(`value="${value}"  selected`),'Reload selected QR template');
+      const tag=reload.match(new RegExp(`<(?:input|select)[^>]*name="vietqr_settings\\[${prefix}${key}\\]"[^>]*>`));assert.ok(tag,`Reload ${key}`);
+      if(key!=='image_template') assert.equal(/checked/.test(tag[0]),values[key]==='yes',`Reload checkbox ${key}`);
+      else assert.ok(reload.includes(`value="${values[key]}"  selected`),'Reload selected QR template');
     }
-    return probe();
+    const after=await probe();
+    for(const key of keys) assert.equal(after.options.woocommerce_bacs_settings[prefix+key],values[key],`Persisted ${key}`);
+    for(const [key,value] of Object.entries(before.options.woocommerce_bacs_settings)) if(!keys.map(k=>prefix+k).includes(key)) assert.deepEqual(after.options.woocommerce_bacs_settings[key],value,`Dashboard preserves ${key}`);
+    assert.deepEqual(after.options.woocommerce_bacs_accounts,before.options.woocommerce_bacs_accounts,'Dashboard never changes native accounts');
+    return after;
   }
-  const values={enabled:'yes',title:'VST85 transfer',description:'VST85 description',instructions:'VST85 instructions',[prefix+'enabled']:'yes',[prefix+'transfer_content']:'TEST-{order_number}',[prefix+'include_amount']:'yes',[prefix+'image_template']:'compact',[prefix+'show_email']:'no'};
-  const rendered=await saveBacs(values);
-  for(const [key,value] of Object.entries(values)) assert.equal(rendered.options.woocommerce_bacs_settings[key],value,`Persisted ${key}`);
-  assert.equal(rendered.frontend_qr,true);assert.equal(rendered.admin_qr,true);assert.equal(rendered.email_qr,false);assert.equal(rendered.qr.length,1);assert.equal(rendered.qr[0].amount,'250000');assert.ok(rendered.qr[0].transfer_content.startsWith('TEST-'));assert.equal(rendered.non_bacs.length,0);assert.equal(rendered.non_vnd[0].amount,'');
-  assert.deepEqual(rendered.options.woocommerce_bacs_accounts,initial.options.woocommerce_bacs_accounts,'Native account option preserved');
-  for(const [key,value] of Object.entries(initial.options.woocommerce_bacs_settings)) if(!key.startsWith(prefix)&&!Object.hasOwn(values,key)) assert.deepEqual(rendered.options.woocommerce_bacs_settings[key],value,`Core/extension setting preserved ${key}`);
-  const offQr=await saveBacs({[prefix+'enabled']:'no',[prefix+'include_amount']:'no',[prefix+'show_email']:'yes',[prefix+'image_template']:'qr_only'});
+  async function bacsConfig() {
+    const page=await request('GET',route);assert.equal(page.response.status,200);
+    const config=page.text.match(/var yoohwVietnamStoreToolsBacsVietqr = (\{[^\n]+\});/);assert.ok(config,'React BACS localized settings');
+    return JSON.parse(config[1]);
+  }
+  const beforeTransfer=await probe();const config=await bacsConfig();
+  assert.equal(beforeTransfer.bacs_react,true);
+  const transfer=await request('POST','/wp-admin/admin-ajax.php',new URLSearchParams({action:'yoohw_vietnam_store_tools_save_bacs_vietqr_settings',nonce:config.nonce,transfer_content:'TEST-{order_number}'}));
+  assert.equal(transfer.response.status,200);assert.equal(JSON.parse(transfer.text).success,true);
+  assert.equal((await bacsConfig()).settings.transferContent,'TEST-{order_number}','React transfer content reloads');
+  const afterTransfer=await probe();
+  for(const [key,value] of Object.entries(beforeTransfer.options.woocommerce_bacs_settings)) if(key!==prefix+'transfer_content') assert.deepEqual(afterTransfer.options.woocommerce_bacs_settings[key],value,`Transfer save preserves sibling ${key}`);
+  assert.deepEqual(afterTransfer.options.woocommerce_bacs_accounts,beforeTransfer.options.woocommerce_bacs_accounts,'Transfer save preserves accounts');
+  const invalidTransfer=await request('POST','/wp-admin/admin-ajax.php',new URLSearchParams({action:'yoohw_vietnam_store_tools_save_bacs_vietqr_settings',nonce:'invalid',transfer_content:'invalid'}));assert.equal(invalidTransfer.response.status,403);
+  const rendered=await saveVietqr({enabled:'yes',include_amount:'yes',image_template:'compact',show_email:'no'});
+  assert.equal(rendered.frontend_qr,true);assert.equal(rendered.admin_qr,true);assert.equal(rendered.email_qr,false);assert.equal(rendered.qr.length,1);assert.equal(rendered.qr[0].bank_bin,'970418','React-selected bank BIN overrides stale legacy sort code');assert.equal(rendered.qr[0].amount,'250000');assert.ok(rendered.qr[0].transfer_content.startsWith('TEST-'));assert.ok(rendered.qr[0].qr_url.includes('-compact.png'));assert.equal(rendered.non_bacs.length,0);assert.equal(rendered.non_vnd[0].amount,'');
+  const offQr=await saveVietqr({enabled:'no',include_amount:'no',show_email:'yes',image_template:'qr_only'});
   assert.equal(offQr.qr.length,0);assert.equal(offQr.frontend_qr,false);assert.equal(offQr.admin_qr,false);assert.equal(offQr.email_qr,false);
-  const noAmount=await saveBacs({[prefix+'enabled']:'yes'});assert.equal(noAmount.qr[0].amount,'');assert.equal(noAmount.email_qr,true);
-  console.log('PASS: current BACS route native field save/reload/QR, core/account preservation, disabled/non-BACS/non-VND boundaries');
+  const noAmount=await saveVietqr({enabled:'yes',include_amount:'no',show_email:'yes',image_template:'compact2'});assert.equal(noAmount.qr[0].amount,'');assert.equal(noAmount.email_qr,true);assert.ok(noAmount.qr[0].qr_url.includes('-compact2.png'));
+  console.log('PASS: React BACS retained; transfer save preserves siblings; Dashboard VietQR POST/DB/reload/runtime, core/account/unknown preservation and disabled/non-BACS/non-VND boundaries');
   for(const id of fixture.orders) {
     const orderQuery=process.env.VST_TEST_ISOLATE_ORDER==='1'?'&vst85_isolate=1':'';
     const route=fixture.hpos ? `/wp-admin/admin.php?page=wc-orders&action=edit&id=${id}${orderQuery}` : `/wp-admin/post.php?post=${id}&action=edit`;

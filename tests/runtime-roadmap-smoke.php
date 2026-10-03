@@ -56,7 +56,7 @@ try {
 	require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-page.php';
 	require_once WC_ABSPATH . 'includes/admin/settings/class-wc-settings-payment-gateways.php';
 	$payment_settings = new WC_Settings_Payment_Gateways();
-	vst_assert_same( false, $payment_settings->should_render_react_section( 'bacs' ), 'BACS uses native extension settings' );
+	vst_assert_same( true, $payment_settings->should_render_react_section( 'bacs' ), 'BACS retains WooCommerce React settings' );
 	foreach ( [ 'main', 'offline', 'cod', 'cheque' ] as $section ) {
 		vst_assert_same( true, $payment_settings->should_render_react_section( $section ), 'React preserved for ' . $section );
 	}

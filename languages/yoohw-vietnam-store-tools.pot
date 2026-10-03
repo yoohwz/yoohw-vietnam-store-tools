@@ -9,14 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-03T14:52:36+00:00\n"
+"POT-Creation-Date: 2026-10-03T15:54:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
 
 #. Plugin Name of the plugin
 #: yoohw-vietnam-store-tools.php
-#: includes/class-vietnam-commerce-kit-admin-menu.php:202
+#: includes/class-vietnam-commerce-kit-admin-menu.php:207
 #: includes/class-vietnam-commerce-kit-store-health.php:81
 msgid "Vietnam Store Toolkit for WooCommerce"
 msgstr ""
@@ -142,7 +142,7 @@ msgstr ""
 #: includes/class-vietnam-commerce-kit-admin-menu.php:40
 #: includes/class-vietnam-commerce-kit-admin-menu.php:41
 #: includes/class-vietnam-commerce-kit-admin-menu.php:50
-#: includes/class-vietnam-commerce-kit-admin-menu.php:203
+#: includes/class-vietnam-commerce-kit-admin-menu.php:208
 msgid "Vietnam store"
 msgstr ""
 
@@ -155,513 +155,544 @@ msgid "Settings"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:130
-#: includes/class-vietnam-commerce-kit-admin-menu.php:176
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:237
+#: includes/class-vietnam-commerce-kit-admin-menu.php:181
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:258
 #: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:184
+#: includes/class-vietnam-commerce-kit-admin-menu.php:189
 msgid "Vietnam store feature settings saved."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:188
+#: includes/class-vietnam-commerce-kit-admin-menu.php:193
 msgid "PayPal USD conversion was disabled because the manual VND per USD rate is invalid."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:204
+#: includes/class-vietnam-commerce-kit-admin-menu.php:209
 msgid "Manage the Vietnam-specific checkout, payments, invoices, shipping, and order tools used by your WooCommerce store."
 msgstr ""
 
 #. translators: %s: plugin version.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:212
+#: includes/class-vietnam-commerce-kit-admin-menu.php:217
 #, php-format
 msgid "Version %s"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:245
+#: includes/class-vietnam-commerce-kit-admin-menu.php:250
 msgid "Core features"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:246
+#: includes/class-vietnam-commerce-kit-admin-menu.php:251
 msgid "Enable only the Vietnam store enhancements that fit your workflow. Disabling a feature does not delete its existing data."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:273
+#: includes/class-vietnam-commerce-kit-admin-menu.php:279
 msgid "PayPal USD conversion"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:275
+#: includes/class-vietnam-commerce-kit-admin-menu.php:281
 msgid "Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal Payments. Version 4.1.3 is the verified baseline; other versions require a compatible integration contract. WooCommerce orders remain in VND."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:277
+#: includes/class-vietnam-commerce-kit-admin-menu.php:283
 msgid "Available only when WooCommerce PayPal Payments is installed and active. Version 4.1.3 is the verified baseline; other versions require a compatible integration contract."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:287
+#: includes/class-vietnam-commerce-kit-admin-menu.php:293
 msgid "Enable PayPal USD conversion"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:288
+#: includes/class-vietnam-commerce-kit-admin-menu.php:294
 msgid "PayPal is shown only on the normal Classic or Block checkout when this rate and CAPTURE intent are valid."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:296
+#: includes/class-vietnam-commerce-kit-admin-menu.php:302
 msgid "Manual VND per USD rate"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:298
+#: includes/class-vietnam-commerce-kit-admin-menu.php:304
 msgid "Enter how many VND equal 1 USD, for example 25000. The rate is locked for each payment attempt."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:303
+#: includes/class-vietnam-commerce-kit-admin-menu.php:309
 msgid "Save feature settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:313
+#: includes/class-vietnam-commerce-kit-admin-menu.php:320
+msgid "Enable VietQR payment QR"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:91
+msgid "Show VietQR code for direct bank transfer orders"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:324
+msgid "Include order amount"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:325
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:104
+msgid "Include the order amount in the QR code when the order currency is VND"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:328
+msgid "Show VietQR in customer bank-transfer emails"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:329
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:120
+msgid "Show VietQR code in customer bank transfer emails"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:336
+msgid "VietQR settings"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:337
+msgid "Manage bank accounts, Vietnam bank selection, and the transfer content template in WooCommerce bank transfer settings."
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:338
+msgid "Bank transfer settings"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:355
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:108
+msgid "QR template"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:357
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:114
+msgid "QR only"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:357
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:113
+msgid "Compact"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:357
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:112
+msgid "Compact with VietQR logo"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:369
 #: includes/class-vietnam-commerce-kit-store-health.php:35
 msgid "Vietnam address fields"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:314
+#: includes/class-vietnam-commerce-kit-admin-menu.php:370
 msgid "Use Vietnam provinces and wards, compact name fields, address normalization, and compatible Classic or Block checkout behavior."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:317
+#: includes/class-vietnam-commerce-kit-admin-menu.php:373
 #: includes/class-vietnam-commerce-kit-store-health.php:36
 msgid "Vietnam phone validation and normalization"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:318
+#: includes/class-vietnam-commerce-kit-admin-menu.php:374
 msgid "Validate Vietnamese phone numbers and store them consistently across checkout, customer profiles, and orders."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#: includes/class-vietnam-commerce-kit-admin-menu.php:377
 #: includes/class-vietnam-commerce-kit-store-health.php:38
 msgid "Customer shipment information"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:322
+#: includes/class-vietnam-commerce-kit-admin-menu.php:378
 msgid "Show the carrier, tracking code, shipment status, and tracking timeline on order confirmation and My Account pages."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:325
+#: includes/class-vietnam-commerce-kit-admin-menu.php:381
 msgid "Vietnam order management tools"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:326
+#: includes/class-vietnam-commerce-kit-admin-menu.php:382
 msgid "Add Vietnam-specific order information, filters, bulk actions, and CSV exports to the WooCommerce order list."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:329
+#: includes/class-vietnam-commerce-kit-admin-menu.php:385
 #: includes/class-vietnam-commerce-kit-store-health.php:62
 msgid "Accept invoice requests at checkout"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:330
+#: includes/class-vietnam-commerce-kit-admin-menu.php:386
 msgid "Allow customers to submit company and tax details for new orders."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:334
+#: includes/class-vietnam-commerce-kit-admin-menu.php:390
 #: includes/class-vietnam-commerce-kit-store-health.php:37
 msgid "Manage electronic invoice workflow"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:335
+#: includes/class-vietnam-commerce-kit-admin-menu.php:391
 msgid "Allow staff to update invoice status, references, notes, PDF, and XML files. When disabled, existing invoice data remains read-only."
 msgstr ""
 
 #. translators: %d: number of enabled shipping services.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:381
+#: includes/class-vietnam-commerce-kit-admin-menu.php:437
 #, php-format
 msgid "%d service enabled"
 msgid_plural "%d services enabled"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:387
+#: includes/class-vietnam-commerce-kit-admin-menu.php:443
 msgid "Order management"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:388
+#: includes/class-vietnam-commerce-kit-admin-menu.php:444
 msgid "Use Vietnam-specific order columns, filters, shipment actions, and invoice information from the order list."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:389
-#: includes/class-vietnam-commerce-kit-admin-menu.php:447
-#: includes/class-vietnam-commerce-kit-admin-menu.php:464
-#: includes/class-vietnam-commerce-kit-admin-menu.php:474
+#: includes/class-vietnam-commerce-kit-admin-menu.php:445
+#: includes/class-vietnam-commerce-kit-admin-menu.php:503
+#: includes/class-vietnam-commerce-kit-admin-menu.php:520
+#: includes/class-vietnam-commerce-kit-admin-menu.php:530
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:106
 #: includes/class-vietnam-commerce-kit-store-health.php:31
 #: includes/class-vietnam-commerce-kit-store-health.php:101
 msgid "Enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:389
-#: includes/class-vietnam-commerce-kit-admin-menu.php:447
-#: includes/class-vietnam-commerce-kit-admin-menu.php:465
-#: includes/class-vietnam-commerce-kit-admin-menu.php:474
-#: includes/class-vietnam-commerce-kit-admin-menu.php:485
+#: includes/class-vietnam-commerce-kit-admin-menu.php:445
+#: includes/class-vietnam-commerce-kit-admin-menu.php:503
+#: includes/class-vietnam-commerce-kit-admin-menu.php:521
+#: includes/class-vietnam-commerce-kit-admin-menu.php:530
+#: includes/class-vietnam-commerce-kit-admin-menu.php:541
 #: includes/class-vietnam-commerce-kit-store-health.php:32
 msgid "Disabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:393
+#: includes/class-vietnam-commerce-kit-admin-menu.php:449
 msgid "Manage orders"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:399
+#: includes/class-vietnam-commerce-kit-admin-menu.php:455
 #: includes/class-vietnam-commerce-kit-store-health.php:20
 #: includes/class-vietnam-commerce-kit-store-health.php:21
 #: includes/class-vietnam-commerce-kit-store-health.php:82
 msgid "Store health"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:400
+#: includes/class-vietnam-commerce-kit-admin-menu.php:456
 msgid "Review store configuration and scan legacy data before an explicit safe migration."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:401
+#: includes/class-vietnam-commerce-kit-admin-menu.php:457
 #: includes/class-vietnam-commerce-kit-store-health.php:86
 msgid "Manual tool"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:405
+#: includes/class-vietnam-commerce-kit-admin-menu.php:461
 msgid "Open Store health"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:412
+#: includes/class-vietnam-commerce-kit-admin-menu.php:468
 msgid "Shipping and delivery"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:413
+#: includes/class-vietnam-commerce-kit-admin-menu.php:469
 msgid "Connect carriers, define shipping rules, and control the tracking experience."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:416
+#: includes/class-vietnam-commerce-kit-admin-menu.php:472
 msgid "Shipping services"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:418
+#: includes/class-vietnam-commerce-kit-admin-menu.php:474
 msgid "Configure carrier accounts, pickup addresses, automatic synchronization, and shipment status mappings."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:419
+#: includes/class-vietnam-commerce-kit-admin-menu.php:475
 msgid "No shipping service connector is installed. Manual shipment management remains available on orders."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:420
+#: includes/class-vietnam-commerce-kit-admin-menu.php:476
 msgid "Manual only"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:424
+#: includes/class-vietnam-commerce-kit-admin-menu.php:480
 msgid "Configure services"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:427
+#: includes/class-vietnam-commerce-kit-admin-menu.php:483
 msgid "Shipping zones and rules"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:428
+#: includes/class-vietnam-commerce-kit-admin-menu.php:484
 msgid "Assign rates and the Vietnam shipping rules method to WooCommerce shipping zones."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:429
+#: includes/class-vietnam-commerce-kit-admin-menu.php:485
 msgid "WooCommerce settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:433
+#: includes/class-vietnam-commerce-kit-admin-menu.php:489
 msgid "Manage shipping zones"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:436
+#: includes/class-vietnam-commerce-kit-admin-menu.php:492
 msgid "Shipment tracking"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:437
+#: includes/class-vietnam-commerce-kit-admin-menu.php:493
 msgid "Configure public order lookup, carrier tracking URL templates, and custom carriers."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:438
+#: includes/class-vietnam-commerce-kit-admin-menu.php:494
 msgid "Public lookup enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:438
+#: includes/class-vietnam-commerce-kit-admin-menu.php:494
 msgid "Public lookup disabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:442
+#: includes/class-vietnam-commerce-kit-admin-menu.php:498
 msgid "Configure tracking"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:445
+#: includes/class-vietnam-commerce-kit-admin-menu.php:501
 msgid "Shipping tracking email"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:446
+#: includes/class-vietnam-commerce-kit-admin-menu.php:502
 msgid "Control the subject, heading, content, and email format for customer shipment updates."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:451
+#: includes/class-vietnam-commerce-kit-admin-menu.php:507
 msgid "Configure email"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:457
+#: includes/class-vietnam-commerce-kit-admin-menu.php:513
 msgid "Checkout, payments, and invoices"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:458
+#: includes/class-vietnam-commerce-kit-admin-menu.php:514
 msgid "Manage Vietnam checkout behavior and payment or invoice features."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:461
+#: includes/class-vietnam-commerce-kit-admin-menu.php:517
 msgid "Vietnam address and phone fields"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:462
+#: includes/class-vietnam-commerce-kit-admin-menu.php:518
 msgid "Control Vietnam address formatting, checkout compatibility, phone validation, and normalization in Core features."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:465
+#: includes/class-vietnam-commerce-kit-admin-menu.php:521
 msgid "Partially enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:469
+#: includes/class-vietnam-commerce-kit-admin-menu.php:525
 #: includes/class-vietnam-commerce-kit-store-health.php:47
 msgid "Open store address settings"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:472
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:303
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:330
+#: includes/class-vietnam-commerce-kit-admin-menu.php:528
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:324
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:351
 #: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:473
+#: includes/class-vietnam-commerce-kit-admin-menu.php:529
 msgid "Configure bank accounts, transfer content, QR layout, order amount, and customer email display."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:478
+#: includes/class-vietnam-commerce-kit-admin-menu.php:534
 #: includes/class-vietnam-commerce-kit-store-health.php:57
 #: includes/class-vietnam-commerce-kit-store-health.php:59
 msgid "Configure VietQR"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:481
+#: includes/class-vietnam-commerce-kit-admin-menu.php:537
 msgid "Business invoices"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:482
+#: includes/class-vietnam-commerce-kit-admin-menu.php:538
 msgid "Collect invoice requests at checkout and manage electronic invoice data on orders as two independent capabilities."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:484
+#: includes/class-vietnam-commerce-kit-admin-menu.php:540
 msgid "Requests and workflow enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:485
+#: includes/class-vietnam-commerce-kit-admin-menu.php:541
 msgid "Checkout requests enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:485
+#: includes/class-vietnam-commerce-kit-admin-menu.php:541
 msgid "Workflow enabled"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:489
+#: includes/class-vietnam-commerce-kit-admin-menu.php:545
 msgid "Configure invoices"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:495
+#: includes/class-vietnam-commerce-kit-admin-menu.php:551
 msgid "Maintenance tools"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:496
+#: includes/class-vietnam-commerce-kit-admin-menu.php:552
 msgid "Review operational data and migrate compatible settings from legacy Vietnam checkout plugins."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:50
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:202
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:71
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:223
 msgid "Bank BIN"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:62
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:83
 msgid "VietQR"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:64
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:85
 msgid "Choose a bank in each bank transfer account to generate VietQR payment QR codes for Vietnamese bank transfers. Existing legacy Bank BIN and Sort code values are still supported."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:68
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:89
 msgid "VietQR payment QR"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:70
-msgid "Show VietQR code for direct bank transfer orders"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:74
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:212
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:95
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:233
 msgid "Transfer content template"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:76
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:213
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:97
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:234
 msgid "Available placeholders: {order_id}, {order_number}, {site_name}."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:81
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:348
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:365
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:396
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:102
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:386
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:417
 msgid "Amount"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:83
-msgid "Include the order amount in the QR code when the order currency is VND"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:87
-msgid "QR template"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:91
-msgid "Compact with VietQR logo"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:92
-msgid "Compact"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:93
-msgid "QR only"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:97
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:118
 msgid "Email display"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:99
-msgid "Show VietQR code in customer bank transfer emails"
-msgstr ""
-
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:203
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:224
 msgid "Enter the VietQR/NAPAS bank BIN for this Vietnam bank account, for example 970436."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:204
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:225
 msgid "Bank BIN is required to generate VietQR codes."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:205
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:226
 msgid "Choose the receiving bank. The VietQR bank BIN will be filled automatically."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:206
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:345
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:399
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:227
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:366
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
 msgid "Bank"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:207
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:228
 msgid "Please select a bank to generate VietQR codes."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:208
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:229
 msgid "Vietnam Store Toolkit for WooCommerce uses Vietnam bank transfer accounts for VietQR."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:209
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:230
 msgid "Country"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:210
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:231
 msgid "Vietnam"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:211
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:232
 msgid "Select a bank"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:214
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:235
 msgid "Could not save the VietQR transfer content template."
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:215
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:236
 msgid "Account Name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:216
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:237
 msgid "Account Number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:217
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:238
 msgid "Bank Name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:218
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:239
 msgid "BIC / SWIFT"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:219
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:240
 msgid "IBAN"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:333
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:393
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:354
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:414
 msgid "Pay by bank transfer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:343
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:361
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:364
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:382
 msgid "VietQR payment QR code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:346
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:398
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:419
 msgid "Account number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:346
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
 msgid "Copy account number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:347
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:400
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:421
 msgid "Account name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:349
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:397
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:418
 msgid "Transfer content"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:349
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
 msgid "Copy transfer content"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:366
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
 msgid "Transfer note"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
 msgid "Account holder"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:401
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:422
 msgid "QR code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:441
 #: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copied"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:480
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:501
 msgid "Not included in QR code"
 msgstr ""
 

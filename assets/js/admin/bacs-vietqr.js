@@ -11,6 +11,11 @@
 	var countryCode = params.country || 'VN';
 	var scheduled = false;
 	var initialized = false;
+	var transferTemplateSavedValue = normalizeTransferTemplate(
+		params.settings && params.settings.transferContent ? params.settings.transferContent : ''
+	);
+	var transferTemplateDirty = false;
+	var transferTemplateSavePromise = null;
 
 	function normalizeText( value ) {
 		return String( value || '' )
@@ -30,6 +35,12 @@
 
 	function normalizeBankBin( value ) {
 		return String( value || '' ).replace( /\D+/g, '' );
+	}
+
+	function normalizeTransferTemplate( value ) {
+		value = normalizeValue( value );
+
+		return value || 'ORDER-{order_number}';
 	}
 
 	function getCandidates( candidates ) {
@@ -194,6 +205,225 @@
 		return hasBacsSettingsTitle();
 	}
 
+	function getTransferTemplateInput() {
+		return document.querySelector( '.vck-vietqr-transfer-template-input' );
+	}
+
+	function getBacsSettingsForm() {
+		var forms = document.querySelectorAll( 'form' );
+		var index;
+
+		for ( index = 0; index < forms.length; index++ ) {
+			if ( forms[ index ].querySelector( 'textarea' ) && forms[ index ].querySelector( 'button' ) ) {
+				return forms[ index ];
+			}
+		}
+
+		return document.querySelector( '.settings-form' );
+	}
+
+	function getControlWrapper( input ) {
+		return input ? input.closest( '.components-base-control, .components-textarea-control, .woocommerce-settings-field' ) || input.parentElement : null;
+	}
+
+	function getPaymentSettingsControls() {
+		var form = getBacsSettingsForm();
+		var section;
+		var textareas;
+		var anchor;
+
+		if ( ! form ) {
+			return null;
+		}
+
+		textareas = form.querySelectorAll( 'textarea' );
+
+		if ( ! textareas.length ) {
+			return null;
+		}
+
+		anchor = getControlWrapper( textareas[ textareas.length - 1 ] );
+		section = anchor ? anchor.closest( '.settings-section, .woocommerce-settings-section' ) : null;
+
+		return section ? section.querySelector( '.settings-section__controls, .woocommerce-settings-section__content' ) || section : anchor ? anchor.parentElement : null;
+	}
+
+	function createTransferTemplateField() {
+		var id = 'vck-vietqr-transfer-template';
+		var wrapper = document.createElement( 'div' );
+		var field = document.createElement( 'div' );
+		var label = document.createElement( 'label' );
+		var input = document.createElement( 'input' );
+		var help = document.createElement( 'p' );
+
+		wrapper.className = 'components-base-control vck-vietqr-transfer-template-field';
+		field.className = 'components-base-control__field';
+		label.className = 'components-base-control__label';
+		label.setAttribute( 'for', id );
+		label.textContent = i18n.transferTemplateLabel || 'Transfer content template';
+
+		input.id = id;
+		input.type = 'text';
+		input.className = 'components-text-control__input vck-vietqr-transfer-template-input';
+		input.value = transferTemplateSavedValue;
+		input.setAttribute( 'autocomplete', 'off' );
+		input.setAttribute( 'placeholder', 'ORDER-{order_number}' );
+
+		help.className = 'components-base-control__help';
+		help.textContent = i18n.transferTemplateHelp || 'Available placeholders: {order_id}, {order_number}, {site_name}.';
+
+		input.addEventListener( 'input', function() {
+			transferTemplateDirty = normalizeTransferTemplate( input.value ) !== transferTemplateSavedValue;
+			syncTransferTemplateSaveButton();
+		} );
+
+		field.appendChild( label );
+		field.appendChild( input );
+		wrapper.appendChild( field );
+		wrapper.appendChild( help );
+
+		return wrapper;
+	}
+
+	function ensureTransferTemplateField() {
+		var controls;
+		var existingInput;
+		var field;
+		var textareas;
+		var anchor;
+
+		if (
+			! isBacsSettingsScreen() ||
+			getTransferTemplateInput() ||
+			document.getElementById( 'woocommerce_bacs_yoohw_vietnam_store_tools_vietqr_transfer_content' )
+		) {
+			return;
+		}
+
+		ensureStyle();
+		controls = getPaymentSettingsControls();
+
+		if ( ! controls ) {
+			return;
+		}
+
+		field = createTransferTemplateField();
+		textareas = controls.querySelectorAll( 'textarea' );
+		anchor = textareas.length ? getControlWrapper( textareas[ textareas.length - 1 ] ) : null;
+
+		if ( anchor && anchor.parentNode ) {
+			anchor.parentNode.insertBefore( field, anchor.nextSibling );
+		} else {
+			controls.appendChild( field );
+		}
+
+		existingInput = getTransferTemplateInput();
+
+		if ( existingInput ) {
+			transferTemplateDirty = normalizeTransferTemplate( existingInput.value ) !== transferTemplateSavedValue;
+			syncTransferTemplateSaveButton();
+		}
+	}
+
+	function isSettingsSaveButton( button ) {
+		if ( ! button || button.closest( '.bank-account-modal' ) ) {
+			return false;
+		}
+
+		return 'submit' === button.type ||
+			textMatches( button.textContent, [
+				'Save changes',
+				'Lưu thay đổi',
+				'Luu thay doi'
+			] );
+	}
+
+	function getSettingsSaveButtons() {
+		return Array.from( document.querySelectorAll( 'button' ) ).filter( isSettingsSaveButton );
+	}
+
+	function syncTransferTemplateSaveButton() {
+		if ( ! transferTemplateDirty ) {
+			return;
+		}
+
+		getSettingsSaveButtons().forEach( function( button ) {
+			if ( button.disabled || button.hasAttribute( 'disabled' ) || 'true' === button.getAttribute( 'aria-disabled' ) ) {
+				button.disabled = false;
+				button.removeAttribute( 'disabled' );
+				button.setAttribute( 'aria-disabled', 'false' );
+			}
+		} );
+	}
+
+	function showTransferTemplateSaveError() {
+		if (
+			window.wp &&
+			window.wp.data &&
+			window.wp.data.dispatch &&
+			window.wp.data.dispatch( 'core/notices' ) &&
+			window.wp.data.dispatch( 'core/notices' ).createErrorNotice
+		) {
+			window.wp.data.dispatch( 'core/notices' ).createErrorNotice(
+				i18n.transferTemplateSaveError || 'Could not save the VietQR transfer content template.',
+				{ type: 'snackbar' }
+			);
+			return;
+		}
+
+		if ( window.console && window.console.error ) {
+			window.console.error( i18n.transferTemplateSaveError || 'Could not save the VietQR transfer content template.' );
+		}
+	}
+
+	function saveTransferTemplate() {
+		var input = getTransferTemplateInput();
+		var value;
+		var body;
+
+		if ( ! input || ! transferTemplateDirty || ! params.ajaxUrl || ! params.nonce ) {
+			return Promise.resolve();
+		}
+
+		if ( transferTemplateSavePromise ) {
+			return transferTemplateSavePromise;
+		}
+
+		value = normalizeTransferTemplate( input.value );
+		body = new URLSearchParams();
+		body.append( 'action', 'yoohw_vietnam_store_tools_save_bacs_vietqr_settings' );
+		body.append( 'nonce', params.nonce );
+		body.append( 'transfer_content', value );
+
+		transferTemplateSavePromise = window.fetch( params.ajaxUrl, {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			},
+			body: body.toString()
+		} ).then( function( response ) {
+			return response.json();
+		} ).then( function( response ) {
+			if ( ! response || ! response.success ) {
+				throw new Error( 'yoohw_vietnam_store_tools_transfer_template_save_failed' );
+			}
+
+			transferTemplateSavedValue = normalizeTransferTemplate(
+				response.data && response.data.transferContent ? response.data.transferContent : value
+			);
+			input.value = transferTemplateSavedValue;
+			transferTemplateDirty = false;
+		} ).catch( function( error ) {
+			showTransferTemplateSaveError();
+			throw error;
+		} ).finally( function() {
+			transferTemplateSavePromise = null;
+		} );
+
+		return transferTemplateSavePromise;
+	}
+
 	function getBankDisplayName( bank ) {
 		return bank ? ( bank.short_name || bank.name || bank.code || bank.bin || '' ) : '';
 	}
@@ -300,7 +530,8 @@
 			return '';
 		}
 
-		return normalizeBankBin( match.sort_code ) || normalizeBankBin( match.bic );
+		var reactBin = normalizeBankBin( match.bic );
+		return /^\d{6}$/.test( reactBin ) ? reactBin : normalizeBankBin( match.sort_code );
 	}
 
 	function getBankNameField( modal ) {
@@ -488,6 +719,8 @@
 	function syncAdminUi() {
 		if ( isBacsSettingsScreen() ) {
 			syncModals();
+			ensureTransferTemplateField();
+			syncTransferTemplateSaveButton();
 		}
 	}
 
@@ -526,6 +759,24 @@
 		event.preventDefault();
 		event.stopPropagation();
 		event.stopImmediatePropagation();
+	}, true );
+
+	document.addEventListener( 'click', function( event ) {
+		var button = event.target.closest( 'button' );
+
+		if ( ! transferTemplateDirty || ! isSettingsSaveButton( button ) ) {
+			return;
+		}
+
+		saveTransferTemplate().catch( function() {} );
+	}, true );
+
+	document.addEventListener( 'submit', function( event ) {
+		if ( ! transferTemplateDirty || ! event.target.querySelector( '.vck-vietqr-transfer-template-input' ) ) {
+			return;
+		}
+
+		saveTransferTemplate().catch( function() {} );
 	}, true );
 
 	function init() {

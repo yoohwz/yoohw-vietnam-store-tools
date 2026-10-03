@@ -31,6 +31,7 @@ function esc_attr( $value ) { return $value; }
 function esc_url( $value ) { return $value; }
 function admin_url( $path = '' ) { return 'https://store.test/wp-admin/' . $path; }
 function wp_nonce_field() {}
+function selected( $value, $expected ) { if ( $value === $expected ) { echo 'selected'; } }
 function checked( $value, $expected = true ) {
 	if ( $value === $expected ) {
 		echo 'checked';
@@ -224,6 +225,7 @@ vst_assert_true( false !== strpos( $script, 'gatewayId' ) && false !== strpos( $
 vst_assert_true( false !== strpos( $script, 'yoohw_paypal_usd_quote' ), 'Frontend refreshes its server-owned quote after cart total changes' );
 vst_assert_true( false !== strpos( $script, 'checkout_place_order_' ) && false !== strpos( $script, 'wc-block-components-checkout-place-order-button' ), 'Classic and Blocks place-order controls wait for a current server quote' );
 
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-bacs-vietqr.php';
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-admin-menu.php';
 $admin_reflection = new ReflectionClass( 'Yoohw_Vietnam_Store_Tools_Admin_Menu' );
 $admin_instance   = $admin_reflection->newInstanceWithoutConstructor();
@@ -234,6 +236,7 @@ $GLOBALS['vst_active_plugins'] = array();
 ob_start();
 $render_settings->invoke( $admin_instance );
 $inactive_settings = ob_get_clean();
+vst_assert_true( strpos( $inactive_settings, 'yoohw-vietnam-store__vietqr-settings' ) < strpos( $inactive_settings, 'yoohw-vietnam-store__paypal-settings' ), 'VietQR card appears before PayPal settings even when PPCP is inactive' );
 vst_assert_true( false !== strpos( $inactive_settings, 'PayPal USD conversion' ), 'Inactive PPCP still renders the PayPal conversion heading' );
 vst_assert_true( false !== strpos( $inactive_settings, 'Available only when WooCommerce PayPal Payments is installed and active.' ), 'Inactive PPCP renders the dependency description' );
 vst_assert_true( false !== strpos( $inactive_settings, 'yoohw-vietnam-store__paypal-settings is-unavailable' ), 'Inactive PPCP renders the compact unavailable card state' );

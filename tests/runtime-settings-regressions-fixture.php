@@ -35,8 +35,12 @@ if ( 'prepare' === $args[1] ) {
 			vst_assert_same( true, Yoohw_Vietnam_Store_Tools_Shipment_Tracking::add_timeline_event( $order, [ 'status' => 'in_transit', 'occurred_at' => gmdate( 'Y-m-d\TH:i' ), 'expected_shipment_id' => $shipment['id'] ] ), 'Fixture timeline created' );
 		}
 	}
+	$bacs_settings = get_option( 'woocommerce_bacs_settings', [] );
+	$bacs_settings = is_array( $bacs_settings ) ? $bacs_settings : [];
+	$bacs_settings['vst85_unknown_extension'] = [ 'preserve' => 'fixture' ];
+	update_option( 'woocommerce_bacs_settings', $bacs_settings );
 	update_option( 'woocommerce_currency', 'VND' );
-	update_option( 'woocommerce_bacs_accounts', [ [ 'account_name' => 'VST85 fixture', 'account_number' => '123456789', 'bank_name' => 'Fixture Bank', 'sort_code' => '970436', 'iban' => '', 'bic' => '' ] ] );
+	update_option( 'woocommerce_bacs_accounts', [ [ 'account_name' => 'VST85 fixture', 'account_number' => '123456789', 'bank_name' => 'BIDV', 'sort_code' => '970436', 'iban' => '', 'bic' => '970418' ] ] );
 	wp_mkdir_p( WPMU_PLUGIN_DIR );
 	file_put_contents( $mu_path, '<?php require WP_PLUGIN_DIR . "/' . dirname( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_BASENAME ) . '/tests/fixtures/vst-settings-regressions-probe.php";' );
 	$login = 'vst85-' . strtolower( wp_generate_password( 12, false, false ) );
