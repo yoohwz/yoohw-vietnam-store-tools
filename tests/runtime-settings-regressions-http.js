@@ -18,7 +18,7 @@ async function request(method, target, body, headers = {}, authenticated = true)
   return {response, text: await response.text()};
 }
 function nonce(html, name = '_wpnonce') { const match = html.match(new RegExp(`name="${name}"[^>]*value="([^"]+)"`)); assert.ok(match, `Actual form nonce ${name}`); return match[1]; }
-const featureOptions = ['address_fields_enabled','phone_normalization_enabled','customer_shipment_display_enabled','order_management_enabled','allow_tax_invoice_request','electronic_invoice_enabled'].map(s => `yoohw_vietnam_store_tools_${s}`);
+const featureOptions = ['address_fields_enabled','phone_normalization_enabled','customer_shipment_display_enabled','order_management_enabled','allow_tax_invoice_request','electronic_invoice_enabled','payment_reconciliation_enabled'].map(s => `yoohw_vietnam_store_tools_${s}`);
 async function dashboard() { const r=await request('GET','/wp-admin/admin.php?page=yoohw-vietnam-store'); assert.equal(r.response.status,200, `Dashboard redirect path: ${r.response.headers.get('location') ? new URL(r.response.headers.get('location'),base).pathname : 'none'}`); return r.text; }
 async function probe() { const html=await dashboard(); const r=await request('POST','/wp-admin/admin-ajax.php',new URLSearchParams({action:'vst85_settings_probe',_wpnonce:nonce(html)})); assert.equal(r.response.status,200,r.text.slice(0,300)); return JSON.parse(r.text).data; }
 async function saveFeatures(enabled) {
@@ -58,7 +58,7 @@ async function saveFeatures(enabled) {
   const independent=await saveFeatures([featureOptions[1],featureOptions[4]]);
   assert.equal(independent.counts.Yoohw_Vietnam_Store_Tools_Address_Fields,0);assert.ok(independent.counts.Yoohw_Vietnam_Store_Tools_Phone_Normalization>0);assert.equal(independent.vat_fields,true);assert.equal(independent.invoice_save_hook,false);
   await saveFeatures([...featureOptions,'paypal']);
-  console.log('PASS: all seven Dashboard controls submit -> persisted state -> reload -> next-request hooks/output; independent gates and history preserved');
+  console.log('PASS: all eight Dashboard controls submit -> persisted state -> reload -> next-request hooks/output; independent gates and history preserved');
   const prefix='yoohw_vietnam_store_tools_vietqr_';
   const route='/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs';
   const keys=['enabled','include_amount','image_template','show_email'];

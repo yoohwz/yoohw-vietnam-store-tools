@@ -535,6 +535,8 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
           export VST_TEST_RUN="vst90-$(openssl rand -hex 12)"
           "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS prepare --user=1
+          node tests/runtime-payment-toggle-http.js
+          "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-payment-toggle-smoke.php VST-92-PAYMENT --user=1
           node tests/runtime-settings-regressions-http.js
           "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS cleanup --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
@@ -557,6 +559,8 @@ jobs:
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
           export VST_TEST_RUN="vst90-$(openssl rand -hex 12)"
           "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS prepare --user=1
+          node tests/runtime-payment-toggle-http.js
+          "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-payment-toggle-smoke.php VST-92-PAYMENT --user=1
           node tests/runtime-settings-regressions-http.js
           "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS cleanup --user=1
       - name: Stop wp-env

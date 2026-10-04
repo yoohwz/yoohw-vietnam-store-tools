@@ -18,6 +18,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 	const OPTION_PHONE_NORMALIZATION        = 'yoohw_vietnam_store_tools_phone_normalization_enabled';
 	const OPTION_CUSTOMER_SHIPMENT_DISPLAY  = 'yoohw_vietnam_store_tools_customer_shipment_display_enabled';
 	const OPTION_ORDER_MANAGEMENT           = 'yoohw_vietnam_store_tools_order_management_enabled';
+	const OPTION_PAYMENT_RECONCILIATION     = 'yoohw_vietnam_store_tools_payment_reconciliation_enabled';
 	const OPTION_ELECTRONIC_INVOICE         = 'yoohw_vietnam_store_tools_electronic_invoice_enabled';
 
 	private $page_hook = '';
@@ -32,7 +33,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 	}
 
 	public static function is_feature_enabled( $option_id ) {
-		return 'yes' === get_option( $option_id, 'yes' );
+		return 'yes' === get_option( $option_id, self::OPTION_PAYMENT_RECONCILIATION === $option_id ? 'no' : 'yes' );
 	}
 
 	public function register_menu() {
@@ -385,6 +386,10 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 				'title'       => __( 'Accept invoice requests at checkout', 'yoohw-vietnam-store-tools' ),
 				'description' => __( 'Allow customers to submit company and tax details for new orders.', 'yoohw-vietnam-store-tools' ),
 				'enabled'     => Yoohw_Vietnam_Store_Tools_Tax_Invoice::accepts_new_requests(),
+			],
+			self::OPTION_PAYMENT_RECONCILIATION => [
+				'title'       => __( 'Payment reconciliation', 'yoohw-vietnam-store-tools' ),
+				'description' => __( 'Record and reconcile bank-transfer payment evidence on WooCommerce orders. Disabling this feature keeps existing reconciliation history read-only.', 'yoohw-vietnam-store-tools' ),
 			],
 			self::OPTION_ELECTRONIC_INVOICE => [
 				'title'       => __( 'Manage electronic invoice workflow', 'yoohw-vietnam-store-tools' ),

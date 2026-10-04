@@ -111,6 +111,15 @@ class VST_Test_WPDB {
 $wpdb = new VST_Test_WPDB();
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-electronic-invoice.php';
 $api = 'Yoohw_Vietnam_Store_Tools_Electronic_Invoice';
+class Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email { public $id = 'different_email_object_id'; }
+$registered_emails = [ 'Different_Registered_Email_Key' => new Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email() ];
+function WC() { return new class { public function mailer() { return $this; } public function get_emails() { global $registered_emails; return $registered_emails; } }; }
+function admin_url( $path ) { return 'https://example.test/wp-admin/' . $path; }
+function add_query_arg( $args, $url ) { return $url . '?' . http_build_query( $args ); }
+vst_assert_same( 'https://example.test/wp-admin/admin.php?page=wc-settings&tab=email&section=different_registered_email_key', $api::get_email_settings_url(), 'Email settings section follows actual registered key, never email object ID' );
+$registered_emails = [ 'Other_Email' => new stdClass() ];
+vst_assert_same( '', $api::get_email_settings_url(), 'Missing registered invoice email cannot produce broken section link' );
+
 $field_labels_method = new ReflectionMethod( $api, 'get_field_labels' );
 if ( PHP_VERSION_ID < 80100 ) { $field_labels_method->setAccessible( true ); }
 $field_labels = $field_labels_method->invoke( null );

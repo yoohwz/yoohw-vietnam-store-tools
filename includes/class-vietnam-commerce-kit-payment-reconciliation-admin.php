@@ -21,7 +21,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 	}
 
 	public static function is_relevant( $order ) {
-		return $order instanceof WC_Order && ( 'bacs' === $order->get_payment_method() || Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_history( $order ) );
+		return $order instanceof WC_Order && ( ( Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::is_enabled() && 'bacs' === $order->get_payment_method() ) || Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::get_history( $order ) );
 	}
 
 	public static function status_label( $data ) {
@@ -91,7 +91,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 		$history = $domain::get_history( $order );
 		$active = $this->active_entries( $history );
 		$entry = isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
-		$manual = 'bacs' === $order->get_payment_method() && 'external_verified' !== $data['trust'] && current_user_can( 'edit_shop_order', $order->get_id() );
+		$manual = $domain::is_enabled() && 'bacs' === $order->get_payment_method() && 'external_verified' !== $data['trust'] && current_user_can( 'edit_shop_order', $order->get_id() );
 		$match = 'reconciled' === $data['state'] && 'manual' === $data['trust'] && isset( $active[ $data['entry_id'] ] ) ? $active[ $data['entry_id'] ] : null;
 		$observations = $this->active_observations( $active );
 		$selected_id = isset( $_GET['vck_payment_observation'] ) ? sanitize_text_field( wp_unslash( $_GET['vck_payment_observation'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only observation selection.
@@ -102,6 +102,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			$match = $this->latest_active_match( $active, $observation );
 		}
 		echo '<div class="vck-payment-reconciliation">';
+		if ( ! $domain::is_enabled() ) {
+			echo '<p>' . esc_html__( 'Payment reconciliation is disabled. Existing history is read-only.', 'yoohw-vietnam-store-tools' ) . '</p>';
+		}
 		echo '<style>
 			#poststuff #yoohw-vietnam-store-tools-payment-reconciliation .postbox-header .hndle { min-width: 0; padding: 8px 12px; overflow-wrap: anywhere; }
 			#poststuff #yoohw-vietnam-store-tools-payment-reconciliation .inside { box-sizing: border-box; min-width: 0; padding: 0 12px 12px; }
@@ -227,7 +230,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 
 	public function render_action_form() {
 		$order = $this->current_order();
-		if ( ! self::is_relevant( $order ) || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
+		if ( ! Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::is_enabled() || ! self::is_relevant( $order ) || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
 			return;
 		}
 		echo '<form id="' . esc_attr( self::FORM_ID ) . '" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
@@ -247,6 +250,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			wp_die( esc_html__( 'Invalid payment reconciliation request.', 'yoohw-vietnam-store-tools' ), '', [ 'response' => 403 ] );
 		}
 		$domain = Yoohw_Vietnam_Store_Tools_Payment_Reconciliation::class;
+		if ( ! $domain::is_enabled() ) {
+			$this->redirect( $order, 'yoohw_vietnam_store_tools_payment_feature_disabled' );
+		}
 		$data = $domain::get_order_data( $order );
 		$history = $domain::get_history( $order );
 		if ( 'bacs' !== $order->get_payment_method() || 'external_verified' === $data['trust'] ) {
@@ -294,6 +300,7 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation_Admin {
 			return;
 		}
 		$messages = [
+			'yoohw_vietnam_store_tools_payment_feature_disabled' => __( 'Payment reconciliation is disabled. Existing history is read-only.', 'yoohw-vietnam-store-tools' ),
 			'saved' => __( 'Payment reconciliation record saved.', 'yoohw-vietnam-store-tools' ),
 			'date' => __( 'Enter a valid observed date and time.', 'yoohw-vietnam-store-tools' ),
 			'stale' => __( 'The reconciliation history changed. Review the current record and try again.', 'yoohw-vietnam-store-tools' ),

@@ -3,6 +3,11 @@
 define( 'ABSPATH', __DIR__ . '/' );
 require __DIR__ . '/support/assertions.php';
 
+$test_options = [];
+function get_option( $key, $default = false ) { global $test_options; return $test_options[ $key ] ?? $default; }
+require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-admin-menu.php';
+$payment_option = Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PAYMENT_RECONCILIATION;
+$test_options[ $payment_option ] = 'yes';
 $test_filters = [];
 $test_actor_allowed = true;
 $test_uuid = 0;
@@ -253,5 +258,43 @@ $active_historical_id = $identity::get_current_shipment( $historical )['id'];
 vst_assert_true( is_wp_error( $identity::close_current( $historical, $active_historical_id ) ), 'Closing shipment requires order capability' );
 vst_assert_same( 'in_transit', $historical->get_meta( $shipping::META_STATUS_ID ), 'Denied close preserves shipment state' );
 $test_actor_allowed = true;
+
+// Absent/no are OFF for this capability only, including existing-install histories.
+$before_meta = serialize( $payment->meta );
+$before_history = serialize( $reader::get_history( $payment ) );
+$before_data = $reader::get_order_data( $payment );
+$before_saves = $payment->saves;
+$test_filters['yoohw_vietnam_store_tools_payment_evidence_sources']['disabled_bank'] = static function() { throw new RuntimeException( 'Disabled feature must not call provider' ); };
+foreach ( [ null, 'no', 'invalid' ] as $value ) {
+ unset( $test_options[ $payment_option ] );
+ if ( null !== $value ) { $test_options[ $payment_option ] = $value; }
+ vst_assert_same( false, $reader::is_enabled(), 'Absent/no/invalid payment option is OFF' );
+ vst_assert_same( true, Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ADDRESS_FIELDS ), 'Unrelated absent option remains ON' );
+ foreach ( [
+  $reader::record_manual_observation( $payment, [ 'amount' => '100000', 'currency' => 'VND' ] ),
+  $reader::match_manual_observation( $payment, $observation['id'] ),
+  $reader::reverse_entry( $payment, $observation['id'] ),
+  $reader::record_verified_evidence( $payment, 'disabled_bank', $proof ),
+  $reader::record_verified_evidence( $payment, 'bank', $proof ),
+ ] as $rejected ) {
+  vst_assert_true( is_wp_error( $rejected ), 'Every disabled mutation returns WP_Error' );
+  vst_assert_same( 'yoohw_vietnam_store_tools_payment_feature_disabled', $rejected->get_error_code(), 'Dedicated disabled error, including replay' );
+ }
+ vst_assert_same( $before_meta, serialize( $payment->meta ), 'OFF leaves history and transaction-owner metadata unchanged' );
+ vst_assert_same( $before_history, serialize( $reader::get_history( $payment ) ), 'OFF read returns unchanged history' );
+ vst_assert_same( $before_data, $reader::get_order_data( $payment ), 'OFF projection remains functional' );
+ vst_assert_same( $before_saves, $payment->saves, 'OFF never saves the order' );
+}
+$test_options[ $payment_option ] = 'yes';
+vst_assert_same( true, $reader::is_enabled(), 'Explicit yes enables payment reconciliation' );
+$reenabled = $reader::record_manual_observation( $payment, [ 'amount' => '100000', 'currency' => 'VND' ] );
+vst_assert_true( ! is_wp_error( $reenabled ), 'Re-enable accepts new evidence against retained history' );
+// Provider callbacks can change settings: the last write boundary must recheck.
+$before_meta = serialize( $payment->meta );
+$test_filters['yoohw_vietnam_store_tools_payment_evidence_sources']['disabling_bank'] = static function( $order, $proof ) use ( $payment_option ) { global $test_options; $test_options[ $payment_option ] = 'no'; return $proof; };
+$callback_proof = $proof; $callback_proof['transaction_id'] = 'DISABLED-IN-CALLBACK';
+vst_assert_same( 'yoohw_vietnam_store_tools_payment_feature_disabled', $reader::record_verified_evidence( $payment, 'disabling_bank', $callback_proof )->get_error_code(), 'Callback disable is rejected before append' );
+vst_assert_same( $before_meta, serialize( $payment->meta ), 'Callback disable writes no history or transaction owner' );
+$test_options[ $payment_option ] = 'yes';
 
 vst_finish_contract_suite( 'VST-50 domain' );

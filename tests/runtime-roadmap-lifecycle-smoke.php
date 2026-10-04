@@ -23,6 +23,11 @@ $keys = [
 
 if ( 'prepare' === $phase ) {
 	vst_assert_same( [], $fixture, 'No prior lifecycle fixture remains' );
+	$payment_option = Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PAYMENT_RECONCILIATION;
+	$missing_payment = new stdClass();
+	$old_payment = get_option( $payment_option, $missing_payment );
+	$payment_snapshot = [ 'exists' => $old_payment !== $missing_payment, 'value' => $old_payment !== $missing_payment ? $old_payment : null ];
+	update_option( $payment_option, 'yes' );
 	$old_invoice = get_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, false );
 	update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, 'yes' );
 	$product = new WC_Product_Simple();
@@ -70,7 +75,7 @@ if ( 'prepare' === $phase ) {
 	foreach ( $keys as $key ) {
 		$snapshot[ $key ] = $order->get_meta( $key, true );
 	}
-	update_option( $fixture_option, [ 'order_id' => $order->get_id(), 'product_id' => $product->get_id(), 'old_invoice' => $old_invoice, 'ward_only_zone_id' => $ward_only->get_id(), 'mixed_zone_id' => $mixed->get_id(), 'ward' => $ward, 'snapshot' => $snapshot ], false );
+	update_option( $fixture_option, [ 'order_id' => $order->get_id(), 'product_id' => $product->get_id(), 'old_invoice' => $old_invoice, 'old_payment' => $payment_snapshot, 'ward_only_zone_id' => $ward_only->get_id(), 'mixed_zone_id' => $mixed->get_id(), 'ward' => $ward, 'snapshot' => $snapshot ], false );
 } else {
 	vst_assert_true( isset( $fixture['order_id'], $fixture['snapshot'] ), 'Fixture is available across WP-CLI processes' );
 	$order = wc_get_order( $fixture['order_id'] );
@@ -115,6 +120,8 @@ if ( 'prepare' === $phase ) {
 		} else {
 			update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, $fixture['old_invoice'] );
 		}
+		$payment_option = Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PAYMENT_RECONCILIATION;
+		if ( $fixture['old_payment']['exists'] ) { update_option( $payment_option, $fixture['old_payment']['value'] ); } else { delete_option( $payment_option ); }
 		delete_option( $fixture_option );
 	}
 }
