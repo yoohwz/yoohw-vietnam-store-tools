@@ -68,7 +68,7 @@ final class Yoohw_Vietnam_Store_Tools_Blocks_Integration {
 				'yoohw-vietnam-store-tools-blocks-address-fields',
 				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/blocks-address-fields.css',
 				[],
-				filemtime( $style_path )
+				YOOHW_VIETNAM_STORE_TOOLS_VERSION
 			);
 		}
 
@@ -82,7 +82,7 @@ final class Yoohw_Vietnam_Store_Tools_Blocks_Integration {
 			$handle,
 			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/frontend/blocks-address-fields.js',
 			[ 'wp-data', 'wc-blocks-data-store' ],
-			filemtime( $script_path ),
+			YOOHW_VIETNAM_STORE_TOOLS_VERSION,
 			true
 		);
 

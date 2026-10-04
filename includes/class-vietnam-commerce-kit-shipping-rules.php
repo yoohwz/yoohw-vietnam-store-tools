@@ -55,7 +55,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Rules {
 				'yoohw-vietnam-store-tools-shipping-rules',
 				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/admin/shipping-rules.css',
 				[],
-				filemtime( $style_path )
+				YOOHW_VIETNAM_STORE_TOOLS_VERSION
 			);
 		}
 
@@ -67,7 +67,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Rules {
 			'yoohw-vietnam-store-tools-shipping-rules',
 			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/shipping-rules.js',
 			[ 'jquery' ],
-			filemtime( $script_path ),
+			YOOHW_VIETNAM_STORE_TOOLS_VERSION,
 			true
 		);
 

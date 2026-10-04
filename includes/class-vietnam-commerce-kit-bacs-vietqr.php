@@ -201,7 +201,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 			$handle,
 			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/bacs-vietqr.js',
 			[],
-			filemtime( YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'assets/js/admin/bacs-vietqr.js' ),
+			YOOHW_VIETNAM_STORE_TOOLS_VERSION,
 			true
 		);
 
@@ -605,7 +605,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 				'yoohw-vietnam-store-tools-bacs-vietqr',
 				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/bacs-vietqr.css',
 				[],
-				filemtime( $style_path )
+				YOOHW_VIETNAM_STORE_TOOLS_VERSION
 			);
 		}
 
@@ -614,7 +614,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 				'yoohw-vietnam-store-tools-bacs-vietqr-copy',
 				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/bacs-vietqr-copy.js',
 				[],
-				filemtime( $script_path ),
+				YOOHW_VIETNAM_STORE_TOOLS_VERSION,
 				true
 			);
 		}

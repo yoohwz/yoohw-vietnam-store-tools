@@ -428,7 +428,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		if ( ! file_exists( $path ) ) {
 			return;
 		}
-		wp_enqueue_script( 'yoohw-vietnam-store-tools-paypal-vnd-usd', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/frontend/paypal-vnd-usd.js', array( 'jquery', 'wp-data' ), filemtime( $path ), true );
+		wp_enqueue_script( 'yoohw-vietnam-store-tools-paypal-vnd-usd', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/frontend/paypal-vnd-usd.js', array( 'jquery', 'wp-data' ), YOOHW_VIETNAM_STORE_TOOLS_VERSION, true );
 		wp_localize_script(
 			'yoohw-vietnam-store-tools-paypal-vnd-usd',
 			'yoohwVietnamStoreToolsPayPalUsd',
