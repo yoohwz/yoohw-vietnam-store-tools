@@ -18,7 +18,7 @@ async function request(method, target, body, headers = {}, authenticated = true)
 }
 function nonce(html, name = '_wpnonce') { const match = html.match(new RegExp(`name="${name}"[^>]*value="([^"]+)"`)); assert.ok(match, `Actual form nonce ${name}`); return match[1]; }
 const featureOptions = ['address_fields_enabled','phone_normalization_enabled','customer_shipment_display_enabled','order_management_enabled','allow_tax_invoice_request','electronic_invoice_enabled'].map(s => `yoohw_vietnam_store_tools_${s}`);
-async function dashboard() { const r=await request('GET','/wp-admin/admin.php?page=yoohw-vietnam-store'); assert.equal(r.response.status,200); return r.text; }
+async function dashboard() { const r=await request('GET','/wp-admin/admin.php?page=yoohw-vietnam-store'); assert.equal(r.response.status,200, `Dashboard redirect path: ${r.response.headers.get('location') ? new URL(r.response.headers.get('location'),base).pathname : 'none'}`); return r.text; }
 async function probe() { const html=await dashboard(); const r=await request('POST','/wp-admin/admin-ajax.php',new URLSearchParams({action:'vst85_settings_probe',_wpnonce:nonce(html)})); assert.equal(r.response.status,200,r.text.slice(0,300)); return JSON.parse(r.text).data; }
 async function saveFeatures(enabled) {
   const html=await dashboard(); const body=new URLSearchParams({action:'yoohw_vietnam_store_tools_save_features',_wpnonce:nonce(html),'paypal_conversion[rate]':'25000'});

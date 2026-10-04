@@ -1,6 +1,10 @@
 <?php
 /** Test-only fixture identity and ownership predicates, independent of plugin runtime. */
 final class VST_Settings_Fixture_Safety {
+ public static function require_same( $expected, $actual, $label ) {
+  vst_assert_same( $expected, $actual, $label );
+  if ( $expected !== $actual ) { throw new RuntimeException( $label . '; recovery ledger retained.' ); }
+ }
  public static function valid_run( $run ) { return is_string( $run ) && 1 === preg_match( '/^vst90-[a-f0-9]{24}$/D', $run ); }
  public static function new_run() { return 'vst90-' . bin2hex( random_bytes( 12 ) ); }
  public static function option_key( $run ) {
