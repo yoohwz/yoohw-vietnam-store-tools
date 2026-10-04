@@ -18,6 +18,10 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	const TRUST_MANUAL       = 'manual';
 	const TRUST_EXTERNAL     = 'external_verified';
 
+	public static function is_enabled() {
+		return Yoohw_Vietnam_Store_Tools_Admin_Menu::is_feature_enabled( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PAYMENT_RECONCILIATION );
+	}
+
 	public static function get_states() {
 		return [ self::STATE_UNRECONCILED, self::STATE_RECORDED, self::STATE_RECONCILED ];
 	}
@@ -63,6 +67,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	}
 
 	public static function record_manual_observation( $order, $data, $context = [] ) {
+		if ( ! self::is_enabled() ) {
+			return self::error( 'feature_disabled' );
+		}
 		$order = self::order( $order );
 		if ( ! $order || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
 			return self::error( 'manual_forbidden' );
@@ -84,6 +91,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	}
 
 	public static function match_manual_observation( $order, $entry_id, $context = [] ) {
+		if ( ! self::is_enabled() ) {
+			return self::error( 'feature_disabled' );
+		}
 		$order = self::order( $order );
 		if ( ! $order || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
 			return self::error( 'manual_forbidden' );
@@ -106,6 +116,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	}
 
 	public static function record_verified_evidence( $order, $source_id, $evidence, $context = [] ) {
+		if ( ! self::is_enabled() ) {
+			return self::error( 'feature_disabled' );
+		}
 		$order = self::order( $order );
 		$source_id = sanitize_key( $source_id );
 		if ( ! $order || '' === $source_id || 'manual' === $source_id || ! is_array( $evidence ) ) {
@@ -174,6 +187,9 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	}
 
 	public static function reverse_entry( $order, $entry_id, $context = [] ) {
+		if ( ! self::is_enabled() ) {
+			return self::error( 'feature_disabled' );
+		}
 		$order = self::order( $order );
 		if ( ! $order || ! current_user_can( 'edit_shop_order', $order->get_id() ) ) {
 			return self::error( 'manual_forbidden' );
@@ -187,6 +203,10 @@ final class Yoohw_Vietnam_Store_Tools_Payment_Reconciliation {
 	}
 
 	private static function append( $order, $entry, $context ) {
+		// Recheck after provider callbacks before any pending order metadata is changed.
+		if ( ! self::is_enabled() ) {
+			return self::error( 'feature_disabled' );
+		}
 		$entry['id'] = wp_generate_uuid4();
 		$entry['recorded_at'] = gmdate( 'c' );
 		$entry['note'] = isset( $context['note'] ) ? sanitize_textarea_field( $context['note'] ) : '';

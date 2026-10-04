@@ -74,6 +74,15 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 		return $emails;
 	}
 
+	public static function get_email_settings_url() {
+		foreach ( WC()->mailer()->get_emails() as $key => $email ) {
+			if ( $email instanceof Yoohw_Vietnam_Store_Tools_Customer_Electronic_Invoice_Email ) {
+				return add_query_arg( [ 'page' => 'wc-settings', 'tab' => 'email', 'section' => strtolower( $key ) ], admin_url( 'admin.php' ) );
+			}
+		}
+		return '';
+	}
+
 	public function allow_invoice_upload_mimes( $mimes, $user = null ) {
 		unset( $user );
 
@@ -583,7 +592,10 @@ final class Yoohw_Vietnam_Store_Tools_Electronic_Invoice {
 				<button type="button" class="button button-primary" data-vck-einvoice-save data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( self::ACTION_SAVE . '_' . $order->get_id() ) ); ?>"><?php esc_html_e( 'Save invoice workflow', 'yoohw-vietnam-store-tools' ); ?></button>
 				<button type="button" class="button" data-vck-einvoice-document data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( self::ACTION_RECORD_DOCUMENT . '_' . $order->get_id() ) ); ?>"><?php esc_html_e( 'Record new document', 'yoohw-vietnam-store-tools' ); ?></button>
 				<button type="button" class="button" data-vck-einvoice-send data-order-id="<?php echo esc_attr( $order->get_id() ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( self::ACTION_SEND_EMAIL . '_' . $order->get_id() ) ); ?>"<?php disabled( '' === trim( (string) $order->get_billing_email() ) ); ?>><?php esc_html_e( 'Send invoice email to customer', 'yoohw-vietnam-store-tools' ); ?></button>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=email&section=yoohw_vietnam_store_tools_customer_electronic_invoice' ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Email settings', 'yoohw-vietnam-store-tools' ); ?></a>
+				<?php $email_settings_url = self::get_email_settings_url(); ?>
+				<?php if ( $email_settings_url ) : ?>
+					<a href="<?php echo esc_url( $email_settings_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Email settings', 'yoohw-vietnam-store-tools' ); ?></a>
+				<?php endif; ?>
 			</div>
 
 			<?php $this->render_documents( $order ); ?>

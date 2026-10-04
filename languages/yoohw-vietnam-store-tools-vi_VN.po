@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-10-03T15:47:08+00:00\n"
+"POT-Creation-Date: 2026-10-04T03:23:02+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: yoohw-vietnam-store-tools.php
-#: includes/class-vietnam-commerce-kit-admin-menu.php:207
+#: includes/class-vietnam-commerce-kit-admin-menu.php:208
 #: includes/class-vietnam-commerce-kit-store-health.php:81
 msgid "Vietnam Store Toolkit for WooCommerce"
 msgstr "Vietnam Store Toolkit for WooCommerce"
@@ -146,33 +146,33 @@ msgstr "Thành phố"
 msgid "State / County"
 msgstr "Bang / Hạt"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:40
 #: includes/class-vietnam-commerce-kit-admin-menu.php:41
-#: includes/class-vietnam-commerce-kit-admin-menu.php:50
-#: includes/class-vietnam-commerce-kit-admin-menu.php:208
+#: includes/class-vietnam-commerce-kit-admin-menu.php:42
+#: includes/class-vietnam-commerce-kit-admin-menu.php:51
+#: includes/class-vietnam-commerce-kit-admin-menu.php:209
 msgid "Vietnam store"
 msgstr "Vietnam store"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:51
+#: includes/class-vietnam-commerce-kit-admin-menu.php:52
 msgid "Dashboard"
 msgstr "Bảng điều khiển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:94
+#: includes/class-vietnam-commerce-kit-admin-menu.php:95
 msgid "Settings"
 msgstr "Cài đặt"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:130
-#: includes/class-vietnam-commerce-kit-admin-menu.php:181
+#: includes/class-vietnam-commerce-kit-admin-menu.php:131
+#: includes/class-vietnam-commerce-kit-admin-menu.php:182
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:258
 #: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr "Bạn không có quyền quản lý cài đặt WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:189
+#: includes/class-vietnam-commerce-kit-admin-menu.php:190
 msgid "Vietnam store feature settings saved."
 msgstr "Đã lưu cài đặt tính năng Vietnam store."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:193
+#: includes/class-vietnam-commerce-kit-admin-menu.php:194
 msgid ""
 "PayPal USD conversion was disabled because the manual VND per USD rate is "
 "invalid."
@@ -180,7 +180,7 @@ msgstr ""
 "Chuyển đổi PayPal sang USD đã bị tắt vì tỷ giá VND trên mỗi USD nhập thủ "
 "công không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:209
+#: includes/class-vietnam-commerce-kit-admin-menu.php:210
 msgid ""
 "Manage the Vietnam-specific checkout, payments, invoices, shipping, and "
 "order tools used by your WooCommerce store."
@@ -189,16 +189,16 @@ msgstr ""
 "cho cửa hàng WooCommerce tại Việt Nam."
 
 #. translators: %s: plugin version.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:217
+#: includes/class-vietnam-commerce-kit-admin-menu.php:218
 #, php-format
 msgid "Version %s"
 msgstr "Phiên bản %s"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:250
+#: includes/class-vietnam-commerce-kit-admin-menu.php:251
 msgid "Core features"
 msgstr "Tính năng cốt lõi"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:251
+#: includes/class-vietnam-commerce-kit-admin-menu.php:252
 msgid ""
 "Enable only the Vietnam store enhancements that fit your workflow. Disabling "
 "a feature does not delete its existing data."
@@ -206,11 +206,11 @@ msgstr ""
 "Chỉ bật các cải tiến phù hợp với quy trình của cửa hàng. Việc tắt tính năng "
 "không xóa dữ liệu đã có."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:279
+#: includes/class-vietnam-commerce-kit-admin-menu.php:280
 msgid "PayPal USD conversion"
 msgstr "Chuyển đổi PayPal sang USD"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:281
+#: includes/class-vietnam-commerce-kit-admin-menu.php:282
 msgid ""
 "Convert VND to USD for one-time CAPTURE payments through WooCommerce PayPal "
 "Payments. Version 4.1.3 is the verified baseline; other versions require a "
@@ -221,7 +221,7 @@ msgstr ""
 "phiên bản khác cần có hợp đồng tích hợp tương thích. Đơn hàng WooCommerce "
 "vẫn sử dụng VND."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:283
+#: includes/class-vietnam-commerce-kit-admin-menu.php:284
 msgid ""
 "Available only when WooCommerce PayPal Payments is installed and active. "
 "Version 4.1.3 is the verified baseline; other versions require a compatible "
@@ -231,11 +231,11 @@ msgstr ""
 "Phiên bản 4.1.3 là mốc đã được xác minh; các phiên bản khác cần có hợp đồng "
 "tích hợp tương thích."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:293
+#: includes/class-vietnam-commerce-kit-admin-menu.php:294
 msgid "Enable PayPal USD conversion"
 msgstr "Bật chuyển đổi PayPal sang USD"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:294
+#: includes/class-vietnam-commerce-kit-admin-menu.php:295
 msgid ""
 "PayPal is shown only on the normal Classic or Block checkout when this rate "
 "and CAPTURE intent are valid."
@@ -243,11 +243,11 @@ msgstr ""
 "PayPal chỉ hiển thị trên trang thanh toán Classic hoặc Block thông thường "
 "khi tỷ giá này và ý định CAPTURE hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:302
+#: includes/class-vietnam-commerce-kit-admin-menu.php:303
 msgid "Manual VND per USD rate"
 msgstr "Tỷ giá VND trên mỗi USD nhập thủ công"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:304
+#: includes/class-vietnam-commerce-kit-admin-menu.php:305
 msgid ""
 "Enter how many VND equal 1 USD, for example 25000. The rate is locked for "
 "each payment attempt."
@@ -255,77 +255,79 @@ msgstr ""
 "Nhập số VND tương đương 1 USD, ví dụ 25000. Tỷ giá được khóa cho từng lần "
 "thanh toán."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:309
+#: includes/class-vietnam-commerce-kit-admin-menu.php:310
 msgid "Save feature settings"
 msgstr "Lưu cài đặt tính năng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:320
+#: includes/class-vietnam-commerce-kit-admin-menu.php:321
 msgid "Enable VietQR payment QR"
 msgstr "Bật mã QR thanh toán VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:321
+#: includes/class-vietnam-commerce-kit-admin-menu.php:322
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:91
 msgid "Show VietQR code for direct bank transfer orders"
 msgstr "Hiển thị mã VietQR cho đơn thanh toán chuyển khoản ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:324
+#: includes/class-vietnam-commerce-kit-admin-menu.php:325
 msgid "Include order amount"
 msgstr "Bao gồm số tiền đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:325
+#: includes/class-vietnam-commerce-kit-admin-menu.php:326
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:104
 msgid "Include the order amount in the QR code when the order currency is VND"
 msgstr "Thêm số tiền đơn hàng vào mã QR khi tiền tệ của đơn là VND"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:328
+#: includes/class-vietnam-commerce-kit-admin-menu.php:329
 msgid "Show VietQR in customer bank-transfer emails"
 msgstr "Hiển thị VietQR trong email chuyển khoản của khách hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:329
+#: includes/class-vietnam-commerce-kit-admin-menu.php:330
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:120
 msgid "Show VietQR code in customer bank transfer emails"
 msgstr "Hiển thị mã VietQR trong email chuyển khoản gửi khách hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:336
+#: includes/class-vietnam-commerce-kit-admin-menu.php:337
 msgid "VietQR settings"
 msgstr "Cài đặt VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:337
+#: includes/class-vietnam-commerce-kit-admin-menu.php:338
 msgid ""
 "Manage bank accounts, Vietnam bank selection, and the transfer content "
 "template in WooCommerce bank transfer settings."
-msgstr "Quản lý tài khoản ngân hàng, chọn ngân hàng Việt Nam và mẫu nội dung chuyển khoản trong cài đặt chuyển khoản ngân hàng WooCommerce."
+msgstr ""
+"Quản lý tài khoản ngân hàng, chọn ngân hàng Việt Nam và mẫu nội dung chuyển "
+"khoản trong cài đặt chuyển khoản ngân hàng WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:338
+#: includes/class-vietnam-commerce-kit-admin-menu.php:339
 msgid "Bank transfer settings"
 msgstr "Cài đặt chuyển khoản ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:355
+#: includes/class-vietnam-commerce-kit-admin-menu.php:356
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:108
 msgid "QR template"
 msgstr "Mẫu QR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:357
+#: includes/class-vietnam-commerce-kit-admin-menu.php:358
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:114
 msgid "QR only"
 msgstr "Chỉ mã QR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:357
+#: includes/class-vietnam-commerce-kit-admin-menu.php:358
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:113
 msgid "Compact"
 msgstr "Gọn"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:357
+#: includes/class-vietnam-commerce-kit-admin-menu.php:358
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:112
 msgid "Compact with VietQR logo"
 msgstr "Gọn kèm logo VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:369
+#: includes/class-vietnam-commerce-kit-admin-menu.php:370
 #: includes/class-vietnam-commerce-kit-store-health.php:35
 msgid "Vietnam address fields"
 msgstr "Trường địa chỉ Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:370
+#: includes/class-vietnam-commerce-kit-admin-menu.php:371
 msgid ""
 "Use Vietnam provinces and wards, compact name fields, address normalization, "
 "and compatible Classic or Block checkout behavior."
@@ -333,12 +335,12 @@ msgstr ""
 "Sử dụng tỉnh thành, phường xã Việt Nam, trường họ tên gọn, chuẩn hóa địa chỉ "
 "và tương thích thanh toán Classic hoặc Block."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:373
+#: includes/class-vietnam-commerce-kit-admin-menu.php:374
 #: includes/class-vietnam-commerce-kit-store-health.php:36
 msgid "Vietnam phone validation and normalization"
 msgstr "Xác thực và chuẩn hóa số điện thoại Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:374
+#: includes/class-vietnam-commerce-kit-admin-menu.php:375
 msgid ""
 "Validate Vietnamese phone numbers and store them consistently across "
 "checkout, customer profiles, and orders."
@@ -346,12 +348,12 @@ msgstr ""
 "Xác thực số điện thoại Việt Nam và lưu nhất quán trong thanh toán, hồ sơ "
 "khách hàng và đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:377
+#: includes/class-vietnam-commerce-kit-admin-menu.php:378
 #: includes/class-vietnam-commerce-kit-store-health.php:38
 msgid "Customer shipment information"
 msgstr "Thông tin vận chuyển cho khách hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:378
+#: includes/class-vietnam-commerce-kit-admin-menu.php:379
 msgid ""
 "Show the carrier, tracking code, shipment status, and tracking timeline on "
 "order confirmation and My Account pages."
@@ -359,11 +361,11 @@ msgstr ""
 "Hiển thị đơn vị vận chuyển, mã vận đơn, trạng thái và hành trình vận chuyển "
 "trên trang xác nhận đơn và Tài khoản."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:381
+#: includes/class-vietnam-commerce-kit-admin-menu.php:382
 msgid "Vietnam order management tools"
 msgstr "Công cụ quản lý đơn hàng Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:382
+#: includes/class-vietnam-commerce-kit-admin-menu.php:383
 msgid ""
 "Add Vietnam-specific order information, filters, bulk actions, and CSV "
 "exports to the WooCommerce order list."
@@ -371,23 +373,34 @@ msgstr ""
 "Thêm thông tin đơn hàng, bộ lọc, thao tác hàng loạt và xuất CSV dành cho "
 "Việt Nam vào danh sách đơn WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:385
+#: includes/class-vietnam-commerce-kit-admin-menu.php:386
 #: includes/class-vietnam-commerce-kit-store-health.php:62
 msgid "Accept invoice requests at checkout"
 msgstr "Nhận yêu cầu hóa đơn tại trang thanh toán"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:386
+#: includes/class-vietnam-commerce-kit-admin-menu.php:387
 msgid "Allow customers to submit company and tax details for new orders."
 msgstr ""
 "Cho phép khách hàng gửi thông tin doanh nghiệp và mã số thuế cho đơn hàng "
 "mới."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:390
+#: includes/class-vietnam-commerce-kit-admin-menu.php:391
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:48
+msgid "Payment reconciliation"
+msgstr "Đối soát thanh toán"
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:392
+msgid ""
+"Record and reconcile bank-transfer payment evidence on WooCommerce orders. "
+"Disabling this feature keeps existing reconciliation history read-only."
+msgstr "Ghi nhận và đối soát bằng chứng thanh toán chuyển khoản ngân hàng trên đơn hàng WooCommerce. Khi tắt, lịch sử đối soát hiện có vẫn được giữ ở chế độ chỉ đọc."
+
+#: includes/class-vietnam-commerce-kit-admin-menu.php:395
 #: includes/class-vietnam-commerce-kit-store-health.php:37
 msgid "Manage electronic invoice workflow"
 msgstr "Quản lý quy trình hóa đơn điện tử"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:391
+#: includes/class-vietnam-commerce-kit-admin-menu.php:396
 msgid ""
 "Allow staff to update invoice status, references, notes, PDF, and XML files. "
 "When disabled, existing invoice data remains read-only."
@@ -397,17 +410,17 @@ msgstr ""
 "chỉ đọc."
 
 #. translators: %d: number of enabled shipping services.
-#: includes/class-vietnam-commerce-kit-admin-menu.php:437
+#: includes/class-vietnam-commerce-kit-admin-menu.php:442
 #, php-format
 msgid "%d service enabled"
 msgid_plural "%d services enabled"
 msgstr[0] "Đã bật %d dịch vụ"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:443
+#: includes/class-vietnam-commerce-kit-admin-menu.php:448
 msgid "Order management"
 msgstr "Quản lý đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:444
+#: includes/class-vietnam-commerce-kit-admin-menu.php:449
 msgid ""
 "Use Vietnam-specific order columns, filters, shipment actions, and invoice "
 "information from the order list."
@@ -415,37 +428,37 @@ msgstr ""
 "Sử dụng cột đơn hàng, bộ lọc, thao tác vận chuyển và thông tin hóa đơn dành "
 "cho Việt Nam trong danh sách đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:445
-#: includes/class-vietnam-commerce-kit-admin-menu.php:503
-#: includes/class-vietnam-commerce-kit-admin-menu.php:520
-#: includes/class-vietnam-commerce-kit-admin-menu.php:530
+#: includes/class-vietnam-commerce-kit-admin-menu.php:450
+#: includes/class-vietnam-commerce-kit-admin-menu.php:508
+#: includes/class-vietnam-commerce-kit-admin-menu.php:525
+#: includes/class-vietnam-commerce-kit-admin-menu.php:535
 #: includes/class-vietnam-commerce-kit-shipping-rules.php:106
 #: includes/class-vietnam-commerce-kit-store-health.php:31
 #: includes/class-vietnam-commerce-kit-store-health.php:101
 msgid "Enabled"
 msgstr "Bật"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:445
-#: includes/class-vietnam-commerce-kit-admin-menu.php:503
-#: includes/class-vietnam-commerce-kit-admin-menu.php:521
-#: includes/class-vietnam-commerce-kit-admin-menu.php:530
-#: includes/class-vietnam-commerce-kit-admin-menu.php:541
+#: includes/class-vietnam-commerce-kit-admin-menu.php:450
+#: includes/class-vietnam-commerce-kit-admin-menu.php:508
+#: includes/class-vietnam-commerce-kit-admin-menu.php:526
+#: includes/class-vietnam-commerce-kit-admin-menu.php:535
+#: includes/class-vietnam-commerce-kit-admin-menu.php:546
 #: includes/class-vietnam-commerce-kit-store-health.php:32
 msgid "Disabled"
 msgstr "Đã tắt"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:449
+#: includes/class-vietnam-commerce-kit-admin-menu.php:454
 msgid "Manage orders"
 msgstr "Quản lý đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:455
+#: includes/class-vietnam-commerce-kit-admin-menu.php:460
 #: includes/class-vietnam-commerce-kit-store-health.php:20
 #: includes/class-vietnam-commerce-kit-store-health.php:21
 #: includes/class-vietnam-commerce-kit-store-health.php:82
 msgid "Store health"
 msgstr "Tình trạng cửa hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:456
+#: includes/class-vietnam-commerce-kit-admin-menu.php:461
 msgid ""
 "Review store configuration and scan legacy data before an explicit safe "
 "migration."
@@ -453,31 +466,31 @@ msgstr ""
 "Kiểm tra cấu hình cửa hàng và quét dữ liệu cũ trước khi xác nhận di chuyển "
 "an toàn."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:457
+#: includes/class-vietnam-commerce-kit-admin-menu.php:462
 #: includes/class-vietnam-commerce-kit-store-health.php:86
 msgid "Manual tool"
 msgstr "Công cụ thủ công"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:461
+#: includes/class-vietnam-commerce-kit-admin-menu.php:466
 msgid "Open Store health"
 msgstr "Mở Tình trạng cửa hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:468
+#: includes/class-vietnam-commerce-kit-admin-menu.php:473
 msgid "Shipping and delivery"
 msgstr "Vận chuyển và giao hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:469
+#: includes/class-vietnam-commerce-kit-admin-menu.php:474
 msgid ""
 "Connect carriers, define shipping rules, and control the tracking experience."
 msgstr ""
 "Kết nối đơn vị vận chuyển, thiết lập quy tắc giao hàng và quản lý trải "
 "nghiệm theo dõi vận chuyển."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:472
+#: includes/class-vietnam-commerce-kit-admin-menu.php:477
 msgid "Shipping services"
 msgstr "Dịch vụ vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:474
+#: includes/class-vietnam-commerce-kit-admin-menu.php:479
 msgid ""
 "Configure carrier accounts, pickup addresses, automatic synchronization, and "
 "shipment status mappings."
@@ -485,7 +498,7 @@ msgstr ""
 "Cấu hình tài khoản vận chuyển, địa chỉ lấy hàng, đồng bộ tự động và ánh xạ "
 "trạng thái vận đơn."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:475
+#: includes/class-vietnam-commerce-kit-admin-menu.php:480
 msgid ""
 "No shipping service connector is installed. Manual shipment management "
 "remains available on orders."
@@ -493,19 +506,19 @@ msgstr ""
 "Chưa cài đặt kết nối dịch vụ vận chuyển. Bạn vẫn có thể quản lý vận chuyển "
 "thủ công trên đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:476
+#: includes/class-vietnam-commerce-kit-admin-menu.php:481
 msgid "Manual only"
 msgstr "Chỉ thủ công"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:480
+#: includes/class-vietnam-commerce-kit-admin-menu.php:485
 msgid "Configure services"
 msgstr "Cấu hình dịch vụ"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:483
+#: includes/class-vietnam-commerce-kit-admin-menu.php:488
 msgid "Shipping zones and rules"
 msgstr "Khu vực và quy tắc vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:484
+#: includes/class-vietnam-commerce-kit-admin-menu.php:489
 msgid ""
 "Assign rates and the Vietnam shipping rules method to WooCommerce shipping "
 "zones."
@@ -513,19 +526,19 @@ msgstr ""
 "Gán mức phí và phương thức quy tắc vận chuyển Việt Nam cho các khu vực giao "
 "hàng WooCommerce."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:485
+#: includes/class-vietnam-commerce-kit-admin-menu.php:490
 msgid "WooCommerce settings"
 msgstr "Cài đặt WooCommerce"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:489
+#: includes/class-vietnam-commerce-kit-admin-menu.php:494
 msgid "Manage shipping zones"
 msgstr "Quản lý khu vực vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:492
+#: includes/class-vietnam-commerce-kit-admin-menu.php:497
 msgid "Shipment tracking"
 msgstr "Theo dõi vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:493
+#: includes/class-vietnam-commerce-kit-admin-menu.php:498
 msgid ""
 "Configure public order lookup, carrier tracking URL templates, and custom "
 "carriers."
@@ -533,23 +546,23 @@ msgstr ""
 "Cấu hình tra cứu đơn hàng công khai, mẫu URL theo dõi và đơn vị vận chuyển "
 "tùy chỉnh."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:494
+#: includes/class-vietnam-commerce-kit-admin-menu.php:499
 msgid "Public lookup enabled"
 msgstr "Đã bật tra cứu công khai"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:494
+#: includes/class-vietnam-commerce-kit-admin-menu.php:499
 msgid "Public lookup disabled"
 msgstr "Đã tắt tra cứu công khai"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:498
+#: includes/class-vietnam-commerce-kit-admin-menu.php:503
 msgid "Configure tracking"
 msgstr "Cấu hình theo dõi"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:501
+#: includes/class-vietnam-commerce-kit-admin-menu.php:506
 msgid "Shipping tracking email"
 msgstr "Email theo dõi vận chuyển"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:502
+#: includes/class-vietnam-commerce-kit-admin-menu.php:507
 msgid ""
 "Control the subject, heading, content, and email format for customer "
 "shipment updates."
@@ -557,25 +570,25 @@ msgstr ""
 "Thiết lập tiêu đề, nội dung và định dạng email cập nhật vận chuyển gửi cho "
 "khách hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:507
+#: includes/class-vietnam-commerce-kit-admin-menu.php:512
 msgid "Configure email"
 msgstr "Cấu hình email"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:513
+#: includes/class-vietnam-commerce-kit-admin-menu.php:518
 msgid "Checkout, payments, and invoices"
 msgstr "Thanh toán và hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:514
+#: includes/class-vietnam-commerce-kit-admin-menu.php:519
 msgid "Manage Vietnam checkout behavior and payment or invoice features."
 msgstr ""
 "Quản lý quy trình thanh toán và các tính năng thanh toán hoặc hóa đơn dành "
 "cho Việt Nam."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:517
+#: includes/class-vietnam-commerce-kit-admin-menu.php:522
 msgid "Vietnam address and phone fields"
 msgstr "Địa chỉ và số điện thoại Việt Nam"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:518
+#: includes/class-vietnam-commerce-kit-admin-menu.php:523
 msgid ""
 "Control Vietnam address formatting, checkout compatibility, phone "
 "validation, and normalization in Core features."
@@ -583,23 +596,23 @@ msgstr ""
 "Quản lý định dạng địa chỉ Việt Nam, tương thích thanh toán, xác thực và "
 "chuẩn hóa số điện thoại trong phần Tính năng cốt lõi."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:521
+#: includes/class-vietnam-commerce-kit-admin-menu.php:526
 msgid "Partially enabled"
 msgstr "Đã bật một phần"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:525
+#: includes/class-vietnam-commerce-kit-admin-menu.php:530
 #: includes/class-vietnam-commerce-kit-store-health.php:47
 msgid "Open store address settings"
 msgstr "Mở cài đặt địa chỉ cửa hàng"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:528
+#: includes/class-vietnam-commerce-kit-admin-menu.php:533
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:324
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:351
 #: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr "Chuyển khoản VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:529
+#: includes/class-vietnam-commerce-kit-admin-menu.php:534
 msgid ""
 "Configure bank accounts, transfer content, QR layout, order amount, and "
 "customer email display."
@@ -607,17 +620,17 @@ msgstr ""
 "Cấu hình tài khoản ngân hàng, nội dung chuyển khoản, giao diện QR, số tiền "
 "đơn hàng và hiển thị trong email khách hàng."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:534
+#: includes/class-vietnam-commerce-kit-admin-menu.php:539
 #: includes/class-vietnam-commerce-kit-store-health.php:57
 #: includes/class-vietnam-commerce-kit-store-health.php:59
 msgid "Configure VietQR"
 msgstr "Cấu hình VietQR"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:537
+#: includes/class-vietnam-commerce-kit-admin-menu.php:542
 msgid "Business invoices"
 msgstr "Hóa đơn doanh nghiệp"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:538
+#: includes/class-vietnam-commerce-kit-admin-menu.php:543
 msgid ""
 "Collect invoice requests at checkout and manage electronic invoice data on "
 "orders as two independent capabilities."
@@ -625,27 +638,27 @@ msgstr ""
 "Tiếp nhận yêu cầu hóa đơn tại trang thanh toán và quản lý dữ liệu hóa đơn "
 "điện tử trên đơn hàng như hai tính năng độc lập."
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:540
+#: includes/class-vietnam-commerce-kit-admin-menu.php:545
 msgid "Requests and workflow enabled"
 msgstr "Đã bật yêu cầu và quy trình"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:541
+#: includes/class-vietnam-commerce-kit-admin-menu.php:546
 msgid "Checkout requests enabled"
 msgstr "Đã bật yêu cầu tại thanh toán"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:541
+#: includes/class-vietnam-commerce-kit-admin-menu.php:546
 msgid "Workflow enabled"
 msgstr "Đã bật quy trình"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:545
+#: includes/class-vietnam-commerce-kit-admin-menu.php:550
 msgid "Configure invoices"
 msgstr "Cấu hình hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:551
+#: includes/class-vietnam-commerce-kit-admin-menu.php:556
 msgid "Maintenance tools"
 msgstr "Công cụ bảo trì"
 
-#: includes/class-vietnam-commerce-kit-admin-menu.php:552
+#: includes/class-vietnam-commerce-kit-admin-menu.php:557
 msgid ""
 "Review operational data and migrate compatible settings from legacy Vietnam "
 "checkout plugins."
@@ -951,9 +964,9 @@ msgid "No migratable legacy data detected."
 msgstr "Không phát hiện dữ liệu cũ có thể chuyển đổi."
 
 #: includes/class-vietnam-commerce-kit-devvn-migration-tools.php:154
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:603
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:684
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:770
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:615
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:696
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:782
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:531
 #: includes/class-vietnam-commerce-kit-shipping.php:593
 #: includes/class-vietnam-commerce-kit-shipping.php:660
@@ -1096,40 +1109,40 @@ msgstr ""
 msgid "Errors: %s"
 msgstr "Lỗi: %s"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:117
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:126
 #: includes/class-vietnam-commerce-kit-order-management.php:426
 #: includes/class-vietnam-commerce-kit-tax-invoice.php:431
 msgid "Requested"
 msgstr "Đã yêu cầu"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:121
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:130
 msgid "Information verified"
 msgstr "Đã kiểm tra thông tin"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:125
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:134
 msgid "Ready to issue"
 msgstr "Sẵn sàng xuất"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:129
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:138
 msgid "Issued"
 msgstr "Đã phát hành"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:133
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:142
 msgid "Sent to customer"
 msgstr "Đã gửi khách hàng"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:137
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:146
 msgid "Adjusted"
 msgstr "Đã điều chỉnh"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:141
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:150
 msgid "Replaced"
 msgstr "Đã thay thế"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:203
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:218
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:308
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1326
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:212
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:227
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:317
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1338
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:314
 #: includes/class-vietnam-commerce-kit-shipment-tracking.php:537
 #: includes/class-vietnam-commerce-kit-shipping.php:258
@@ -1141,47 +1154,47 @@ msgstr "Đã thay thế"
 msgid "Could not load order."
 msgstr "Không thể tải đơn hàng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:234
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:243
 msgid "Create a linked adjustment or replacement document for this status."
 msgstr ""
 "Hãy tạo chứng từ điều chỉnh hoặc thay thế có liên kết cho trạng thái này."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:312
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:609
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:776
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:321
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:621
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:788
 msgid "Electronic invoice workflow management is disabled."
 msgstr "Quản lý quy trình hóa đơn điện tử đang bị tắt."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:316
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:613
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:688
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:780
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1338
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:325
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:625
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:700
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:792
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1350
 msgid "This order does not contain a VAT invoice request."
 msgstr "Đơn hàng này không có yêu cầu xuất hóa đơn GTGT."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:441
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:450
 msgid "Created from the customer VAT invoice request."
 msgstr "Được tạo từ yêu cầu xuất hóa đơn GTGT của khách hàng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:456
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:465
 #: includes/class-vietnam-commerce-kit-order-management.php:349
 msgid "Electronic invoice workflow"
 msgstr "Quy trình hóa đơn điện tử"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:500
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:509
 msgid "Saving..."
 msgstr "Đang lưu..."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:501
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:510
 msgid "Sending..."
 msgstr "Đang gửi..."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:523
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:532
 msgid "Current status"
 msgstr "Trạng thái hiện tại"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:526
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:535
 msgid ""
 "This workflow records invoice progress and files only. It does not issue "
 "invoices or call a provider API."
@@ -1189,15 +1202,15 @@ msgstr ""
 "Quy trình này chỉ ghi nhận tiến độ và tệp hóa đơn. Plugin không phát hành "
 "hóa đơn hoặc gọi API của nhà cung cấp."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:527
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:536
 msgid "Legacy status without a linked document."
 msgstr "Trạng thái cũ chưa có chứng từ liên kết."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:528
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:537
 msgid "Current invoice fields differ from the recorded document snapshot."
 msgstr "Thông tin hóa đơn hiện tại khác với bản ghi chứng từ đã lưu."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:533
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:542
 msgid ""
 "Electronic invoice workflow management is disabled. Existing invoice data is "
 "shown in read-only mode."
@@ -1205,116 +1218,116 @@ msgstr ""
 "Quản lý quy trình hóa đơn điện tử đang bị tắt. Dữ liệu hóa đơn hiện có được "
 "hiển thị ở chế độ chỉ đọc."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:547
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1174
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:556
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1186
 msgid "Workflow status"
 msgstr "Trạng thái quy trình"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:548
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:924
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1181
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:557
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:936
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1193
 #: includes/class-vietnam-commerce-kit-order-management.php:826
 #: templates/emails/customer-electronic-invoice.php:22
 #: templates/emails/plain/customer-electronic-invoice.php:41
 msgid "Invoice provider"
 msgstr "Nhà cung cấp hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:548
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:557
 msgid "For example: MISA, VNPT, Viettel, or another provider"
 msgstr "Ví dụ: MISA, VNPT, Viettel hoặc nhà cung cấp khác"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:549
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:925
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1175
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:558
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:937
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1187
 #: includes/class-vietnam-commerce-kit-order-management.php:827
 #: templates/emails/customer-electronic-invoice.php:20
 #: templates/emails/plain/customer-electronic-invoice.php:39
 msgid "Invoice number"
 msgstr "Số hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:550
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:926
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1176
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:559
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:938
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1188
 #: includes/class-vietnam-commerce-kit-order-management.php:828
 #: templates/emails/customer-electronic-invoice.php:21
 #: templates/emails/plain/customer-electronic-invoice.php:40
 msgid "Invoice symbol"
 msgstr "Ký hiệu hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:551
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:927
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1177
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:560
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:939
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1189
 #: includes/class-vietnam-commerce-kit-order-management.php:829
 #: templates/emails/customer-electronic-invoice.php:23
 #: templates/emails/plain/customer-electronic-invoice.php:42
 msgid "Issue date"
 msgstr "Ngày phát hành"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:552
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:928
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:939
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1178
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:561
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:940
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:951
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1190
 #: includes/class-vietnam-commerce-kit-order-management.php:830
 msgid "Lookup URL"
 msgstr "URL tra cứu"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:553
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:562
 msgid "Open invoice lookup page"
 msgstr "Mở trang tra cứu hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:554
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:929
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1182
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:563
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:941
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1194
 msgid "Provider document ID"
 msgstr "Mã chứng từ tại nhà cung cấp"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:555
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:930
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1183
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:564
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:942
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1195
 msgid "Handoff reference"
 msgstr "Mã tham chiếu bàn giao"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:556
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:931
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1184
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:565
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:943
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1196
 msgid "Provider status text"
 msgstr "Trạng thái từ nhà cung cấp"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:557
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:932
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1185
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:566
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:944
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1197
 msgid "Handed off at"
 msgstr "Thời điểm bàn giao"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:558
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:933
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1186
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:567
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:945
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1198
 msgid "Confirmed at"
 msgstr "Thời điểm xác nhận"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:562
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:946
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1179
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:571
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:958
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1191
 #: includes/class-vietnam-commerce-kit-order-management.php:831
 msgid "PDF invoice"
 msgstr "Tệp hóa đơn PDF"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:563
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:946
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1180
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:572
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:958
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1192
 #: includes/class-vietnam-commerce-kit-order-management.php:832
 msgid "XML invoice data"
 msgstr "Dữ liệu hóa đơn XML"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:567
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:576
 msgid "Internal update note"
 msgstr "Ghi chú cập nhật nội bộ"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:568
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:577
 msgid "Optional context for the change history"
 msgstr "Ngữ cảnh không bắt buộc cho nhật ký thay đổi"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:571
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:580
 msgid ""
 "When recording a new document, enter its own provider identifiers and files. "
 "Current files are not copied automatically."
@@ -1322,89 +1335,89 @@ msgstr ""
 "Khi ghi chứng từ mới, hãy nhập mã định danh và tệp riêng của chứng từ đó. "
 "Tệp hiện tại không được tự động sao chép."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:572
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:581
 msgid "New document type"
 msgstr "Loại chứng từ mới"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:574
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:738
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:583
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:750
 msgid "Original invoice"
 msgstr "Hóa đơn gốc"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:576
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:738
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:585
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:750
 msgid "Adjustment document"
 msgstr "Chứng từ điều chỉnh"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:577
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:738
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:586
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:750
 msgid "Replacement document"
 msgstr "Chứng từ thay thế"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:579
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:738
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:588
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:750
 msgid "Capture existing legacy document"
 msgstr "Ghi nhận chứng từ cũ hiện có"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:583
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:592
 msgid "Save invoice workflow"
 msgstr "Lưu quy trình hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:584
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:593
 msgid "Record new document"
 msgstr "Ghi chứng từ mới"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:585
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:594
 msgid "Send invoice email to customer"
 msgstr "Gửi email hóa đơn cho khách hàng"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:586
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:597
 #: includes/class-vietnam-commerce-kit-shipping.php:1282
 msgid "Email settings"
 msgstr "Cài đặt email"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:599
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:681
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:766
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:611
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:693
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:778
 msgid "You do not have permission to edit this order."
 msgstr "Bạn không có quyền chỉnh sửa đơn hàng này."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:741
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:753
 msgid "Invoice documents"
 msgstr "Chứng từ hóa đơn"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:742
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:754
 msgid "No linked invoice documents recorded."
 msgstr "Chưa ghi nhận chứng từ hóa đơn có liên kết."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:747
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:759
 msgid "Current document"
 msgstr "Chứng từ hiện tại"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:749
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:761
 msgid "Prior document"
 msgstr "Chứng từ trước đó"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:753
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:911
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:953
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:765
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:923
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:965
 msgid "File unavailable"
 msgstr "Không có tệp"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:784
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:796
 #: includes/class-vietnam-commerce-kit-shipping.php:1285
 msgid "The customer billing email is missing."
 msgstr "Đơn hàng chưa có email thanh toán của khách hàng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:789
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:801
 msgid "The electronic invoice email could not be sent."
 msgstr "Không thể gửi email hóa đơn điện tử."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:797
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:809
 msgid "Electronic invoice emailed to the customer."
 msgstr "Đã gửi hóa đơn điện tử qua email cho khách hàng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:804
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:816
 msgid ""
 "The email was sent, but the invoice changed before its status could be "
 "updated. Reload the order before sending again."
@@ -1412,105 +1425,105 @@ msgstr ""
 "Email đã được gửi, nhưng hóa đơn đã thay đổi trước khi có thể cập nhật trạng "
 "thái. Hãy tải lại đơn hàng trước khi gửi lại."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:859
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:871
 msgid "Electronic invoice workflow saved."
 msgstr "Đã lưu quy trình hóa đơn điện tử."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:861
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:873
 msgid "Electronic invoice email sent to the customer."
 msgstr "Đã gửi email hóa đơn điện tử cho khách hàng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:911
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:923
 msgid "No file attached"
 msgstr "Chưa đính kèm tệp"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:913
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:925
 msgid "Unlink current file"
 msgstr "Gỡ liên kết tệp hiện tại"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:915
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:927
 msgid "Replace file"
 msgstr "Thay tệp"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:915
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:927
 msgid "Choose file"
 msgstr "Chọn tệp"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:965
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:977
 msgid "Change history"
 msgstr "Nhật ký thay đổi"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:967
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:979
 msgid "No workflow changes have been recorded yet."
 msgstr "Chưa có thay đổi nào trong quy trình được ghi lại."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:981
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:993
 msgid "System"
 msgstr "Hệ thống"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1011
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1023
 msgid "Only PDF and XML invoice files are accepted in their matching fields."
 msgstr "Chỉ chấp nhận tệp hóa đơn PDF và XML trong đúng trường tương ứng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1016
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1028
 msgid "The XML invoice file is not well-formed."
 msgstr "Tệp hóa đơn XML không đúng định dạng."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1076
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1529
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1088
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1541
 msgid "Select a valid electronic invoice workflow status."
 msgstr "Hãy chọn trạng thái quy trình hóa đơn điện tử hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1088
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1542
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1100
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1554
 msgid "Enter a valid HTTP or HTTPS invoice lookup URL."
 msgstr "Hãy nhập URL tra cứu hóa đơn HTTP hoặc HTTPS hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1102
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1114
 msgid "The selected invoice attachment could not be found."
 msgstr "Không tìm thấy tệp hóa đơn đã chọn."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1122
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1134
 msgid "Enter a valid invoice issue date."
 msgstr "Hãy nhập ngày phát hành hóa đơn hợp lệ."
 
 #. translators: 1: previous invoice workflow status, 2: new invoice workflow status.
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1224
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1236
 #, php-format
 msgid "Electronic invoice workflow status changed from %1$s to %2$s."
 msgstr "Trạng thái quy trình hóa đơn điện tử đã đổi từ %1$s thành %2$s."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1229
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1241
 msgid "Electronic invoice workflow details updated."
 msgstr "Đã cập nhật thông tin quy trình hóa đơn điện tử."
 
 #. translators: 1: changed field label, 2: previous value, 3: new value.
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1248
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1260
 #, php-format
 msgid "%1$s: %2$s → %3$s"
 msgstr "%1$s: %2$s → %3$s"
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1349
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1361
 msgid "Choose an invoice document type."
 msgstr "Hãy chọn loại chứng từ hóa đơn."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1354
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1366
 msgid "There is no uncaptured legacy invoice document for this order."
 msgstr "Đơn hàng này không có chứng từ hóa đơn cũ chưa được ghi nhận."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1363
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1375
 msgid "Existing invoice document captured without verified provenance."
 msgstr "Đã ghi nhận chứng từ hóa đơn hiện có nhưng chưa xác minh nguồn gốc."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1384
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1396
 msgid "The prior invoice document could not be found."
 msgstr "Không tìm thấy chứng từ hóa đơn trước đó."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1387
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1399
 msgid "An original document cannot replace the current invoice document."
 msgstr "Chứng từ gốc không thể thay thế chứng từ hóa đơn hiện tại."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1395
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1407
 msgid ""
 "Record the existing invoice as a document before adding a correction or "
 "replacement."
@@ -1518,7 +1531,7 @@ msgstr ""
 "Hãy ghi nhận hóa đơn hiện có thành chứng từ trước khi thêm chứng từ điều "
 "chỉnh hoặc thay thế."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1399
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1411
 msgid ""
 "The invoice document limit for this order has been reached. Existing "
 "documents remain available."
@@ -1526,20 +1539,20 @@ msgstr ""
 "Đơn hàng này đã đạt giới hạn chứng từ hóa đơn. Các chứng từ hiện có vẫn được "
 "lưu giữ."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1403
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1547
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1415
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1559
 msgid "Enter a valid invoice date and time."
 msgstr "Hãy nhập ngày giờ hóa đơn hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1436
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1448
 msgid "Invoice document recorded."
 msgstr "Đã ghi nhận chứng từ hóa đơn."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1514
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1526
 msgid "An invoice field is too long or contains control characters."
 msgstr "Một trường hóa đơn quá dài hoặc chứa ký tự điều khiển."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1532
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1544
 msgid ""
 "Complete the company name, tax code, address and invoice email before "
 "advancing the invoice workflow."
@@ -1547,7 +1560,7 @@ msgstr ""
 "Hãy điền đầy đủ tên công ty, mã số thuế, địa chỉ và email nhận hóa đơn trước "
 "khi chuyển bước xử lý."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1553
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1565
 msgid ""
 "Provider, invoice number, symbol and issue time are required for a new "
 "invoice document."
@@ -1555,7 +1568,7 @@ msgstr ""
 "Chứng từ hóa đơn mới cần có nhà cung cấp, số hóa đơn, ký hiệu và thời điểm "
 "phát hành."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1590
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1602
 msgid ""
 "The invoice file must belong to this order and be a readable PDF or XML "
 "attachment."
@@ -1563,15 +1576,15 @@ msgstr ""
 "Tệp hóa đơn phải thuộc đơn hàng này và là tệp đính kèm PDF hoặc XML có thể "
 "đọc được."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1620
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1632
 msgid "Another operator is editing this invoice. Reload and retry."
 msgstr "Người khác đang chỉnh sửa hóa đơn này. Hãy tải lại trang và thử lại."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1636
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1648
 msgid "This invoice changed since the page loaded. Reload and retry."
 msgstr "Hóa đơn đã thay đổi từ khi trang được tải. Hãy tải lại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1640
+#: includes/class-vietnam-commerce-kit-electronic-invoice.php:1652
 msgid "The invoice edit lock expired. Reload and retry."
 msgstr "Khóa chỉnh sửa hóa đơn đã hết hạn. Hãy tải lại và thử lại."
 
@@ -1909,7 +1922,7 @@ msgid "Could not create the CSV export."
 msgstr "Không thể tạo tệp CSV xuất dữ liệu."
 
 #: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:30
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:409
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:416
 msgid "Externally verified"
 msgstr "Đã xác minh bên ngoài"
 
@@ -1925,111 +1938,112 @@ msgstr "Đã ghi nhận"
 msgid "Unreconciled"
 msgstr "Chưa đối soát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:48
-msgid "Payment reconciliation"
-msgstr "Đối soát thanh toán"
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:106
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:303
+msgid "Payment reconciliation is disabled. Existing history is read-only."
+msgstr "Đối soát thanh toán đã tắt. Lịch sử hiện có ở chế độ chỉ đọc."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:120
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:123
 msgid "Source ID"
 msgstr "Mã nguồn"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:121
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:202
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:124
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
 msgid "Transfer reference"
 msgstr "Mã tham chiếu chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:122
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:203
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:125
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:206
 msgid "Amount and currency"
 msgstr "Số tiền và đơn vị tiền tệ"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:123
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:182
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:126
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:185
 msgid "Observed time"
 msgstr "Thời điểm quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:124
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:127
 msgid "Recorded time"
 msgstr "Thời điểm ghi nhận"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:125
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:128
 msgid "Recorded by"
 msgstr "Người ghi nhận"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:129
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:132
 msgid "Update payment reconciliation"
 msgstr "Cập nhật đối soát thanh toán"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:132
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:135
 msgid "Select an observation"
 msgstr "Chọn một bản ghi quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:138
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:141
 msgid "Selected"
 msgstr "Đã chọn"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:165
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:168
 msgid "Externally verified evidence is read only here."
 msgstr "Bằng chứng được xác minh bên ngoài chỉ có thể xem tại đây."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:168
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:171
 msgid "Reconciliation history"
 msgstr "Lịch sử đối soát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:184
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:187
 msgid "Supersedes:"
 msgstr "Thay thế:"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:200
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:203
 msgid "Selected observation"
 msgstr "Bản ghi quan sát đã chọn"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:201
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:204
 msgid "Record ID"
 msgstr "Mã bản ghi"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:208
 msgid "Correct observation"
 msgstr "Sửa thông tin quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:205
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:208
 msgid "Record transfer observation"
 msgstr "Ghi nhận thông tin chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:207
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:210
 msgid ""
 "A correction appends a new record and keeps the previous record in history."
 msgstr "Việc sửa sẽ thêm bản ghi mới và giữ bản ghi trước trong lịch sử."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:210
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:213
 msgid "Observed amount"
 msgstr "Số tiền quan sát được"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:211
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:214
 msgid "Order currency"
 msgstr "Đơn vị tiền tệ của đơn hàng"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:212
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:215
 msgid "Transfer reference (optional)"
 msgstr "Mã tham chiếu chuyển khoản (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:213
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:216
 msgid "Observed time (store time)"
 msgstr "Thời điểm quan sát (giờ cửa hàng)"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:214
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:217
 msgid "Note (optional)"
 msgstr "Ghi chú (không bắt buộc)"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:215
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:218
 msgid "Save correction"
 msgstr "Lưu bản sửa"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:215
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:218
 msgid "Record observation"
 msgstr "Ghi nhận quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:217
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:220
 msgid ""
 "Confirm that you compared this transfer with the order. This records a "
 "manual reconciliation and does not confirm the bank transaction "
@@ -2038,11 +2052,11 @@ msgstr ""
 "Xác nhận bạn đã so sánh khoản chuyển với đơn hàng. Thao tác này ghi nhận đối "
 "soát thủ công và không tự động xác nhận giao dịch ngân hàng."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:219
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:222
 msgid "Mark manually reconciled"
 msgstr "Đánh dấu đã đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:222
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:225
 msgid ""
 "Reverse this manual match. The status will be recalculated from the "
 "remaining history."
@@ -2050,32 +2064,32 @@ msgstr ""
 "Đảo lượt đối soát thủ công này. Trạng thái sẽ được tính lại từ lịch sử còn "
 "lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:224
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:227
 msgid "Reverse manual reconciliation"
 msgstr "Đảo đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:243
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:246
 msgid "You cannot edit this order."
 msgstr "Bạn không thể sửa đơn hàng này."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:247
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:250
 msgid "Invalid payment reconciliation request."
 msgstr "Yêu cầu đối soát thanh toán không hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:297
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:304
 msgid "Payment reconciliation record saved."
 msgstr "Đã lưu bản ghi đối soát thanh toán."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:298
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:305
 msgid "Enter a valid observed date and time."
 msgstr "Nhập ngày giờ quan sát hợp lệ."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:299
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:306
 msgid ""
 "The reconciliation history changed. Review the current record and try again."
 msgstr "Lịch sử đối soát đã thay đổi. Hãy xem bản ghi hiện tại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:300
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:307
 msgid ""
 "Manual reconciliation is unavailable for this payment method or externally "
 "verified order."
@@ -2083,11 +2097,11 @@ msgstr ""
 "Không thể đối soát thủ công cho phương thức thanh toán này hoặc đơn hàng đã "
 "được xác minh bên ngoài."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:301
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:308
 msgid "Enter a valid positive amount with the correct currency precision."
 msgstr "Nhập số tiền dương hợp lệ với số chữ số thập phân đúng."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:302
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:309
 msgid ""
 "The observed amount and currency must exactly match the order before manual "
 "reconciliation."
@@ -2095,40 +2109,40 @@ msgstr ""
 "Số tiền và đơn vị tiền tệ quan sát được phải khớp chính xác với đơn hàng "
 "trước khi đối soát thủ công."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:303
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:310
 msgid "The observation has changed. Review the current history and try again."
 msgstr "Thông tin quan sát đã thay đổi. Hãy xem lịch sử hiện tại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:305
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:312
 msgid ""
 "Payment reconciliation was not saved. Review the current order and try again."
 msgstr "Chưa lưu đối soát thanh toán. Hãy xem đơn hàng hiện tại và thử lại."
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:407
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:414
 msgid "Manual"
 msgstr "Thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:409
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:416
 msgid "No evidence"
 msgstr "Chưa có bằng chứng"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:414
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:421
 msgid "Observation"
 msgstr "Quan sát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:415
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:422
 msgid "Manual match"
 msgstr "Đối soát thủ công"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:416
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:423
 msgid "External verification"
 msgstr "Xác minh bên ngoài"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:417
+#: includes/class-vietnam-commerce-kit-payment-reconciliation-admin.php:424
 msgid "Reversal"
 msgstr "Đảo đối soát"
 
-#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:283
+#: includes/class-vietnam-commerce-kit-payment-reconciliation.php:303
 msgid "Payment evidence could not be recorded."
 msgstr "Không thể ghi nhận bằng chứng thanh toán."
 

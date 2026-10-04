@@ -6,9 +6,13 @@ function esc_html( $value ) { return htmlspecialchars( (string) $value, ENT_QUOT
 function esc_attr( $value ) { return esc_html( $value ); }
 function esc_html__( $value ) { return esc_html( $value ); }
 function esc_url( $value ) { return esc_html( $value ); }
-function add_query_arg( $key, $value, $url ) { return $url . '?' . rawurlencode( $key ) . '=' . rawurlencode( $value ); }
+function add_query_arg( $key, $value, $url = null ) { return is_array( $key ) ? $value . '?' . http_build_query( $key ) : $url . '?' . rawurlencode( $key ) . '=' . rawurlencode( $value ); }
+function wp_safe_redirect( $url ) { throw new RuntimeException( $url ); }
+function wp_die( $message ) { throw new RuntimeException( $message ); }
+function wp_verify_nonce( $nonce ) { return 'valid' === $nonce; }
 function wp_date( $format, $timestamp = null ) { return gmdate( $format, null === $timestamp ? time() : $timestamp ); }
-function get_option( $key ) { return 'date_format' === $key ? 'Y-m-d' : 'H:i'; }
+$test_options['date_format'] = 'Y-m-d';
+$test_options['time_format'] = 'H:i';
 function get_userdata( $id ) { return (object) [ 'display_name' => 'Operator ' . $id ]; }
 function wp_unslash( $value ) { return $value; }
 function is_admin() { return true; }
@@ -153,5 +157,50 @@ $admin->render_notice();
 $html = ob_get_clean();
 vst_assert_true( false !== strpos( $html, 'must exactly match' ), 'Amount mismatch has actionable validation feedback' );
 unset( $_GET['vck_payment_notice'] );
+
+// Feature OFF hides empty orders but retains history without any controls or footer form.
+$history_before = serialize( $domain::get_history( $order ) );
+$meta_before = serialize( $order->meta );
+$saves_before = $order->saves;
+$test_options[ $payment_option ] = 'no';
+$empty = new VST_Admin_Order( 93 );
+$test_orders[93] = $empty;
+vst_assert_same( false, $panel::is_relevant( $empty ), 'OFF empty BACS is irrelevant' );
+$test_metaboxes = [];
+$_GET['post'] = '93';
+$admin->add_order_metabox();
+vst_assert_same( [], $test_metaboxes, 'OFF empty BACS registers no box' );
+ob_start(); $admin->render_metabox( $empty ); $html = ob_get_clean();
+vst_assert_same( '', $html, 'OFF empty BACS renders nothing' );
+$_GET['post'] = '90';
+ob_start(); $admin->render_metabox( $order ); $html = ob_get_clean();
+vst_assert_true( false !== strpos( $html, 'Existing history is read-only' ), 'OFF retained history explains read-only state' );
+vst_assert_true( false !== strpos( $html, 'CORRECTED' ), 'OFF retains audit references' );
+vst_assert_same( false, false !== strpos( $html, 'name="vck_payment_' ), 'OFF has no editable controls' );
+ob_start(); $admin->render_action_form(); $html = ob_get_clean();
+vst_assert_same( '', $html, 'OFF has no detached mutation form' );
+foreach ( [ $empty, $order ] as $target ) {
+ foreach ( [ 'observe', 'match', 'reverse' ] as $operation ) {
+  $_POST = [ 'vck_payment_order_id' => $target->get_id(), 'vck_payment_nonce' => 'valid', 'vck_payment_operation' => $operation ];
+  try { $admin->handle_action(); vst_assert_true( false, 'Disabled POST must redirect' ); }
+  catch ( RuntimeException $e ) { vst_assert_true( false !== strpos( $e->getMessage(), 'yoohw_vietnam_store_tools_payment_feature_disabled' ), 'Valid disabled POST returns bounded disabled notice' ); }
+ }
+}
+$_POST['vck_payment_nonce'] = 'invalid';
+try { $admin->handle_action(); vst_assert_true( false, 'Invalid nonce must fail' ); }
+catch ( RuntimeException $e ) { vst_assert_same( 'Invalid payment reconciliation request.', $e->getMessage(), 'OFF still checks nonce' ); }
+$test_actor_allowed = false;
+$_POST['vck_payment_nonce'] = 'valid';
+try { $admin->handle_action(); vst_assert_true( false, 'Forbidden user must fail' ); }
+catch ( RuntimeException $e ) { vst_assert_same( 'You cannot edit this order.', $e->getMessage(), 'OFF still checks capability' ); }
+$test_actor_allowed = true;
+vst_assert_same( $history_before, serialize( $domain::get_history( $order ) ), 'OFF admin reads/POST preserve history bytes' );
+vst_assert_same( $meta_before, serialize( $order->meta ), 'OFF admin preserves all order metadata' );
+vst_assert_same( $saves_before, $order->saves, 'OFF admin never saves' );
+vst_assert_same( [], $domain::get_history( $empty ), 'Forged OFF POST does not create history' );
+$test_options[ $payment_option ] = 'yes';
+ob_start(); $admin->render_metabox( $order ); $html = ob_get_clean();
+vst_assert_true( false !== strpos( $html, 'name="vck_payment_operation"' ), 'Re-enable restores existing-history controls' );
+unset( $_GET['post'] ); $_POST = [];
 
 vst_finish_contract_suite( 'VST-52 payment admin' );
