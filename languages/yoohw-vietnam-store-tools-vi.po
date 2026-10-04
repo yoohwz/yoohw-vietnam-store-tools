@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-10-04T03:55:24+00:00\n"
+"POT-Creation-Date: 2026-10-04T12:00:33+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -163,7 +163,7 @@ msgstr "Cài đặt"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:131
 #: includes/class-vietnam-commerce-kit-admin-menu.php:182
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:258
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:259
 #: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr "Bạn không có quyền quản lý cài đặt WooCommerce."
@@ -609,8 +609,8 @@ msgid "Open store address settings"
 msgstr "Mở cài đặt địa chỉ cửa hàng"
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:533
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:324
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:351
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:325
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:352
 #: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr "Chuyển khoản VietQR"
@@ -703,9 +703,9 @@ msgid "Available placeholders: {order_id}, {order_number}, {site_name}."
 msgstr "Biến có thể dùng: {order_id}, {order_number}, {site_name}."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:102
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:386
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:417
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:418
 msgid "Amount"
 msgstr "Số tiền"
 
@@ -730,9 +730,9 @@ msgid ""
 msgstr "Chọn ngân hàng nhận tiền. Mã BIN VietQR sẽ được tự động điền."
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:227
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:366
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:421
 msgid "Bank"
 msgstr "Ngân hàng"
 
@@ -773,69 +773,73 @@ msgid "Account Number"
 msgstr "Số tài khoản"
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:238
+msgid "Please enter an account number."
+msgstr "Vui lòng nhập số tài khoản."
+
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:239
 msgid "Bank Name"
 msgstr "Tên ngân hàng"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:239
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:240
 msgid "BIC / SWIFT"
 msgstr "Mã BIC / SWIFT"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:240
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:241
 msgid "IBAN"
 msgstr "Mã IBAN"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:354
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:414
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:355
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:415
 msgid "Pay by bank transfer"
 msgstr "Thanh toán chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:364
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:382
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:365
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:383
 msgid "VietQR payment QR code"
 msgstr "Mã QR thanh toán VietQR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:419
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
 msgid "Account number"
 msgstr "Số tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
 msgid "Copy account number"
 msgstr "Sao chép số tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:421
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:422
 msgid "Account name"
 msgstr "Tên tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:418
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:371
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:419
 msgid "Transfer content"
 msgstr "Nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:371
 msgid "Copy transfer content"
 msgstr "Sao chép nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
 msgid "Transfer note"
 msgstr "Nội dung chuyển khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:391
 msgid "Account holder"
 msgstr "Chủ tài khoản"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:422
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:423
 msgid "QR code"
 msgstr "Mã QR"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:441
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:442
 #: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copied"
 msgstr "Đã sao chép"
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:501
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:502
 msgid "Not included in QR code"
 msgstr "Không kèm trong mã QR"
 

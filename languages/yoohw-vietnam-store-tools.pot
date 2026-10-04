@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04T03:55:24+00:00\n"
+"POT-Creation-Date: 2026-10-04T12:01:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: yoohw-vietnam-store-tools\n"
@@ -156,7 +156,7 @@ msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:131
 #: includes/class-vietnam-commerce-kit-admin-menu.php:182
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:258
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:259
 #: includes/class-vietnam-commerce-kit-store-health.php:70
 msgid "You do not have permission to manage WooCommerce settings."
 msgstr ""
@@ -501,8 +501,8 @@ msgid "Open store address settings"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-admin-menu.php:533
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:324
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:351
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:325
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:352
 #: includes/class-vietnam-commerce-kit-store-health.php:54
 msgid "VietQR bank transfer"
 msgstr ""
@@ -577,9 +577,9 @@ msgid "Available placeholders: {order_id}, {order_number}, {site_name}."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:102
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:386
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:417
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:418
 msgid "Amount"
 msgstr ""
 
@@ -600,9 +600,9 @@ msgid "Choose the receiving bank. The VietQR bank BIN will be filled automatical
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:227
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:366
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:421
 msgid "Bank"
 msgstr ""
 
@@ -639,69 +639,73 @@ msgid "Account Number"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:238
-msgid "Bank Name"
+msgid "Please enter an account number."
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:239
-msgid "BIC / SWIFT"
+msgid "Bank Name"
 msgstr ""
 
 #: includes/class-vietnam-commerce-kit-bacs-vietqr.php:240
+msgid "BIC / SWIFT"
+msgstr ""
+
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:241
 msgid "IBAN"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:354
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:414
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:355
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:415
 msgid "Pay by bank transfer"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:364
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:382
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:365
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:383
 msgid "VietQR payment QR code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:419
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:389
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:420
 msgid "Account number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:367
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
 msgid "Copy account number"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:368
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:421
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:369
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:422
 msgid "Account name"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:418
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:371
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:419
 msgid "Transfer content"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:370
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:371
 msgid "Copy transfer content"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:387
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:388
 msgid "Transfer note"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:390
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:391
 msgid "Account holder"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:422
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:423
 msgid "QR code"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:441
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:442
 #: includes/class-vietnam-commerce-kit-shipping.php:2019
 msgid "Copied"
 msgstr ""
 
-#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:501
+#: includes/class-vietnam-commerce-kit-bacs-vietqr.php:502
 msgid "Not included in QR code"
 msgstr ""
 

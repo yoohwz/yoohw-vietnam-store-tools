@@ -235,6 +235,7 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 					'transferTemplateSaveError' => __( 'Could not save the VietQR transfer content template.', 'yoohw-vietnam-store-tools' ),
 					'accountNameLabel'          => __( 'Account Name', 'yoohw-vietnam-store-tools' ),
 					'accountNumberLabel'        => __( 'Account Number', 'yoohw-vietnam-store-tools' ),
+					'accountNumberRequired'     => __( 'Please enter an account number.', 'yoohw-vietnam-store-tools' ),
 					'bankNameLabel'             => __( 'Bank Name', 'yoohw-vietnam-store-tools' ),
 					'bicSwiftLabel'             => __( 'BIC / SWIFT', 'yoohw-vietnam-store-tools' ),
 					'ibanLabel'                 => __( 'IBAN', 'yoohw-vietnam-store-tools' ),

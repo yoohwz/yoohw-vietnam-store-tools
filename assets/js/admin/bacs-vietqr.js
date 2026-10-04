@@ -534,6 +534,50 @@
 		return /^\d{6}$/.test( reactBin ) ? reactBin : normalizeBankBin( match.sort_code );
 	}
 
+	function getAccountNumberField( modal ) {
+		return findFieldByLabel( modal, [
+			i18n.accountNumberLabel,
+			'Account Number',
+			'Số tài khoản',
+			'So tai khoan'
+		] );
+	}
+
+	function prepareAccountNumberField( modal ) {
+		var field = getAccountNumberField( modal );
+		var input = getFieldInput( field );
+
+		if ( ! field || ! input ) {
+			return;
+		}
+
+		setLabelText( field, i18n.accountNumberLabel || 'Account Number', true );
+		input.setAttribute( 'aria-required', 'true' );
+
+		if ( ! input.hasAttribute( 'data-vck-account-number-required' ) ) {
+			input.setAttribute( 'data-vck-account-number-required', '1' );
+			input.addEventListener( 'input', function() {
+				if ( String( input.value ).trim() ) {
+					removeError( field );
+				}
+			} );
+		}
+	}
+
+	function validateAccountNumber( modal ) {
+		var field = getAccountNumberField( modal );
+		var input = getFieldInput( field );
+
+		if ( ! input || String( input.value ).trim() ) {
+			removeError( field );
+			return true;
+		}
+
+		ensureMessage( field, 'vck-vietqr-error', i18n.accountNumberRequired || 'Please enter an account number.' );
+		input.focus();
+		return false;
+	}
+
 	function getBankNameField( modal ) {
 		return findFieldByLabel( modal, [
 			i18n.bankNameLabel,
@@ -710,6 +754,7 @@
 		prepareBankBinField( modal );
 		prepareBankSelectField( modal );
 		hideIbanField( modal );
+		prepareAccountNumberField( modal );
 	}
 
 	function syncModals() {
@@ -739,6 +784,8 @@
 	document.addEventListener( 'click', function( event ) {
 		var button = event.target.closest( '.bank-account-modal__save' );
 		var modal;
+		var bankValid;
+		var accountNumberValid;
 
 		if ( ! button ) {
 			return;
@@ -752,7 +799,10 @@
 
 		enhanceModal( modal );
 
-		if ( validateBankSelection( modal ) ) {
+		bankValid = validateBankSelection( modal );
+		accountNumberValid = validateAccountNumber( modal );
+
+		if ( bankValid && accountNumberValid ) {
 			return;
 		}
 
