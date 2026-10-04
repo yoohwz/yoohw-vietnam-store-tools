@@ -145,6 +145,7 @@ jobs:
           php tests/settings-fixture-safety-contract-tests.php
           php tests/settings-fixture-recovery-contract-tests.php
           node tests/bacs-vietqr-copy-tests.js
+          node tests/bacs-vietqr-account-tests.js
           node tests/settings-http-session-tests.js
 
       - name: Store health contracts
