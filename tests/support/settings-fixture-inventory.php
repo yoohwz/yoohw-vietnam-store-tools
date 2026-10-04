@@ -17,7 +17,10 @@ function vst_fixture_rows( $table, $where, $values = [] ) {
 }
 function vst_fixture_inventory( $email, $ids = [], $user_id = 0 ) {
  global $wpdb;
- $result = [ 'wp_users' => count( vst_fixture_rows( $wpdb->users, 'user_email=%s OR user_login=%s', [ $email, strstr( $email, '@', true ) ] ) ), 'orders' => count( wc_get_orders( [ 'billing_email' => $email, 'limit' => 10001, 'return' => 'ids' ] ) ) ];
+ $order_ids = wc_get_orders( [ 'billing_email' => $email, 'limit' => 10001, 'return' => 'ids' ] );
+ $order_ids = array_merge( $order_ids, wc_get_orders( [ 'created_via' => strstr( $email, '@', true ), 'limit' => 10001, 'return' => 'ids' ] ) );
+ if ( $user_id ) { $order_ids = array_merge( $order_ids, wc_get_orders( [ 'customer_id' => $user_id, 'limit' => 10001, 'return' => 'ids' ] ) ); }
+ $result = [ 'wp_users' => count( vst_fixture_rows( $wpdb->users, 'user_email=%s OR user_login=%s', [ $email, strstr( $email, '@', true ) ] ) ), 'orders' => count( array_unique( array_map( 'intval', $order_ids ) ) ) ];
  $result['wc_customer_lookup'] = count( vst_fixture_rows( $wpdb->prefix . 'wc_customer_lookup', 'email=%s', [ $email ] ) );
  $profiles = vst_fixture_rows( $wpdb->prefix . 'yoohw_cos_customers', 'email=%s' . ( $user_id ? ' OR wp_user_id=%d' : '' ), $user_id ? [ $email, $user_id ] : [ $email ] );
  $profile_ids = array_map( 'intval', array_column( $profiles, 'id' ) );

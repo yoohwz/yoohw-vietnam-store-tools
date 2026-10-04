@@ -2,7 +2,7 @@
 /** Failure injection against the actual cleanup driver; no WordPress/database access. */
 if ( ! isset( $argv[1] ) ) {
  require __DIR__ . '/support/assertions.php';
- foreach ( [ 'sentinel', 'delete', 'restore', 'unknown-file', 'partial-file', 'pending-absent', 'pending-complete', 'retry-lock' ] as $scenario ) {
+ foreach ( [ 'sentinel', 'delete', 'restore', 'unknown-file', 'partial-file', 'pending-absent', 'pending-complete', 'retry-lock', 'unregistered-order' ] as $scenario ) {
   $output = []; $status = 0;
   exec( escapeshellarg( PHP_BINARY ) . ' ' . escapeshellarg( __FILE__ ) . ' ' . escapeshellarg( $scenario ) . ' 2>&1', $output, $status );
   vst_assert_same( 0, $status, 'Actual cleanup failure/recovery contract: ' . $scenario . ' ' . implode( "\n", $output ) );
@@ -47,7 +47,7 @@ function add_option( $key, $value, $deprecated = '', $autoload = null ) { global
 function delete_option( $key ) { global $options; unset( $options[ $key ] ); return true; }
 function get_user_by() { return false; }
 function wc_get_order() { global $order; return $order; }
-function wc_get_orders() { return []; }
+function wc_get_orders( $query ) { global $scenario; return 'unregistered-order' === $scenario && ( isset( $query['created_via'] ) || isset( $query['customer_id'] ) ) ? [ 90 ] : []; }
 $wpdb = new class {
  public $last_error = ''; public $prefix = 'wp_'; public $users = 'wp_users'; public $postmeta = 'wp_postmeta';
  public function prepare( $sql, $values ) { return $sql; } public function esc_like( $value ) { return $value; } public function get_var( $sql ) { return null; }
@@ -55,7 +55,7 @@ $wpdb = new class {
 $args = [ 'VST-90-SETTINGS', 'cleanup' ]; $caught = null;
 try { require __DIR__ . '/runtime-settings-regressions-fixture.php'; } catch ( RuntimeException $error ) { $caught = $error; }
 try {
- $failure_expected = in_array( $scenario, [ 'sentinel', 'delete', 'restore', 'unknown-file', 'partial-file' ], true );
+ $failure_expected = in_array( $scenario, [ 'sentinel', 'delete', 'restore', 'unknown-file', 'partial-file', 'unregistered-order' ], true );
  if ( $failure_expected !== ( null !== $caught ) ) { throw new RuntimeException( 'Unexpected cleanup outcome.' ); }
  if ( $failure_expected ) {
   if ( ! isset( $options[ $ledger_key ], $options['vst90_settings_fixture_lock'] ) ) { throw new RuntimeException( 'Recovery ledger/lock lost.' ); }

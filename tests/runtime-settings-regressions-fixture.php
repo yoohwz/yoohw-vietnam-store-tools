@@ -60,6 +60,7 @@ if ( 'prepare' === $args[1] ) {
  foreach ( [ false, true ] as $tracking ) {
   $order = wc_create_order( [ 'customer_id' => $user_id, 'created_via' => $run ] );
   if ( is_wp_error( $order ) ) { throw new RuntimeException( 'Fixture order creation failed.' ); }
+  $fail_stage( 'order-unregistered' );
   $fixture['orders'][] = [ 'id' => $order->get_id(), 'complete' => false ]; $save_ledger();
   $order->set_currency( 'VND' ); $order->set_payment_method( 'bacs' ); $order->set_total( '250000' ); $order->set_billing_email( $email );
   $order->update_meta_data( '_vst90_fixture_namespace', $run );
@@ -95,6 +96,9 @@ if ( 'prepare' === $args[1] ) {
  }
  VST_Settings_Fixture_Safety::require_same( $fixture['sentinel'], vst_fixture_sentinel(), 'Read-only sentinel unchanged before cleanup' );
  $ids = array_column( $fixture['orders'], 'id' ); $inventory = vst_fixture_inventory( $fixture['email'], $ids, $fixture['created_user_id'] ?? 0 );
+ VST_Settings_Fixture_Safety::require_same( $user ? 1 : 0, $inventory['wp_users'], 'Every identity user is registered before cleanup' );
+ $registered_orders = 0; foreach ( $fixture['orders'] as $entry ) { if ( wc_get_order( $entry['id'] ) ) { ++$registered_orders; } }
+ VST_Settings_Fixture_Safety::require_same( $registered_orders, $inventory['orders'], 'Every identity order is registered before cleanup' );
  foreach ( $inventory as $key => $count ) { if ( ( 0 === strpos( $key, 'ci_' ) || 0 === strpos( $key, 'external_' ) ) && $count ) { throw new RuntimeException( 'Integration residual; no erasure/purge authorized.' ); } }
  if ( 'cleanup' === $args[1] ) {
    $fixture['phase'] = 'cleaning'; $save_ledger();
