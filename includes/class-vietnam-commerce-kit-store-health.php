@@ -54,9 +54,9 @@ final class Yoohw_Vietnam_Store_Tools_Store_Health {
 		$checks[] = [ __( 'VietQR bank transfer', 'yoohw-vietnam-store-tools' ), $vietqr ? $enabled : $disabled, false ];
 		if ( $vietqr ) {
 			$usable   = Yoohw_Vietnam_Store_Tools_BACS_VietQR::has_usable_account();
-			$checks[] = [ __( 'Usable VietQR bank account', 'yoohw-vietnam-store-tools' ), $usable ? __( 'Good', 'yoohw-vietnam-store-tools' ) : __( 'Needs attention', 'yoohw-vietnam-store-tools' ), ! $usable, admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' ), __( 'Configure VietQR', 'yoohw-vietnam-store-tools' ) ];
+			$checks[] = [ __( 'Usable VietQR bank account', 'yoohw-vietnam-store-tools' ), $usable ? __( 'Good', 'yoohw-vietnam-store-tools' ) : __( 'Needs attention', 'yoohw-vietnam-store-tools' ), ! $usable, Yoohw_Vietnam_Store_Tools_BACS_VietQR::get_settings_url(), __( 'Configure VietQR', 'yoohw-vietnam-store-tools' ) ];
 			if ( ! $bacs ) {
-				$checks[] = [ __( 'Enable BACS to offer VietQR at checkout.', 'yoohw-vietnam-store-tools' ), __( 'Needs attention', 'yoohw-vietnam-store-tools' ), true, admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' ), __( 'Configure VietQR', 'yoohw-vietnam-store-tools' ) ];
+				$checks[] = [ __( 'Enable BACS to offer VietQR at checkout.', 'yoohw-vietnam-store-tools' ), __( 'Needs attention', 'yoohw-vietnam-store-tools' ), true, Yoohw_Vietnam_Store_Tools_BACS_VietQR::get_settings_url(), __( 'Configure VietQR', 'yoohw-vietnam-store-tools' ) ];
 			}
 		}
 		$checks[] = [ __( 'Accept invoice requests at checkout', 'yoohw-vietnam-store-tools' ), Yoohw_Vietnam_Store_Tools_Tax_Invoice::accepts_new_requests() ? $enabled : $disabled, false ];
