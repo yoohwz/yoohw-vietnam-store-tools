@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
+const checkAssetVersions = require('./support/asset-versions');
 
 const mode = process.argv[2];
 assert.ok(['classic', 'blocks', 'order-pay'].includes(mode), 'Choose classic, blocks or order-pay');
@@ -30,7 +31,9 @@ async function request(method, target, body, headers = {}) {
       }
       continue;
     }
-    return { response, text: await response.text(), url };
+    const text = await response.text();
+    checkAssetVersions(text);
+    return { response, text, url };
   }
   throw new Error('Too many redirects');
 }

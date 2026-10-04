@@ -299,7 +299,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 				'yoohw-vietnam-store-tools-shipping-zones',
 				YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/admin/shipping-zones.css',
 				[],
-				filemtime( $style_path )
+				YOOHW_VIETNAM_STORE_TOOLS_VERSION
 			);
 		}
 
@@ -314,7 +314,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipping_Zones {
 			'yoohw-vietnam-store-tools-shipping-zones',
 			YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/shipping-zones.js',
 			$dependencies,
-			filemtime( $script_path ),
+			YOOHW_VIETNAM_STORE_TOOLS_VERSION,
 			true
 		);
 

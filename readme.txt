@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 11.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,7 +39,7 @@ Learn more about the plugin on the [official Vietnam Store Toolkit website](http
 * Ward-level restrictions in native WooCommerce Shipping Zones.
 * VietQR payment details for WooCommerce Direct bank transfer.
 * Optional VND-to-USD conversion for compatible WooCommerce PayPal Payments checkouts using a merchant-set rate.
-* Manual payment reconciliation that records evidence without automatically marking orders paid.
+* Optional manual payment reconciliation, disabled by default, that records evidence without automatically marking orders paid.
 * VAT request fields and a provider-neutral electronic invoice handoff.
 * Shipping fee rules for address, cart, weight, shipping class, free shipping, and COD conditions.
 * Shipment details, a manual tracking timeline, and a customer order tracking page.
@@ -55,9 +55,9 @@ The fields appear at checkout, in My Account and the cart, and in store, custome
 
 = Payments, VietQR and Reconciliation =
 
-VietQR extends WooCommerce Direct bank transfer (`bacs`); it does not create a new gateway. QR images and transfer details can appear on order confirmation, in My Account, in emails, and in wp-admin. VietQR does not confirm bank transactions or mark an order paid.
+VietQR extends WooCommerce Direct bank transfer (`bacs`) using configured bank-transfer accounts; it does not create a new gateway. Bank accounts and transfer content stay in WooCommerce's native React bank-transfer settings. Extended VietQR controls are under Vietnam store > Dashboard. QR images and transfer details can appear on order confirmation, in My Account, in emails, and in wp-admin. VietQR does not confirm bank transactions or mark an order paid.
 
-Staff can record transfer observations and references, then manually reconcile an exact order amount on the order screen. Payment Reconciliation retains evidence, history, and corrections. It does not complete WooCommerce payments, set a paid date or transaction ID, issue refunds, or change stock.
+Payment reconciliation is disabled by default and can be enabled under Vietnam store > Dashboard > Core features. Disabling it blocks new manual and external reconciliation writes while preserving existing history as read-only. When enabled, staff can record transfer observations and references, then manually reconcile an exact order amount on the order screen. Payment Reconciliation retains evidence, history, and corrections. It does not complete WooCommerce payments, set a paid date or transaction ID, issue refunds, or change stock.
 
 Optional PayPal VND-to-USD conversion requires a compatible WooCommerce PayPal Payments setup and a merchant-entered VND-per-USD rate. The rate is locked for each payment attempt while the WooCommerce order remains in VND. Compatibility checks prevent conversion when the supported payment path is unavailable; this is not a general currency switcher.
 
@@ -164,15 +164,13 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.2.0 (September 27, 2026) =
+= 1.2.1 (October 4, 2026) =
 
-* New: Added optional VND-to-USD payment conversion for compatible WooCommerce PayPal Payments checkout flows, using a merchant-entered rate locked to each payment attempt and guarded compatibility checks.
-* New: Added manual payment reconciliation on the order screen to record observations, match exact order amounts, review evidence, and correct entries without automatically marking orders paid.
-* New: Added a Store health dashboard and a guided assistant to scan, back up, and batch-migrate compatible legacy address and GHTK tracking data.
-* New: Expanded the provider-neutral electronic invoice handoff with revision-guarded updates, document history, provider references, and clearer order administration and email details; invoice issuance remains external.
-* Improve: Protected shipment and tracking updates with shipment identity and stale-action checks, preserving the current shipment and its timeline across order instances and cancellations.
-* Improve: Refined order information layout and compacted the payment reconciliation controls in a side metabox; improved BACS/VietQR transfer details and copy behavior.
-* Compatibility: Filled missing Vietnamese translation keys from bundled catalogs while retaining WordPress language-pack priority, and refined the Vietnamese Store health label.
-* Developer: Expanded payment, shipment, and electronic-invoice extension contracts and strengthened release, checkout, localization, and HPOS validation.
+* Fix: Allowed normal WooCommerce order updates when the manual tracking field is empty, while the dedicated tracking action still requires a tracking code.
+* Improve: Kept WooCommerce's native React bank-transfer settings, moved extended VietQR controls to the Vietnam store Dashboard, preserved native/third-party BACS settings, and preferred the current React-selected bank BIN over stale legacy Sort code data.
+* Fix: Improved WooCommerce PayPal Payments readiness diagnostics so bootstrap/not-evaluated states are not reported as confirmed incompatibility and failing adapter probes identify the correct contract while conversion remains fail-closed.
+* Update: Added a Payment reconciliation Core-feature toggle that defaults OFF; disabling it blocks new manual/external reconciliation writes while preserving existing history as read-only.
+* Fix: Corrected the Electronic invoice Email settings link so it opens the actual registered WooCommerce email settings form.
+* Quality: Expanded Local and disposable legacy/HPOS regression coverage, fixture isolation, cleanup verification, and release certification for the post-1.2.0 changes.
 
 See `changelog.txt` for the complete change history.
