@@ -1,5 +1,14 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
+= 1.2.1 (October 4, 2026) =
+
+* Fix: Allowed normal WooCommerce order updates when the manual tracking field is empty, while the dedicated tracking action still requires a tracking code.
+* Improve: Kept WooCommerce's native React bank-transfer settings, moved extended VietQR controls to the Vietnam store Dashboard, preserved native/third-party BACS settings, and preferred the current React-selected bank BIN over stale legacy Sort code data.
+* Fix: Improved WooCommerce PayPal Payments readiness diagnostics so bootstrap/not-evaluated states are not reported as confirmed incompatibility and failing adapter probes identify the correct contract while conversion remains fail-closed.
+* Update: Added a Payment reconciliation Core-feature toggle that defaults OFF; disabling it blocks new manual/external reconciliation writes while preserving existing history as read-only.
+* Fix: Corrected the Electronic invoice Email settings link so it opens the actual registered WooCommerce email settings form.
+* Quality: Expanded Local and disposable legacy/HPOS regression coverage, fixture isolation, cleanup verification, and release certification for the post-1.2.0 changes.
+
 = 1.2.0 (September 27, 2026) =
 
 * New: Added optional VND-to-USD payment conversion for compatible WooCommerce PayPal Payments checkout flows, using a merchant-entered rate locked to each payment attempt and guarded compatibility checks.
