@@ -581,11 +581,11 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		$script_path = YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'assets/js/admin/shipment-tracking.js';
 
 		if ( file_exists( $style_path ) ) {
-			wp_enqueue_style( 'yoohw-vietnam-store-tools-shipment-tracking-admin', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/admin/shipment-tracking.css', [], filemtime( $style_path ) );
+			wp_enqueue_style( 'yoohw-vietnam-store-tools-shipment-tracking-admin', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/admin/shipment-tracking.css', [], YOOHW_VIETNAM_STORE_TOOLS_VERSION );
 		}
 
 		if ( file_exists( $script_path ) ) {
-			wp_enqueue_script( 'yoohw-vietnam-store-tools-shipment-tracking-admin', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/shipment-tracking.js', [], filemtime( $script_path ), true );
+			wp_enqueue_script( 'yoohw-vietnam-store-tools-shipment-tracking-admin', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/admin/shipment-tracking.js', [], YOOHW_VIETNAM_STORE_TOOLS_VERSION, true );
 			wp_localize_script(
 				'yoohw-vietnam-store-tools-shipment-tracking-admin',
 				'yoohwVietnamStoreToolsShipmentTracking',
@@ -875,7 +875,7 @@ final class Yoohw_Vietnam_Store_Tools_Shipment_Tracking {
 		$style_path = YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_DIR . 'assets/css/shipment-tracking.css';
 
 		if ( file_exists( $style_path ) ) {
-			wp_enqueue_style( 'yoohw-vietnam-store-tools-shipment-tracking', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/shipment-tracking.css', [], filemtime( $style_path ) );
+			wp_enqueue_style( 'yoohw-vietnam-store-tools-shipment-tracking', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/css/shipment-tracking.css', [], YOOHW_VIETNAM_STORE_TOOLS_VERSION );
 		}
 	}
 }

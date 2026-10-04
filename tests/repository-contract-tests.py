@@ -23,7 +23,7 @@ CHANGELOG_HISTORY_BASELINE = (
 RELEASE_SECTION_DIGESTS = {
     "1.2.1": {
         "changelog.txt": "b1dadca6f38b106236a1a3704c33a262a4c54c51c3688e69bd49bf664d88f0d7",
-        "changelog-vi.txt": "bd5286c8c835aa96d443bb00968e4d50edcab9a242935e0210c4871753b94ede",
+        "changelog-vi.txt": "ff482f3ef4457e37be3748256059ce59abf68cda2dc986c2ea9782b5c9e98c7c",
     },
     "1.2.0": {
         "changelog.txt": "e20fe57b5f3e989809085fa6fe016c97ce48e288ba971fed187cc77713d3e277",
@@ -242,6 +242,94 @@ def exercise_history_contracts() -> None:
     require_stable_tag_rejection("1.1.7", "1.1.6", "1.1.7")
 
 
+def external_asset_calls(source: str) -> list[list[str]]:
+    """Read positional enqueue/register arguments, preserving nested PHP expressions."""
+    tokens = re.findall(
+        r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|/\*[\s\S]*?\*/|//[^\n]*|\#[^\n]*|[A-Za-z_]\w*|[^\s]",
+        source,
+    )
+    tokens = [token for token in tokens if not token.startswith(("/*", "//", "#"))]
+    calls = []
+    for index, token in enumerate(tokens[:-1]):
+        if not re.fullmatch(r"wp_(enqueue|register)_(script|style)", token) or tokens[index + 1] != "(":
+            continue
+        arguments, current, depth = [], [], 0
+        for part in tokens[index + 2:]:
+            if part == ")" and depth == 0:
+                arguments.append("".join(current))
+                break
+            if part == "," and depth == 0:
+                arguments.append("".join(current))
+                current = []
+                continue
+            if part in ("(", "[", "{"):
+                depth += 1
+            elif part in (")", "]", "}"):
+                depth -= 1
+            current.append(part)
+        if len(arguments) > 1 and arguments[1] not in ("false", "null", "''", '""'):
+            calls.append(arguments)
+    return calls
+
+
+def validate_asset_versions(source: str) -> list[str]:
+    owned_paths = []
+    for arguments in external_asset_calls(source):
+        url = arguments[1]
+        # Discover ownership from the source URL, including future handles/files.
+        if "YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL" not in url and not re.search(r"assets/[^'\"]+\.(js|css)", url):
+            continue
+        if len(arguments) < 4 or arguments[3] != "YOOHW_VIETNAM_STORE_TOOLS_VERSION":
+            raise AssertionError(f"Plugin asset version must use the runtime plugin version: {url}")
+        owned_paths.extend(re.findall(r"assets/[^'\"]+\.(?:js|css)", url))
+    return owned_paths
+
+
+def exercise_asset_version_contracts() -> None:
+    """Cover distributed PHP loaders and reject timestamp, literal and absent versions."""
+    paths = []
+    for name in ("includes", "templates", "blocks", "assets", "data", "languages"):
+        for path in (ROOT / name).rglob("*.php"):
+            paths.extend(validate_asset_versions(path.read_text(encoding="utf-8")))
+    paths.extend(validate_asset_versions(read("yoohw-vietnam-store-tools.php")))
+    corrected = {
+        "assets/css/admin/shipping-rules.css", "assets/js/admin/shipping-rules.js",
+        "assets/css/blocks-address-fields.css", "assets/js/frontend/blocks-address-fields.js",
+        "assets/js/admin/bacs-vietqr.js", "assets/css/bacs-vietqr.css", "assets/js/bacs-vietqr-copy.js",
+        "assets/css/admin/shipping-zones.css", "assets/js/admin/shipping-zones.js",
+        "assets/css/admin/shipment-tracking.css", "assets/js/admin/shipment-tracking.js",
+        "assets/css/shipment-tracking.css", "assets/js/frontend/paypal-vnd-usd.js",
+    }
+    if not corrected.issubset(paths):
+        raise AssertionError(f"Corrected asset loaders missing from coverage: {corrected.difference(paths)}")
+    for version in ("filemtime( $path )", "'1.2.0'", "false", "null"):
+        for function in ("wp_enqueue_script", "wp_register_script", "wp_enqueue_style", "wp_register_style"):
+            source = f"<?php {function}( 'future-handle', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/future.js', array( 'jquery', 'wp-data' ), {version} );"
+            try:
+                validate_asset_versions(source)
+            except AssertionError:
+                continue
+            raise AssertionError(f"Asset version contract unexpectedly accepted {function}: {version}")
+    for source in (
+        "<?php wp_enqueue_script( 'future', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/future.js' );",
+        "<?php wp_register_style( 'future', plugins_url( 'assets/future.css', __FILE__ ), [], filemtime( $path ) );",
+    ):
+        try:
+            validate_asset_versions(source)
+        except AssertionError:
+            continue
+        raise AssertionError("Asset contract accepted an unversioned or timestamped future loader")
+    controls = """<?php
+        // wp_enqueue_script( 'ignored', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/comment.js', [], filemtime( $path ) );
+        wp_enqueue_style( 'dashicons' );
+        wp_register_style( 'inline', false, [], 'unrelated' );
+        wp_register_script( 'third-party', 'https://example.test/sdk.js', [], 'vendor-version' );
+        wp_enqueue_script( 'future', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/future.js', array( 'jquery', 'wp-data' ), YOOHW_VIETNAM_STORE_TOOLS_VERSION, true );
+    """
+    if validate_asset_versions(controls) != ["assets/future.js"]:
+        raise AssertionError("Asset contract must preserve core/third-party/inline assets and ignore comments")
+
+
 def main() -> int:
     plugin = read("yoohw-vietnam-store-tools.php")
     readme = read("readme.txt")
@@ -336,6 +424,7 @@ def main() -> int:
     validate_stable_tag(stable_tag, plugin_version, PUBLISHED_STABLE_VERSION)
     validate_changelog_history(readme, changelog, changelog_vi, plugin_version, stable_tag)
     exercise_history_contracts()
+    exercise_asset_version_contracts()
     require_stable_tag_rejection("1.1", plugin_version, "1.1")
     plugin_parts = parse_semver(plugin_version, "development version")
     future_version = ".".join(

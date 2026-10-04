@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const openAdminSession = require('./support/settings-http-session');
+const checkAssetVersions = require('./support/asset-versions');
 const run = process.env.VST_TEST_RUN;
 assert.match(run || '', /^vst90-[a-f0-9]{24}$/);
 const fixture = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/.vst90-${run}.php`, 'utf8').replace(/^<\?php exit; \?>\n/, ''));
@@ -15,7 +16,9 @@ async function request(method, target, body, headers = {}, authenticated = true)
   assert.equal(url.origin, new URL(base).origin, 'Requests stay on the explicitly selected fixture');
   const response = await fetch(url, {method, body, headers: {...headers, ...(authenticated ? {Cookie: [...cookies].map(([k,v]) => `${k}=${v}`).join('; ')} : {})}, redirect: 'manual'});
   if (authenticated) for (const cookie of response.headers.getSetCookie()) { const [first] = cookie.split(';'); const i = first.indexOf('='); cookies.set(first.slice(0,i), first.slice(i+1)); }
-  return {response, text: await response.text()};
+  const text = await response.text();
+  checkAssetVersions(text);
+  return {response, text};
 }
 function nonce(html, name = '_wpnonce') { const match = html.match(new RegExp(`name="${name}"[^>]*value="([^"]+)"`)); assert.ok(match, `Actual form nonce ${name}`); return match[1]; }
 const featureOptions = ['address_fields_enabled','phone_normalization_enabled','customer_shipment_display_enabled','order_management_enabled','allow_tax_invoice_request','electronic_invoice_enabled','payment_reconciliation_enabled'].map(s => `yoohw_vietnam_store_tools_${s}`);
@@ -41,6 +44,12 @@ async function saveFeatures(enabled) {
   assert.equal(login.response.status,302,'Native HTTP login succeeds');
   assert.ok([...cookies.keys()].some(name=>name.startsWith('wordpress_logged_in_')),'Web session cookie received');
   await openAdminSession(request, base);
+  const shipping = await request('GET', '/wp-admin/admin.php?page=wc-settings&tab=shipping');
+  assert.equal(shipping.response.status, 200);
+  const shippingAssets = checkAssetVersions(shipping.text);
+  for (const file of ['shipping-rules.css', 'shipping-rules.js', 'shipping-zones.css', 'shipping-zones.js']) {
+    assert.ok(shippingAssets.some(asset => asset.endsWith(`/${file}`)), `Shipping settings renders versioned ${file}`);
+  }
   const initial=await probe(); const oldLookup=initial.public_lookup_enabled;
   assert.equal(initial.fixture_mail_blocked,true,'Fixture mail is suppressed without sending a message');
   assert.equal(initial.ci_loaded,false,'Declared certification stack keeps Customer Intelligence inactive');

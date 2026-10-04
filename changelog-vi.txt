@@ -2,12 +2,12 @@
 
 = 1.2.1 (04/10/2026) =
 
-* Sửa lỗi: Cho phép cập nhật đơn hàng WooCommerce bình thường khi trường mã vận đơn thủ công để trống, trong khi thao tác lưu mã vận đơn riêng vẫn yêu cầu mã vận đơn.
-* Cải thiện: Giữ giao diện chuyển khoản ngân hàng React gốc của WooCommerce, chuyển các thiết lập VietQR mở rộng sang Bảng điều khiển Vietnam store, bảo toàn cài đặt BACS gốc/bên thứ ba và ưu tiên mã BIN ngân hàng hiện tại được chọn trong React thay cho Sort code cũ đã lỗi thời.
-* Sửa lỗi: Cải thiện chẩn đoán khả năng sẵn sàng của WooCommerce PayPal Payments để trạng thái chưa khởi tạo/chưa đánh giá không bị báo nhầm là không tương thích, đồng thời xác định đúng hợp đồng adapter gặp lỗi và vẫn giữ cơ chế fail-closed.
-* Cập nhật: Thêm công tắc Đối soát thanh toán trong Tính năng cốt lõi, mặc định TẮT; khi tắt sẽ chặn mọi ghi đối soát thủ công/bên ngoài mới nhưng vẫn giữ lịch sử hiện có ở chế độ chỉ đọc.
-* Sửa lỗi: Sửa liên kết Cài đặt email của quy trình hóa đơn điện tử để mở đúng form cài đặt email WooCommerce đã đăng ký.
-* Chất lượng: Mở rộng kiểm thử hồi quy trên Local và môi trường legacy/HPOS dùng một lần, tăng cường cô lập fixture, xác minh cleanup và chứng nhận các thay đổi sau 1.2.0.
+* Sửa lỗi: Cho phép cập nhật đơn hàng WooCommerce bình thường khi ô mã vận đơn thủ công để trống; thao tác lưu mã vận đơn riêng vẫn yêu cầu mã vận đơn.
+* Cải thiện: Giữ giao diện cài đặt Chuyển khoản ngân hàng (BACS) dạng React nguyên bản của WooCommerce, chuyển các tùy chọn VietQR mở rộng sang Bảng điều khiển Vietnam store, giữ nguyên các cài đặt BACS của WooCommerce và bên thứ ba, đồng thời ưu tiên mã BIN hiện tại được chọn trong React thay cho Sort code cũ.
+* Sửa lỗi: Cải thiện chẩn đoán trạng thái sẵn sàng của WooCommerce PayPal Payments để trạng thái chưa khởi tạo/chưa đánh giá không bị báo nhầm là không tương thích; các kiểm tra bộ tích hợp nay chỉ ra đúng điểm không đáp ứng hợp đồng tích hợp và luồng chuyển đổi vẫn dừng an toàn khi chưa xác minh được tương thích.
+* Cập nhật: Thêm công tắc Đối soát thanh toán trong Tính năng cốt lõi, mặc định TẮT; khi tắt, plugin chặn mọi lần ghi dữ liệu đối soát mới từ thao tác thủ công hoặc nguồn bên ngoài nhưng vẫn giữ lịch sử hiện có ở chế độ chỉ đọc.
+* Sửa lỗi: Sửa liên kết Cài đặt email của quy trình hóa đơn điện tử để mở đúng trang cài đặt cho email WooCommerce đã đăng ký.
+* Chất lượng: Mở rộng kiểm thử hồi quy trên Local và các môi trường thử nghiệm tạm thời ở cả chế độ lưu trữ cũ (legacy) và HPOS; tăng cường cô lập dữ liệu kiểm thử, xác minh dọn dẹp và chứng nhận các thay đổi sau 1.2.0.
 
 = 1.2.0 (27/09/2026) =
 
