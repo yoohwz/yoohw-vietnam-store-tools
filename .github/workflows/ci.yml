@@ -142,6 +142,7 @@ jobs:
       - name: BACS/VietQR contracts
         run: |
           php tests/bacs-vietqr-contract-tests.php
+          php tests/settings-fixture-safety-contract-tests.php
           node tests/bacs-vietqr-copy-tests.js
 
       - name: Store health contracts
@@ -497,7 +498,8 @@ jobs:
             },
             "config": {
               "WP_DEBUG": true,
-              "WP_DEBUG_LOG": true
+              "WP_DEBUG_LOG": true,
+              "WP_ENVIRONMENT_TYPE": "local"
             }
           }
           JSON
@@ -529,9 +531,10 @@ jobs:
           node tests/runtime-roadmap-http-smoke.js order-pay
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
-          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS prepare --user=1
+          export VST_TEST_RUN="vst90-$(openssl rand -hex 12)"
+          "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS prepare --user=1
           node tests/runtime-settings-regressions-http.js
-          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS cleanup --user=1
+          "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS cleanup --user=1
           "${wp_env[@]}" run cli wp option update woocommerce_custom_orders_table_enabled yes
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-smoke.php VST-58-SMOKE hpos --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-electronic-invoice-v2-admin-smoke.php VST-58-ADMIN hpos save --user=1
@@ -550,9 +553,10 @@ jobs:
           node tests/runtime-roadmap-http-smoke.js order-pay
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP verify --user=1
           "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-roadmap-http-fixture.php VST-62-HTTP cleanup --user=1
-          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS prepare --user=1
+          export VST_TEST_RUN="vst90-$(openssl rand -hex 12)"
+          "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS prepare --user=1
           node tests/runtime-settings-regressions-http.js
-          "${wp_env[@]}" run cli wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-85-SETTINGS cleanup --user=1
+          "${wp_env[@]}" run cli env "VST_TEST_RUN=$VST_TEST_RUN" wp eval-file wp-content/plugins/yoohw-vietnam-store-tools/tests/runtime-settings-regressions-fixture.php VST-90-SETTINGS cleanup --user=1
       - name: Stop wp-env
         if: ${{ always() }}
         run: npx --yes @wordpress/env@11.13.0 stop

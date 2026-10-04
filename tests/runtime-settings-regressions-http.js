@@ -2,7 +2,10 @@
 /* Native HTTP form saves and next-request behavior; opt-in Local fixture only. */
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
-const fixture = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/.vst85-settings.json`));
+const run = process.env.VST_TEST_RUN;
+assert.match(run || '', /^vst90-[a-f0-9]{24}$/);
+const fixture = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/.vst90-${run}.php`, 'utf8').replace(/^<\?php exit; \?>\n/, ''));
+assert.equal(fixture.run, run);
 const base = fixture.base;
 assert.ok(['localhost', '127.0.0.1', process.env.VST_TEST_HOST].filter(Boolean).includes(new URL(base).hostname));
 const cookies = new Map();
@@ -31,11 +34,14 @@ async function saveFeatures(enabled) {
   return probe();
 }
 (async()=>{
+  const privateFile=await request('GET',`/wp-content/plugins/yoohw-vietnam-store-tools/tests/fixtures/.vst90-${run}.php`); assert.ok([200,403,404].includes(privateFile.response.status)); assert.equal(privateFile.text.includes(fixture.password),false,'Private fixture credentials cannot be fetched over HTTP');
   await request('GET','/wp-login.php');
   const login=await request('POST','/wp-login.php',new URLSearchParams({log:fixture.login,pwd:fixture.password,testcookie:'1',redirect_to:`${base}/wp-admin/`}));
   assert.equal(login.response.status,302,'Native HTTP login succeeds');
   assert.ok([...cookies.keys()].some(name=>name.startsWith('wordpress_logged_in_')),'Web session cookie received');
   const initial=await probe(); const oldLookup=initial.public_lookup_enabled;
+  assert.equal(initial.fixture_mail_blocked,true,'Fixture mail is suppressed without sending a message');
+  assert.equal(initial.ci_loaded,false,'Declared certification stack keeps Customer Intelligence inactive');
   const on=await saveFeatures([...featureOptions,'paypal']);
   for(const id of featureOptions) assert.equal(on.options[id],'yes');
   for(const [name,count] of Object.entries(on.counts)) assert.ok(count>0,`ON runtime hooks ${name}`);
@@ -45,7 +51,7 @@ async function saveFeatures(enabled) {
   for(const id of featureOptions) assert.equal(off.options[id],'no');
   for(const [name,count] of Object.entries(off.counts)) assert.equal(count,0,`OFF next-request hooks ${name}`);
   for(const name of ['shipment_details','shipment_timeline','vat_fields','invoice_save_hook','paypal_force_place_order']) assert.equal(off[name],false,name);
-  assert.equal(off.invoice_number,'VST85-HISTORY');assert.equal(off.public_lookup_enabled,oldLookup);
+  assert.equal(off.invoice_number,fixture.history);assert.equal(off.public_lookup_enabled,oldLookup);
   assert.equal(off.options.yoohw_vietnam_store_tools_paypal_conversion_settings.yoohw_vietnam_store_tools_paypal_vnd_usd_enabled,'no');
   const independent=await saveFeatures([featureOptions[1],featureOptions[4]]);
   assert.equal(independent.counts.Yoohw_Vietnam_Store_Tools_Address_Fields,0);assert.ok(independent.counts.Yoohw_Vietnam_Store_Tools_Phone_Normalization>0);assert.equal(independent.vat_fields,true);assert.equal(independent.invoice_save_hook,false);
@@ -103,7 +109,7 @@ async function saveFeatures(enabled) {
   const noAmount=await saveVietqr({enabled:'yes',include_amount:'no',show_email:'yes',image_template:'compact2'});assert.equal(noAmount.qr[0].amount,'');assert.equal(noAmount.email_qr,true);assert.ok(noAmount.qr[0].qr_url.includes('-compact2.png'));
   console.log('PASS: React BACS retained; transfer save preserves siblings; Dashboard VietQR POST/DB/reload/runtime, core/account/unknown preservation and disabled/non-BACS/non-VND boundaries');
   for(const id of fixture.orders) {
-    const orderQuery=process.env.VST_TEST_ISOLATE_ORDER==='1'?'&vst85_isolate=1':'';
+    const orderQuery='';
     const route=fixture.hpos ? `/wp-admin/admin.php?page=wc-orders&action=edit&id=${id}${orderQuery}` : `/wp-admin/post.php?post=${id}&action=edit`;
     const page=await request('GET',route);assert.equal(page.response.status,200);
     const input=page.text.match(new RegExp(`<input[^>]*id="vck_manual_shipping_tracking_code_${id}"[^>]*>`));assert.ok(input,'Manual shipment control exists');assert.equal(/\brequired(?:[\s=>])/.test(input[0]),false,'Untouched shipment input does not constrain parent form');
@@ -112,10 +118,10 @@ async function saveFeatures(enabled) {
     const body=new URLSearchParams({action:'yoohw_vietnam_store_tools_save_manual_shipment',order_id:String(id),provider_id:'ghn',yoohw_vietnam_store_tools_shipping_nonce:token,'yoohw_vietnam_store_tools_shipping[tracking_code]':''});
     const rejected=await request('POST','/wp-admin/admin-post.php',body);assert.equal(rejected.response.status,302);assert.ok(new URL(rejected.response.headers.get('location')).searchParams.get('yoohw_vietnam_store_tools_shipping_error'),'Explicit empty shipment save rejects');
     body.set('yoohw_vietnam_store_tools_shipping_nonce','invalid');const badNonce=await request('POST','/wp-admin/admin-post.php',body);assert.equal(badNonce.response.status,403,'Nonce remains required');
-    const update=new URLSearchParams({_wpnonce:nonce(page.text),action:fixture.hpos?'edit_order':'editpost',post_ID:String(id),_payment_method:'bacs',save:'Update',order_status:'wc-pending',original_post_status:'wc-pending','woocommerce_meta_nonce':nonce(page.text,'woocommerce_meta_nonce'),_billing_first_name:`VST85-UPDATE-${id}`,_billing_email:'vst85-order@example.test'});
+    const update=new URLSearchParams({_wpnonce:nonce(page.text),action:fixture.hpos?'edit_order':'editpost',post_ID:String(id),_payment_method:'bacs',save:'Update',order_status:'wc-pending',original_post_status:'wc-pending','woocommerce_meta_nonce':nonce(page.text,'woocommerce_meta_nonce'),_billing_first_name:`${fixture.run}-UPDATE-${id}`,_billing_email:fixture.email,customer_user:String(fixture.userId)});
     if(!fixture.hpos) update.set('post_type','shop_order');
     const saved=await request('POST',fixture.hpos?route:'/wp-admin/post.php',update);assert.equal(saved.response.status,302,'Ordinary Update order redirects after save');
-    const updated=(await probe()).orders.find(order=>order.id===id);assert.equal(updated.first_name,`VST85-UPDATE-${id}`,'Ordinary Update persisted independent order field');assert.equal(updated.tracking_code,id===fixture.orders[0]?'':'VST85-TRACK','Ordinary Update preserves empty/populated tracking');
+    const updated=(await probe()).orders.find(order=>order.id===id);assert.equal(updated.first_name,`${fixture.run}-UPDATE-${id}`,'Ordinary Update persisted independent order field');assert.equal(updated.tracking_code,id===fixture.orders[0]?'':fixture.tracking,'Ordinary Update preserves empty/populated tracking');
 
   }
   console.log(`PASS: ${fixture.hpos?'HPOS':'legacy'} parent form constraint and explicit empty shipment/security validation`);
