@@ -2,6 +2,7 @@
 /* Native HTTP form saves and next-request behavior; opt-in Local fixture only. */
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
+const openAdminSession = require('./support/settings-http-session');
 const run = process.env.VST_TEST_RUN;
 assert.match(run || '', /^vst90-[a-f0-9]{24}$/);
 const fixture = JSON.parse(fs.readFileSync(`${__dirname}/fixtures/.vst90-${run}.php`, 'utf8').replace(/^<\?php exit; \?>\n/, ''));
@@ -39,6 +40,7 @@ async function saveFeatures(enabled) {
   const login=await request('POST','/wp-login.php',new URLSearchParams({log:fixture.login,pwd:fixture.password,testcookie:'1',redirect_to:`${base}/wp-admin/`}));
   assert.equal(login.response.status,302,'Native HTTP login succeeds');
   assert.ok([...cookies.keys()].some(name=>name.startsWith('wordpress_logged_in_')),'Web session cookie received');
+  await openAdminSession(request, base);
   const initial=await probe(); const oldLookup=initial.public_lookup_enabled;
   assert.equal(initial.fixture_mail_blocked,true,'Fixture mail is suppressed without sending a message');
   assert.equal(initial.ci_loaded,false,'Declared certification stack keeps Customer Intelligence inactive');
