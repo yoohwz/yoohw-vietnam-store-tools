@@ -35,40 +35,6 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 		add_action( 'add_meta_boxes', [ $this, 'add_admin_order_metabox' ] );
 	}
 
-	/** Resolve native BACS navigation without changing gateway settings. */
-	public static function get_settings_url() {
-		$fallback = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' );
-		$wc       = function_exists( 'WC' ) ? WC() : null;
-		if ( ! is_object( $wc ) || ! is_callable( [ $wc, 'payment_gateways' ] ) ) {
-			return $fallback;
-		}
-		$manager = $wc->payment_gateways();
-		if ( ! is_object( $manager ) || ! is_callable( [ $manager, 'payment_gateways' ] ) ) {
-			return $fallback;
-		}
-		$gateways = $manager->payment_gateways();
-		$gateway  = is_array( $gateways ) ? ( $gateways[ self::GATEWAY_ID ] ?? null ) : null;
-		if ( ! is_object( $gateway ) || ! is_callable( [ $gateway, 'get_settings_url' ] ) ) {
-			return $fallback;
-		}
-		$url = $gateway->get_settings_url();
-		if ( ! is_string( $url ) || '' === $url ) {
-			return $fallback;
-		}
-		$url   = esc_url_raw( $url, [ 'http', 'https' ] );
-		$parts = wp_parse_url( $url );
-		$admin = wp_parse_url( admin_url( 'admin.php' ) );
-		if ( ! is_array( $parts ) || ! is_array( $admin ) || isset( $parts['user'] ) || isset( $parts['pass'] ) ) {
-			return $fallback;
-		}
-		foreach ( [ 'scheme', 'host', 'port', 'path' ] as $part ) {
-			if ( ( $parts[ $part ] ?? null ) !== ( $admin[ $part ] ?? null ) ) {
-				return $fallback;
-			}
-		}
-		return $url;
-	}
-
 	/** Values for the four VietQR controls owned by the Vietnam store Dashboard. */
 	public static function get_dashboard_settings() {
 		$settings = get_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', [] );
@@ -851,4 +817,38 @@ final class Yoohw_Vietnam_Store_Tools_BACS_VietQR {
 
 		return false;
 	}
+	/** Resolve native BACS navigation without changing gateway settings. */
+	public static function get_settings_url() {
+		$fallback = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' );
+		$wc       = function_exists( 'WC' ) ? WC() : null;
+		if ( ! is_object( $wc ) || ! is_callable( [ $wc, 'payment_gateways' ] ) ) {
+			return $fallback;
+		}
+		$manager = $wc->payment_gateways();
+		if ( ! is_object( $manager ) || ! is_callable( [ $manager, 'payment_gateways' ] ) ) {
+			return $fallback;
+		}
+		$gateways = $manager->payment_gateways();
+		$gateway  = is_array( $gateways ) ? ( $gateways[ self::GATEWAY_ID ] ?? null ) : null;
+		if ( ! is_object( $gateway ) || ! is_callable( [ $gateway, 'get_settings_url' ] ) ) {
+			return $fallback;
+		}
+		$url = $gateway->get_settings_url();
+		if ( ! is_string( $url ) || '' === $url ) {
+			return $fallback;
+		}
+		$url   = esc_url_raw( $url, [ 'http', 'https' ] );
+		$parts = wp_parse_url( $url );
+		$admin = wp_parse_url( admin_url( 'admin.php' ) );
+		if ( ! is_array( $parts ) || ! is_array( $admin ) || isset( $parts['user'] ) || isset( $parts['pass'] ) ) {
+			return $fallback;
+		}
+		foreach ( [ 'scheme', 'host', 'port', 'path' ] as $part ) {
+			if ( ( $parts[ $part ] ?? null ) !== ( $admin[ $part ] ?? null ) ) {
+				return $fallback;
+			}
+		}
+		return $url;
+	}
+
 }
