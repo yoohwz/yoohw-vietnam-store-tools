@@ -12,10 +12,15 @@ vst_assert_same( $expected_hpos, $actual_hpos, 'Expected WooCommerce order stora
 $old_accounts = get_option( 'woocommerce_bacs_accounts', false );
 $old_settings = get_option( 'woocommerce_bacs_settings', false );
 $old_invoice = get_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, false );
+$payment_option = Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_PAYMENT_RECONCILIATION;
+$missing_payment = new stdClass();
+$old_payment = get_option( $payment_option, $missing_payment );
+$payment_snapshot = [ 'exists' => $old_payment !== $missing_payment, 'value' => $old_payment !== $missing_payment ? $old_payment : null ];
 $product = null;
 $order = null;
 $extra_orders = [];
 try {
+	update_option( $payment_option, 'yes' );
 	update_option( 'woocommerce_bacs_accounts', [ [ 'account_name' => 'VST fixture', 'account_number' => '123456789', 'bank_name' => 'Fixture Bank', 'sort_code' => '970436' ] ] );
 	update_option( 'woocommerce_bacs_settings', [ 'enabled' => 'yes', Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_ENABLED => 'yes', Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_INCLUDE_AMOUNT => 'yes' ] );
 	update_option( Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE, 'yes' );
@@ -143,6 +148,10 @@ try {
 	if ( $product instanceof WC_Product ) {
 		$product->delete( true );
 	}
+	if ( $payment_snapshot['exists'] ) { update_option( $payment_option, $payment_snapshot['value'] ); } else { delete_option( $payment_option ); }
+	$restored_payment = get_option( $payment_option, $missing_payment );
+	vst_assert_same( $payment_snapshot['exists'], $restored_payment !== $missing_payment, 'Payment option existence restored after roadmap smoke' );
+	if ( $payment_snapshot['exists'] ) { vst_assert_same( $payment_snapshot['value'], $restored_payment, 'Payment option value restored after roadmap smoke' ); }
 	foreach ( [ 'woocommerce_bacs_accounts' => $old_accounts, 'woocommerce_bacs_settings' => $old_settings, Yoohw_Vietnam_Store_Tools_Admin_Menu::OPTION_ELECTRONIC_INVOICE => $old_invoice ] as $name => $old ) {
 		if ( false === $old ) {
 			delete_option( $name );

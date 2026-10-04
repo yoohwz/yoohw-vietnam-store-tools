@@ -83,6 +83,9 @@ async function paymentPost(id, token, fields) {
   const onPage = (await request('GET', route(historyId))).text;
   assert.ok(onPage.includes(box) && onPage.includes(controls) && onPage.includes(form));
   const token = nonce(onPage, 'vck_payment_nonce');
+  const emptyOnPage = (await request('GET', route(emptyId))).text;
+  assert.ok(emptyOnPage.includes(box) && emptyOnPage.includes(form), 'ON empty BACS exposes manual workflow');
+  const emptyToken = nonce(emptyOnPage, 'vck_payment_nonce');
   const evidence = {vck_payment_operation:'observe',vck_payment_amount:'250000',vck_payment_reference:run,vck_payment_observed_at:'2026-10-04T10:00'};
   assert.equal(await paymentPost(historyId, 'invalid', evidence), 403, 'Nonce enforced while ON');
   assert.equal(await paymentPost(historyId, token, evidence), 'saved');
@@ -103,6 +106,8 @@ async function paymentPost(id, token, fields) {
   for (const operation of ['observe','match','reverse']) {
     assert.equal(await paymentPost(historyId, token, {...evidence,vck_payment_operation:operation}), 'yoohw_vietnam_store_tools_payment_feature_disabled');
   }
+  assert.equal(await paymentPost(emptyId, emptyToken, evidence), 'yoohw_vietnam_store_tools_payment_feature_disabled', 'Valid stale form on empty OFF BACS cannot write');
+  assert.deepEqual((await probe()).orders.find(o => o.id === emptyId).payment_meta, [], 'Disabled empty BACS POST writes no payment metadata');
   assert.equal(await paymentPost(emptyId, token, evidence), 403, 'Nonce remains order-bound');
   assert.equal(await paymentPost(historyId, 'invalid', evidence), 403, 'Nonce enforced while OFF');
   assert.deepEqual((await probe()).orders.find(o => o.id === historyId).payment_meta, matched.payment_meta, 'OFF history/meta bytes retained across stale/forged POST');
