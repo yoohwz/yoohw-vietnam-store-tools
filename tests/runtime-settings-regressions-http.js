@@ -69,7 +69,15 @@ async function saveFeatures(enabled) {
   await saveFeatures([...featureOptions,'paypal']);
   console.log('PASS: all eight Dashboard controls submit -> persisted state -> reload -> next-request hooks/output; independent gates and history preserved');
   const prefix='yoohw_vietnam_store_tools_vietqr_';
-  const route='/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs';
+  const nativeBacs = await probe();
+  const route = nativeBacs.bacs_settings_url;
+  assert.equal(new URL(route).origin,new URL(base).origin,'Native BACS settings stay same-origin');
+  const routeParams = new URL(route).searchParams;
+  assert.equal(routeParams.has('section') && routeParams.has('path'),false,'Native URL does not mix React and legacy routing');
+  const navigationPage = await dashboard();
+  const bacsLink = navigationPage.match(/<a href="([^"]+)">Bank transfer settings<\/a>/);
+  assert.ok(bacsLink,'Dashboard BACS navigation link rendered');
+  assert.equal(bacsLink[1].replace(/&#0?38;|&amp;/g,'&'),route,'Dashboard uses registered native BACS resolver');
   const keys=['enabled','include_amount','image_template','show_email'];
   async function saveVietqr(values) {
     const page=await dashboard();
@@ -94,6 +102,10 @@ async function saveFeatures(enabled) {
       else assert.ok(reload.includes(`value="${values[key]}"  selected`),'Reload selected QR template');
     }
     const after=await probe();
+    if(values.enabled==='yes') {
+      assert.ok(after.bacs_health_urls.length>0,'Store Health emits BACS navigation');
+      for(const url of after.bacs_health_urls) assert.equal(url,route,'Store Health shares native BACS navigation');
+    }
     for(const key of keys) assert.equal(after.options.woocommerce_bacs_settings[prefix+key],values[key],`Persisted ${key}`);
     for(const [key,value] of Object.entries(before.options.woocommerce_bacs_settings)) if(!keys.map(k=>prefix+k).includes(key)) assert.deepEqual(after.options.woocommerce_bacs_settings[key],value,`Dashboard preserves ${key}`);
     assert.deepEqual(after.options.woocommerce_bacs_accounts,before.options.woocommerce_bacs_accounts,'Dashboard never changes native accounts');

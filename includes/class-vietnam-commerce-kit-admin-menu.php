@@ -336,7 +336,7 @@ final class Yoohw_Vietnam_Store_Tools_Admin_Menu {
 			<div class="yoohw-vietnam-store__section-heading">
 				<h3><?php esc_html_e( 'VietQR settings', 'yoohw-vietnam-store-tools' ); ?></h3>
 				<p><?php esc_html_e( 'Manage bank accounts, Vietnam bank selection, and the transfer content template in WooCommerce bank transfer settings.', 'yoohw-vietnam-store-tools' ); ?>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' ) ); ?>"><?php esc_html_e( 'Bank transfer settings', 'yoohw-vietnam-store-tools' ); ?></a>
+					<a href="<?php echo esc_url( Yoohw_Vietnam_Store_Tools_BACS_VietQR::get_settings_url() ); ?>"><?php esc_html_e( 'Bank transfer settings', 'yoohw-vietnam-store-tools' ); ?></a>
 				</p>
 			</div>
 			<input type="hidden" name="vietqr_settings[present]" value="1">

@@ -19,6 +19,11 @@ function absint( $value ) { return abs( (int) $value ); }
 function wc_price( $amount ) { return number_format( $amount, 0 ) . ' ₫'; }
 function wp_strip_all_tags( $value ) { return strip_tags( $value ); }
 
+function admin_url( $path ) { return 'https://example.test/wp-admin/' . $path; }
+function wp_parse_url( $url ) { return parse_url( $url ); }
+function esc_url_raw( $url, $protocols = [] ) { return $url; }
+function WC() { return $GLOBALS['vst_wc'] ?? null; }
+
 class WC_Order {
 	public $currency = 'VND';
 	public $total = 250000;
@@ -31,6 +36,45 @@ class WC_Order {
 }
 
 require dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-bacs-vietqr.php';
+$navigation = 'Yoohw_Vietnam_Store_Tools_BACS_VietQR';
+$fallback = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' );
+vst_assert_same( $fallback, $navigation::get_settings_url(), 'Unavailable WooCommerce has bounded legacy fallback' );
+$manager = new class {
+ public $gateways = [];
+ public function payment_gateways() { return $this->gateways; }
+};
+$GLOBALS['vst_wc'] = new class( $manager ) {
+ private $manager;
+ public function __construct( $manager ) { $this->manager = $manager; }
+ public function payment_gateways() { return $this->manager; }
+};
+vst_assert_same( $fallback, $navigation::get_settings_url(), 'Missing registered BACS has bounded fallback' );
+$manager->gateways['bacs'] = new stdClass();
+vst_assert_same( $fallback, $navigation::get_settings_url(), 'Older gateway without resolver uses legacy fallback' );
+$gateway = new class {
+ public $url;
+ public $calls = 0;
+ public function get_settings_url() { ++$this->calls; return $this->url; }
+};
+$manager->gateways['bacs'] = $gateway;
+foreach ( [ 'path=%2Foffline%2Fbacs&from=native', 'section=bacs', 'path=%2Ffuture-native-route' ] as $query ) {
+ $gateway->url = admin_url( 'admin.php?page=wc-settings&tab=checkout&' . $query );
+ vst_assert_same( $gateway->url, $navigation::get_settings_url(), 'Registered gateway owns native route ' . $query );
+ parse_str( parse_url( $navigation::get_settings_url(), PHP_URL_QUERY ), $params );
+ vst_assert_true( ! ( isset( $params['path'] ) && isset( $params['section'] ) ), 'No mixed React path and legacy section' );
+}
+vst_assert_true( $gateway->calls > 0, 'Registered gateway resolver is called' );
+foreach ( [ '', null, [], 'https://attacker.test/wp-admin/admin.php', 'https://example.test.evil.test/wp-admin/admin.php', 'http://example.test/wp-admin/admin.php', 'https://example.test:444/wp-admin/admin.php', 'https://user:pass@example.test/wp-admin/admin.php', 'https://example.test/wp-admin-other/admin.php', 'https://example.test/wp-admin/admin-post.php', 'javascript:alert(1)', '/wp-admin/admin.php', '//example.test/wp-admin/admin.php' ] as $invalid ) {
+ $gateway->url = $invalid;
+ vst_assert_same( $fallback, $navigation::get_settings_url(), 'Unusable/non-admin/cross-origin native URL has bounded fallback' );
+}
+$dashboard_source = file_get_contents( dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-admin-menu.php' );
+$health_source = file_get_contents( dirname( __DIR__ ) . '/includes/class-vietnam-commerce-kit-store-health.php' );
+vst_assert_true( false !== strpos( $dashboard_source, $navigation . '::get_settings_url()' ), 'Dashboard uses shared native resolver' );
+vst_assert_same( 2, substr_count( $health_source, $navigation . '::get_settings_url()' ), 'Both Store Health BACS actions use shared native resolver' );
+vst_assert_true( false === strpos( $dashboard_source . $health_source, 'section=bacs' ), 'No duplicated hard-coded BACS route in navigation consumers' );
+unset( $GLOBALS['vst_wc'] );
+
 $ui = new Yoohw_Vietnam_Store_Tools_BACS_VietQR();
 $preserved = [ 'enabled' => 'yes', 'title' => 'Core title', 'unknown_extension' => [ 'keep' => true ], Yoohw_Vietnam_Store_Tools_BACS_VietQR::SETTING_TRANSFER_CONTENT => 'KEEP-{order_number}' ];
 $GLOBALS['vst_options']['woocommerce_bacs_settings'] = $preserved;
