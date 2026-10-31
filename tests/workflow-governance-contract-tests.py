@@ -171,6 +171,35 @@ def main() -> int:
     if "Closes #N" not in workflow or "Closes #N" not in template:
         raise AssertionError("Governed PRs must be directed to link the same Issue for closure")
 
+    # The Codex-led candidate must not remove its own admitted-base review gates.
+    for name, source in (("AGENTS.md", entrypoint), ("docs/workflow.md", workflow)):
+        for clause in (
+            "aa1b95855c5c8dc939fb9894b6232a7eae2d9965",
+            "Acceptance Review VST-102",
+            "Merge VST-102",
+            "ChatGPT is not a required participant",
+            "HUMAN_DECISION_REQUIRED",
+            "READY_FOR_HUMAN_MERGE",
+            "separate checkout",
+        ):
+            if clause not in source:
+                raise AssertionError(f"{name} lost delivery/admission contract: {clause}")
+    for clause in (
+        "before runtime implementation",
+        "complexity budget and stop-loss",
+        "Missing mandatory independent review",
+        "payment execution or financial integrity",
+        "order/customer data integrity or privacy",
+        "Any candidate movement invalidates",
+        "exact head's risk-matched deep/final CI",
+        "Only explicit Human merge authorization permits merge",
+    ):
+        if clause not in workflow:
+            raise AssertionError(f"Workflow lost execution/safety contract: {clause}")
+    for clause in ("Blocking findings and corrections", "NOT RUN", "reviewed SHA"):
+        if clause not in template:
+            raise AssertionError(f"PR template lost evidence contract: {clause}")
+
     # General governance reads Issue identity but never fetches lifecycle comments.
     fetched = []
     class IssueOnlyClient:
