@@ -1,35 +1,43 @@
 # Free-VST Project Instructions
 
-These instructions apply to the entire `yoohw-vietnam-store-tools` repository. Read [the canonical workflow](docs/workflow.md) before running a governed task. GitHub Issue `#N` is task `VST-N`; start from the Issue and recover its current PR, head, base, CI, and review evidence.
+These instructions apply to the entire `yoohw-vietnam-store-tools` repository. Read [the canonical workflow](docs/workflow.md) before governed work. GitHub Issue `#N` remains task `VST-N`; recover its current PR, base/head, CI, reviews and Human decisions first. The PR is the primary execution record.
 
 ## Authority and roles
 
 - This repository is the official source of truth for Vietnam Store Toolkit for WooCommerce. Do not implement plugin changes in the Vietnam Store website project.
-- Human owns product decisions, unresolved trade-offs, Merge, version and release decisions, production actions, and WordPress.org publication.
-- Codex alone implements repository changes, validates them, maintains the PR, and orchestrates independent Technical Review.
-- ChatGPT frames tasks, reviews genuinely unresolved plans, performs a fresh standalone Technical Review when `Review VST-N` is the manual fallback, and performs separate external Acceptance Review. It may post durable Issue/PR review evidence, but must not mutate implementation branches, files, commits, pushes, or PR source/body/state as the implementer, or review its own implementation.
-- GitHub is the durable task and execution record. A tool's write capability does not change role ownership.
-- The public site is `https://vietnamstore.org/`; the plugin listing is `https://wordpress.org/plugins/yoohw-vietnam-store-tools/`. Publication requires an explicit Human release instruction.
+- Human owns product acceptance, unresolved product/scope/safety decisions, merge approval, versions/releases, production actions and WordPress.org publication.
+- Codex owns task framing, risk, technical planning/architecture, implementation, validation, proportional review, corrections, acceptance evidence, coordination and PR upkeep. One lead remains accountable for delegated work.
+- Subagents perform bounded work with appropriate independence and evidence; they add no approval stage. For future work after VST-102 merges, ChatGPT is not a required participant or approval handoff.
+- GitHub is the durable evidence record. Tool access does not change authority. These roles take precedence over generic global role descriptions.
+- The public site is `https://vietnamstore.org/`; the plugin listing is `https://wordpress.org/plugins/yoohw-vietnam-store-tools/`. Publication requires explicit Human release scope.
+
+## Admission and recovery
+
+- Every workflow-governance semantic amendment follows the workflow accepted on its admitted base through Human merge. Unmerged text cannot authorize, waive, downgrade, or redefine its own gates.
+- VST-102 stays Controlled under base `aa1b95855c5c8dc939fb9894b6232a7eae2d9965`, including fresh exact-SHA independent Technical Review, separate external ChatGPT `Acceptance Review VST-102`, then explicit Human `Merge VST-102`. Its candidate rules cannot waive those requirements.
+- For future ordinary tasks, Codex handles planning, review and corrections internally through the Human boundary. Recover both PR conversation comments and review submissions, by time and exact-head applicability; preserve Human decisions and unresolved findings. Historical handoffs do not hide newer evidence.
+- Resolve short commands from the conversation/GitHub when unambiguous: `Codex - Continue VST-N`, `Codex - Review VST-N`, `Human - Decide VST-N`, `Human - Merge PR #N`. Preserve legacy aliases and admitted-base exceptions as described in the workflow.
+
+## Scope, risk, and review
+
+- Use one task = one draft PR by default; split only at a real semantic/review boundary. Use the existing Issue/PR for briefs/plans; add no registry or planning document that mirrors history.
+- Use Fast or Controlled plus a proportional Structural, Functional, Safety-critical or Release review profile. Controlled includes checkout/Store API, payments/VietQR/PayPal, shipping/tracking, invoices, order/customer data/HPOS, persistence/migrations, security/uploads, public contracts/compatibility, release semantics and cross-feature architecture. Semantic governance amendments remain Controlled.
+- Record a Controlled plan before runtime implementation, with invariants, scenarios where ambiguous, validation, complexity budget and stop-loss. Revise unexpected persistence/locking/recovery/destructive architecture with proportional independent critique. Ask Human only for reserved scope/product/safety decisions or genuinely blocking missing information.
+- Fresh independent review is mandatory for materially safety-critical Controlled behavior, including payment/data integrity, persistence/schema, authorization, destructive work, concurrency/replay and recovery. Use a fresh context, read-only separate checkout and exact head; never have an implementer independently approve their own work. Missing required evidence means unfinished work.
+- Candidate movement invalidates prior review/acceptance applicability and handoffs. Review corrections as a delta with affected invariants and a new exact-head result; rerun applicable checks. Advisory-only findings do not create another correction gate.
+- Delegate bounded tasks proportionally. Sol is the default; choose supported effort by actual need. Bounded Astra escalation needs a concrete technical reason; the workflow authorizes subagent model/effort choices without another approval. Never claim an unavailable runtime switch. Follow the canonical workflow for details.
 
 ## Git and worktree safety
 
-- Inspect `git status -sb`, branch, remote, and relevant diff before staging or committing. Preserve unrelated modified or untracked work.
-- Use a separate worktree or clean checkout for concurrent tasks. Start version work from the latest `origin/main` after a fast-forward-only local `main` update. Use `release/<version>` for official integration, `agent/<version>-<scope>` for version-bound tasks, or `agent/<scope>` for independent governance/tooling work.
-- Never push directly to `main`, force push, rewrite shared history, perform destructive resets, or weaken branch protection. Stage explicit files; use `git add -A` only after Human confirmation that the whole working tree belongs to one change.
-- Push a task branch and open/update a draft PR into the intended base. Do not replace or close an existing PR until the replacement is pushed and verified complete.
-- Delete only verified merged, same-repository disposable `agent/*` heads when no other open PR uses them. Retain `main` and every `release/*` branch; keep repository-wide `delete_branch_on_merge` disabled. Use the selective cleanup workflow and its evidence requirements for stale branches.
+- Inspect `git status -sb`, branch, remote and relevant diff before staging/committing. Preserve unrelated work; stage explicit files. Use `git add -A` only after Human confirms the whole tree belongs to one change.
+- Use separate worktrees/clean checkouts for concurrent tasks. Start version work from latest `origin/main` after a fast-forward-only local `main` update. Use `release/<version>` for official integration, `agent/<version>-<scope>` for version-bound tasks or `agent/<scope>` for independent work.
+- Never push directly to main, force push, rewrite shared history, destructively reset or weaken protection. Push the task branch and open/update a draft PR; verify a replacement before closing the original.
+- Delete only verified merged same-repository disposable `agent/*` heads unused by another open PR. Retain main and every `release/*`; keep `delete_branch_on_merge` disabled. Follow the existing selective/stale cleanup policy and evidence requirements.
 
-## Commands, risk, and review
+## Validation, handoffs, and release
 
-- Canonical Human commands: `Create ...`, `Run VST-N`, `Continue VST-N`, `Plan Review VST-N`, `Review VST-N` (manual Technical Review fallback), `Acceptance Review VST-N`, `Merge VST-N`, and eligible `Finalize VST-N`. Short legacy aliases work only when one task is unambiguous.
-- Classify each task as Fast or Controlled. Controlled includes checkout/Store API, payment/VietQR/PayPal, shipping/tracking, e-invoice, order/customer data and HPOS, persistence/schema/migration, security/capabilities/uploads, public contracts/compatibility, release semantics, and cross-feature architecture. A Controlled plan review is needed only for a genuinely unresolved boundary; governance amendments always require Controlled review.
-- Every workflow-governance semantic amendment follows the workflow accepted on its admitted base through Human merge. Its unmerged candidate text cannot authorize, waive, downgrade, or redefine its own gates.
-- Use phase-based compute and the fresh independent Technical Reviewer described in [the workflow](docs/workflow.md). A candidate SHA change invalidates prior Technical Review and Acceptance.
-- Navigation status text guides the next command; it is not a state database. The Issue boundary, Git objects, PR/base/head, CI, exact-SHA review evidence, and explicit Human commands determine authority.
-- After a Human-authorized merge is observed, verify the canonical Issue is closed as completed; close it explicitly if needed before reporting `FINALIZED`. Never close it before the merge succeeds.
-
-## Validation and release boundary
-
-- Before commit or push, lint each changed PHP file with a compatible runtime; run email placeholder tests for email behavior changes; validate changed JSON/block metadata; check version consistency; run `git diff --check`; inspect the complete staged diff for secrets, local paths, generated junk, and unrelated files. Run relevant WordPress/WooCommerce checks for admin, checkout, order, email, upload, or HPOS changes. Record unavailable required checks accurately in the PR.
-- Preserve VST staged CI, `VST Required Gate`, PHP matrix, localization and translation-runtime checks, strict Plugin Check, product contract suites, and WordPress.org publication validation.
-- Do not change Stable tag, finalize changelog date, tag, deploy, or publish merely because a PR is merged. Release preparation must update all applicable version sources together while Stable tag stays at the last public version until an explicit release.
+- Before commit/push, lint changed PHP with a compatible runtime, run email placeholder tests for email changes, validate changed JSON/block metadata, check version consistency, run `git diff --check` and inspect the complete staged diff for secrets, local paths, generated junk and unrelated files. Add relevant WordPress/WooCommerce runtime evidence for affected behavior.
+- Preserve staged CI, `VST Required Gate`, PHP matrix, localization/translation-runtime, strict Plugin Check, product contracts and WordPress.org publication validation. Mark ready-for-review and wait for exact-head applicable final CI before merge readiness. Record unavailable checks as `NOT RUN — reason`.
+- For future tasks, use only `HUMAN_DECISION_REQUIRED` or `READY_FOR_HUMAN_MERGE` for Human handoffs. End a final response with one copy-ready `Next: <Target> - <short command>` when a clear next action exists, matching the durable handoff. Internal work does not require Human relays. VST-102 retains its admitted-base handoff protocol through merge.
+- Link the same canonical Issue with `Closes #N`. After an explicitly authorized merge succeeds, verify the Issue is closed as completed, closing it explicitly if needed. Never close it before merge or report `FINALIZED` while it is open.
+- Do not change Stable tag, finalize changelog date, tag, deploy or publish merely because a PR merged. Release preparation updates all applicable version sources together; Stable tag stays at the last public version until explicit Human release scope.

@@ -1,43 +1,60 @@
 ## Goal
 
-<!-- What observable result should this PR achieve? -->
+<!-- Observable result. -->
 
 ## Scope
 
-<!-- Summarize what is in scope and any important exclusions. -->
+<!-- Scope and important exclusions. -->
 
 ## Risk lane
-
-<!-- Select exactly one. -->
 
 - [ ] Fast
 - [ ] Controlled
 
-## Task identity
+## Validation/review profile
+
+- [ ] Structural
+- [ ] Functional
+- [ ] Safety-critical
+- [ ] Release
+
+## Task identity and plan
 
 - Task / issue: VST-
 - Implementation owner: Codex
+- Plan / binding Human decisions:
 
-<!-- Every governed implementation PR must identify one readable, open canonical Issue. Issue #N is task VST-N. Add a same-Issue closing line such as Closes #N with the actual Issue number. After the authorized merge succeeds, verify the Issue is closed as completed and close it explicitly if needed before reporting FINALIZED; do not rely solely on auto-close for release branches. Keep the risk lane and Codex implementation owner accurate. Draft PRs stay on quick CI; ready_for_review triggers risk-matched deep CI. PR prose does not authorize Plan Review, Technical Review, Acceptance, Merge, or release. VST-47 itself remains governed by its admitted current workflow through Human merge. -->
+<!-- One readable, open canonical Issue is required. Add Closes #N for the same Issue. Record the Controlled plan in the Issue or here before runtime implementation, including invariants, ambiguous scenarios, complexity budget and stop-loss. No separate plan-approval Issue is needed. -->
+<!-- Every governance amendment follows its admitted base through Human merge; candidate text cannot waive its own gates. VST-102 requires independent Technical Review and separate external Acceptance Review before Human merge. -->
 
-## Changes
+## Changes and affected invariants
 
 -
 
 ## Validation
 
-<!-- List only checks that actually ran. Prefer scope-driven local checks; do not duplicate a CI compatibility/runtime matrix as local evidence unless it actually ran locally. Use `NOT RUN — reason` for unavailable checks. -->
+<!-- Only checks that actually ran. Do not claim the CI matrix ran locally. -->
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+|  | PASS / NOT RUN — reason |  |
+
+## Blocking findings and corrections
+
+<!-- When required, identify the fresh independent reviewer, exact reviewed SHA, findings/corrections and new-head delta review. Advisory-only findings do not block. -->
 
 -
 
 ## Runtime evidence / limitations
 
-<!-- Required for runtime-sensitive changes. Use `Not applicable` only when genuinely static/non-runtime work. -->
+<!-- Relevant WordPress/WooCommerce evidence for runtime-sensitive changes; otherwise Not applicable. -->
 
 -
 
-## Release boundary
+## Release boundary and handoff
 
-<!-- State whether this PR changes version/release metadata. Publishing to WordPress.org, creating release tags, deployment, or other production actions require explicit Human scope. -->
+<!-- State version/release effects. Tags, Stable tag, publication and production actions require explicit Human scope. -->
+<!-- Draft PRs use quick CI; ready_for_review activates applicable deep/final CI. Before READY_FOR_HUMAN_MERGE, resolve blockers and required review, wait for exact-head final CI, and post one canonical top-level handoff with SHA/evidence and Next: Human - Merge PR #N. Reserved decisions use HUMAN_DECISION_REQUIRED and Next: Human - Decide VST-N. Unmerged governance amendments retain admitted-base handoffs. -->
+<!-- After the authorized merge succeeds, verify the Issue is closed as completed, closing explicitly if needed (including release branches), before reporting FINALIZED. Never close before merge. -->
 
 -
