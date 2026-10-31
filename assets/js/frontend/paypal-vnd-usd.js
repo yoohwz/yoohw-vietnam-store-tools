@@ -47,19 +47,19 @@
 			note.className = 'yoohw-paypal-usd-disclosure';
 			paymentBox.insertBefore( note, paymentBox.firstChild );
 		}
-		note.textContent = message();
-		note.hidden = ! quoteValid || selectedGateway() !== config.gatewayId;
+		note.textContent = quoteValid ? message() : config.i18n.quoteError;
+		note.hidden = selectedGateway() !== config.gatewayId;
 	}
 
 	function blockDisclosure() {
 		var active = selectedGateway();
-		var containers = document.querySelectorAll( '.wc-block-components-radio-control__option, .wc-block-checkout__payment-method' );
+		var controls = document.querySelectorAll( 'input[value="' + config.gatewayId + '"]' );
 
-		containers.forEach( function( container ) {
-			var control = container.querySelector( 'input[value="' + config.gatewayId + '"]' );
+		controls.forEach( function( control ) {
+			var container = control.closest( '.wc-block-components-radio-control__option, .wc-block-checkout__payment-method' );
 			var note;
 
-			if ( ! control ) {
+			if ( ! container ) {
 				return;
 			}
 			note = container.querySelector( '.yoohw-paypal-usd-disclosure' );
@@ -68,8 +68,8 @@
 				note.className = 'yoohw-paypal-usd-disclosure';
 				container.appendChild( note );
 			}
-			note.textContent = message();
-			note.hidden = ! quoteValid || active !== config.gatewayId;
+			note.textContent = quoteValid ? message() : config.i18n.quoteError;
+			note.hidden = active !== config.gatewayId;
 		} );
 	}
 
@@ -81,6 +81,21 @@
 
 	function placeOrderAvailability() {
 		var selected = selectedGateway() === config.gatewayId;
+		var stores = window.wc && window.wc.wcBlocksData;
+		var validationStore = stores && stores.validationStore;
+		var errorKey = 'yoohw-paypal-usd-quote';
+		var currentError;
+
+		if ( validationStore && wp && wp.data ) {
+			currentError = wp.data.select( validationStore ).getValidationError( errorKey );
+			if ( selected && ! quoteValid && ! currentError ) {
+				var errors = {};
+				errors[ errorKey ] = { message: config.i18n.quoteError, hidden: true };
+				wp.data.dispatch( validationStore ).setValidationErrors( errors );
+			} else if ( ( ! selected || quoteValid ) && currentError ) {
+				wp.data.dispatch( validationStore ).clearValidationError( errorKey );
+			}
+		}
 		var buttons = document.querySelectorAll( '#place_order, .wc-block-components-checkout-place-order-button' );
 
 		buttons.forEach( function( button ) {
@@ -156,13 +171,34 @@
 	if ( wp && wp.data && wp.data.subscribe ) {
 		wp.data.subscribe( function() {
 			var fingerprint = blocksCartFingerprint();
+			var changed = fingerprint && lastCartFingerprint && fingerprint !== lastCartFingerprint;
+			lastCartFingerprint = fingerprint || lastCartFingerprint;
 			render();
-			if ( fingerprint && lastCartFingerprint && fingerprint !== lastCartFingerprint ) {
+			if ( changed ) {
 				refreshQuote();
 			}
-			lastCartFingerprint = fingerprint || lastCartFingerprint;
 		} );
 	}
 
-	document.addEventListener( 'DOMContentLoaded', render );
+	// Blocks can mount its payment rows after the last store notification.
+	var checkoutRoot = document.querySelector( '.wp-block-woocommerce-checkout' );
+	if ( checkoutRoot && window.MutationObserver ) {
+		new window.MutationObserver( function( records ) {
+			var selector = 'input[value="' + config.gatewayId + '"]';
+			var paymentRowAdded = records.some( function( record ) {
+				return Array.prototype.some.call( record.addedNodes, function( node ) {
+					return node.nodeType === 1 && ( node.matches( selector ) || node.querySelector( selector ) );
+				} );
+			} );
+			if ( paymentRowAdded ) {
+				render();
+			}
+		} ).observe( checkoutRoot, { childList: true, subtree: true } );
+	}
+
+	if ( document.readyState === 'loading' ) {
+		document.addEventListener( 'DOMContentLoaded', render );
+	} else {
+		render();
+	}
 } )( jQuery, window.wp );

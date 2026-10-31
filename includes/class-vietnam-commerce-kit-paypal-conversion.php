@@ -28,12 +28,17 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
 	private $adapter_incompatible        = false;
 	private $adapter_ready               = false;
+	private $refund_adapter_ready        = false;
+	private $legacy_stack_selected       = false;
 	private $adapter_reason              = 'NOT_EVALUATED';
 	private $adapter_probe               = '';
 	private $store_api_checkout_request = false;
+	private $store_api_cart_request     = false;
 	private $create_guard_token          = '';
 
 	public function __construct() {
+		add_filter( 'woocommerce.feature-flags.woocommerce_paypal_payments.sdk_v6_enabled', array( $this, 'select_legacy_checkout_stack' ), PHP_INT_MAX );
+		add_filter( 'woocommerce_payment_gateway_supports', array( $this, 'guard_automatic_refunds' ), 40, 3 );
 		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'filter_available_gateways' ), 40 );
 		add_filter( 'woocommerce_paypal_payments_use_place_order_button', array( $this, 'force_place_order_button' ), 40 );
 		add_filter( 'woocommerce_paypal_payments_blocks_add_place_order_method', array( $this, 'force_blocks_place_order_method' ), 40 );
@@ -57,7 +62,33 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		add_action( 'shutdown', array( $this, 'recover_failed_create_attempt' ), 0 );
 
 		// PPCP invokes this only after its own autoloader has become available.
-		add_filter( 'woocommerce_paypal_payments_modules', array( $this, 'register_ppcp_module' ), 30 );
+		add_filter( 'woocommerce_paypal_payments_modules', array( $this, 'register_ppcp_module' ), PHP_INT_MAX );
+		add_action( 'woocommerce_paypal_payments_built_container', array( $this, 'verify_checkout_stack' ) );
+	}
+
+	/** Select the stack before PPCP creates its modules, without changing merchant settings. */
+	public function select_legacy_checkout_stack( $enabled ) {
+		if ( 'VND' === get_woocommerce_currency() && self::is_enabled() ) {
+			$this->legacy_stack_selected = true;
+			return false;
+		}
+		return $enabled;
+	}
+
+	/** Check the final built stack too, including modules appended by other filters. */
+	public function verify_checkout_stack( $container ) {
+		if ( 'VND' === get_woocommerce_currency() && self::is_enabled()
+			&& ( ! $this->legacy_stack_selected || ! is_object( $container ) || ! is_callable( array( $container, 'has' ) ) || $container->has( 'sdk-v6.manager' ) ) ) {
+			$this->fail_adapter_probe( 'INCOMPATIBLE_CHECKOUT_STACK', 'sdk-v6-enabled' );
+		}
+	}
+
+	/** WooCommerce checks this before dispatching an automatic gateway refund. */
+	public function guard_automatic_refunds( $supported, $feature, $gateway ) {
+		if ( 'refunds' === $feature && is_object( $gateway ) && self::GATEWAY_ID === ( $gateway->id ?? '' ) && ! $this->refund_adapter_ready ) {
+			return false;
+		}
+		return $supported;
 	}
 
 	public static function is_enabled() {
@@ -136,11 +167,11 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			}
 			return $gateways;
 		}
-		if ( ! $this->is_supported_checkout_context() || $this->cart_contains_subscription() ) {
+		if ( ( ! $this->is_supported_checkout_context() && ! $this->store_api_cart_request ) || $this->cart_contains_subscription() ) {
 			unset( $gateways[ self::GATEWAY_ID ] );
 			return $gateways;
 		}
-		if ( is_wp_error( $this->get_or_refresh_attempt() ) ) {
+		if ( ! $this->store_api_cart_request && is_wp_error( $this->get_or_refresh_attempt() ) ) {
 			unset( $gateways[ self::GATEWAY_ID ] );
 			return $gateways;
 		}
@@ -159,12 +190,14 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		unset( $handler );
 		$route = is_object( $request ) && is_callable( array( $request, 'get_route' ) ) ? (string) $request->get_route() : '';
 		$this->store_api_checkout_request = 1 === preg_match( '#^/wc/store/v[0-9]+/checkout/?$#', $route );
+		$this->store_api_cart_request     = 1 === preg_match( '#^/wc/store/v[0-9]+/cart(?:/[^?]*)?/?$#', $route );
 		return $response;
 	}
 
 	public function clear_store_api_checkout_request( $response, $handler, $request ) {
 		unset( $handler, $request );
 		$this->store_api_checkout_request = false;
+		$this->store_api_cart_request     = false;
 		return $response;
 	}
 
@@ -186,6 +219,10 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	public function convert_create_order_payload( $data, $payment_method, $request_data ) {
+		// PPCP exposes PaymentSource::properties() as a stdClass at this public filter.
+		if ( self::GATEWAY_ID === $payment_method && self::is_active_configuration() && isset( $data['payment_source']['paypal'] ) && $data['payment_source']['paypal'] instanceof stdClass ) {
+			$data['payment_source']['paypal'] = (array) $data['payment_source']['paypal'];
+		}
 		if ( ! $this->should_convert_request( $data, $payment_method, $request_data ) ) {
 			return $data;
 		}
@@ -428,7 +465,11 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		if ( ! file_exists( $path ) ) {
 			return;
 		}
-		wp_enqueue_script( 'yoohw-vietnam-store-tools-paypal-vnd-usd', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/frontend/paypal-vnd-usd.js', array( 'jquery', 'wp-data' ), YOOHW_VIETNAM_STORE_TOOLS_VERSION, true );
+		$dependencies = array( 'jquery', 'wp-data' );
+		if ( wp_script_is( 'wc-blocks-data-store', 'registered' ) ) {
+			$dependencies[] = 'wc-blocks-data-store';
+		}
+		wp_enqueue_script( 'yoohw-vietnam-store-tools-paypal-vnd-usd', YOOHW_VIETNAM_STORE_TOOLS_PLUGIN_URL . 'assets/js/frontend/paypal-vnd-usd.js', $dependencies, YOOHW_VIETNAM_STORE_TOOLS_VERSION, true );
 		wp_localize_script(
 			'yoohw-vietnam-store-tools-paypal-vnd-usd',
 			'yoohwVietnamStoreToolsPayPalUsd',
@@ -439,7 +480,10 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 				'nonce'     => wp_create_nonce( 'yoohw_paypal_usd_quote' ),
 				// translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
-				'i18n'      => array( 'label' => __( 'PayPal will charge %1$s USD (1 USD = %2$s VND).', 'yoohw-vietnam-store-tools' ) ),
+				'i18n'      => array(
+					'label' => __( 'PayPal will charge %1$s USD (1 USD = %2$s VND).', 'yoohw-vietnam-store-tools' ),
+					'quoteError' => __( 'The PayPal USD amount changed during checkout. Please refresh the checkout and try again.', 'yoohw-vietnam-store-tools' ),
+				),
 			)
 		);
 	}
@@ -502,6 +546,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 
 	public function register_ppcp_module( $modules ) {
 		$this->adapter_ready = false;
+		$this->refund_adapter_ready = false;
 		$this->adapter_incompatible = false;
 		$this->adapter_reason = 'NOT_EVALUATED';
 		$this->adapter_probe = '';
@@ -519,8 +564,6 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Payments',
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\RefundCapture',
 			'WooCommerce\\PayPalCommerce\\ApiClient\\Exception\\RuntimeException',
-			'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
-			'WooCommerce\\PayPalCommerce\\SdkV6\\Blocks\\V6PaymentMethod',
 			'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
 		);
 		foreach ( $required as $class ) {
@@ -545,13 +588,26 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		if ( class_exists( 'Yoohw_Vietnam_Store_Tools_PayPal_PPCP_Module' ) ) {
 			$modules[] = new Yoohw_Vietnam_Store_Tools_PayPal_PPCP_Module();
 			$this->adapter_incompatible = false;
+			$this->refund_adapter_ready = true;
 			$this->adapter_ready        = true;
 			$this->adapter_reason       = 'COMPATIBLE';
 			$this->adapter_probe        = '';
 		} else {
 			$this->fail_adapter_probe( 'INCOMPATIBLE_ADAPTER', 'adapter-module' );
 		}
+		if ( $this->adapter_ready && 'VND' === get_woocommerce_currency() && self::is_enabled() && ( ! $this->legacy_stack_selected || $this->has_sdk_v6_services( $modules ) ) ) {
+			$this->fail_adapter_probe( 'INCOMPATIBLE_CHECKOUT_STACK', 'sdk-v6-enabled' );
+		}
 		return $modules;
+	}
+
+	private function has_sdk_v6_services( $modules ) {
+		foreach ( $modules as $module ) {
+			if ( $module instanceof \WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ServiceModule && array_key_exists( 'sdk-v6.manager', $module->services() ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private function has_required_ppcp_services( $modules ) {
@@ -594,36 +650,13 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	private function required_ppcp_service_types() {
-		// save-payment-methods.eligible is intentionally optional; the adapter
-		// checks ContainerInterface::has() and falls back to disabled vaulting.
 		return array(
-			'api.endpoint.order'                            => 'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\OrderEndpoint',
-			'api.endpoint.payments'                         => 'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\PaymentsEndpoint',
-			'api.prefix'                                    => 'string',
-			'button.helper.context'                         => 'WooCommerce\\PayPalCommerce\\Button\\Helper\\Context',
-			'button.subscriptions-mode'                     => 'callable',
-			'ppcp.asset-version'                            => 'string',
-			'sdk-v6.apple-pay-config'                       => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ApplePayConfig',
-			'sdk-v6.asset-getter'                           => 'WooCommerce\\PayPalCommerce\\Assets\\AssetGetter',
-			'sdk-v6.button-style-mapper'                    => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ButtonStyleMapper',
-			'sdk-v6.card-field-styles'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\CardFieldStyles',
-			'sdk-v6.fastlane-config'                        => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\FastlaneConfig',
-			'sdk-v6.google-pay-config'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\GooglePayConfig',
+			'api.endpoint.order'                             => 'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\OrderEndpoint',
+			'api.endpoint.payments'                          => 'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\PaymentsEndpoint',
+			'api.prefix'                                     => 'string',
 			'wcgateway.processor.refunds'                    => 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor',
-			'sdk-v6.manager'                                  => 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager',
-			'sdk-v6.message-style-mapper'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessageStyleMapper',
-			'sdk-v6.messages-eligibility'                      => 'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessagesEligibility',
-			'session.cancellation.view'                        => 'WooCommerce\\PayPalCommerce\\Session\\Cancellation\\CancelView',
-			'session.handler'                                  => 'WooCommerce\\PayPalCommerce\\Session\\SessionHandler',
-			'settings.environment'                             => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\Environment',
-			'settings.settings-provider'                       => 'WooCommerce\\PayPalCommerce\\Settings\\Data\\SettingsProvider',
-			'wc-subscriptions.free-trial-subscription-helper' => 'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\FreeTrialSubscriptionHelper',
-			'wc-subscriptions.helper'                          => 'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\SubscriptionHelper',
-			'wcgateway.configuration.card-configuration'      => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\CardPaymentsConfiguration',
-			'wcgateway.credit-card-icons'                      => 'array',
-			'wcgateway.helper.refund-fees-updater'             => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\RefundFeesUpdater',
-			'wcgateway.settings.status'                        => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\SettingsStatus',
-			'woocommerce.logger.woocommerce'                   => 'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
+			'wcgateway.helper.refund-fees-updater'           => 'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\RefundFeesUpdater',
+			'woocommerce.logger.woocommerce'                 => 'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
 		);
 	}
 
@@ -656,44 +689,11 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	private function has_supported_ppcp_signatures() {
 		$this->adapter_probe = 'PPCP-signatures';
 		try {
-			$sdk_class                   = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\SdkV6\\Assets\\SdkV6Manager' );
-			$refund_class                = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor' );
-			$settings_class              = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\Settings\\Data\\SettingsProvider' );
-			$sdk_method                  = $this->get_signature_method( $sdk_class, 'script_data' );
-			$sdk_page_method             = $this->get_signature_method( $sdk_class, 'should_load_on_current_page' );
-			$sdk_render_places_method    = $this->get_signature_method( $sdk_class, 'determine_render_places' );
-			$sdk_card_wrapper_method     = $this->get_signature_method( $sdk_class, 'render_card_button_wrapper' );
-			$refund_method               = $this->get_signature_method( $refund_class, 'refund' );
-			$refund_payments_method      = $this->get_signature_method( $refund_class, 'get_payments' );
-			$sdk_constructor             = $sdk_class->getConstructor();
-			$refund_constructor          = $refund_class->getConstructor();
+			$refund_class           = new ReflectionClass( 'WooCommerce\\PayPalCommerce\\WcGateway\\Processor\\RefundProcessor' );
+			$refund_method          = $this->get_signature_method( $refund_class, 'refund' );
+			$refund_payments_method = $this->get_signature_method( $refund_class, 'get_payments' );
+			$refund_constructor     = $refund_class->getConstructor();
 
-			$sdk_constructor_types = array(
-				'WooCommerce\\PayPalCommerce\\Assets\\AssetGetter',
-				'string',
-				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\Environment',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ButtonStyleMapper',
-				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\SettingsStatus',
-				'WooCommerce\\PayPalCommerce\\Button\\Helper\\Context',
-				'WooCommerce\\PayPalCommerce\\Session\\SessionHandler',
-				'WooCommerce\\PayPalCommerce\\Session\\Cancellation\\CancelView',
-				'bool',
-				'bool',
-				'WooCommerce\\PayPalCommerce\\WcGateway\\Helper\\CardPaymentsConfiguration',
-				'bool',
-				'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\SubscriptionHelper',
-				'WooCommerce\\PayPalCommerce\\WcSubscriptions\\Helper\\FreeTrialSubscriptionHelper',
-				'callable',
-				'string',
-				'array',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessageStyleMapper',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\MessagesEligibility',
-				'string',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\GooglePayConfig',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\ApplePayConfig',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\FastlaneConfig',
-				'WooCommerce\\PayPalCommerce\\SdkV6\\Helper\\CardFieldStyles',
-			);
 			$refund_constructor_types = array(
 				'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\OrderEndpoint',
 				'WooCommerce\\PayPalCommerce\\ApiClient\\Endpoint\\PaymentsEndpoint',
@@ -702,17 +702,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 				'WooCommerce\\PayPalCommerce\\Vendor\\Psr\\Log\\LoggerInterface',
 			);
 
-			$matches = $this->is_extendable_ppcp_class( $sdk_class )
-				&& $this->is_extendable_ppcp_class( $refund_class )
-				&& $this->callable_method_matches( $this->get_signature_method( $settings_class, 'enable_pay_now' ), array(), 'bool' )
-				&& $this->callable_method_matches( $this->get_signature_method( $settings_class, 'save_paypal_and_venmo' ), array(), 'bool' )
-				&& $this->callable_method_matches( $this->get_signature_method( $settings_class, 'save_card_details' ), array(), 'bool' )
-				&& $this->callable_method_matches( $this->get_signature_method( $settings_class, 'three_d_secure_enum' ), array(), 'string' )
-				&& $this->callable_method_matches( $this->get_signature_method( $settings_class, 'merchant_country' ), array(), 'string' )
-				&& $this->method_matches( $sdk_method, array(), 'array' )
-				&& $this->method_matches( $sdk_page_method, array(), 'bool' )
-				&& $this->method_matches( $sdk_render_places_method, array(), 'array' )
-				&& $this->method_matches( $sdk_card_wrapper_method, array(), 'void' )
+			$matches = $this->is_extendable_ppcp_class( $refund_class )
 				&& $this->method_matches(
 					$refund_method,
 					array(
@@ -729,7 +719,6 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 					'WooCommerce\\PayPalCommerce\\ApiClient\\Entity\\Payments'
 				)
 				&& ( $refund_payments_method->isProtected() || $refund_payments_method->isPublic() )
-				&& $this->constructor_matches( $sdk_constructor, $sdk_constructor_types, $sdk_class->getName() )
 				&& $this->constructor_matches( $refund_constructor, $refund_constructor_types, $refund_class->getName() );
 			if ( ! $matches ) {
 				return $this->fail_adapter_probe( 'INCOMPATIBLE_SIGNATURE', $this->adapter_probe );
@@ -835,7 +824,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 		$context        = is_array( $request_data ) ? (string) ( $request_data['context'] ?? '' ) : '';
 		$funding_source = is_array( $request_data ) ? (string) ( $request_data['funding_source'] ?? '' ) : '';
 		$payment_token  = is_array( $request_data ) ? (string) ( $request_data['wc-ppcp-gateway-payment-token'] ?? '' ) : '';
-		if ( '' !== $context || 'paypal' !== $funding_source || ( '' !== $payment_token && 'new' !== $payment_token ) ) {
+		if ( $this->store_api_cart_request || $this->cart_contains_subscription() || ( function_exists( 'is_checkout_pay_page' ) && is_checkout_pay_page() ) || '' !== $context || 'paypal' !== $funding_source || ( '' !== $payment_token && 'new' !== $payment_token ) ) {
 			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are not rendered output.
 			throw new RuntimeException( __( 'This PayPal payment flow is not supported by VND to USD conversion.', 'yoohw-vietnam-store-tools' ) );
 		}
@@ -1461,6 +1450,9 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 	}
 
 	private static function contains_key_recursive( $node, $needle ) {
+		if ( $node instanceof stdClass ) {
+			$node = (array) $node;
+		}
 		if ( ! is_array( $node ) ) {
 			return false;
 		}

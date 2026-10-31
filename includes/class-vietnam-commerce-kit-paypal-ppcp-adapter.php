@@ -1,6 +1,6 @@
 <?php
 /**
- * Lazily loaded PPCP adapter verified against the 4.1.3 integration contract.
+ * Lazily loaded PPCP refund adapter; checkout uses public PPCP filters.
  *
  * This file is included only inside PPCP's module filter, after its autoloader
  * has registered the interfaces and classes referenced below.
@@ -15,7 +15,6 @@ use WooCommerce\PayPalCommerce\ApiClient\Entity\RefundCapture;
 use WooCommerce\PayPalCommerce\ApiClient\Endpoint\OrderEndpoint;
 use WooCommerce\PayPalCommerce\ApiClient\Endpoint\PaymentsEndpoint;
 use WooCommerce\PayPalCommerce\ApiClient\Exception\RuntimeException;
-use WooCommerce\PayPalCommerce\SdkV6\Assets\SdkV6Manager;
 use WooCommerce\PayPalCommerce\Vendor\Inpsyde\Modularity\Module\ExtendingModule;
 use WooCommerce\PayPalCommerce\Vendor\Psr\Container\ContainerInterface;
 use WooCommerce\PayPalCommerce\Vendor\Psr\Log\LoggerInterface;
@@ -40,86 +39,7 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_PPCP_Module implements ExtendingMod
 					$container->get( 'woocommerce.logger.woocommerce' )
 				);
 			},
-			'sdk-v6.manager'                => static function ( $service, ContainerInterface $container ) {
-				// The constructor mirrors the capability contract introduced in PPCP 4.1.3.
-				unset( $service );
-				$settings = $container->get( 'settings.settings-provider' );
-				return new Yoohw_Vietnam_Store_Tools_PayPal_USD_SdkV6_Manager(
-					$container->get( 'sdk-v6.asset-getter' ),
-					$container->get( 'ppcp.asset-version' ),
-					$container->get( 'settings.environment' ),
-					$container->get( 'sdk-v6.button-style-mapper' ),
-					$container->get( 'wcgateway.settings.status' ),
-					$container->get( 'button.helper.context' ),
-					$container->get( 'session.handler' ),
-					$container->get( 'session.cancellation.view' ),
-					! $settings->enable_pay_now(),
-					$settings->save_paypal_and_venmo(),
-					$container->get( 'wcgateway.configuration.card-configuration' ),
-					$container->has( 'save-payment-methods.eligible' ) && $container->get( 'save-payment-methods.eligible' ) && $settings->save_card_details(),
-					$container->get( 'wc-subscriptions.helper' ),
-					$container->get( 'wc-subscriptions.free-trial-subscription-helper' ),
-					$container->get( 'button.subscriptions-mode' ),
-					$settings->three_d_secure_enum(),
-					$container->get( 'wcgateway.credit-card-icons' ),
-					$container->get( 'sdk-v6.message-style-mapper' ),
-					$container->get( 'sdk-v6.messages-eligibility' ),
-					$settings->merchant_country(),
-					$container->get( 'sdk-v6.google-pay-config' ),
-					$container->get( 'sdk-v6.apple-pay-config' ),
-					$container->get( 'sdk-v6.fastlane-config' ),
-					$container->get( 'sdk-v6.card-field-styles' )
-				);
-			},
 		);
-	}
-}
-
-final class Yoohw_Vietnam_Store_Tools_PayPal_USD_SdkV6_Manager extends SdkV6Manager {
-
-	public function __construct( ...$args ) {
-		parent::__construct( ...$args );
-	}
-
-	public function script_data(): array {
-		$data    = parent::script_data();
-		$attempt = Yoohw_Vietnam_Store_Tools_PayPal_Conversion::get_runtime_attempt();
-
-		if ( ! is_array( $attempt ) || ! isset( $attempt['preview_usd_total'] ) ) {
-			return $data;
-		}
-
-		$data['currency'] = 'USD';
-		$data['amount']   = (string) $attempt['preview_usd_total'];
-
-		return $data;
-	}
-
-	public function should_load_on_current_page(): bool {
-		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::should_suppress_ppcp_express() ) {
-			return false;
-		}
-		return parent::should_load_on_current_page();
-	}
-
-	public function determine_render_places(): array {
-		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::should_suppress_ppcp_express() ) {
-			return array(
-				'product'   => false,
-				'cart'      => false,
-				'checkout'  => false,
-				'pay-now'   => false,
-				'mini-cart' => false,
-			);
-		}
-		return parent::determine_render_places();
-	}
-
-	public function render_card_button_wrapper(): void {
-		if ( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::should_suppress_ppcp_express() ) {
-			return;
-		}
-		parent::render_card_button_wrapper();
 	}
 }
 

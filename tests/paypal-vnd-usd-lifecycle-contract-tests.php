@@ -15,7 +15,8 @@ function get_woocommerce_currency() { return 'VND'; }
 $GLOBALS['vst_is_checkout'] = true;
 function is_checkout() { return $GLOBALS['vst_is_checkout']; }
 function is_order_received_page() { return false; }
-function is_checkout_pay_page() { return false; }
+function is_checkout_pay_page() { return ! empty( $GLOBALS['vst_is_order_pay'] ); }
+function wcs_cart_contains_subscription() { return ! empty( $GLOBALS['vst_subscription_cart'] ); }
 function wp_generate_uuid4() { return '00000000-0000-4000-8000-000000000045'; }
 function wc_format_decimal( $value ) { return (string) $value; }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
@@ -204,6 +205,21 @@ vst_assert_true( isset( $store_api_available['ppcp-gateway'] ), 'Store API check
 $runtime->clear_store_api_checkout_request( null, null, new Fake_REST_Request( '/wc/store/v1/checkout' ) );
 $cart_route_available = $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) );
 vst_assert_same( false, isset( $cart_route_available['ppcp-gateway'] ), 'Non-checkout requests do not expose converted PayPal' );
+foreach ( array( '/wc/store/v1/cart', '/wc/store/v1/cart/update-customer', '/wc/store/v1/cart/apply-coupon', '/wc/store/v1/cart/remove-coupon' ) as $route ) {
+	$before_cart_attempt = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
+	$runtime->mark_store_api_checkout_request( null, null, new Fake_REST_Request( $route ) );
+	$cart_methods = $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) );
+	vst_assert_true( isset( $cart_methods['ppcp-gateway'] ), 'Store API cart representation retains PayPal: ' . $route );
+	vst_assert_same( $before_cart_attempt, WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY ), 'Cart representation never changes/locks a quote' );
+	try {
+		$runtime->convert_create_order_payload( $payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
+		vst_assert_true( false, 'Cart route must not execute conversion' );
+	} catch ( RuntimeException $error ) {
+		vst_assert_true( true, 'Cart route refuses conversion' );
+	}
+	$runtime->clear_store_api_checkout_request( null, null, new Fake_REST_Request( $route ) );
+}
+vst_assert_same( array(), $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) ), 'Cart availability context is cleared after callbacks' );
 $GLOBALS['vst_is_checkout'] = true;
 
 $GLOBALS['vst_ppcp_data_settings'] = array( 'authorize_only' => true );
@@ -257,6 +273,32 @@ try {
 	vst_assert_true( true, 'Vaulting payload fails closed' );
 }
 
+foreach ( array( 'vst_is_order_pay', 'vst_subscription_cart' ) as $unsupported_context ) {
+	$GLOBALS[ $unsupported_context ] = true;
+	try {
+		$runtime->convert_create_order_payload( $payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
+		vst_assert_true( false, $unsupported_context . ' must refuse even an empty request context' );
+	} catch ( RuntimeException $error ) {
+		vst_assert_true( true, $unsupported_context . ' is refused before creating payment' );
+	}
+	vst_assert_same( array(), $runtime->filter_available_gateways( array( 'ppcp-gateway' => (object) array() ) ), $unsupported_context . ' is unavailable at checkout' );
+	$GLOBALS[ $unsupported_context ] = false;
+}
+
+$object_vault_payload = $payload;
+$object_vault_payload['payment_source']['paypal'] = (object) array( 'attributes' => (object) array( 'vault' => (object) array( 'store_in_vault' => 'ON_SUCCESS' ) ) );
+try {
+	$runtime->convert_create_order_payload( $object_vault_payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
+	vst_assert_true( false, 'Nested object vaulting must fail closed' );
+} catch ( RuntimeException $error ) {
+	vst_assert_true( true, 'Nested object vaulting fails closed' );
+}
+$object_payload = $payload;
+$object_payload['payment_source']['paypal'] = (object) $object_payload['payment_source']['paypal'];
+$object_converted = $runtime->convert_create_order_payload( $object_payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
+vst_assert_same( 'USD', $object_converted['purchase_units'][0]['amount']['currency_code'], 'Real PPCP stdClass payment source is accepted without weakening amount checks' );
+vst_assert_true( false !== strpos( $object_converted['payment_source']['paypal']['experience_context']['cancel_url'], 'yoohw-paypal-usd-cancel=' ), 'Object payment source retains authenticated attempt cancellation' );
+$runtime->recover_failed_create_attempt();
 $converted = $runtime->convert_create_order_payload( $payload, 'ppcp-gateway', array( 'funding_source' => 'paypal' ) );
 $attempt   = WC()->session->get( Yoohw_Vietnam_Store_Tools_PayPal_Conversion::ATTEMPT_KEY );
 $cancel_url = $converted['payment_source']['paypal']['experience_context']['cancel_url'];

@@ -215,12 +215,11 @@ vst_assert_true( false !== strpos( $runtime, "'woocommerce-ppcp-data-settings'" 
 vst_assert_true( false !== strpos( $admin, "paypal_conversion[rate]" ) && false !== strpos( $admin, 'sanitize_settings' ), 'Toolkit admin page renders and sanitizes its PayPal conversion settings' );
 vst_assert_true( false !== strpos( $admin, 'is_ppcp_plugin_active()' ) && false !== strpos( $admin, 'Available only when WooCommerce PayPal Payments is installed and active.' ), 'Toolkit hides PayPal controls and explains the dependency when PPCP is inactive' );
 vst_assert_same( false, false !== strpos( $runtime, "'woocommerce_checkout_create_order'" ), 'Snapshot persistence requires PayPal-order linkage rather than an unbound checkout hook' );
-vst_assert_true( false !== strpos( $runtime, "'wp_enqueue_scripts', array( \$this, 'prepare_checkout_attempt' ), 1" ), 'Server-owned quote is ready before PPCP enqueues SDK v6 data' );
-vst_assert_true( false !== strpos( $runtime, 'SdkV6\\\\Blocks\\\\V6PaymentMethod' ), 'Runtime capability-checks the PPCP 4.1.3+ Blocks contract lazily' );
+vst_assert_true( false !== strpos( $runtime, "'wp_enqueue_scripts', array( \$this, 'prepare_checkout_attempt' ), 1" ), 'Server-owned quote is ready before checkout assets are enqueued' );
+vst_assert_same( false, false !== strpos( $runtime . $adapter, 'SdkV6Manager' ), 'Conversion and refund adapter do not depend on the SDK manager class' );
 vst_assert_true( false !== strpos( $runtime, 'has_required_ppcp_services' ) && false !== strpos( $runtime, 'callable_returns_type' ), 'Runtime verifies the PPCP service extension seams before reporting adapter readiness' );
 vst_assert_true( false !== strpos( $runtime, 'constructor_matches' ) && false !== strpos( $runtime, 'parameters_match' ), 'Runtime verifies constructor parameter types and order instead of arity alone' );
 vst_assert_true( false !== strpos( $adapter, "'wcgateway.processor.refunds'" ), 'Adapter replaces only PPCP refund processing service' );
-vst_assert_true( false !== strpos( $adapter, "'sdk-v6.manager'" ), 'Adapter synchronizes PPCP SDK v6 data through its manager service' );
 vst_assert_true( false !== strpos( $script, 'gatewayId' ) && false !== strpos( $script, 'payment_method' ) && false !== strpos( $script, 'paymentStore' ), 'Frontend disclosure is scoped through Classic and Blocks payment selection' );
 vst_assert_true( false !== strpos( $script, 'yoohw_paypal_usd_quote' ), 'Frontend refreshes its server-owned quote after cart total changes' );
 vst_assert_true( false !== strpos( $script, 'checkout_place_order_' ) && false !== strpos( $script, 'wc-block-components-checkout-place-order-button' ), 'Classic and Blocks place-order controls wait for a current server quote' );
