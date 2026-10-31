@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.2.1\n"
+"Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
 "POT-Creation-Date: 2026-10-31T05:05:54+00:00\n"

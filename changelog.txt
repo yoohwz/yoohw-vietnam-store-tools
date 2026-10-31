@@ -1,5 +1,12 @@
 === Vietnam Store Toolkit for WooCommerce - Changelog ===
 
+= 1.2.2 (October 31, 2026) =
+
+* Fix: Corrected Vietnam store links to WooCommerce's native bank-transfer settings and return navigation.
+* Fix: Required an account number when adding or editing Vietnamese bank accounts in WooCommerce's native bank-transfer modal.
+* Compatibility: Restored guarded PayPal VND-to-USD checkout with WooCommerce PayPal Payments 4.2 using public SDK stack selection instead of depending on SdkV6Manager; retained a bounded refund adapter.
+* Fix: Improved PayPal availability, USD quote display, and failed-quote checkout protection in Classic Checkout and Checkout Blocks while preserving locked rates, VND order totals, and partial/full USD refund allocation.
+
 = 1.2.1 (October 4, 2026) =
 
 * Fix: Allowed normal WooCommerce order updates when the manual tracking field is empty, while the dedicated tracking action still requires a tracking code.
