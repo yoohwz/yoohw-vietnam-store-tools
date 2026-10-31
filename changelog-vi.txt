@@ -1,5 +1,12 @@
 === Vietnam Store Toolkit for WooCommerce - Nhật ký thay đổi tiếng Việt ===
 
+= 1.2.2 (31/10/2026) =
+
+* Sửa lỗi: Sửa các liên kết từ Vietnam store đến cài đặt Chuyển khoản ngân hàng nguyên bản của WooCommerce và điều hướng quay lại.
+* Sửa lỗi: Yêu cầu số tài khoản khi thêm hoặc sửa tài khoản ngân hàng Việt Nam trong hộp thoại Chuyển khoản ngân hàng nguyên bản của WooCommerce.
+* Tương thích: Khôi phục luồng chuyển đổi PayPal từ VND sang USD có kiểm tra an toàn với WooCommerce PayPal Payments 4.2 bằng cơ chế chọn SDK công khai thay cho phụ thuộc SdkV6Manager; giữ adapter hoàn tiền có phạm vi nhỏ.
+* Sửa lỗi: Cải thiện khả năng chọn PayPal, hiển thị báo giá USD và chặn đặt hàng khi báo giá lỗi trên Classic Checkout và Checkout Blocks, đồng thời giữ tỷ giá đã khóa, tổng đơn bằng VND và phân bổ hoàn tiền USD từng phần/toàn bộ.
+
 = 1.2.1 (04/10/2026) =
 
 * Sửa lỗi: Cho phép cập nhật đơn hàng WooCommerce bình thường khi ô mã vận đơn thủ công để trống; thao tác lưu mã vận đơn riêng vẫn yêu cầu mã vận đơn.

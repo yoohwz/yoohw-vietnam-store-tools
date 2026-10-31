@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 8.9
 WC tested up to: 11.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -164,13 +164,11 @@ Yes. The plugin is HPOS-compatible and includes Vietnamese translations for the 
 
 == Changelog ==
 
-= 1.2.1 (October 4, 2026) =
+= 1.2.2 (October 31, 2026) =
 
-* Fix: Allowed normal WooCommerce order updates when the manual tracking field is empty, while the dedicated tracking action still requires a tracking code.
-* Improve: Kept WooCommerce's native React bank-transfer settings, moved extended VietQR controls to the Vietnam store Dashboard, preserved native/third-party BACS settings, and preferred the current React-selected bank BIN over stale legacy Sort code data.
-* Fix: Improved WooCommerce PayPal Payments readiness diagnostics so bootstrap/not-evaluated states are not reported as confirmed incompatibility and failing adapter probes identify the correct contract while conversion remains fail-closed.
-* Update: Added a Payment reconciliation Core-feature toggle that defaults OFF; disabling it blocks new manual/external reconciliation writes while preserving existing history as read-only.
-* Fix: Corrected the Electronic invoice Email settings link so it opens the actual registered WooCommerce email settings form.
-* Quality: Expanded Local and disposable legacy/HPOS regression coverage, fixture isolation, cleanup verification, and release certification for the post-1.2.0 changes.
+* Fix: Corrected Vietnam store links to WooCommerce's native bank-transfer settings and return navigation.
+* Fix: Required an account number when adding or editing Vietnamese bank accounts in WooCommerce's native bank-transfer modal.
+* Compatibility: Restored guarded PayPal VND-to-USD checkout with WooCommerce PayPal Payments 4.2 using public SDK stack selection instead of depending on SdkV6Manager; retained a bounded refund adapter.
+* Fix: Improved PayPal availability, USD quote display, and failed-quote checkout protection in Classic Checkout and Checkout Blocks while preserving locked rates, VND order totals, and partial/full USD refund allocation.
 
 See `changelog.txt` for the complete change history.

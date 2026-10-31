@@ -1,5 +1,5 @@
 <?php
 return [
 	'dependencies' => [ 'wp-blocks', 'wp-element', 'wp-i18n' ],
-	'version'      => '1.2.1',
+	'version'      => '1.2.2',
 ];

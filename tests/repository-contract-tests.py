@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 # Update with readme.txt only on a reviewed release branch or during an
 # explicitly Human-authorized GA reconciliation.
-PUBLISHED_STABLE_VERSION = "1.2.1"
+PUBLISHED_STABLE_VERSION = "1.2.2"
 CHANGELOG_HISTORY_BASELINE = (
     "1.2.1",
     "1.2.0", "1.1.6", "1.1.5", "1.1.4", "1.1.3", "1.1.2", "1.1.1", "1.1.0", "1.0.2", "1.0.1", "1.0.0",
@@ -158,9 +158,13 @@ def validate_changelog_history(
 
 def exercise_history_contracts() -> None:
     """Reject representative release-boundary regressions without changing files."""
-    readme = read("readme.txt")
-    english = read("changelog.txt")
-    vietnamese = read("changelog-vi.txt")
+    # Keep mutation fixtures anchored to the locked 1.2.1 history as new releases are added.
+    english = read("changelog.txt").split("= 1.2.1", 1)[1]
+    english = "= 1.2.1" + english
+    vietnamese = read("changelog-vi.txt").split("= 1.2.1", 1)[1]
+    vietnamese = "= 1.2.1" + vietnamese
+    section = changelog_sections(english)[0][2]
+    readme = "== Changelog ==\n\n" + section + "\n\nSee `changelog.txt` for the complete change history."
     validate_changelog_history(readme, english, vietnamese, "1.2.1", "1.2.1")
 
     release_en = next(section[2] for section in changelog_sections(english) if section[0] == "1.2.1")
