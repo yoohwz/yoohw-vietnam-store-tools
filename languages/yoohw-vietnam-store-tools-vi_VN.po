@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: Vietnam Store Toolkit for WooCommerce 1.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/yoohw-vietnam-"
 "store-tools\n"
-"POT-Creation-Date: 2026-10-31T04:28:22+00:00\n"
+"POT-Creation-Date: 2026-10-31T05:05:54+00:00\n"
 "PO-Revision-Date: 2026-08-24 00:00:00+0000\n"
 "Last-Translator: YoOhw Studio <support@yoohw.com>\n"
 "Language-Team: Vietnamese\n"
@@ -2245,6 +2245,7 @@ msgid ""
 msgstr ""
 "Không hỗ trợ tiếp tục đơn hàng PayPal hiện có khi chuyển đổi từ VND sang USD."
 
+#. translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
 #: includes/class-vietnam-commerce-kit-paypal-conversion.php:484
 #, php-format
 msgid "PayPal will charge %1$s USD (1 USD = %2$s VND)."

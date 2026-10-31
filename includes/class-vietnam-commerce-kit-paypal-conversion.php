@@ -479,8 +479,8 @@ final class Yoohw_Vietnam_Store_Tools_PayPal_Conversion {
 				'amount'    => $attempt['preview_usd_total'],
 				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 				'nonce'     => wp_create_nonce( 'yoohw_paypal_usd_quote' ),
-				// translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
 				'i18n'      => array(
+					// translators: 1: converted USD amount, 2: manual VND per USD exchange rate.
 					'label' => __( 'PayPal will charge %1$s USD (1 USD = %2$s VND).', 'yoohw-vietnam-store-tools' ),
 					'quoteError' => __( 'The PayPal USD amount changed during checkout. Please refresh the checkout and try again.', 'yoohw-vietnam-store-tools' ),
 				),
